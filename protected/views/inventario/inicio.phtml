@@ -1,0 +1,206 @@
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+
+<div id="body" hidden>
+<div id="page-wrapper">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="col-sm-4">
+                            <h4 class="page-header" style="font-family: Times New Roman, Times, serif;">Grupos de <?php echo $this->g[0]['modelo']; echo ' '.$this->g[0]['subM'];  ?></h4>
+                        </div> 
+                        <div class="col-sm-offset-1">
+                            <img style="margin-left:0%;" src="<?php echo PUBLIC_URL;?>img\<?php echo $this->g[0]['modelo']; ?>.png" class="img-responsive" alt="modelo">
+                        </div>
+
+                        <div class="panel panel-default">
+                        <div class="panel-body">
+                            <?php $i = 1; ?>  
+                            <div class="dataTable_wrapper">
+                             <div class="col-sm-12 table-responsive">
+                                <?php if ($this->g[0]['nombre'] === 'vacio'):?>
+                                <table class="table table-striped table-bordered table-hover" id="tablaGru">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>                                                    
+                                                <th >N.Orden</th>
+                                             <!--   <th >Codigo</th> -->
+                                                <th>Nombre</th> 
+                                                <th >RecetaInact.</th>
+                                                <th >Modificar</th>
+                                                <th >Eliminar</th>
+                                            </tr>
+                                        </thead>
+                                </table> 
+                                    <?php else: ?>
+                                       <table class="table table-striped table-bordered table-hover" id="tablaGru">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>            
+                                                <th >N.Orden</th>
+                                              <!--  <th >Codigo</th> -->
+                                                <th>Nombre</th> 
+                                                <th >Receta I.</th>
+                                                <th >Modificar</th>
+                                                <th >Eliminar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($this->g as $g): ?>
+                                              <?php if ($g['recetaInactiva'] == 1) {
+                                                        $status = 'Inactivo';
+                                                    }else{
+                                                        $status = 'Activo';
+                                                    } ?>
+                                            <tr> 
+                                                <td ><?php echo $i?></td>
+                                                <td ><?php echo $g['ordenNum'];?></td>
+                                              <!--  <td ><?php echo $g['codigo'];?></td> -->
+                                                <td style="text-align:left"><?php echo $g['nombre'];?></td>
+                                                <td ><?php echo $status;?></td>
+
+                                                <th>
+                                                    <center><a class="test" data-toggle="modal" data-target=".gru" onclick="idgrupo('<?php echo $g['submodelo_id'];?>','<?php echo $g['idmodelo'];?>','<?php echo $g['id'];?>')">
+                                                        <span  class="glyphicon glyphicon-edit"></span>
+                                                    </a></center>
+                                                </th>
+                                                
+                                                <th>
+                                                   <center><a onclick="confirmacionDelete('<?php echo $g['submodelo_id'];?>','<?php echo $g['idmodelo'];?>','<?php echo $g['id'];?>')">
+                                                        <span  class="glyphicon glyphicon-remove"></span>
+                                                    </a></center>
+                                                </th>
+                                                
+                                            </tr>
+                                            <?php $i++; ?>
+
+                                            <?php endforeach ?>
+                                        </tbody>
+                                    </table> 
+                                  <?php endif; ?>
+                                    <button type="button" style="border-radius: 5px; width: 120px; margin-left: 15px" class="btn btn-sm btn-primary" data-toggle="modal" data-target=".gr"> 
+                                        <font size="2"><b>Agregar &nbsp;</b>
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </font>
+                                    </button>
+                                    <!-- MODAL DEL LA FUNCION AGREGAR DE LOS SUB-MODELOS -->
+                                      <div class="modal fade gr" id="new" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                                          <div class="modal-dialog" role="document">
+                                              <div class="modal-content">
+                                                  <div class="modal-header">
+                                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                          <span aria-hidden="true">&times;</span>
+                                                      </button>
+                                                      <h4 class="modal-title">Agregar Grupo</h4>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                      <form action="<?php  echo BASE_URL;?>grupo/insert" method="post" accept-charset="utf-8">
+                                                          <input type="text" name="modelo" hidden value="<?php echo $this->g[0]['idmodelo']; ?>" >
+                                                          <input type="text" name="submodelo" hidden value="<?php echo $this->g[0]['submodelo_id']; ?>" >
+                                                          <div class="col-sm-12">
+                                                            <div class="col-sm-2">
+                                                              <label class="control-label" style="float: left;">Orden</label>
+                                                              <input type="text" class="form-control" name="orden" required>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                              <label class="control-label" style="float: left;">Nombre</label>
+                                                              <input type="text" class="form-control" name="nombre" required placeholder="Nombre del grupo">
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                              <label class="control-label" style="float: left;">Status</label>
+                                                              <select name="status" class="form-control" required>
+                                                                <option value="" disabled>Seleccione</option>
+                                                                <option value="0">Activo</option>
+                                                                <option value="1">Inactivo</option>
+                                                              </select>
+                                                            </div>
+                                                          </div> <br>
+                                                         <center style="margin-top:50px"> <input type="submit" class="btn btn-primary" value="Guardar" onclick="insert()"> </center>
+                                                      </form>
+                                                  </div>   
+                                              </div><!-- /.modal-content -->
+                                          </div><!-- /.modal-dialog -->
+                                      </div><!-- /.modal -->
+                                      <!-- FIN DE LA MODAL DEL LA FUNCION AGREGAR DE LOS SUB-MODELOS -->
+                                      <!-- MODAL DEL LA FUNCION MODIFICAR DE LOS SUB-MODELOS -->
+                                      <div class="modal fade gru" id="new" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                                          <div class="modal-dialog" role="document">
+                                              <div class="modal-content">
+                                                  <div class="modal-header">
+                                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                          <span aria-hidden="true">&times;</span>
+                                                      </button>
+                                                      <h4 class="modal-title">Modificar grupo</h4>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                      <form action="<?php  echo BASE_URL;?>grupo/update" method="post" accept-charset="utf-8">
+                                                          <input type="text" hidden name="idsm" id="idSubM">
+                                                          <input type="text" hidden name="idm" id="idMo">
+                                                          <input type="text" hidden name="idg" id="idG">
+                                                          <div class="col-sm-12">
+                                                            <div class="col-sm-2" id="orden"></div>
+                                                            <div class="col-sm-5" id="nombre"></div>
+                                                            <div class="col-sm-3" >
+                                                              <label class="control-label" style="float: left;">Status</label>
+                                                              <select name="status" id="status" class="form-control">
+                                                              <option value="" disabled>seleccione</option>
+                                                              </select>
+                                                            </div>
+                                                          </div>
+                                                          <br>
+                                                         <center style="margin-top:50px"> <input type="submit" class="btn btn-primary" value="Guardar" > </center>
+                                                      </form>
+                                                  </div>   
+                                              </div><!-- /.modal-content -->
+                                          </div><!-- /.modal-dialog -->
+                                      </div><!-- /.modal -->
+                                      <!-- FIN DE LA MODAL DEL LA FUNCION MODIFICAR DE LOS SUB-MODELOS -->
+
+                                        <!-- MODAL DE CONFIRMACION PARA ELIMINAR-->
+                                        <div class="modal fade " id="alerta" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                                            <div class="modal-dialog modal-sm" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                        <div id="titulo"></div>
+                                                    </div>
+                                                    <div class="modal-body" >
+
+                                                       <div id="cuerpo"></div><br><br>
+                                                        <center>    
+                                                            <div id="espera" hidden>
+                                                                <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+                                                            </div>
+                                                            <div id="exito" hidden>
+                                                                <img width="140px" height="140px" class="img" src="<?php echo PUBLIC_URL; ?>img/check1.gif">
+                                                            </div>
+                                                        </center>
+                                                    </div>   
+                                                </div><!-- /.modal-content -->
+                                            </div><!-- /.modal-dialog -->
+                                        </div><!-- /.modal -->
+                                        <!-- FIN DE LA MODAL DE CONFIRMACION -->
+
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+                    <!-- /.col-lg-12 -->
+        </div>
+</div>
+                <!-- /.row -->
+                </div>
+            <!-- /.container-fluid -->
+            </div>
+        <!-- /#page-wrapper -->
+ 		<!-- no borrar -->
+ 		</div>

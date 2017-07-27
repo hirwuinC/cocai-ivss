@@ -1,0 +1,241 @@
+FPCAU4200001;TIPO PASTA - T;Tipo Plumita - T;0;0;0;Todos;Simple;0;0;unidad
+FPCAU4200002;TIPO PASTA - T;Tipo Tornillo - T;0;0;0;Todos;Simple;0;0;unidad
+FPCAU4200003;TIPO PASTA - T;Tipo Vermicelli - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU0200001;ADICIONALES 8 - T;Adic. Aceite de Oliva 8 - T;11,00;4.050,00;3.977,68;Lunes;Simple;0;0;unidad
+FPSAU0200002;ADICIONALES 8 - T;Adic. Aceitunas 8 - T;4,44;4.050,00;3.977,68;Todos;Simple;0;0;unidad
+FPSAU0200003;ADICIONALES 8 - T;Adic. Anchoas 8 - T;70,00;4.050,00;3.977,68;Todos;Simple;0;0;unidad
+FPSAU0200004;ADICIONALES 8 - T;Adic. Cebolla 8 - T;0,00;4.050,00;3.977,68;Todos;Simple;0;0;unidad
+FPSAU0200005;ADICIONALES 8 - T;Adic. Champinones 8 - T;0;4.050,00;2.121,43;Todos;Simple;1;0;unidad
+FPSAU0200006;ADICIONALES 8 - T;Adic. Jamon de Pierna 8 - T;0,00;4.050,00;3.977,68;Todos;Simple;0;0;unidad
+FPSAU0200007;ADICIONALES 8 - T;Adic. Maiz 8 - T;0,00;4.050,00;3.977,68;Todos;Simple;0;0;unidad
+FPSAU0200008;ADICIONALES 8 - T;Adic. Pepperoni 8 - T;0,00;4.050,00;3.977,68;Todos;Simple;0;0;unidad
+FPSAU0200009;ADICIONALES 8 - T;Adic. Pimenton 8 - T;0,00;4.050,00;3.977,68;Todos;Simple;0;0;unidad
+FPSAU0200010;ADICIONALES 8 - T;Adic. Pollo Guisado 8 - T;0,00;4.050,00;3.977,68;Todos;Simple;0;1;unidad
+FPSAU0200011;ADICIONALES 8 - T;Adic. Queso Mozzarella 8 - T;0;2.160,00;2.121,43;Todos;Simple;1;0;unidad
+FPSAU0200012;ADICIONALES 8 - T;Adic. Queso Parmesano 8 - T;0;2.160,00;2.121,43;Todos;Simple;1;0;unidad
+FPSAU0200013;ADICIONALES 8 - T;Adic. Salchichon 8 - T;0,00;4.050,00;3.977,68;Todos;Simple;0;0;unidad
+FPSAU0200014;ADICIONALES 8 - T;Adic. Tocineta 8 - T;0,00;4.050,00;3.977,68;Todos;Simple;0;1;unidad
+FPSAU0400001;ADICIONALES GRANDES -T;Adic. Aceite de Oliva Gde -T;0,00;13.020,00;12.787,50;Todos;Simple;0;0;unidad
+FPSAU0400002;ADICIONALES GRANDES -T;Adic. Aceituna Gde -T;0,00;13.020,00;12.787,50;Todos;Simple;0;0;unidad
+FPSAU0400003;ADICIONALES GRANDES -T;Adic. Anchoas Gde -T;0,00;13.020,00;12.787,50;Todos;Simple;0;0;unidad
+FPSAU0400004;ADICIONALES GRANDES -T;Adic. Cebolla Gde -T;0,00;13.020,00;12.787,50;Todos;Simple;0;0;unidad
+FPSAU0400005;ADICIONALES GRANDES -T;Adic. Champinones Gde -T;0,00;13.020,00;12.787,50;Todos;Simple;0;0;unidad
+FPSAU0400006;ADICIONALES GRANDES -T;Adic. Jamon de Pierna Gde -T;0,00;13.020,00;12.787,50;Todos;Simple;0;0;unidad
+FPSAU0400007;ADICIONALES GRANDES -T;Adic. Maiz Gde -T;0,00;13.020,00;12.787,50;Todos;Simple;0;0;unidad
+FPSAU0400008;ADICIONALES GRANDES -T;Adic. Pepperoni Gde -T;0,00;13.020,00;12.787,50;Todos;Simple;0;0;unidad
+FPSAU0400009;ADICIONALES GRANDES -T;Adic. Pimenton Gde -T;0,00;13.020,00;12.787,50;Todos;Simple;0;0;unidad
+FPSAU0400010;ADICIONALES GRANDES -T;Adic. Pollo Guisado Gde -T;0,00;13.020,00;12.787,50;Todos;Simple;0;0;unidad
+FPSAU0400011;ADICIONALES GRANDES -T;Adic. Queso Mozzarella Gde -T;0,00;13.020,00;12.787,50;Todos;Simple;0;0;unidad
+FPSAU0400012;ADICIONALES GRANDES -T;Adic. Queso Parmesano Gde -T;0,00;13.020,00;12.787,50;Todos;Simple;0;0;unidad
+FPSAU0400013;ADICIONALES GRANDES -T;Adic. Salchichon Gde -T;0,00;13.020,00;12.787,50;Todos;Simple;0;0;unidad
+FPSAU0400014;ADICIONALES GRANDES -T;Adic. Tocineta Gde -T;0,00;13.020,00;12.787,50;Todos;Simple;0;0;unidad
+FPSAU0600001;ADICIONALES MEDIANOS -T;Adic. Aceite de Oliva Med -T;0;10.190,00;10.008,04;Todos;Simple;0;0;unidad
+FPSAU0600002;ADICIONALES MEDIANOS -T;Adic. Aceituna Med -T;0;10.190,00;10.008,04;Todos;Simple;0;0;unidad
+FPSAU0600003;ADICIONALES MEDIANOS -T;Adic. Anchoas Med -T;0;10.190,00;10.008,04;Todos;Simple;0;0;unidad
+FPSAU0600004;ADICIONALES MEDIANOS -T;Adic. Cebolla Med -T;0;10.190,00;10.008,04;Todos;Simple;0;0;unidad
+FPSAU0600005;ADICIONALES MEDIANOS -T;Adic. Champinones Med -T;0;10.190,00;10.008,04;Todos;Simple;0;0;unidad
+FPSAU0600006;ADICIONALES MEDIANOS -T;Adic. Jamon de Pierna Med -T;0;10.190,00;10.008,04;Todos;Simple;0;0;unidad
+FPSAU0600007;ADICIONALES MEDIANOS -T;Adic. Maiz Med -T;0;10.190,00;10.008,04;Todos;Simple;0;0;unidad
+FPSAU0600008;ADICIONALES MEDIANOS -T;Adic. Pepperoni Med -T;0;10.190,00;10.008,04;Todos;Simple;0;0;unidad
+FPSAU0600009;ADICIONALES MEDIANOS -T;Adic. Pimenton Med -T;0;10.190,00;10.008,04;Todos;Simple;0;0;unidad
+FPSAU0600010;ADICIONALES MEDIANOS -T;Adic. Pollo Guisado Med -T;0;10.190,00;10.008,04;Todos;Simple;0;0;unidad
+FPSAU0600011;ADICIONALES MEDIANOS -T;Adic. Queso Mozzarella Med -T;0;10.190,00;10.008,04;Todos;Simple;0;0;unidad
+FPSAU0600012;ADICIONALES MEDIANOS -T;Adic. Queso Parmesano Med -T;0;10.190,00;10.008,04;Todos;Simple;0;0;unidad
+FPSAU0600013;ADICIONALES MEDIANOS -T;Adic. Salchichon Med -T;0;10.190,00;10.008,04;Todos;Simple;0;0;unidad
+FPSAU0600014;ADICIONALES MEDIANOS -T;Adic. Tocineta Med -T;0;10.190,00;10.008,04;Todos;Simple;0;0;unidad
+FPSAU0800001;ADICIONALES PEQUENOS -T;Adic. Aceite de Oliva Peq -T;0;5.660,00;5.558,93;Todos;Simple;0;0;unidad
+FPSAU0800002;ADICIONALES PEQUENOS -T;Adic. Aceitunas Peq -T;0;5.660,00;5.558,93;Todos;Simple;0;0;unidad
+FPSAU0800003;ADICIONALES PEQUENOS -T;Adic. Anchoas Peq -T;0;5.660,00;5.558,93;Todos;Simple;0;0;unidad
+FPSAU0800004;ADICIONALES PEQUENOS -T;Adic. Cebolla Peq -T;0;5.660,00;5.558,93;Todos;Simple;0;0;unidad
+FPSAU0800005;ADICIONALES PEQUENOS -T;Adic. Champinones Peq -T;0;5.660,00;5.558,93;Todos;Simple;0;0;unidad
+FPSAU0800006;ADICIONALES PEQUENOS -T;Adic. Jamon de Pierna Peq -T;0;5.660,00;5.558,93;Todos;Simple;0;0;unidad
+FPSAU0800007;ADICIONALES PEQUENOS -T;Adic. Maiz Peq -T;0;5.660,00;5.558,93;Todos;Simple;0;0;unidad
+FPSAU0800008;ADICIONALES PEQUENOS -T;Adic. Pepperoni Peq -T;0;5.660,00;5.558,93;Todos;Simple;0;0;unidad
+FPSAU0800009;ADICIONALES PEQUENOS -T;Adic. Pimenton Peq -T;0;5.660,00;5.558,93;Todos;Simple;0;0;unidad
+FPSAU0800010;ADICIONALES PEQUENOS -T;Adic. Pollo Guisado Peq -T;0;5.660,00;5.558,93;Todos;Simple;0;0;unidad
+FPSAU0800011;ADICIONALES PEQUENOS -T;Adic. Queso Mozzarella Peq -T;0;5.660,00;5.558,93;Todos;Simple;0;0;unidad
+FPSAU0800012;ADICIONALES PEQUENOS -T;Adic. Queso Parmesano Peq -T;0;5.660,00;5.558,93;Todos;Simple;0;0;unidad
+FPSAU0800013;ADICIONALES PEQUENOS -T;Adic. Salchichon Pq -T;0;5.660,00;5.558,93;Todos;Simple;0;0;unidad
+FPSAU0800014;ADICIONALES PEQUENOS -T;Adic. Tocineta Pq -T;0;5.660,00;5.558,93;Todos;Simple;0;0;unidad
+FPSAU1300001;ENSALADAS MIXTAS - T;Ensa. Cesar - T;0;3.900,00;3.830,35;Todos;Simple;0;0;unidad
+FPSAU1300002;ENSALADAS MIXTAS - T;Ensa. Americana - T;0;4.015,00;3.943,30;Todos;Simple;0;0;unidad
+FPSAU1300003;ENSALADAS MIXTAS - T;Ensa. Cesar Con Pollo - T;0;4.300,00;4.223,21;Todos;Simple;0;0;unidad
+FPSAU1300004;ENSALADAS MIXTAS - T;Ensa. Cobb - T;0;4.200,00;4.125,00;Todos;Simple;0;0;unidad
+FPSAU1300005;ENSALADAS MIXTAS - T;Ensa. Pacifico - T;0;4.300,00;4.223,21;Todos;Simple;0;0;unidad
+FPSAU1500001;PARA LLEVAR - T;Para Llevar Ensalada - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU1500002;PARA LLEVAR - T;Para Llevar Pasta - T;0;300,00;294,64;Todos;Simple;0;0;unidad
+FPSAU1500003;PARA LLEVAR - T;Para Llevar Pizza 8 - T;0;650,00;638,39;Todos;Simple;0;0;unidad
+FPSAU1500004;PARA LLEVAR - T;Para Llevar Pizza PQ - T;0;780,00;766,07;Todos;Simple;0;0;unidad
+FPSAU1500005;PARA LLEVAR - T;Para Llevar Pz. Grd - T;0,00;1.700,00;1.669,64;Todos;Simple;0;0;unidad
+FPSAU1500006;PARA LLEVAR - T;Para Llevar Pz. Med - T;0;1.380,00;1.355,36;Todos;Simple;0;0;unidad
+FPSAU1500007;PARA LLEVAR - T;Para Llevar Wrap - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU1700001;PASTAS - T;Pasta Alfredo - T;0;5.590,00;5.490,17;Todos;Simple;0;0;unidad
+FPSAU1700002;PASTAS - T;Pasta Bolonesa - T;0;5.590,00;5.490,17;Todos;Simple;0;0;unidad
+FPSAU1700003;PASTAS - T;Pasta Carbonara - T;0;5.590,00;5.490,17;Todos;Simple;0;0;unidad
+FPSAU1700004;PASTAS - T;Pasta Matriciana - T;0;5.590,00;5.490,17;Todos;Simple;0;0;unidad
+FPSAU1700005;PASTAS - T;Pasta Napolitana - T;0;5.590,00;5.490,17;Todos;Simple;0;0;unidad
+FPSAU1700006;PASTAS - T;Pasta Pollo a la Parmesana - T;0;5.590,00;5.490,17;Todos;Simple;0;0;unidad
+FPSAU1700007;PASTAS - T;Pasta Putanesca - T;0;5.590,00;5.490,17;Todos;Simple;0;0;unidad
+FPSAU1700008;PASTAS - T;Pasta Vegetales con pollo - T;0;5.590,00;5.490,17;Todos;Simple;0;0;unidad
+FPSAU1700009;PASTAS - T;Pasticho - T;0;5.590,00;5.490,17;Todos;Simple;0;0;unidad
+FPSAU1800001;PASTELITOS - T;Pastelito de Carne - T;0;700,00;687,49;Todos;Simple;0;0;unidad
+FPSAU1800002;PASTELITOS - T;Pastelito de Pollo - T;0;700,00;687,49;Todos;Simple;0;0;unidad
+FPSAU1800003;PASTELITOS - T;Pastelito de Queso - T;0;700,00;687,49;Todos;Simple;0;0;unidad
+FPSAU2000001;PIZZA && BEBIDAS PERSONAL - T;Piz. Pers. Full Pepperoni 8 - T;0;0,011;0,01;Todos;Simple;0;0;unidad
+FPSAU2000002;PIZZA && BEBIDAS PERSONAL - T;Piz. Pers. Full Tocineta 8 - T;0;0,011;0,01;Todos;Simple;0;0;unidad
+FPSAU2000003;PIZZA && BEBIDAS PERSONAL - T;Piz. Pers. Full Tradicional 8 - T;0;0,011;0,01;Todos;Simple;0;0;unidad
+FPSAU2000004;PIZZA && BEBIDAS PERSONAL - T;Piz. Pers. New York 8 - T;0;0,011;0,01;Todos;Simple;0;0;unidad
+FPSAU2000005;PIZZA && BEBIDAS PERSONAL - T;Piz. Prueba - T;0;0,01;0,00;Todos;Simple;0;0;unidad
+FPSAU2000006;PIZZA && BEBIDAS PERSONAL - T;Bebida Personal 7UP - T;0;0,01;0,00;Todos;Simple;0;0;unidad
+FPSAU2000007;PIZZA && BEBIDAS PERSONAL - T;Bebida Personal Kolita - T;0;0,01;0,00;Todos;Simple;0;0;unidad
+FPSAU2000008;PIZZA && BEBIDAS PERSONAL - T;Bebida Personal Naranja - T;0;0,01;0,00;Todos;Simple;0;0;unidad
+FPSAU2000009;PIZZA && BEBIDAS PERSONAL - T;Bebida Personal Pepsi - T;0;0,01;0,00;Todos;Simple;0;0;unidad
+FPSAU2000010;PIZZA && BEBIDAS PERSONAL - T;Bebida Personal Te Lipton Durazno - T;0;0,01;0,00;Todos;Simple;0;0;unidad
+FPSAU2000011;PIZZA && BEBIDAS PERSONAL - T;Bebida Personal Te Lipton Limon - T;0;0,01;0,00;Todos;Simple;0;0;unidad
+FPSAU2200001;PIZZAS 8 - T;Piz. Full Maiz  8 - T;0;9.090,00;8.927,68;Todos;Simple;0;0;unidad
+FPSAU2200002;PIZZAS 8 - T;Piz. Full Pepperoni 8 - T;0;10.790,00;10.597,32;Todos;Simple;0;0;unidad
+FPSAU2200003;PIZZAS 8 - T;Piz. Full Pollo Guisado 8 - T;0;11.600,00;11.392,86;Todos;Simple;0;0;unidad
+FPSAU2200004;PIZZAS 8 - T;Piz. Full Tocineta 8 - T;0;9.930,00;9.752,68;Todos;Simple;0;0;unidad
+FPSAU2200005;PIZZAS 8 - T;Piz. Full Vegetariana 8 - T;0;12.420,00;12.198,21;Todos;Simple;0;0;unidad
+FPSAU2200006;PIZZAS 8 - T;Piz. Manhattan 8 - T;0;12.690,00;12.463,39;Todos;Simple;0;0;unidad
+FPSAU2200007;PIZZAS 8 - T;Piz. New York 8 - T;0;9.500,00;9.330,36;Todos;Simple;0;0;unidad
+FPSAU2200008;PIZZAS 8 - T;Piz. Tradicional 8 - T;0;6.720,00;6.600,00;Todos;Simple;0;0;unidad
+FPSAU2500001;PIZZAS GRANDES - T;Piz. Full Maiz Gde - T;0;28.800,00;28.285,71;Todos;Simple;0;0;unidad
+FPSAU2500002;PIZZAS GRANDES - T;Piz. Full Pepperoni Gde - T;0;34.580,00;33.962,50;Todos;Simple;0;0;unidad
+FPSAU2500003;PIZZAS GRANDES - T;Piz. Full Pollo G. Gde - T;0;35.060,00;34.433,93;Todos;Simple;0;0;unidad
+FPSAU2500004;PIZZAS GRANDES - T;Piz. Full Tocineta Gde - T;0;32.700,00;32.116,07;Todos;Simple;0;0;unidad
+FPSAU2500005;PIZZAS GRANDES - T;Piz. Full Vegetariana Gde - T;0;35.500,00;34.866,07;Todos;Simple;0;0;unidad
+FPSAU2500006;PIZZAS GRANDES - T;Piz. New York Gde - T;0;30.360,00;29.817,86;Todos;Simple;0;0;unidad
+FPSAU2500007;PIZZAS GRANDES - T;Piz. Tradicional Gde - T;0;22.750,00;22.343,75;Todos;Simple;0;0;unidad
+FPSAU2500008;PIZZAS GRANDES - T;Piz.Manhatan Gde - T;0;35.750,00;35.111,61;Todos;Simple;0;0;unidad
+FPSAU2700001;PIZZAS MEDIANAS - T;Piz. Full Maiz Med - T;0;23.130,00;22.716,96;Todos;Simple;0;0;unidad
+FPSAU2700002;PIZZAS MEDIANAS - T;Piz. Full Pepperoni Med - T;0;27.720,00;27.225,00;Todos;Simple;0;0;unidad
+FPSAU2700003;PIZZAS MEDIANAS - T;Piz. Full Pollo Guisado Med - T;0;28.590,00;28.079,46;Todos;Simple;0;0;unidad
+FPSAU2700004;PIZZAS MEDIANAS - T;Piz. Full Tocineta Med - T;0;26.050,00;25.584,82;Todos;Simple;0;0;unidad
+FPSAU2700005;PIZZAS MEDIANAS - T;Piz. Full Vegetariana Med - T;0;31.070,00;30.515,18;Todos;Simple;0;0;unidad
+FPSAU2700006;PIZZAS MEDIANAS - T;Piz. Manhathan Med - T;0;32.490,00;31.909,82;Todos;Simple;0;0;unidad
+FPSAU2700007;PIZZAS MEDIANAS - T;Piz. New York Med - T;0;24.550,00;24.111,61;Todos;Simple;0;0;unidad
+FPSAU2700008;PIZZAS MEDIANAS - T;Piz. Tradicional Med - T;0;17.570,00;17.256,25;Todos;Simple;0;0;unidad
+FPSAU3000001;PIZZAS PEQUENAS - T;Piz. Full Maiz Peq - T;0;11.870,00;11.658,04;Todos;Simple;0;0;unidad
+FPSAU3000002;PIZZAS PEQUENAS - T;Piz. Full Pepperoni Peq - T;0;14.160,00;13.907,14;Todos;Simple;0;0;unidad
+FPSAU3000003;PIZZAS PEQUENAS - T;Piz. Full Pollo Guisado Peq - T;0;15.350,00;7994.64;Todos;Simple;0;0;unidad
+FPSAU3000004;PIZZAS PEQUENAS - T;Piz. Full Tocineta Peq - T;0;13.100,00;12.866,07;Todos;Simple;0;0;unidad
+FPSAU3000005;PIZZAS PEQUENAS - T;Piz. Full Vegetariana Pq - T;0;16.650,00;16.352,68;Todos;Simple;0;0;unidad
+FPSAU3000006;PIZZAS PEQUENAS - T;Piz. Manhattan Peq - T;0;16.970,00;16.666,96;Todos;Simple;0;0;unidad
+FPSAU3000007;PIZZAS PEQUENAS - T;Piz. New York Peq - T;0;12.790,00;12.561,61;Todos;Simple;0;0;unidad
+FPSAU3000008;PIZZAS PEQUENAS - T;Piz. Tradicional Peq - T;0;8.640,00;8.485,71;Todos;Simple;0;0;unidad
+FPSAU3100001;POSTRES - T;Quesillo - T;0;1.500,00;1473.21428;Todos;Simple;0;0;unidad
+FPSAU3100002;POSTRES - T;Quesillo de chocolate - T;0;1.500,00;1473.21428;Todos;Simple;0;0;unidad
+FPSAU3100003;POSTRES - T;Quesillo de coco - T;500,00;1.520,00;1.475,21;Todos;Simple;0;0;unidad
+FPSAU3100004;POSTRES - T;Brownie - T;0;2.250,00;1.973,05;Todos;Simple;0;0;unidad
+FPSAU3100005;POSTRES - T;Mini-Brownie - T;0;1.350,00;1.183,83;Todos;Simple;0;0;unidad
+FPSAU3100006;POSTRES - T;Gelatina - T;0;1.050,00;920,76;Todos;Simple;0;0;unidad
+FPSAU3500001;SIN ADIC 8 - T;-Aceituna 8 - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3500002;SIN ADIC 8 - T;-Cebolla 8 - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3500003;SIN ADIC 8 - T;-Champinon 8 - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3500004;SIN ADIC 8 - T;-Jamon de Pierna 8 - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3500005;SIN ADIC 8 - T;-Maiz 8 - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3500006;SIN ADIC 8 - T;-Mozzarella 8 - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3500007;SIN ADIC 8 - T;-Oregano 8 - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3500008;SIN ADIC 8 - T;-Peperoni 8 - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3500009;SIN ADIC 8 - T;-Pimenton 8 - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3500010;SIN ADIC 8 - T;-Pollo Guisado 8 - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3500011;SIN ADIC 8 - T;-Salsa 8 - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3500012;SIN ADIC 8 - T;-Tocineta 8 - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3500013;SIN ADIC 8 - T;-Parmesano 8 - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3700001;SIN ADIC GR - T;-Aceituna Gde;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3700002;SIN ADIC GR - T;-Cebolla Gde - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3700003;SIN ADIC GR - T;-Champinon Gde - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3700004;SIN ADIC GR - T;-J.Pierna Gde - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3700005;SIN ADIC GR - T;-Maiz Gde - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3700006;SIN ADIC GR - T;-Mozzarella Gde - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3700007;SIN ADIC GR - T;-Oregano Gde - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3700008;SIN ADIC GR - T;-Parmesano Gde - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3700009;SIN ADIC GR - T;-Peperoni Gde - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3700010;SIN ADIC GR - T;-Pimenton Gde - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3700011;SIN ADIC GR - T;-Pollo Guisado Gde - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3700012;SIN ADIC GR - T;-Salsa Gde - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3700013;SIN ADIC GR - T;-Tocineta Gde - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3900001;SIN ADIC MED - T;-Aceituna Med - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3900002;SIN ADIC MED - T;-Cebolla Med - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3900003;SIN ADIC MED - T;-Champinon Med - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3900004;SIN ADIC MED - T;-J.Pierna Med - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3900005;SIN ADIC MED - T;-Maiz Med - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3900006;SIN ADIC MED - T;-Mozzarella Med - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3900007;SIN ADIC MED - T;-Oregano Med - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3900008;SIN ADIC MED - T;-Peperoni Med - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3900009;SIN ADIC MED - T;-Pimenton Med - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3900010;SIN ADIC MED - T;-Pollo G. Med - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3900011;SIN ADIC MED - T;-Salsa Med - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3900012;SIN ADIC MED - T;-Tocineta Med - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU3900013;SIN ADIC MED - T;-Parmesano Med - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU4100001;SIN ADIC PEQ - T;-Aceituna Peq - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU4100002;SIN ADIC PEQ - T;-Cebolla Peq - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU4100003;SIN ADIC PEQ - T;-Champinon Peq - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU4100004;SIN ADIC PEQ - T;-Jamon de Pierna Peq - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU4100005;SIN ADIC PEQ - T;-Maiz Peq - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU4100006;SIN ADIC PEQ - T;-Mozzarella Peq - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU4100007;SIN ADIC PEQ - T;-Oregano Peq - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU4100008;SIN ADIC PEQ - T;-Peperoni Peq - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU4100009;SIN ADIC PEQ - T;-Pimenton Peq - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU4100010;SIN ADIC PEQ - T;-Pollo Guisado Peq - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU4100011;SIN ADIC PEQ - T;-Salsa Peq - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU4100012;SIN ADIC PEQ - T;-Tocineta Peq - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU4100013;SIN ADIC PEQ - T;-Parmesano Peq - T;0;0;0;Todos;Simple;0;0;unidad
+FPSAU4300001;WRAP - T;Wrap Cesar con Pollo - T;0;0;0;Todos;Simple;1;0;unidad
+FPSAU4300002;WRAP - T;Wrap Club House - T;0;0;0;Todos;Simple;1;0;unidad
+FPSAU4300003;WRAP - T;Wrap Ligero - T;0;0;0;Todos;Simple;1;0;unidad
+FPSBU0900001;BEBIDAS GRANDES - T;7 UP 32oz Gde - T;1,11;1.340,00;1.316,07;Todos;Simple;0;0;unidad
+FPSBU0900002;BEBIDAS GRANDES - T;Kolita 32oz Gde - T;0;1.340,00;1.316,07;Todos;Simple;0;0;unidad
+FPSBU0900003;BEBIDAS GRANDES - T;Naranja 32oz Gde - T;0;1.340,00;1.316,07;Todos;Simple;0;0;unidad
+FPSBU0900004;BEBIDAS GRANDES - T;Pepsi Cola 32oz Gde - T;0;1.340,00;1.316,07;Todos;Simple;0;0;unidad
+FPSBU0900005;BEBIDAS GRANDES - T;Poco/Hielo - T;0;0;0;Todos;Simple;0;0;unidad
+FPSBU0900006;BEBIDAS GRANDES - T;Sin/Hielo - T;0;0;0;Todos;Simple;0;0;unidad
+FPSBU0900007;BEBIDAS GRANDES - T;Te Lipton Durazno Gde - T;0;1.340,00;1.316,07;Todos;Simple;0;0;unidad
+FPSBU0900008;BEBIDAS GRANDES - T;Te Lipton Limon Gde - T;0;1.340,00;1.316,07;Todos;Simple;0;0;unidad
+FPSBU1000001;BEBIDAS MEDIANAS - T;7 UP Med - T;0;3.600,00;3.535,71;Todos;Simple;0;0;unidad
+FPSBU1000002;BEBIDAS MEDIANAS - T;Kolita Med - T;0;3.600,00;3.535,71;Todos;Simple;0;0;unidad
+FPSBU1000003;BEBIDAS MEDIANAS - T;Naranja Med - T;0;3.600,00;3.535,71;Todos;Simple;0;0;unidad
+FPSBU1000004;BEBIDAS MEDIANAS - T;Pepsi Cola Med - T;0;3.600,00;3.535,71;Todos;Simple;0;0;unidad
+FPSBU1000005;BEBIDAS MEDIANAS - T;Te Lipton Durazno Med - T;0;3.600,00;3.535,71;Todos;Simple;0;0;unidad
+FPSBU1000006;BEBIDAS MEDIANAS - T;Te Lipton Limon Med - T;0;3.600,00;3.535,71;Todos;Simple;0;0;unidad
+FPSBU1000007;BEBIDAS MEDIANAS - T;Poco/Hielo Med - T;0;0;0;Todos;Simple;0;0;unidad
+FPSBU1000008;BEBIDAS MEDIANAS - T;Sin/Hielo Med - T;0;0;0;Todos;Simple;0;0;unidad
+FPSBU1100001;BEBIDAS PEQUENAS - T;7 Up Pq - T;0;2.640,00;2.592,86;Todos;Simple;0;0;unidad
+FPSBU1100002;BEBIDAS PEQUENAS - T;Kolita Pq - T;0;2.640,00;2.592,86;Todos;Simple;0;0;unidad
+FPSBU1100003;BEBIDAS PEQUENAS - T;Naranja Pq - T;0;2.640,00;2.592,86;Todos;Simple;0;0;unidad
+FPSBU1100004;BEBIDAS PEQUENAS - T;Pepsi Cola Pq - T;0;2.640,00;2.592,86;Todos;Simple;0;0;unidad
+FPSBU1100005;BEBIDAS PEQUENAS - T;Te Lipton Durazno Pq - T;0;2.640,00;2.592,86;Todos;Simple;0;0;unidad
+FPSBU1100006;BEBIDAS PEQUENAS - T;Te Lipton Limon Pq - T;0;2.640,00;2.592,86;Todos;Simple;0;0;unidad
+FPSBU1100007;BEBIDAS PEQUENAS - T;Poco/Hielo Pq - T;0;0;0;Todos;Simple;0;0;unidad
+FPSBU1100008;BEBIDAS PEQUENAS - T;Sin/Hielo Pq - T;0;0;0;Todos;Simple;0;0;unidad
+FPSBU1200001;CAFE - T;Cafe Gde - T;400,00;1.070,00;1.050,89;Todos;Simple;1;0;unidad
+FPSBU1200002;CAFE - T;Cafe Peq - T;1.785,41;720,00;707,14;Todos;Simple;0;0;unidad
+FPSBU1400001;JUGOS - T;Yukery Durazno - T;0;700,00;687,49;Todos;Simple;0;0;unidad
+FPSBU1400002;JUGOS - T;Yukery Mango - T;0;700,00;687,49;Todos;Simple;0;0;unidad
+FPSBU1400003;JUGOS - T;Yukery Manzana - T;0;700,00;687,49;Todos;Simple;0;0;unidad
+FPSBU1400004;JUGOS - T;Yukery Pera - T;0;700,00;687,49;Todos;Simple;0;0;unidad
+FPSBU3200001;REFRESCOS BOMBA 600ML - T;7up bomba 600ml - T;0;910;893.75;Todos;Simple;0;0;unidad
+FPSBU3200002;REFRESCOS BOMBA 600ML - T;Kolita Bomba 600ml - T;0;910;893.75;Todos;Simple;0;0;unidad
+FPSBU3200003;REFRESCOS BOMBA 600ML - T;Naranja Bomba 600ml - T;0;910;893.75;Todos;Simple;0;0;unidad
+FPSBU3200004;REFRESCOS BOMBA 600ML - T;Pepsi Bomba 600ml - T;0;910;893.75;Todos;Simple;0;0;unidad
+FPSBU3300001;REFRESCOS LATA Y AGUAS - T;7 Up Ligth Lata - T;0;4.800,00;4.714,29;Todos;Simple;0;0;unidad
+FPSBU3300002;REFRESCOS LATA Y AGUAS - T;Agua 600 ml - T;0;1;1;Todos;Simple;0;0;unidad
+FPSBU3300003;REFRESCOS LATA Y AGUAS - T;Agua Mineral - T;0;1;1;Todos;Simple;0;0;unidad
+FPSBU3300004;REFRESCOS LATA Y AGUAS - T;Pepsi Ligth Lata - T;0;4.800,00;4.714,29;Todos;Simple;0;0;unidad
+FPSAU0200003;ADICIONALES 8 - T;Adic. Anchoas 8 - T;10,00;4.050,00;3.977,68;Todos;unidad;0;0;Simple
+FPSAU0200002;ADICIONALES 8 - T;Adic. Aceitunas 8 - T;0;4.050,00;3.977,68;Todos;unidad;0;0;Simple
+FPSAU0200001;ADICIONALES 8 - T;Adic. Aceite de Oliva 8 - T;0;4.050,00;3.977,68;Todos;unidad;0;0;Simple
+FPSAU0200014;ADICIONALES 8 - T;Adic. Tocineta 8 - T;0;4.050,00;3.977,68;Todos;unidad;0;0;Simple
+FPSAU0200013;ADICIONALES 8 - T;Adic. Salchichon 8 - T;0;4.050,00;3.977,68;Todos;unidad;0;0;Simple
+FPSAU0200012;ADICIONALES 8 - T;Adic. Queso Parmesano 8 - T;0;4.050,00;3.977,68;Todos;unidad;0;0;Simple
+FPSAU0200011;ADICIONALES 8 - T;Adic. Queso Mozzarella 8 - T;0;4.050,00;3.977,68;Todos;unidad;0;0;Simple
+FPSAU0200010;ADICIONALES 8 - T;Adic. Pollo Guisado 8 - T;0;4.050,00;3.977,68;Todos;unidad;0;0;Simple
+FPSAU0200009;ADICIONALES 8 - T;Adic. Pimenton 8 - T;0;4.050,00;3.977,68;Todos;unidad;0;0;Simple
+FPSAU0200008;ADICIONALES 8 - T;Adic. Pepperoni 8 - T;0;4.050,00;3.977,68;Todos;unidad;0;0;Simple
+FPSAU0200007;ADICIONALES 8 - T;Adic. Maiz 8 - T;0;4.050,00;3.977,68;Todos;unidad;0;0;Simple
+FPSAU0200006;ADICIONALES 8 - T;Adic. Jamon de Pierna 8 - T;0;4.050,00;3.977,68;Todos;unidad;0;0;Simple
+FPSAU0200005;ADICIONALES 8 - T;Adic. Champinones 8 - T;0;4.050,00;3.977,68;Todos;unidad;0;0;Simple
+FPSAU0200004;ADICIONALES 8 - T;Adic. Cebolla 8 - T;0;4.050,00;3.977,68;Todos;unidad;0;0;Simple
+FPTR001779;PASTELITOS - T;prueba;0,00;0,00;0,00;Todos;Simple;0;0;unidad
+FPTR001780;PIZZAS 8 - T;hdjgr;1,00;2,00;5,00;Todos;Simple;0;0;unidad

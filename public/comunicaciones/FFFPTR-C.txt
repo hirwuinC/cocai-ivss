@@ -1,0 +1,5 @@
+codigo, tipo, nombre, cantidad
+FPTR001779;G;ADICIONALES GRANDES -T;2
+FPTR001779;P;Piz. Full Vegetariana 8 - T;1
+FPTR001780;G;ADICIONALES 8 - T;3
+FPTR001780;P;Yukery Durazno - T;3

@@ -1,0 +1,64 @@
+</div> <!-- #wrapper -->
+	
+	<footer id="footer">
+		<ul class="nav pull-right">
+			<li>
+				
+			</li>
+		</ul>
+	</footer>
+	<label  hidden id="base_url"><?php echo BASE_URL; ?></label>
+		<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/jquery-2.1.4.js"></script>
+	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/jquery-1.12.1.min.js"></script>
+	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/main.js"></script>
+	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/opciones.js"></script>
+	<!-- / START - page related files and scripts [optional] -->
+    <?php  if (isset($_view_params['js']) && count($_view_params['js'])): ?>
+	<?php  	for ($i = 0; $i < count($_view_params['js']); $i++):  ?>
+		<script src="<?php echo $_view_params['js'][$i]; ?>"></script>
+	<?php  	endfor; ?>
+	<?php  endif;?>
+    <!-- / END - page related files and scripts [optional] -->
+    
+    <!-- Bootstrap Core JavaScript -->
+    <script src="<?php echo PUBLIC_URL;?>otros/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="<?php echo PUBLIC_URL;?>otros/vendor/metisMenu/metisMenu.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="<?php echo PUBLIC_URL;?>otros/dist/js/sb-admin-2.js"></script>
+
+	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/bootstrapValidator.min.js"></script>
+	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/index.js"></script>
+	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/jquery.dataTables.min.js"></script>
+
+	
+	<script>
+	   var BASE_URL = $('#base_url').text();
+	</script>
+	<script type="text/javascript"> 
+$(document).ready(function(){
+	
+	$('#gifcargando').fadeOut(600);
+	setTimeout(function() {$('#body').fadeIn(700);}, 600);
+   /* $("a.subM").click(function(event){ event.preventDefault(); linkLocation = this.href; $('#body').fadeOut(500, redirectPage); }); function redirectPage() { window.location = linkLocation; } 
+    $(".atras").click(function(event){ event.preventDefault();  $('#body').fadeOut(500); });*/
+    
+});
+</script>
+
+
+</body>
+</html>
+	 <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    
+
+
+</div>
+   
+</body>
+
+</html>
+
+<!-- end footer.phtml -->

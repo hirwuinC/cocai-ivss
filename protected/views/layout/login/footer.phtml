@@ -1,0 +1,15 @@
+</div> <!-- /container -->
+
+	<label  hidden id="base_url"><?php echo BASE_URL; ?></label>
+	<script>
+		var BASE_URL = $('#base_url').text();
+	</script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="./Signin Template for Bootstrap_files/ie10-viewport-bug-workaround.js"></script>
+  	<?php  if (isset($_view_params['js']) && count($_view_params['js'])): ?>
+	<?php  	for ($i = 0; $i < count($_view_params['js']); $i++):  ?>
+		<script src="<?php echo $_view_params['js'][$i]; ?>"></script>
+	<?php  	endfor; ?>
+	<?php  endif;?>
+
+</body></html>

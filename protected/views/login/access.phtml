@@ -1,0 +1,90 @@
+
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+        <link rel="stylesheet" href="<?php echo PUBLIC_URL; ?>css/bootstrap.min.css">
+        <link rel="stylesheet" href="<?php echo PUBLIC_URL; ?>font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="<?php echo PUBLIC_URL; ?>css/form-elements.css">
+        <link rel="stylesheet" href="<?php echo PUBLIC_URL; ?>css/style.css">
+        <title>EPOC-WEB</title>
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <!-- Top content -->
+        <div class="top-content">
+          
+            <div class="inner-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-5 col-sm-offset-4 form-box">
+                          <div class="form-top">
+                            <div class="form-top-left">
+                                <div>
+                                     <img src="<?php echo PUBLIC_URL;?>img\epoc-logo.jpg" class="img-responsive" alt="epoc">
+                                     <legend ></legend>
+                                    </div>
+                                    <h4><strong>EPOC-WEB</strong></h4><h5>Administrador de productos de venta</h5>
+                            </div>
+                            <div class="form-top-right">
+                              <img style="width: 80px; height: 80px; margin-top: 5px; margin-left: 15px" src="<?php echo PUBLIC_URL;?>img\llave.jpg" class="img-responsive" alt="img">
+                            </div>
+                            </div>
+                            <div class="form-bottom">
+                          <form id="login" class="form-signin" action='<?php echo BASE_URL . 'login/signIn'?>' method="post">
+                            <?php if (isset($this->_error)) echo $this->_error; ?>
+                            <div class="input-group col-sm-8 col-sm-offset-2 input-group-lg">
+                               <div class="input-group-addon"><span class="fa fa-lg fa-lock"/></div>
+                                    <input type="password"  class="form-control" id="clave" placeholder="Contrase&ntilde;a" name="password"/>
+                            </div><br>
+                            <div class="col-sm-8 col-sm-offset-2 input-group-lg">
+                                
+                            
+                            <button type="submit" id="btn-login" class="button-three btn btn-sm"><span style="margin-left: -20px; font-size: 20px" class="glyphicon glyphicon-log-in"></span><font style="margin-left: 0px" size="4">  Iniciar Sesion</font></button></div>
+                        </form>
+
+                            <div ><br>
+                            <a style="margin-left: 45%; margin-top: 4px" type="button" name="" onclick="window.close();"  class="btn btn-xs button-two btn-primary"><span class="glyphicon glyphicon-remove"></span> Salir</a>
+                        </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <footer></footer>
+
+
+        <!-- Javascript -->
+        <script src="<?php echo PUBLIC_URL; ?>js/jquery-1.11.1.min.js"></script>
+        <script src="<?php echo PUBLIC_URL; ?>js/bootstrap.min.js"></script>
+        <script src="<?php echo PUBLIC_URL; ?>js/jquery.backstretch.min.js"></script>
+        <script src="<?php echo PUBLIC_URL; ?>js/scripts.js"></script>
+        
+        <!--[if lt IE 10]>
+            <script src="assets/js/placeholder.js"></script>
+        <![endif]-->
+
+
+  <label  hidden id="base_url"><?php echo BASE_URL; ?></label>
+  <!-- / START - page related files and scripts [optional] -->
+    <?php  if (isset($_view_params['js']) && count($_view_params['js'])): ?>
+    <?php   for ($i = 0; $i < count($_view_params['js']); $i++):  ?>
+        <script src="<?php echo $_view_params['js'][$i]; ?>"></script>
+    <?php   endfor; ?>
+    <?php  endif;?>
+    <!-- / END - page related files and scripts [optional] -->
+  <script>
+    var BASE_URL = $('#base_url').text();
+    </script>
+
+  
+  
+  
+  
+  
+  

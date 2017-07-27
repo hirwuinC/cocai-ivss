@@ -1,0 +1,404 @@
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+
+<div id="body" hidden>
+<div id="page-wrapper">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="col-sm-5">
+                            <h4 class="page-header" style="font-family: Times New Roman, Times, serif;">Productos de <?php echo $this->pro[0]['modelo']; echo ' '.$this->pro[0]['submodelo'];  ?></h4>
+                        </div> 
+                        <div class="col-sm-offset-1">
+                            <img style="margin-left:0%;" src="<?php echo PUBLIC_URL;?>img\<?php echo $this->pro[0]['modelo']; ?>.png" class="img-responsive" alt="modelo">
+                        </div>
+
+                        <div class="panel panel-default">
+                        <div class="panel-body">
+                            <?php $i = 1; ?>  
+                            <div class="dataTable_wrapper">
+                             <div class="col-sm-12 table-responsive">
+                             <?php if ($this->pro[0]['codigo'] === 'vacio'):?>
+                                <table class="table table-striped table-bordered table-hover" id="tablaPro">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Codigo</th>              
+                                                <th>Nombre</th>
+                                                <th>Grupo</th>
+                                                <th>Costo</th>
+                                                <th>PVP A <span class="glyphicon glyphicon-ok"></span></th>
+                                                <th>PVP B</th>
+                                                <th>Status</th>                                              
+                                                <th >Modificar</th>
+                                                <th >Eliminar</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                            <?php else: ?>
+                                <div class="col-sm-11"><?php if (isset($this->_error)) echo $this->_error; ?></div>
+                                <table class="table table-striped table-bordered table-hover" id="tablaPro">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Codigo</th>              
+                                                <th>Nombre</th>
+                                                <th>Grupo</th>
+                                                <th>Costo</th>
+                                                <th>PVP A <span class="glyphicon glyphicon-ok"></span></th>
+                                                <th>PVP B</th>
+                                                <th>Status</th>                                              
+                                                <th >Modificar</th>
+                                                <th >Eliminar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($this->pro as $pro): 
+                                                if ($pro['producto_Inactivo'] == 0) {
+                                                    $inactivo = 'Activo';
+                                                }else{
+                                                    $inactivo = 'Inactivo';
+                                                }
+                                            ?>
+                                            <tr> 
+                                                <td ><center><?php echo $i?></center></td>
+                                                <td ><?php echo $pro['codigo'];?></td>
+                                                <?php
+                                                    if ($pro['tipo'] == 1): ?>
+                                                        <td style="text-align:left">
+                                                            <a class="test" data-toggle="modal" data-target=".combo" href="" onclick="armarCombo('<?php echo $pro['sub_modelo_id'];?>','<?php echo $pro['codigo'];?>')">
+                                                                <span class="fa fa-cubes" style="font-size:20px"></span>
+                                                            </a>
+                                                            <?php echo $pro['nombre']; ?>
+                                                        </td >
+                                                    <?php else: ?>
+                                                      <td style="text-align:left"><?php echo $pro['nombre']; ?></td >
+                                                <?php endif; ?>
+                                                <td style="text-align:left"><?php echo $pro['grupo'];?></td>
+                                                <td ><?php echo $pro['costo'];?></td>
+                                                <td ><?php echo $pro['precioVta_A'];?></td>
+                                                <td ><?php echo $pro['precioVta_B'];?></td>
+                                                <td ><?php echo $inactivo;?></td>
+
+                                                <th>
+                                                    <center><a class="test" href="" data-toggle="modal" data-target=".prod" onclick="idM_Sm('<?php echo $pro['sub_modelo_id'];?>','<?php echo $pro['idmodelo'];?>','<?php echo $pro['idP'];?>')">
+                                                        <span  class="glyphicon glyphicon-edit"></span>
+                                                    </a></center>
+                                                </th>
+                                                
+                                                <th>
+                                                   <center><a onclick="confirmacionDelete('<?php echo $pro['sub_modelo_id'];?>','<?php echo $pro['idmodelo'];?>','<?php echo $pro['idP'];?>')">
+                                                        <span  class="glyphicon glyphicon-remove"></span>
+                                                    </a></center>
+                                                </th>
+                                                
+                                            </tr>
+                                            <?php $i++; ?>
+
+                                            <?php endforeach ?>
+                                        </tbody>
+                                    </table> 
+                                <?php endif; ?>
+                                    <button type="button" data-toggle="modal" data-target="#alerta" style="border-radius: 5px; width: 120px; margin-left: 15px" class="btn btn-sm btn-primary" onclick="addProCom('<?php echo $this->pro[0]['sub_modelo_id'];?>','<?php echo $this->pro[0]['idmodelo'];?>')"> 
+                                        <font size="2"><b>Agregar &nbsp;</b>
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </font>
+                                    </button>
+
+                                    <a type="button" class="btn btn-primary" onclick="txt('<?php echo $this->pro[0]['sub_modelo_id'];?>','<?php echo $this->pro[0]['idmodelo'];?>','<?php echo $this->pro[0]['idDivision'];?>')">
+                                    	<b>Generar script de actualizacion</b> 
+                                    	<span class="glyphicon glyphicon-ok"></span>
+                                    </a>
+                                    <br>
+                                    <div class="col-sm-2">
+	                                    <a id="download" class="btn btn-sm btn-default" href="<?php echo BASE_URL."producto/descarga/".$this->pro[0]['sub_modelo_id'].'/'.$this->pro[0]['idmodelo'].'/'.$this->pro[0]['idDivision']?>">
+	                                    	<b>Descargar script</b>
+	                                    	<span class="glyphicon glyphicon-download-alt"></span>
+                                            <iframe id="downloader" src="" style="display:none;"></iframe>
+	          							</a>
+          							</div>
+                                    
+                                    <!-- MODAL DEL LA FUNCION AGREGAR LOS COMBOS -->
+                <div class="modal fade combo" id="cre" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="tituloCombo"></h4>
+                            </div>
+                            <div class="modal-body">
+                                <input type="text" name="codeCombo" id="codeCombo" hidden value="">
+                                <input type="text" name="sub_modelo" id="sm" hidden value="<?php echo $this->pro[0]['sub_modelo_id'];?>">
+                                <input type="text" name="modelo" id="m" hidden value="<?php echo $this->pro[0]['idmodelo'];?>">
+                                 <div class="form-group col-sm-12">
+                                    <div class="col-sm-2">
+                                        <label class="control-label" style="float: left;">Tipo</label>
+                                        <select name="tipo" id="tipo" class="form-control" required>
+                                            <option value="" selected>Seleccione...</option>
+                                            <option value="P">Producto</option>
+                                            <option value="G">Grupo</option>   
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Grupo</label>
+                                        <select name="grupo_id" id="grupo" class="form-control" required> 
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4" id="product" hidden>
+                                        <label class="control-label" style="float: left;">Producto</label>
+                                        <select name="producto" id="producto" class="form-control" required> 
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <label class="control-label" style="float: left;">Cant.</label>
+                                        <input type="text" name="cantidad" id="cantidad" class="form-control" required>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <br>
+                                        <a onclick="agregarAlCombo()"><span class="glyphicon glyphicon-floppy-disk" style="font-size:30px; margin-top:7px"></span></a> 
+                                    </div>
+                                    <div id="tablita" hidden>
+                                        <table class="table table-striped table-bordered table-hover">
+                                            <thead>
+                                              <tr>
+                                                  <th>Codigo</th>
+                                                  <th>Tipo</th>
+                                                  <th>Nombre</th>              
+                                                  <th>Cant.</th>
+                                                  <th>Eliminar</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody id="cuerpoT">
+                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>     
+                            </div>
+                            <div class="modal-footer"></div>
+                        </div>
+                    </div>
+                </div>
+               
+                <!-- FIN DE LA MODAL DEL LA FUNCION AGREGAR LOS COMBOSS -->
+
+                                    <!-- MODAL DEL LA FUNCION AGREGAR DE LOS PRODUCTOS -->
+                <div class="modal fade" id="produ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <div id="enunciado"></div>
+                            </div>
+                            <form action="<?php echo BASE_URL;?>producto/insert" method="post" accept-charset="utf-8">
+                            <div class="modal-body">
+                                <input type="text" name="modelo" id="m" hidden value="<?php echo $this->pro[0]['idmodelo'];?>">
+                                <input type="text" name="sub_modelo" id="sm" hidden value="<?php echo $this->pro[0]['sub_modelo_id'];?>">
+                                <input type="text" name="tipo" id="type" hidden>
+
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">Codigo</label>
+                                        <input type="text" class="form-control" id="co" name="codigo">
+                                    </div>
+                                    <div class="col-sm-1" id="glyphicon"></div>
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Codigo anterior</label>
+                                        <input type="text" class="form-control" name="codigo_tcr" id="c_tcr">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">Nombre</label>
+                                        <input type="text" class="form-control" name="nombre" id="nombre" required>
+                                    </div>
+                                    <div class="col-sm-1" id="glyphi"></div>
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Costo</label>
+                                        <input type="text" class="form-control" name="costo" id="costo" onkeyup="format(this)" onchange="format(this)" required placeholder="0,00">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Precio de venta A</label>
+                                        <input type="text" class="form-control" name="precioVta_A" id="pA" onkeyup="format(this)" onchange="format(this)" required placeholder="0,00">
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Precio de venta B</label>
+                                        <input type="text" class="form-control" name="precioVta_B" id="pB" onkeyup="format(this)" onchange="format(this)" required placeholder="0,00">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Estatus</label>
+                                        <select name="producto_Inactivo" class="form-control" id="pI" required>
+                                            
+                                            <option value="0">Activo</option>
+                                            <option value="1">Inactivo</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Ocultar</label>
+                                        <select name="ocultar" class="form-control" id="ocultar" required>
+                                            
+                                            <option value="0">No</option>
+                                            <option value="1">Si</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Dia disponible</label>
+                                        <select name="dia_disponible_id" id="dia_disponibles" class="form-control" required>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Tipo de producto</label>
+                                        <select name="tipo_producto_id" id="tipo_productos" class="form-control" required>   
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Tipo de manejo</label>
+                                        <select name="tipo_manejo_id" id="tipo_manejos" class="form-control" required> 
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Grupo</label>
+                                        <select name="grupo_id" id="grup" class="form-control" required> 
+                                        </select>
+                                    </div> 
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="submit" class="btn btn-primary" value="Guardar" id="botonG">
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                  <!-- MODAL DEL LA FUNCION MODIFICAR LOS PRODUCTOS -->
+                  <div class="modal fade prod" id="new" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                      <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                                  <h4 class="modal-title" id="title"></h4>
+                              </div>
+                              <div class="modal-body">
+                                  <form action="<?php  echo BASE_URL;?>producto/update" method="post" accept-charset="utf-8">
+                                      <input type="text" hidden name="idsm" id="idSubM">
+                                      <input type="text" hidden name="idm" id="idMo">
+                                      <input type="text" hidden name="idP" id="idp">
+                                     
+		                                <div class="col-sm-4" >
+		                                	<label class="control-label" style="float: left;">Codigo</label>
+                           					<input type="text" class="form-control" id="cod" readonly name="codigo" value="">
+		                                </div>
+		                                <div class="col-sm-4" >
+		                                	<label class="control-label" style="float: left;">Codigo anterior</label>
+                           					<input type="text" class="form-control" id="tCr" readonly name="codigo_tcr" value="">
+		                                </div>
+		                                <div class="col-sm-4" >
+		                                	<label class="control-label" style="float: left;">Nombre</label>
+                           					<input type="text" class="form-control" id="name" readonly name="nombre" value="">
+		                                </div>
+		                                <div class="col-sm-4" >
+		                                	<label class="control-label" style="float: left;">Costo</label>
+                           					<input type="text" class="form-control" id="cos" name="costo" value="" onkeyup="format(this)" onchange="format(this)">
+		                                </div>
+		                                <div class="col-sm-4" >
+		                                	<label class="control-label" style="float: left;">PVP A</label>
+                           					<input type="text" class="form-control" id="pvpA" name="precioVta_A" value="" onkeyup="format(this)" onchange="format(this)">
+		                                </div>
+		                                <div class="col-sm-4" >
+		                                	<label class="control-label" style="float: left;">PVP B</label>
+                           					<input type="text" class="form-control" id="pvpB" name="precioVta_B" value="" onkeyup="format(this)" onchange="format(this)">
+		                                </div>
+		                                <div class="col-sm-4">
+		                                	<label class="control-label" style="float: left;">Dia disponible</label>
+		                                 	<select name="dia_disponible_id" id="dia_disponiblesU" class="form-control">
+		                                 	</select>
+		                                 </div>
+		                                 <div class="col-sm-4">
+		                                 	<label class="control-label" style="float: left;">Tipo de Producto</label>
+		                                 	<select name="tipo_producto_id" id="tipo_productosU" class="form-control">
+		                                 	</select>
+		                                 </div>
+		                                 <div class="col-sm-4">
+		                                 	<label class="control-label" style="float: left;">Tipo de manejo</label>
+		                                 	<select name="tipo_manejo_id" id="tipo_manejosU" class="form-control">
+		                                 	</select>
+		                                 </div>
+		                                 <div class="col-sm-4">
+		                                 	<label class="control-label" style="float: left;">Ocultar</label>
+		                                 	<select name="ocultar" id="oculta" class="form-control">
+		                                 	</select>
+		                                 </div>
+		                                 <div class="col-sm-4">
+		                                 	<label class="control-label" style="float: left;">Status</label>
+		                                 	<select name="producto_Inactivo" id="proI" class="form-control">
+		                                 	</select>
+		                                 </div>  
+		                                  <br>
+        								
+        					
+                                    <input type="submit" class="btn btn-primary" style="margin-top:5%; margin-left:10%" value="Guardar" >
+                                  </form> <br>
+                                  <br>
+                              </div>   
+                          </div><!-- /.modal-content -->
+                      </div><!-- /.modal-dialog -->
+                  </div><!-- /.modal -->
+                  <!-- FIN DE LA MODAL DEL LA FUNCION MODIFICAR LOS PRODUCTOS-->
+					<!-- MODAL DE CONFIRMACION PARA ELIMINAR-->
+                <div class="modal fade " id="alerta" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                    <div class="modal-dialog modal-sm" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <div id="titulo"></div>
+                            </div>
+                            <div class="modal-body" >
+
+                               <div id="cuerpo"></div><br><br>
+                                <center>    
+                                    <div id="espera" hidden>
+                                        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+                                    </div>
+                                    <div id="exito" hidden>
+                                        <img width="140px" height="140px" class="img" src="<?php echo PUBLIC_URL; ?>img/check1.gif">
+                                    </div>
+                                </center>
+                            </div>   
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+                <!-- FIN DE LA MODAL DE CONFIRMACION -->
+
+
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+                    <!-- /.col-lg-12 -->
+        </div>
+</div>
+                <!-- /.row -->
+                </div>
+            <!-- /.container-fluid -->
+            </div>
+        <!-- /#page-wrapper -->
+ 		<!-- no borrar -->
+ 		</div>

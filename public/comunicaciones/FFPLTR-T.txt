@@ -1,0 +1,12 @@
+0;;SLICES 16;0;;
+0;;COMBOS PIZZAS 16;0;;
+0;;PIZZAS 16;0;;
+0;;BEBIDAS FRIAS;0;;
+0;;PASTELES;0;;
+0;;BEBIDAS CALIENTES;1;;
+0;;COMBO LOKURA PIZZAS 16;0;;C:\EPOC\Datos Puntos\Estacion1\Imagenes_Productos_Inventario\Combo\Pizza pepsi.jpg
+0;;COMIDA & BEBIDA PERSONAL;0;;C:\EPOC\Datos Puntos\Estacion1\Imagenes_Productos_Inventario\Combo\Combo Pizza Papas.JPG
+0;;PARA LLEVAR;0;;C:\EPOC\Datos Puntos\Estacion1\Imagenes_Productos_Inventario\Otros\Pizza Para llevar.JPG
+0;;SLICES 18;1;;
+0;;COMBOS PIZZAS 18;1;;
+0;;POSTRES;0;;C:\EPOC\Datos Puntos\Estacion1\Imagenes_Productos_Inventario\Postres\846_Torta de Chocolate.jpg

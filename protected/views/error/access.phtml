@@ -1,0 +1,21 @@
+ <br><center>
+                      <?php if (!Session::get('authenticated')):?>
+                        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/reloj.gif">
+                        <?php if (isset($this->errorNum)) echo '<b>'.$this->errorNum.'</b>';?>
+                     
+                        <?php if (isset($this->message)) echo '<b>'.$this->message.'</b>';?><br>
+                        <a class='btn btn-md btn-primary' href='<?php echo BASE_URL . 'login/index'; ?>'>
+                         
+                          iniciar Sesión
+                        </a>
+                      <?php else:?>
+                       <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/exclamacion.gif">
+                       <?php if (isset($this->errorNum)) echo '<b>'.$this->errorNum.'</b>';?>
+                     
+                        <?php if (isset($this->message)) echo '<b>'.$this->message.'</b>'?><br>
+                        <a class='btn btn-md btn-warning' href='javascript: history.go(-1)'>
+                         
+                          Regresar
+                        </a>
+                      <?php endif;?>
+                      </center>

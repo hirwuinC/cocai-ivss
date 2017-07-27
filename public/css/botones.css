@@ -1,0 +1,44 @@
+@import url("//fonts.googleapis.com/css?family=Roboto:500");
+@import url("//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css");
+body {
+  padding: 2px 0;
+  text-align: center;
+}
+
+.face-button {
+  height: 30px;
+  display: inline-block;
+  border: 1px solid #fff;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  font-weight: 60;
+  text-align: center;
+  text-decoration: none;
+  color: #002080;
+  overflow: hidden;
+}
+.face-button .icon {
+  margin-right: 1px;
+}
+.face-button .face-primary,
+.face-button .face-secondary {
+  display: block;
+  padding: 0 28px;
+  line-height: 28px;
+  transition: margin .4s;
+}
+.face-button .face-primary {
+  background-color: #fff;
+  color: #002080;
+}
+.face-button:hover .face-primary {
+  margin-top: -28px;
+}
+.face-button:hover .face-secondary {
+  border: 1px solid #337AB7;
+  font-size: 19px;
+  border-radius: 5px;
+  height: 28px;
+  color: #fff;
+  background-color: #337AB7;
+}
