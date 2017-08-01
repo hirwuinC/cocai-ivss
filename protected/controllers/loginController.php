@@ -34,7 +34,7 @@
 					exit();
 				}
 				
-				$data = $this->_login->getUser($_POST['password']); //print_r($data); exit();
+				$data = $this->_login->getUser($_POST['password']); #print_r($data); exit();
 				
 				if (!$data) {
 					$this->_view->_error = Controller::getBoxAlert(

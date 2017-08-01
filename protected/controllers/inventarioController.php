@@ -27,7 +27,7 @@
 			// clase  metodo 	  vista    carpeta dentro de views 
 		}
 
-		function inicio($subM,$modelo){
+		function inicio($tienda){
 			$this->_view->setCss(array('datatable/css/dataTables.bootstrap'));
             $this->_view->setCss(array('datatable/css/jquery.datatable.min'));
 		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
@@ -36,8 +36,8 @@
 		    $this->_view->setJs(array('datatable/js/tabla'));
             $this->_view->setJs(array('js/grupo'));
             Session::time();
-			$query = "SELECT grupo.id, grupo.nombre, grupo.ordenNum, grupo.recetaInactiva, grupo.submodelo_id, ref1.id as 'idmodelo', ref1.referencia as 'modelo', referencia.referencia as 'subM'   FROM `grupo` INNER JOIN referencia on referencia.id = grupo.submodelo_id INNER JOIN referencia as ref1 on ref1.id = referencia.padre_id WHERE submodelo_id = $subM ORDER BY grupo.recetaInactiva = 1"; 
-			$valores = $this->_admin->listar($query);
+			$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.descripcion, mercancia.cantidad_inventariada, mercancia.status, referencia.referencia as 'unidad_medida', ref.referencia as 'familia', modelo.id as 'idM', modelo.nombre as 'modelo', model.nombre as 'subM' FROM `unidad_negocio` inner join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id inner join modelo on modelo.id = modelo_has_submodelo.modelo_id inner join modelo as model on model.id = modelo_has_submodelo.sub_modelo_id inner join mercancia_has_unidad_negocio on mercancia_has_unidad_negocio.unidad_negocio_id = unidad_negocio.id inner join mercancia on mercancia.id = mercancia_has_unidad_negocio.mercancia_id inner join referencia on referencia.id = mercancia.unidad_medida_id inner join referencia as ref on ref.id = mercancia.familia_id WHERE unidad_negocio.id = $tienda ORDER BY mercancia.status = 1"; 
+			$valores = $this->_admin->listar($query); #print_r($valores);
 			$cantidad= count($valores);
 			if ($cantidad > 0) {
 				$this->_view->g = $valores;	

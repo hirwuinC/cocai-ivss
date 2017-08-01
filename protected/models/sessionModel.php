@@ -14,8 +14,7 @@
 	
 		public function getRole($id) {
 				//echo $id;
-			$this->_query = "SELECT usuario_has_modelo.usuario_id, referencia.id as 'idmodelo', referencia.referencia as 'modelo', ref1.id as 'idsubmodelo', ref1.referencia as 'sub-modelo',usuario.nombre, usuario.apellido FROM `usuario_has_modelo` INNER JOIN referencia on referencia.id = usuario_has_modelo.modelo_id INNER JOIN referencia as ref1 on ref1.padre_id = referencia.id 
-inner join usuario on usuario.id = usuario_has_modelo.usuario_id WHERE usuario_has_modelo.usuario_id = $id and ref1.referencia NOT in ('Sin asignar')";
+			$this->_query = "SELECT usuario.id, usuario.nombre as 'name', usuario.apellido, unidad_negocio.id as 'idUd', unidad_negocio.codigo, unidad_negocio.nombre as 'tienda', modelo.id as 'idM', modelo.nombre as 'modelo' FROM `usuario` inner join usuario_has_unidad_negocio on usuario_has_unidad_negocio.usuario_id = usuario.id inner join unidad_negocio on unidad_negocio.id = usuario_has_unidad_negocio.unidad_negocio_id inner join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id inner join modelo on modelo.id = modelo_has_submodelo.modelo_id WHERE usuario.id = $id";
 			
 			$roles = $this->_db->query($this->_query);
 				

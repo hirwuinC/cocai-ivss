@@ -132,7 +132,7 @@
 		public static function modelo(){	
 		    $id = Session::get('idUsuario');
 			$modelos = Controller::modelSession()->getRole($id);
-			//print_r($modelos);
+			#print_r($modelos);
             return $modelos;
 		}
 

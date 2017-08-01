@@ -4,10 +4,10 @@
 // la cual es global, para luego ser utilizada en cualquier parte de la aplicacion.
 //Por esto es que mas adelante se notara la utilizacion de la constante BASE_URL.
 
-	define('DEFAULT_CONTROLLER', 'index');
+	define('DEFAULT_CONTROLLER', 'login');
 	define('DEFAULT_METHOD', 'index');
 	
-	define('BASE_URL', 'http://localhost:8080/administrador-cocai/'); //Guarda la direccion BASE de nuestro sistema.
+	define('BASE_URL', 'http://localhost:8080/cocai/'); //Guarda la direccion BASE de nuestro sistema.
 	define('PUBLIC_URL', BASE_URL . 'public/'); //Guarda la direccion de nuestro directorio publico
 
 	define('SIZE_PAPER', 'LEGAL');
