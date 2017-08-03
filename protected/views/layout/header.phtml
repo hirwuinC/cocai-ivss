@@ -54,11 +54,11 @@
                                  $id[$in] = is_array($val) ? $val[$key] : $val;
                                  $in=$in+1;
                                }
-                            } 
+                            } #print_r($privilegios);
                         for ($i=0; $i < count($privilegios); $i++) { 
-                          
-                          echo  '<li>
-                            <a style="text-align:left" href="#"><i class="fa fa-university"></i> '.$privilegios[$i].'<span class="fa arrow"></span></a>';
+                          if (!empty($privilegios[$i])) {
+                             echo  '<li>
+                                      <a style="text-align:left" href="#"><i class="fa fa-university"></i> '.$privilegios[$i].'<span class="fa arrow"></span></a>';
                            for ($j=0; $j < count($menu); $j++) { 
                                 if ($privilegios[$i] == $menu[$j]['modelo']) { 
                                   echo  '<ul class="nav nav-second-level"> <li>
@@ -69,7 +69,7 @@
                                               <i class="fa fa-list"></i><span class="fa arrow"></span></a>
                                               <ul class="nav nav-second-level">
                                                 <li style="margin-left:25px; text-align:left">
-                                                  <a href="'.BASE_URL.'inventario/inicio/'.$id[$j].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Stock de la ud.</a>
+                                                  <a href="'.BASE_URL.'inventario/evaluar/'.$id[$j].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Stock de la ud.</a>
                                                 </li>
                                                 <li style="margin-left:25px; text-align:left">
                                                   <a href="'.BASE_URL.'inventario/inicio/'.$id[$j].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Solicitud de mercancia</a>
@@ -109,6 +109,61 @@
                                         </ul>  ';
                                   echo '</li></li></ul>';
                             }
+
+                            } 
+                          }else{
+                            for ($p=0; $p < count($menu); $p++) { 
+                              if ($menu[$p]['modelo'] == null) {
+                                echo  '<li>
+                                      <a style="text-align:left" href="#"><i class="fa fa-university"></i> '.$menu[$p]['tienda'].'<span class="fa arrow"></span></a>';
+                                  echo '<ul class="nav nav-second-level">
+                                          <li>
+                                              <a href="#" style="margin-left:15px; text-align:left">Inventario
+                                              <i class="fa fa-list"></i><span class="fa arrow"></span></a>
+                                              <ul class="nav nav-second-level">
+                                                <li style="margin-left:25px; text-align:left">
+                                                  <a href="'.BASE_URL.'inventario/evaluar/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Stock de la ud.</a>
+                                                </li>
+                                                <li style="margin-left:25px; text-align:left">
+                                                  <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Solicitud de mercancia</a>
+                                                </li>
+                                                <li style="margin-left:25px; text-align:left">
+                                                  <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Kardex</a>
+                                                </li>
+                                                <li style="margin-left:25px; text-align:left">
+                                                  <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Merma</a>
+                                                </li>
+                                              </ul>  
+                                          </li>
+                                          <li>
+                                            <a href="#" style="margin-left:15px; text-align:left">Receta
+                                              <i class="fa fa-cutlery"></i><span class="fa arrow"></span></a>
+                                              <ul class="nav nav-second-level">
+                                                <li style="margin-left:25px; text-align:left">
+                                                  <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Produccion</a>
+                                                </li>
+                                                <li style="margin-left:25px; text-align:left">
+                                                  <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Recetario</a>
+                                                </li>
+                                              </ul>
+                                          </li>
+                                           <li>
+                                            <a href="#" style="margin-left:15px; text-align:left">Administracion
+                                              <i class="fa fa-sitemap"></i><span class="fa arrow"></span></a>
+                                              <ul class="nav nav-second-level">
+                                                <li style="margin-left:25px; text-align:left">
+                                                  <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Proveedor</a>
+                                                </li>
+                                                <li style="margin-left:25px; text-align:left">
+                                                  <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Reportes</a>
+                                                </li>
+                                              </ul>
+                                          </li>
+                                        </ul>  ';
+                                  echo '</li>';
+                              }
+                            }
+                            
                           }           
                         }
                         echo '<li>

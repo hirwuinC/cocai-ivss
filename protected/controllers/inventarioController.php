@@ -8,7 +8,7 @@
 		public function __construct(){
 	
 			parent::__construct();
-			$this->_admin = $this->loadModel('administracion');
+			$this->_main = $this->loadModel('main');
 		//Objeto donde almacenamos todas las funciones de PersonsModel.php
 
 			$this->_sidebar_menu =array(
@@ -27,7 +27,17 @@
 			// clase  metodo 	  vista    carpeta dentro de views 
 		}
 
-		function stock($tienda){
+		function evaluar($id){
+			$query = "SELECT empresa_id FROM `unidad_negocio` WHERE id = $id";
+			$valores = $this->_main->select($query); #print_r($valores);
+			if ($valores[0]['empresa_id'] == null) {
+            	$this->stockE($id);
+            }else{
+            	$this->stockT($id);
+            }
+		}
+
+		function stockT($tienda){
 			$this->_view->setCss(array('datatable/css/dataTables.bootstrap'));
             $this->_view->setCss(array('datatable/css/jquery.datatable.min'));
 		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
@@ -44,21 +54,41 @@
 						inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_sistema_id 
 						inner join referencia as ref on ref.id = mercancia.familia_id 
 						WHERE unidad_negocio.id = $tienda ORDER BY mercancia.status = 1"; 
-			$valores = $this->_admin->listar($query); #print_r($valores);
+			$valores = $this->_main->select($query); #print_r($valores);
 			$cantidad= count($valores);
 			if ($cantidad > 0) {
 				$this->_view->g = $valores;	
-				$this->_view->render('inicio', 'grupo', '','');
+				$this->_view->render('stockT', 'grupo', '','');
 			}else{
 				$query = "SELECT unidad_negocio.id, unidad_negocio.nombre as 'tienda', modelo.id as 'idM', modelo.nombre as 'modelo', submodelo.id as 'idSM', submodelo.nombre as 'subM' FROM `unidad_negocio` inner join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id inner join modelo on modelo.id = modelo_has_submodelo.modelo_id inner join modelo as submodelo on submodelo.id = modelo_has_submodelo.sub_modelo_id WHERE unidad_negocio.id = $tienda"; 
-				$valores = $this->_admin->listar($query);
+				$valores = $this->_main->select($query); #print_r($valores);
 				$valores[0]['producto'] = 'vacio'; 
 				//print_r($valores);
 				$this->_view->g = $valores;	
-				$this->_view->render('inicio', 'inventario', '','');
+				$this->_view->render('stockT', 'inventario', '','');
 			}
-			
-			
+	
+		}
+
+		function stockE($id){
+			$this->_view->setCss(array('datatable/css/dataTables.bootstrap'));
+            $this->_view->setCss(array('datatable/css/jquery.datatable.min'));
+		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
+		    $this->_view->setjs(array('datatable/js/jquery.dataTables.min'));
+		    $this->_view->setJs(array('datatable/js/dataTables.bootstrap.min'));
+		    $this->_view->setJs(array('datatable/js/tabla'));
+            $this->_view->setJs(array('js/grupo'));
+            Session::time();
+			$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.descripcion, mercancia.cantidad_inventariada, mercancia.contenido_neto, mercancia.stock_minimo, mercancia.stock_maximo, mercancia.status, mercancia.precio_unitario, unidad_medida.id as 'idUM',unidad_medida.unidad, unidad_medida.abreviatura, unidad_medida.id as 'idUM',unidad_medida.unidad, unidad_medida.abreviatura, ref.referencia as 'familia' FROM `unidad_negocio` 
+						inner join mercancia_has_unidad_negocio on mercancia_has_unidad_negocio.unidad_negocio_id = unidad_negocio.id 
+						inner join mercancia on mercancia.id = mercancia_has_unidad_negocio.mercancia_id 
+						inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_sistema_id 
+						inner join referencia as ref on ref.id = mercancia.familia_id 
+						WHERE unidad_negocio.id = $id order by ref.referencia ASC"; 
+			$valores = $this->_main->select($query); #print_r($valores);
+			$cantidad= count($valores);
+			$this->_view->mercancia = $valores;
+			$this->_view->render('stockE', 'inventario', '','');	
 		}
 
 		function insert(){
