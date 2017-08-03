@@ -1,0 +1,171 @@
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+
+<div id="body" hidden>
+<div id="page-wrapper">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="col-sm-4">
+                            <h4 class="page-header" style="font-family: Times New Roman, Times, serif;">Lista de productos de la empresa</h4>
+                        </div> 
+                      <!--  <div class="col-sm-offset-1">
+                            <img style="margin-left:0%;" src="<?php echo PUBLIC_URL;?>img\<?php echo $this->sm[0]['modelo']; ?>.png" class="img-responsive" alt="modelo">
+                        </div> -->
+
+                        <div class="panel panel-default">
+                        <div class="panel-body">
+                            <?php $i = 1; ?>  
+                            <div class="dataTable_wrapper ">
+                             <div class="col-sm-12 table-responsive">
+                                <table class="table table-striped table-bordered table-hover " id="tablaSM">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>                                                    
+                                                <th >Codigo</th>
+                                                <th>Nombre</th> 
+                                                <th >Marca</th>
+                                                <th >Cont. neto</th>
+                                                <th >Ud. Medida</th>
+                                                <th >Precio ud.</th>
+                                                <th >Stock min</th>
+                                                <th >Stock max</th>
+                                                <th >Estatus</th>
+                                                <th >Familia</th>
+                                                <th >Modificar</th>
+                                                <th >Eliminar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($this->mercancia as $merca): ?>
+                                              <?php if ($merca['status'] == 1) {
+                                                        $status = 'Inactivo';
+                                                    }else{
+                                                        $status = 'Activo';
+                                                    } ?>
+                                            <tr> 
+                                                <td ><?php echo $i?></td>   
+                                                <td style="text-align:left"><?php echo $merca['codigo'];?></td>
+                                                <td style="text-align:left"><?php echo $merca['producto'];?></td>
+                                                <td style="text-align:left"><?php echo $merca['descripcion'];?></td>
+                                                <td style="text-align:left"><?php echo $merca['contenido_neto'];?></td>
+                                                <td style="text-align:left"><?php echo $merca['unidad'];?></td>
+                                                <td style="text-align:left"><?php echo $merca['precio_unitario'];?></td>
+                                                <td style="text-align:left"><?php echo $merca['stock_minimo'];?></td>
+                                                <td style="text-align:left"><?php echo $merca['stock_maximo'];?></td>
+                                                <td style="text-align:left"><?php echo $status;?></td>
+                                                <td style="text-align:left"><?php echo $merca['familia'];?></td>
+                                                <th>
+                                                    <center><a class="test" data-toggle="modal" data-target=".subModels" onclick="idSubmodelo('<?php echo $sm['idsm'];?>','<?php echo $sm['idmodelo'];?>')">
+                                                        <span  class="glyphicon glyphicon-edit"></span>
+                                                    </a></center>
+                                                </th>
+                                                
+                                                <th>
+                                                   <center><a onclick="confirmacionDelete('<?php echo $sm['idsm'];?>','<?php echo $sm['idmodelo'];?>')">
+                                                        <span  class="glyphicon glyphicon-remove"></span>
+                                                    </a></center>
+                                                </th>
+                                                
+                                            </tr>
+                                            <?php $i++; ?>
+
+                                            <?php endforeach ?>
+                                        </tbody>
+                                    </table> 
+                                    <button type="button" style="border-radius: 5px; width: 120px; margin-left: 15px" class="btn btn-sm btn-primary" data-toggle="modal" data-target=".subMo"> 
+                                        <font size="2"><b>Agregar &nbsp;</b>
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </font>
+                                    </button>
+                                    <!-- MODAL DEL LA FUNCION AGREGAR DE LOS SUB-MODELOS -->
+                                      <div class="modal fade subMo" id="new" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                                          <div class="modal-dialog modal-sm" role="document">
+                                              <div class="modal-content">
+                                                  <div class="modal-header">
+                                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                          <span aria-hidden="true">&times;</span>
+                                                      </button>
+                                                      <h4 class="modal-title">Agregar sub-modelo</h4>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                      <form action="<?php  echo BASE_URL;?>submodelo/insert" method="post" accept-charset="utf-8">
+                                                          <input type="text" name="modelo" hidden value="<?php echo $this->sm[0]['idmodelo']; ?>" >
+                                                          <input type="text" name="subModelo" class="form-control" id="Smodelo" placeholder="nombre del sub-modelo"> <br>
+                                                         <center> <input type="submit" class="btn btn-primary" value="Guardar" onclick="insert()"> </center>
+                                                      </form>
+                                                  </div>   
+                                              </div><!-- /.modal-content -->
+                                          </div><!-- /.modal-dialog -->
+                                      </div><!-- /.modal -->
+                                      <!-- FIN DE LA MODAL DEL LA FUNCION AGREGAR DE LOS SUB-MODELOS -->
+                                      <!-- MODAL DEL LA FUNCION MODIFICAR DE LOS SUB-MODELOS -->
+                                      <div class="modal fade subModels" id="new" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                                          <div class="modal-dialog modal-sm" role="document">
+                                              <div class="modal-content">
+                                                  <div class="modal-header">
+                                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                          <span aria-hidden="true">&times;</span>
+                                                      </button>
+                                                      <h4 class="modal-title">Modificar sub-modelo</h4>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                      <form action="<?php  echo BASE_URL;?>submodelo/update" method="post" accept-charset="utf-8">
+                                                          <input type="text" hidden name="idsm" id="idsm">
+                                                          <input type="text" hidden name="idm" id="idm">
+                                                          <input type="text" name="subModelo" class="form-control" id="Smodelo" placeholder="nombre del sub-modelo"> <br>
+                                                         <center> <input type="submit" class="btn btn-primary" value="Guardar" onclick="insert()"> </center>
+                                                      </form>
+                                                  </div>   
+                                              </div><!-- /.modal-content -->
+                                          </div><!-- /.modal-dialog -->
+                                      </div><!-- /.modal -->
+                                      <!-- FIN DE LA MODAL DEL LA FUNCION MODIFICAR DE LOS SUB-MODELOS -->
+
+                                       <!-- MODAL DE CONFIRMACION PARA ELIMINAR-->
+                                        <div class="modal fade " id="alerta" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                                            <div class="modal-dialog modal-sm" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                        <div id="titulo"></div>
+                                                    </div>
+                                                    <div class="modal-body" >
+
+                                                       <div id="cuerpo"></div><br><br>
+                                                        <center>    
+                                                            <div id="espera" hidden>
+                                                                <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+                                                            </div>
+                                                            <div id="exito" hidden>
+                                                                <img width="140px" height="140px" class="img" src="<?php echo PUBLIC_URL; ?>img/check1.gif">
+                                                            </div>
+                                                        </center>
+                                                    </div>   
+                                                </div><!-- /.modal-content -->
+                                            </div><!-- /.modal-dialog -->
+                                        </div><!-- /.modal -->
+                                        <!-- FIN DE LA MODAL DE CONFIRMACION -->
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+                    <!-- /.col-lg-12 -->
+        </div>
+</div>
+                <!-- /.row -->
+                </div>
+            <!-- /.container-fluid -->
+            </div>
+        <!-- /#page-wrapper -->
+ 		<!-- no borrar -->
+ 		</div>

@@ -1,14 +1,15 @@
 <?php 
-	class personsController extends Controller{
+	class administracionController extends Controller{
 		
 		
 		protected $_sidebar_menu;
-		private $_person;
+		private $_admin;
 		
 		public function __construct(){
 	
 			parent::__construct();
-			$this->_person = $this->loadModel('persons');
+			$this->_admin = $this->loadModel('administracion');
+			$this->_main = $this->loadModel('main');
 		//Objeto donde almacenamos todas las funciones de PersonsModel.php
 
 			$this->_sidebar_menu =array(
@@ -21,8 +22,16 @@
 		}
 		
 		function index(){
-			
-			$this->_view->render('index', 'persons', '',$this->_sidebar_menu);
+			$this->_view->setCss(array('datatable/css/dataTables.bootstrap'));
+		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
+		    $this->_view->setjs(array('datatable/js/jquery.dataTables.min'));
+		    $this->_view->setJs(array('datatable/js/dataTables.bootstrap.min'));
+		    $this->_view->setJs(array('datatable/js/tabla'));
+            $this->_view->setJs(array('js/subM'));
+			$query = "SELECT mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.descripcion, mercancia.cantidad_inventariada, mercancia.contenido_neto, mercancia.stock_minimo, mercancia.stock_maximo, mercancia.status, mercancia.precio_unitario, unidad_medida.id as 'idUM',unidad_medida.unidad, unidad_medida.abreviatura, ref.referencia as 'familia' FROM `mercancia` inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_compra_id inner join referencia as ref on ref.id = mercancia.familia_id order by ref.referencia ASC";
+			$valores = $this->_main->select($query);
+			$this->_view->mercancia=$valores;
+			$this->_view->render('inicio', 'administracion', '','');
 			// clase  metodo 	  vista    carpeta dentro de views 
 		}
 

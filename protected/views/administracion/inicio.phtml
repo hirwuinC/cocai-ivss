@@ -11,11 +11,11 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="col-sm-4">
-                            <h4 class="page-header" style="font-family: Times New Roman, Times, serif;">Sub modelos de <?php echo $this->sm[0]['modelo']; ?></h4>
+                            <h4 class="page-header" style="font-family: Times New Roman, Times, serif;">Lista de productos de la empresa</h4>
                         </div> 
-                        <div class="col-sm-offset-1">
+                      <!--  <div class="col-sm-offset-1">
                             <img style="margin-left:0%;" src="<?php echo PUBLIC_URL;?>img\<?php echo $this->sm[0]['modelo']; ?>.png" class="img-responsive" alt="modelo">
-                        </div>
+                        </div> -->
 
                         <div class="panel panel-default">
                         <div class="panel-body">
@@ -25,18 +25,40 @@
                                 <table class="table table-striped table-bordered table-hover " id="tablaSM">
                                         <thead>
                                             <tr>
-                                                <th>#</th>            
-                                                <th>Nombre</th>                                         
+                                                <th>#</th>                                                    
+                                                <th >Codigo</th>
+                                                <th>Nombre</th> 
+                                                <th >Marca</th>
+                                                <th >Cont. neto</th>
+                                                <th >Ud. Medida</th>
+                                                <th >Precio ud.</th>
+                                                <th >Stock min</th>
+                                                <th >Stock max</th>
+                                                <th >Estatus</th>
+                                                <th >Familia</th>
                                                 <th >Modificar</th>
                                                 <th >Eliminar</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($this->sm as $sm): ?>
+                                            <?php foreach ($this->mercancia as $merca): ?>
+                                              <?php if ($merca['status'] == 1) {
+                                                        $status = 'Inactivo';
+                                                    }else{
+                                                        $status = 'Activo';
+                                                    } ?>
                                             <tr> 
                                                 <td ><?php echo $i?></td>   
-                                                <td style="text-align:left"><?php echo $sm['subM'];?></td>
-
+                                                <td style="text-align:left"><?php echo $merca['codigo'];?></td>
+                                                <td style="text-align:left"><?php echo $merca['producto'];?></td>
+                                                <td style="text-align:left"><?php echo $merca['descripcion'];?></td>
+                                                <td style="text-align:left"><?php echo $merca['contenido_neto'];?></td>
+                                                <td style="text-align:left"><?php echo $merca['unidad'];?></td>
+                                                <td style="text-align:left"><?php echo $merca['precio_unitario'];?></td>
+                                                <td style="text-align:left"><?php echo $merca['stock_minimo'];?></td>
+                                                <td style="text-align:left"><?php echo $merca['stock_maximo'];?></td>
+                                                <td style="text-align:left"><?php echo $status;?></td>
+                                                <td style="text-align:left"><?php echo $merca['familia'];?></td>
                                                 <th>
                                                     <center><a class="test" data-toggle="modal" data-target=".subModels" onclick="idSubmodelo('<?php echo $sm['idsm'];?>','<?php echo $sm['idmodelo'];?>')">
                                                         <span  class="glyphicon glyphicon-edit"></span>

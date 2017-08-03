@@ -27,7 +27,7 @@
 			// clase  metodo 	  vista    carpeta dentro de views 
 		}
 
-		function inicio($tienda){
+		function stock($tienda){
 			$this->_view->setCss(array('datatable/css/dataTables.bootstrap'));
             $this->_view->setCss(array('datatable/css/jquery.datatable.min'));
 		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
@@ -36,16 +36,23 @@
 		    $this->_view->setJs(array('datatable/js/tabla'));
             $this->_view->setJs(array('js/grupo'));
             Session::time();
-			$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.descripcion, mercancia.cantidad_inventariada, mercancia.status, referencia.referencia as 'unidad_medida', ref.referencia as 'familia', modelo.id as 'idM', modelo.nombre as 'modelo', model.nombre as 'subM' FROM `unidad_negocio` inner join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id inner join modelo on modelo.id = modelo_has_submodelo.modelo_id inner join modelo as model on model.id = modelo_has_submodelo.sub_modelo_id inner join mercancia_has_unidad_negocio on mercancia_has_unidad_negocio.unidad_negocio_id = unidad_negocio.id inner join mercancia on mercancia.id = mercancia_has_unidad_negocio.mercancia_id inner join referencia on referencia.id = mercancia.unidad_medida_id inner join referencia as ref on ref.id = mercancia.familia_id WHERE unidad_negocio.id = $tienda ORDER BY mercancia.status = 1"; 
+			$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.descripcion, mercancia.cantidad_inventariada, mercancia.status, unidad_medida.id as 'idUM',unidad_medida.unidad, unidad_medida.abreviatura, ref.referencia as 'familia', modelo.id as 'idM', modelo.nombre as 'modelo', model.nombre as 'subM' FROM `unidad_negocio` 
+						inner join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id inner join modelo on modelo.id = modelo_has_submodelo.modelo_id 
+						inner join modelo as model on model.id = modelo_has_submodelo.sub_modelo_id 
+						inner join mercancia_has_unidad_negocio on mercancia_has_unidad_negocio.unidad_negocio_id = unidad_negocio.id 
+						inner join mercancia on mercancia.id = mercancia_has_unidad_negocio.mercancia_id 
+						inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_sistema_id 
+						inner join referencia as ref on ref.id = mercancia.familia_id 
+						WHERE unidad_negocio.id = $tienda ORDER BY mercancia.status = 1"; 
 			$valores = $this->_admin->listar($query); #print_r($valores);
 			$cantidad= count($valores);
 			if ($cantidad > 0) {
 				$this->_view->g = $valores;	
 				$this->_view->render('inicio', 'grupo', '','');
 			}else{
-				$query = "SELECT referencia.id as 'submodelo_id' ,referencia.referencia as 'subM', ref1.id as 'idmodelo', ref1.referencia as 'modelo' FROM `referencia` INNER JOIN referencia as ref1 on ref1.id = referencia.padre_id WHERE referencia.id = $subM"; 
+				$query = "SELECT unidad_negocio.id, unidad_negocio.nombre as 'tienda', modelo.id as 'idM', modelo.nombre as 'modelo', submodelo.id as 'idSM', submodelo.nombre as 'subM' FROM `unidad_negocio` inner join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id inner join modelo on modelo.id = modelo_has_submodelo.modelo_id inner join modelo as submodelo on submodelo.id = modelo_has_submodelo.sub_modelo_id WHERE unidad_negocio.id = $tienda"; 
 				$valores = $this->_admin->listar($query);
-				$valores[0]['nombre'] = 'vacio'; 
+				$valores[0]['producto'] = 'vacio'; 
 				//print_r($valores);
 				$this->_view->g = $valores;	
 				$this->_view->render('inicio', 'inventario', '','');
