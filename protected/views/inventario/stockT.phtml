@@ -97,8 +97,8 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                 <div id="enunciado"></div>
                             </div>
-                            <form action="<?php echo BASE_URL;?>producto/insert" method="post" accept-charset="utf-8">
                             <div class="modal-body">
+                            <form action="<?php echo BASE_URL;?>producto/insert" method="post" accept-charset="utf-8">
                                 <input type="text" name="modelo" id="m" hidden value="<?php echo $this->pro[0]['idmodelo'];?>">
                                 <input type="text" name="sub_modelo" id="sm" hidden value="<?php echo $this->pro[0]['sub_modelo_id'];?>">
                                 <input type="text" name="tipo" id="type" hidden>
@@ -109,7 +109,7 @@
                                         <input type="text" class="form-control" id="co" name="codigo">
                                     </div>
                                     <div class="col-sm-1" id="glyphicon"></div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3 ">
                                         <label class="control-label" style="float: left;">Codigo anterior</label>
                                         <input type="text" class="form-control" name="codigo_tcr" id="c_tcr">
                                     </div>
@@ -120,17 +120,9 @@
                                         <input type="text" class="form-control" name="nombre" id="nombre" required>
                                     </div>
                                     <div class="col-sm-1" id="glyphi"></div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <label class="control-label" style="float: left;">Marca</label>
                                         <input type="text" class="form-control" name="marca" id="marca">
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <label class="control-label" style="float: left;">Contenido neto</label>
-                                        <input type="text" class="form-control" name="contenidoN" id="contenidoN">
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <label class="control-label" style="float: left;">Cantidad</label>
-                                        <input type="text" class="form-control" name="cantidad" id="cantidad">
                                     </div>
                                 </div>
                                 <div class="form-group col-sm-12">
@@ -145,38 +137,53 @@
                                     </div>
                                     <div class="col-sm-2 col-sm-offset-1">
                                         <label class="control-label" style="float: left;">Stock minimo</label>
-                                        <input type="text" class="form-control" name="contenidoN" id="contenidoN">
+                                        <input type="text" class="form-control" name="stockmin" id="stockmin">
                                     </div>
                                     <div class="col-sm-2">
                                         <label class="control-label" style="float: left;">Stock maximo</label>
+                                        <input type="text" class="form-control" name="stockmax" id="stockmax">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">unidad de compra</label>
+                                        <select name="unidad_medida_c" class="form-control" id="unidad_medida_c" required>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3 col-sm-offset-1">
+                                        <label class="control-label" style="float: left;">Cantidad comprada</label>
                                         <input type="text" class="form-control" name="contenidoN" id="contenidoN">
                                     </div>
                                 </div>
                                 <div class="form-group col-sm-12">
                                     <div class="col-sm-3">
-                                        <label class="control-label" style="float: left;">Unidad de medida compra</label>
-                                        <select name="ocultar" class="form-control" id="ocultar" required>
+                                        <label class="control-label" style="float: left;">unidad de presentacion</label>
+                                        <select name="unidad_medida_p" id="unidad_medida_p" class="form-control" required>
                                         </select>
                                     </div>
-                                    
-                                    <div class="col-sm-3 col-sm-offset-1">
-                                        <label class="control-label" style="float: left;">Unidad de medida sistema</label>
-                                        <select name="dia_disponible_id" id="dia_disponibles" class="form-control" required>
-                                        </select>
+                                    <div class="col-sm-2 col-sm-offset-1">
+                                        <label class="control-label" style="float: left;">Contenido neto</label>
+                                        <input type="text" class="form-control" name="contenidoN" id="contenidoN">
+                                    </div>
+                                    <div class="col-sm-4" id="cantx"></div>
+
+                                    <div class="col-sm-3 col-sm-offset-1" hidden>
+                                        <label class="control-label" style="float: left;">unidad de sistema</label>
                                     </div>
                                 </div>
-                                <div class="form-group col-sm-12">
+                                <!--<div class="form-group col-sm-12">
                                     <div class="col-sm-4">
                                         <label class="control-label" style="float: left;">Grupo</label>
                                         <select name="grupo_id" id="grup" class="form-control" required> 
                                         </select>
                                     </div> 
+                                </div>-->
+                                <div class="modal-footer">
+                                    <input type="submit" class="btn btn-primary" value="Guardar" id="botonG">
                                 </div>
+                                </form>
                             </div>
-                            <div class="modal-footer">
-                                <input type="submit" class="btn btn-primary" value="Guardar" id="botonG">
-                            </div>
-                            </form>
+                            
                         </div>
                     </div>
                 </div>

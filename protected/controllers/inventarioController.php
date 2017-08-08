@@ -163,6 +163,12 @@
             }	
 		}
 
+		function setunidad($unidad_p){
+			$query = "SELECT * from unidad_medida where id = $unidad_p";
+			$data = $this->_admin->listar($query);
+			echo json_encode($data);
+		}
+
 		function nombreProAlert($id){
 	        $query = "SELECT grupo.id, grupo.nombre, referencia.id as 'id_submodelo', referencia.referencia as 'submodelo' FROM `grupo` 
 	        		  INNER JOIN referencia on referencia.id = grupo.submodelo_id where grupo.id = $id";

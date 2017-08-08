@@ -12,6 +12,41 @@ $(document).ready(function() {
     load2('referencia','dia_disponiblesU',false,false);
     load2('referencia','tipo_productosU',false,false);
     load2('referencia','tipo_manejosU',false,false);
+    load2('referencia','familia_id',false,false);
+    load2('unidad_medida','unidad_medida_c',false,false);
+    load2('unidad_medida','unidad_medida_p',false,false);
+
+
+    //mostrar o no el input de cantidad por articulo comprado (aplica para cajas y similares que contengan unidades expresadas en kg gr lt o ml)
+    $('#unidad_medida_c').change(function(event) {
+        var unidad_c = $('#unidad_medida_c').val();
+        var textouc = $('#unidad_medida_c option:selected').text();
+        //alert(unidad_p);
+
+        $('#unidad_medida_p').change(function(event) {
+
+        var unidad_p = $('#unidad_medida_p').val();
+        var textoup = $('#unidad_medida_p option:selected').text();
+        //alert(textouc);
+        if (unidad_c != '4' && unidad_c != '5' && unidad_c != '6' && unidad_c != '12' && unidad_c != '13' && unidad_c != '14' && unidad_c != '21' && unidad_c != '26' && unidad_c != '27') {
+          $('#cantx').empty();
+          $('#cantx').append('<label class="control-label" style="float: left;">Cant. '+textoup+' por '+textouc+'</label>'+
+                                        '<input style="width: 50%" type="text" class="form-control" name="cantidad" id="cantidad">');
+        }else{
+          $('#cantx').empty();
+          alert("else");
+        }
+        $.ajax({
+            url: BASE_URL+'/inventario/setunidad/'+unidad_p,
+            type: 'POST',
+            dataType: 'json'
+          })
+        .done(function(data) {
+            alert("hola");
+        });
+      });
+        
+      });
 
     //---------MODAL DE CONFORMACION DE GRUPO: DEPENDENCIA DEL SELECT "TIPO"
     $('#tipo').change(function(event) {
