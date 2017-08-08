@@ -77,7 +77,7 @@
 		    $this->_view->setjs(array('datatable/js/jquery.dataTables.min'));
 		    $this->_view->setJs(array('datatable/js/dataTables.bootstrap.min'));
 		    $this->_view->setJs(array('datatable/js/tabla'));
-            $this->_view->setJs(array('js/grupo'));
+            $this->_view->setJs(array('js/inventario'));
             Session::time();
 			$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.descripcion, mercancia.cantidad_inventariada, mercancia.contenido_neto, mercancia.stock_minimo, mercancia.stock_maximo, mercancia.status, mercancia.precio_unitario, unidad_medida.id as 'idUM',unidad_medida.unidad, unidad_medida.abreviatura, unidad_medida.id as 'idUM',unidad_medida.unidad, unidad_medida.abreviatura, ref.referencia as 'familia' FROM `unidad_negocio` 
 						inner join mercancia_has_unidad_negocio on mercancia_has_unidad_negocio.unidad_negocio_id = unidad_negocio.id 

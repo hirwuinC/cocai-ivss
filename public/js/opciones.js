@@ -26,7 +26,7 @@ function load(tabla,item,valor,model){
 		select.append('<option selected disabled>Seleccione..</option>');
 	for (var i = 0; i < data.length; i++) {
 
-		select.append('<option value="'+data[i]['id']+'">'+data[i]['nombre']+'</option>');
+		select.append('<option value="'+data[i]['id']+'">'+data[i][1]+'</option>');
 
 	};
 		

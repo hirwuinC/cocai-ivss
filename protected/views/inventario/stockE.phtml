@@ -30,8 +30,8 @@
                                                 <th>Nombre</th> 
                                                 <th >Marca</th>
                                                 <th >Cont. neto</th>
-                                                <th >Ud. Medida</th>
                                                 <th >Precio ud.</th>
+                                                <th >Existencia</th>
                                                 <th >Stock min</th>
                                                 <th >Stock max</th>
                                                 <th >Estatus</th>
@@ -53,8 +53,8 @@
                                                 <td style="text-align:left"><?php echo $merca['producto'];?></td>
                                                 <td style="text-align:left"><?php echo $merca['descripcion'];?></td>
                                                 <td style="text-align:left"><?php echo $merca['contenido_neto'];?></td>
-                                                <td style="text-align:left"><?php echo $merca['unidad'];?></td>
                                                 <td style="text-align:left"><?php echo $merca['precio_unitario'];?></td>
+                                                <td style="text-align:left"><?php echo $merca['cantidad_inventariada'].$merca['abreviatura'];?></td>
                                                 <td style="text-align:left"><?php echo $merca['stock_minimo'];?></td>
                                                 <td style="text-align:left"><?php echo $merca['stock_maximo'];?></td>
                                                 <td style="text-align:left"><?php echo $status;?></td>
@@ -77,31 +77,110 @@
                                             <?php endforeach ?>
                                         </tbody>
                                     </table> 
-                                    <button type="button" style="border-radius: 5px; width: 120px; margin-left: 15px" class="btn btn-sm btn-primary" data-toggle="modal" data-target=".subMo"> 
+                                    <button type="button" style="border-radius: 5px; width: 120px; margin-left: 15px" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#produ"> 
                                         <font size="2"><b>Agregar &nbsp;</b>
                                             <span class="glyphicon glyphicon-plus"></span>
                                         </font>
                                     </button>
-                                    <!-- MODAL DEL LA FUNCION AGREGAR DE LOS SUB-MODELOS -->
-                                      <div class="modal fade subMo" id="new" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-                                          <div class="modal-dialog modal-sm" role="document">
-                                              <div class="modal-content">
-                                                  <div class="modal-header">
-                                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                          <span aria-hidden="true">&times;</span>
-                                                      </button>
-                                                      <h4 class="modal-title">Agregar sub-modelo</h4>
-                                                  </div>
-                                                  <div class="modal-body">
-                                                      <form action="<?php  echo BASE_URL;?>submodelo/insert" method="post" accept-charset="utf-8">
-                                                          <input type="text" name="modelo" hidden value="<?php echo $this->sm[0]['idmodelo']; ?>" >
-                                                          <input type="text" name="subModelo" class="form-control" id="Smodelo" placeholder="nombre del sub-modelo"> <br>
-                                                         <center> <input type="submit" class="btn btn-primary" value="Guardar" onclick="insert()"> </center>
-                                                      </form>
-                                                  </div>   
-                                              </div><!-- /.modal-content -->
-                                          </div><!-- /.modal-dialog -->
-                                      </div><!-- /.modal -->
+                                    <!-- MODAL DEL LA FUNCION AGREGAR DE LOS PRODUCTOS -->
+                <div class="modal fade" id="produ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <div id="enunciado"></div>
+                            </div>
+                            <form action="<?php echo BASE_URL;?>producto/insert" method="post" accept-charset="utf-8">
+                            <div class="modal-body">
+                                <input type="text" name="modelo" id="m" hidden value="<?php echo $this->pro[0]['idmodelo'];?>">
+                                <input type="text" name="sub_modelo" id="sm" hidden value="<?php echo $this->pro[0]['sub_modelo_id'];?>">
+                                <input type="text" name="tipo" id="type" hidden>
+
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">Codigo</label>
+                                        <input type="text" class="form-control" id="co" name="codigo">
+                                    </div>
+                                    <div class="col-sm-1" id="glyphicon"></div>
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Codigo anterior</label>
+                                        <input type="text" class="form-control" name="codigo_tcr" id="c_tcr">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">Nombre</label>
+                                        <input type="text" class="form-control" name="nombre" id="nombre" required>
+                                    </div>
+                                    <div class="col-sm-1" id="glyphi"></div>
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Marca</label>
+                                        <input type="text" class="form-control" name="marca" id="marca">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">Precio unitario</label>
+                                        <input type="text" class="form-control" name="precio_unitario" id="pU" onkeyup="format(this)" onchange="format(this)" required placeholder="0,00">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">Clasificacion</label>
+                                        <select name="familia_id" id="familia" class="form-control" required> 
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2 col-sm-offset-1">
+                                        <label class="control-label" style="float: left;">Stock minimo</label>
+                                        <input type="text" class="form-control" name="contenidoN" id="contenidoN">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="control-label" style="float: left;">Stock maximo</label>
+                                        <input type="text" class="form-control" name="contenidoN" id="contenidoN">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">Unidad de medida compra</label>
+                                        <select name="ocultar" class="form-control" id="ocultar" required>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3 col-sm-offset-1">
+                                        <label class="control-label" style="float: left;">Cantidad comprada</label>
+                                        <input type="text" class="form-control" name="contenidoN" id="contenidoN">
+                                    </div>
+                                    <div class="col-sm-3 col-sm-offset-1">
+                                        <label class="control-label" style="float: left;">Contenido neto unidad</label>
+                                        <input type="text" class="form-control" name="cantidad" id="cantidad">
+                                    </div>
+                                    
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">Precio unitario</label>
+                                        <input type="text" class="form-control" name="precio_unitario" id="pU" onkeyup="format(this)" onchange="format(this)" required placeholder="0,00">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">Clasificacion</label>
+                                        <select name="familia_id" id="familia" class="form-control" required> 
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2 col-sm-offset-1">
+                                        <label class="control-label" style="float: left;">Stock minimo</label>
+                                        <input type="text" class="form-control" name="contenidoN" id="contenidoN">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="control-label" style="float: left;">Stock maximo</label>
+                                        <input type="text" class="form-control" name="contenidoN" id="contenidoN">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <input type="submit" class="btn btn-primary" value="Guardar" id="botonG">
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
                                       <!-- FIN DE LA MODAL DEL LA FUNCION AGREGAR DE LOS SUB-MODELOS -->
                                       <!-- MODAL DEL LA FUNCION MODIFICAR DE LOS SUB-MODELOS -->
                                       <div class="modal fade subModels" id="new" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">

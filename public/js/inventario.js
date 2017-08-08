@@ -1,15 +1,6 @@
 $(document).ready(function() {
 	//alert('ok');
-    //---------------COMBOS----------------------
-	  load2('referencia','dia_disponible',false,false);
-  	load2('referencia','tipo_producto',false,false);
-  	load2('referencia','tipo_manejo',false,false);
-    //-----------PRODUCTOS-----------------------
-    load2('referencia','dia_disponibles',false,false);
-    load2('referencia','tipo_productos',false,false);
-    load2('referencia','tipo_manejos',false,false);
-    //-----------UPDATE PRODUCTOS-----------------------
-    load2('referencia','dia_disponiblesU',false,false);
+    load('referencia','familia',false);
     load2('referencia','tipo_productosU',false,false);
     load2('referencia','tipo_manejosU',false,false);
 
