@@ -1,8 +1,52 @@
 $(document).ready(function() {
-	//alert('ok');
-    load('referencia','familia',false);
+  //alert('ok');
+    //---------------COMBOS----------------------
+    load2('referencia','dia_disponible',false,false);
+    load2('referencia','tipo_producto',false,false);
+    load2('referencia','tipo_manejo',false,false);
+    //-----------PRODUCTOS-----------------------
+    load2('referencia','dia_disponibles',false,false);
+    load2('referencia','tipo_productos',false,false);
+    load2('referencia','tipo_manejos',false,false);
+    //-----------UPDATE PRODUCTOS-----------------------
+    load2('referencia','dia_disponiblesU',false,false);
     load2('referencia','tipo_productosU',false,false);
     load2('referencia','tipo_manejosU',false,false);
+    load2('referencia','familia_id',false,false);
+    load2('unidad_medida','unidad_medida_c',false,false);
+    load2('unidad_medida','unidad_medida_p',false,false);
+
+
+    //mostrar o no el input de cantidad por articulo comprado (aplica para cajas y similares que contengan unidades expresadas en kg gr lt o ml)
+    $('#unidad_medida_c').change(function(event) {
+        var unidad_c = $('#unidad_medida_c').val();
+        var textouc = $('#unidad_medida_c option:selected').text();
+        //alert(unidad_p);
+
+        $('#unidad_medida_p').change(function(event) {
+
+        var unidad_p = $('#unidad_medida_p').val();
+        var textoup = $('#unidad_medida_p option:selected').text();
+        //alert(textouc);
+        if (unidad_c != '4' && unidad_c != '5' && unidad_c != '6' && unidad_c != '12' && unidad_c != '13' && unidad_c != '14' && unidad_c != '21' && unidad_c != '26' && unidad_c != '27') {
+          $('#cantx').empty();
+          $('#cantx').append('<label class="control-label" style="float: left;">Cant. '+textoup+' por '+textouc+'</label>'+
+                                        '<input style="width: 50%" type="text" class="form-control" name="cantidad" id="cantidad">');
+        }else{
+          $('#cantx').empty();
+          alert("else");
+        }
+        $.ajax({
+            url: BASE_URL+'/inventario/setunidad/'+unidad_p,
+            type: 'POST',
+            dataType: 'json'
+          })
+        .done(function(data) {
+            alert("hola");
+        });
+      });
+        
+      });
 
     //---------MODAL DE CONFORMACION DE GRUPO: DEPENDENCIA DEL SELECT "TIPO"
     $('#tipo').change(function(event) {
@@ -96,16 +140,16 @@ function validarName(name, idsm){
 }
 
 function idM_Sm(idsM,idm,id){
-	  // setear el id del sub modelo a la modal de modificar el nombre del mismo
-	  //alert(id);
-	  var probando = id; 
-	  $('#idm').empty();
-	  $('#idSubM').empty();
-	  //input del sub modelo
-	  document.getElementById("idp").value=id;
-	  document.getElementById("idSubM").value=idsM;
-	  document.getElementById("idMo").value=idm;
-	  modalOtros(id);
+    // setear el id del sub modelo a la modal de modificar el nombre del mismo
+    //alert(id);
+    var probando = id; 
+    $('#idm').empty();
+    $('#idSubM').empty();
+    //input del sub modelo
+    document.getElementById("idp").value=id;
+    document.getElementById("idSubM").value=idsM;
+    document.getElementById("idMo").value=idm;
+    modalOtros(id);
 }
 
 function modalOtros(id){
@@ -218,9 +262,9 @@ function modalOtros(id){
 
 
 function activarCod(idSm, idm){
-	//alert(idm);
+  //alert(idm);
   load('grupo','grup',false,idSm);
-	codigoPropuesto(idSm,idm)
+  codigoPropuesto(idSm,idm)
 }
 
 function format(input){
