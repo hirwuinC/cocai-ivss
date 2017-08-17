@@ -1,52 +1,105 @@
 $(document).ready(function() {
-  //alert('ok');
-    //---------------COMBOS----------------------
-    load2('referencia','dia_disponible',false,false);
-    load2('referencia','tipo_producto',false,false);
-    load2('referencia','tipo_manejo',false,false);
-    //-----------PRODUCTOS-----------------------
-    load2('referencia','dia_disponibles',false,false);
-    load2('referencia','tipo_productos',false,false);
-    load2('referencia','tipo_manejos',false,false);
-    //-----------UPDATE PRODUCTOS-----------------------
-    load2('referencia','dia_disponiblesU',false,false);
-    load2('referencia','tipo_productosU',false,false);
-    load2('referencia','tipo_manejosU',false,false);
-    load2('referencia','familia_id',false,false);
-    load2('unidad_medida','unidad_medida_c',false,false);
-    load2('unidad_medida','unidad_medida_p',false,false);
-
-
+    //alert('ok');
+    load('referencia','familia',false);
+    load('unidad_medida','unidad_medida_c',false);
+    load('unidad_medida','unidad_medida_pr',false);
+    load('unidad_medida','unidad_medida_s',false);  
     //mostrar o no el input de cantidad por articulo comprado (aplica para cajas y similares que contengan unidades expresadas en kg gr lt o ml)
     $('#unidad_medida_c').change(function(event) {
         var unidad_c = $('#unidad_medida_c').val();
         var textouc = $('#unidad_medida_c option:selected').text();
         //alert(unidad_p);
-
-        $('#unidad_medida_p').change(function(event) {
-
-        var unidad_p = $('#unidad_medida_p').val();
-        var textoup = $('#unidad_medida_p option:selected').text();
-        //alert(textouc);
-        if (unidad_c != '4' && unidad_c != '5' && unidad_c != '6' && unidad_c != '12' && unidad_c != '13' && unidad_c != '14' && unidad_c != '21' && unidad_c != '26' && unidad_c != '27') {
-          $('#cantx').empty();
-          $('#cantx').append('<label class="control-label" style="float: left;">Cant. '+textoup+' por '+textouc+'</label>'+
-                                        '<input style="width: 50%" type="text" class="form-control" name="cantidad" id="cantidad">');
+        //$('#unidad_medida_p').find("option[value='opcion_1']").remove();
+        if (textouc == 'Unidad') {
+              //alert('sisa');
+              $('#contenido').hide();
+           }else{
+              //alert('naranja');
+              $('#contenido').show();
+        }
+        if (unidad_c != '4' && unidad_c != '5' && unidad_c != '6' && unidad_c != '12' && unidad_c != '13' && unidad_c != '14' && unidad_c != '21' && unidad_c != '26' && unidad_c != '27' && unidad_c != '7' && unidad_c != '8' && unidad_c != '15' && unidad_c != '17' && unidad_c != '18' && unidad_c != '20' && unidad_c != '22' && unidad_c != '23' && unidad_c != '24' && unidad_c != '25' && unidad_c != '28') {
+          //alert("si");
+          $('#cant').show();
+          $('#cantC').empty();
+          $('#cantC').append('<label class="control-label" style="float: left;">Ud. por '+textouc+'</label>'+
+                             '<input style="width: 50%" type="text" class="form-control" name="cantidad" id="cantidad">');
         }else{
-          $('#cantx').empty();
-          alert("else");
+          $('#cant').hide();
+          $('#cantC').empty();
+          //alert("else");
         }
         $.ajax({
-            url: BASE_URL+'/inventario/setunidad/'+unidad_p,
+          url: BASE_URL+'/inventario/setunidadT/'+unidad_c,
+            type: 'POST',
+            dataType: 'json'
+        })
+        .done(function(data) {
+          //alert(data[0]['id']);
+          document.getElementById("formulac").value=data[0]['abreviatura']+' * ';
+         // $('#unidad_medida_p').find("option[value='opcion_1']").remove();
+        })
+
+        $('#unidad_medida_s').change(function(event) {
+
+        var unidad_s = $('#unidad_medida_s').val();
+        var textous = $('#unidad_medida_s option:selected').text();
+        //alert(unidad_p);
+        if (textous == 'Unidad' || textous == 'Pieza' ) {
+              //alert('sisa');
+              $('#contenido').hide();
+           }else{
+              //alert('naranja');
+              $('#contenido').show();
+           }
+        $.ajax({
+            url: BASE_URL+'/inventario/setunidadT/'+unidad_s,
             type: 'POST',
             dataType: 'json'
           })
         .done(function(data) {
-            alert("hola");
+            //alert(data[0]['abreviatura']);
+            switch (data[0]['padre_id']) {
+              case '1':
+                $('#unidadS').empty();
+                $('#unidadS').val('6');
+                document.getElementById("formulas").value=data[0]['abreviatura']+' * ';
+              break;
+              case '2':
+                $('#unidadS').empty();
+                $('#unidadS').val('12');
+                document.getElementById("formulas").value=data[0]['abreviatura']+' * ';
+              break;
+              case '3':
+                $('#unidadS').empty();
+                $('#unidadS').val('27');
+              break;               
+              default:
+                $('#unidadS').empty();
+                $('#unidadS').val('13');
+              break;
+            }
         });
       });
         
       });
+
+      $('#unidad_medida_pr').change(function(event) {
+
+        var unidad_p = $('#unidad_medida_pr').val();
+        var textoup = $('#unidad_medida_pr option:selected').text();
+        //alert(unidad_p);
+        $.ajax({
+            url: BASE_URL+'/inventario/setunidadT/'+unidad_p,
+            type: 'POST',
+            dataType: 'json'
+          })
+        .done(function(data) {
+            //alert(data[0]['abreviatura']);
+            document.getElementById("formulap").value=data[0]['abreviatura']+' * ';
+        });
+      });
+
+  
 
     //---------MODAL DE CONFORMACION DE GRUPO: DEPENDENCIA DEL SELECT "TIPO"
     $('#tipo').change(function(event) {
@@ -73,18 +126,23 @@ $(document).ready(function() {
 
     });
 
-    $('#co').keyup(function(event) {
-        var code = $('#co').val();
-        var subM = $('#sm').val();
-        //alert(code);
-        validarCodigo(code, subM);
+    $('#contenidoN').keyup(function(event) {
+        var valor = $('#contenidoN').val();
+        formulaCompra(valor);
     });
 
-    $('#nombre').keyup(function(event) {
-        var name = $('#nombre').val();
-        var idsm = $('#sm').val();
-        //alert(name);
-        validarName(name, idsm);
+
+    $('#code').keyup(function(event) {
+        var code = $('#code').val();
+        //var subM = $('#sm').val();
+        //alert(code);
+        validarCodigo(code);
+    });
+
+    $('#marca').keyup(function(event) {
+        var marca = $('#marca').val();
+        //alert(marca);
+        validarProducto(marca);
     });
 
 });
@@ -93,9 +151,17 @@ $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
 
-function validarCodigo(code, subM){
+function formulaCompra(valor){
+  var unidad = $('#formulac').val();
+  var separador = '*'; // un espacio en blanco
+  var limite    = 1;
+  unidadc= unidad.split(separador, limite); //alert(unidadc[0]); alert(unidadc[1]);
+  document.getElementById("formulac").value=unidadc+'* '+valor;
+}
+
+function validarCodigo(code){
     $.ajax({
-            url: BASE_URL+'/producto/validarCod/'+code+'/'+subM,
+            url: BASE_URL+'/inventario/validarCod/'+code,
             type: 'POST',
             dataType: 'json',
           })
@@ -108,6 +174,7 @@ function validarCodigo(code, subM){
           $('#glyphicon').append('<span style="color:red; margin-top:75%; margin-right:115%; font-size:20px;" class="glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="bottom" title="Este codigo esta asignado a un producto"></span>');
           $('#botonG').prop('disabled',true);
         }else{
+          $('#glyphicon').empty();
           //$('#glyphicon').append('<span style="color:green" class="glyphicon glyphicon-ok"></span>');
           //alert('Este codigo no esta asignado a ningun producto');
           $('#botonG').prop('disabled',false);
@@ -115,23 +182,27 @@ function validarCodigo(code, subM){
     })
 }
 
-function validarName(name, idsm){
-   n = name.split(' ');
+function validarProducto(marca){
+   n = marca.split(' ');
    resultN= n.join(':');
+   var name = $('#nombre').val();
     $.ajax({
-            url: BASE_URL+'/producto/validarNombre/'+resultN+'/'+idsm,
+            url: BASE_URL+'/inventario/validarProducto/'+name+'/'+resultN,
             type: 'POST',
             dataType: 'json',
           })
 
     .done(function(data) {
-      //alert(data);
+      alert(data);
       $('#glyphi').empty();
         if (data === true) {
           //alert('Este codigo esta asignado a un producto');
-          $('#glyphi').append('<span style="color:red; margin-top:75%; margin-right:115%; font-size:20px;" class="glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="bottom" title="Este nombre esta asignado a un producto"></span>');
+          $('#glyphi').append('<span style="color:red; margin-top:75%; margin-right:115%; font-size:20px;" class="glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="bottom" title="Este producto esta registrado con este nombre en esta marca"></span>');
+          $('#glyph').append('<span style="color:red; margin-top:75%; margin-right:115%; font-size:20px;" class="glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="bottom" title="Este nombre esta asignado a un producto"></span>');
           $('#botonG').prop('disabled',true);
         }else{
+          $('#glyphi').empty();
+          $('#glyph').empty();
           //$('#glyphicon').append('<span style="color:green" class="glyphicon glyphicon-ok"></span>');
           //alert('Este codigo no esta asignado a ningun producto');
           $('#botonG').prop('disabled',false);
@@ -159,7 +230,7 @@ function modalOtros(id){
   $('#tipo_manejos').empty();
   $("#editOtros").modal();
       $.ajax({
-            url: BASE_URL+'/producto/modalUpdate/'+id,
+            url: BASE_URL+'/mercancia/modalUpdate/'+id,
             type: 'POST',
             dataType: 'json',
           })

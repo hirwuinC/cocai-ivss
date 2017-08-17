@@ -23,6 +23,6 @@
 	define("DB_HOST", "localhost"); //Servidor con el cual tenemos conexion a BD.
 	define("DB_USER", "root"); // Usuario de la BD
 	define("DB_PASS", "0000"); // Clave
-	define("DB_NAME", "cocai"); // Nombre de la base de datos.
+	define("DB_NAME", "cocai2"); // Nombre de la base de datos.
 
 ?>

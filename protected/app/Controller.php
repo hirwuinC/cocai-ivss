@@ -101,6 +101,84 @@
 				</div>';
 			return $messeger;
 		}
+
+		public function formula($unidadMedida, $cantidad=false, $cantidadComprada, $contenidoNeto=false, $formulaC){
+			list($unidad, $signo, $contenidoNeto) = explode(" ", $formulaC);
+			switch ($signo) {
+				case '*':
+					switch ($unidadMedida) {
+						case '26':
+							#ESTA FORMULA ES PARA CALCULAR LOS PRODUCTOS QUE SU COMPRA ES EN METROS
+							$conversion = $cantidadComprada * 100;
+						break;
+				
+						default:
+							$cantidadTotal = 0;
+							if (empty($cantidad)) {
+								#ESTA FORMULA ES PARA CALCULAR LOS PRODUCTOS QUE SU COMPRA ES EN PEQUEÑAS CANTIDADES
+								$conversion = $cantidadComprada*$contenidoNeto;
+							}else{
+								#ESTA FORMULA ES PARA CALCULAR LOS PRODUCTOS QUE SU COMPRA ES EN GRANDES CANTIDADES
+								$cantidadTotal = $cantidad*$cantidadComprada;
+								$conversion = $cantidadTotal*$contenidoNeto;
+							}
+							#ESTA FORMULA ES PARA CALCULAR LOS PRODUCTOS QUE VIENEN POR UNIDADES
+							if (empty($contenidoNeto)) {
+								$conversion = $cantidad*$cantidadComprada;
+							}
+						break;
+					}
+					break;
+				case '/':
+					switch ($unidadMedida) {
+						case '26':
+							#ESTA FORMULA ES PARA CALCULAR LOS PRODUCTOS QUE SU COMPRA ES EN METROS
+							$conversion = $cantidadComprada * 100;
+						break;
+						
+						default:
+							$cantidadTotal = 0;
+							if (empty($cantidad)) {
+								#ESTA FORMULA ES PARA CALCULAR LOS PRODUCTOS QUE SU COMPRA ES EN PEQUEÑAS CANTIDADES
+								$conversion = $cantidadComprada/$contenidoNeto;
+							}else{
+								#ESTA FORMULA ES PARA CALCULAR LOS PRODUCTOS QUE SU COMPRA ES EN GRANDES CANTIDADES
+								$cantidadTotal = $cantidad/$cantidadComprada;
+							    $conversion = $cantidadTotal/$contenidoNeto;
+							}
+							#ESTA FORMULA ES PARA CALCULAR LOS PRODUCTOS QUE VIENEN POR UNIDADES
+							if (empty($contenidoNeto)) {
+								$conversion = $cantidad/$cantidadComprada;
+							}
+						break;
+					}
+					break;
+			}
+			return $conversion;
+		}
+
+		public function unidadMedidaSistema($familia, $contenidoNeto){
+			switch ($familia) {
+                	case '116':
+                		if ($contenidoNeto == '') {
+                			$unidadM = 13;
+                		}else{
+                			$unidadM = 6;
+                		}
+                	break;
+                	case '119':
+                		$unidadM = 13;
+                	break;
+                	default:
+                		if ($contenidoNeto == '') {
+                			$unidadM = 13;
+                		}else{
+                			$unidadM = 12;
+                		}
+                	break;
+            }
+            return $unidadM;
+		}
 				
 	}
 ?>
