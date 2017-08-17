@@ -50,18 +50,6 @@
             Session::time();
 			$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mc.descripcion, mc.existencia, mc.contenido_neto, mc.stock_min, mc.stock_max, mc.status, mc.precio_unitario, unidad_medida.id as 'idUM',unidad_medida.unidad, unidad_medida.abreviatura, unidad_medida.id as 'idUM',unidad_medida.unidad, unidad_medida.abreviatura, ref.referencia as 'familia' FROM `unidad_negocio` inner join mercancia_has_unidad_negocio as mc on mc.unidad_negocio_id = unidad_negocio.id inner join mercancia on mercancia.id = mc.mercancia_id inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_compra_id inner join referencia as ref on ref.id = mercancia.familia_id WHERE unidad_negocio.id = $tienda ORDER BY mercancia.status = 1"; 
 
-            $this->_view->setJs(array('js/prod'));
-            Session::time();
-			$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.descripcion as marca, unidad_medida.id as 'idUM',unidad_medida.unidad, unidad_medida.abreviatura, ref.referencia as 'familia', modelo.id as 'idM', modelo.nombre as 'modelo', model.nombre as'subM', mercancia_has_unidad_negocio.existencia as existencia, mercancia_has_unidad_negocio.status, stock_min, stock_max, precio_unitario 
-				from unidad_negocio
-						inner join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id inner join modelo on modelo.id = modelo_has_submodelo.modelo_id 
-						inner join modelo as model on model.id = modelo_has_submodelo.sub_modelo_id 
-						inner join mercancia_has_unidad_negocio on mercancia_has_unidad_negocio.unidad_negocio_id = unidad_negocio.id 
-						inner join mercancia on mercancia.id = mercancia_has_unidad_negocio.mercancia_id 
-						inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_sistema_id 
-						inner join referencia as ref on ref.id = mercancia.familia_id 
-						WHERE unidad_negocio.id = $tienda ORDER BY mercancia_has_unidad_negocio.status = 1"; 
-
 			$valores = $this->_main->select($query); #print_r($valores);
 			$cantidad= count($valores);
 			if ($cantidad > 0) {
@@ -292,7 +280,7 @@
 				case 't':
 					for ($i=0; $i < count($modelos); $i++) {
 						$udn = $modelos[$i]['idUd'];
-						$query = "SELECT * FROM notificacion_has_remision where notificacion_has_remision.status_id = 126 or notificacion_has_remision.status_id = 127 or notificacion_has_remision.status_id = 128 or notificacion_has_remision.status_id = 129 order by notificacion_has_remision.status asc";
+						$query = "SELECT * FROM notificacion_has_remision where notificacion_has_remision.status_id = 126 or notificacion_has_remision.status_id = 127 or notificacion_has_remision.status_id = 128 or notificacion_has_remision.status_id = 129 order by notificacion_has_remision.status_id asc";
 						$datos = $this->_main->select($query);
 						
 							for ($j=0; $j <count($datos) ; $j++) { 

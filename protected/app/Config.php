@@ -7,7 +7,7 @@
 	define('DEFAULT_CONTROLLER', 'login');
 	define('DEFAULT_METHOD', 'index');
 	
-	define('BASE_URL', 'http://localhost:8080/cocai/'); //Guarda la direccion BASE de nuestro sistema.
+	define('BASE_URL', 'http://localhost/cocai/'); //Guarda la direccion BASE de nuestro sistema.
 	define('PUBLIC_URL', BASE_URL . 'public/'); //Guarda la direccion de nuestro directorio publico
 
 	define('SIZE_PAPER', 'LEGAL');
@@ -23,6 +23,6 @@
 	define("DB_HOST", "localhost"); //Servidor con el cual tenemos conexion a BD.
 	define("DB_USER", "root"); // Usuario de la BD
 	define("DB_PASS", "0000"); // Clave
-	define("DB_NAME", "cocai2"); // Nombre de la base de datos.
+	define("DB_NAME", "cocai"); // Nombre de la base de datos.
 
 ?>

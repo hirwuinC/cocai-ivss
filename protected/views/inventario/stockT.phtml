@@ -11,7 +11,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="col-sm-6">
-                            <h4 class="page-header" style="font-family: Times New Roman, Times, serif;">Unidad de negocio <?php echo $this->g[0]['tienda']; echo '<br> Sub-modelo '.$this->g[0]['subM'];  ?></h4>
+                            <h4 class="page-header" style="font-family: Times New Roman, Times, serif;">Unidad de negocio <?php echo $this->g[0]['tienda']; echo '<br> Sub-modelo'.$this->g[0]['subM'];  ?></h4>
                         </div> 
                         <div class="col-sm-offset-1">
                             <img style="margin-left:0%;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-responsive" alt="modelo">
@@ -28,7 +28,7 @@
                                             <tr>
                                                 <th>#</th>                                                    
                                                 <th >Codigo</th>
-                                                <th >Nombre</th> 
+                                                <th>Nombre</th> 
                                                 <th >Marca</th>
                                                 <th >Can. Invent</th>
                                                 <th >Ud. Medida</th>
@@ -45,9 +45,10 @@
                                             <tr>
                                                 <th>#</th>                                                    
                                                 <th >Codigo</th>
-                                                <th >Nombre</th> 
+                                                <th>Nombre</th> 
                                                 <th >Marca</th>
                                                 <th >Existencia</th>
+                                                <th >Ud. Medida</th>
                                                 <th >Familia</th>
                                                 <th >Estatus</th>
                                                 <th >Modificar</th>
@@ -64,13 +65,14 @@
                                                 <td ><?php echo $i?></td>
                                                 <td ><?php echo $g['codigo'];?></td>
                                                 <td style="text-align:left"><?php echo $g['producto'];?></td>
-                                                <td ><?php echo $g['marca'];?></td>
-                                                <td ><?php echo $g['existencia'].' '.$g['abreviatura'];;?></td>
+                                                <td ><?php echo $g['descripcion'];?></td>
+                                                <td ><?php echo $g['cantidad_inventariada'];?></td>
+                                                <td ><?php echo $g['unidad'];?></td>
                                                 <td ><?php echo $g['familia'];?></td>   
                                                 <td ><?php echo $status;?></td>
 
                                                 <th>
-                                                    <center><a class="test" data-toggle="modal" data-target=".product" onclick="idpro('<?php echo $g['idP'];?>','<?php echo $g['idT'];?>')">
+                                                    <center><a class="test" data-toggle="modal" data-target=".gru" onclick="idgrupo('<?php echo $g['submodelo_id'];?>','<?php echo $g['idmodelo'];?>','<?php echo $g['id'];?>')">
                                                         <span  class="glyphicon glyphicon-edit"></span>
                                                     </a></center>
                                                 </th>
@@ -82,37 +84,30 @@
                                         </tbody>
                                     </table> 
                                   <?php endif; ?>
-                                    <!--<button type="button" style="border-radius: 5px; width: 120px; margin-left: 15px" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#produ"> 
+                                    <button type="button" style="border-radius: 5px; width: 120px; margin-left: 15px" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#produ"> 
                                         <font size="2"><b>Agregar &nbsp;</b>
                                             <span class="glyphicon glyphicon-plus"></span>
                                         </font>
-                                    </button>-->
+                                    </button>
                                      <!-- MODAL DEL LA FUNCION AGREGAR DE LOS PRODUCTOS -->
-                <div class="modal fade product" id="produ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                    <div class="modal-dialog modal-md" role="document">
+                <div class="modal fade" id="produ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <div class="modal-title" id="enunciado"></div>
+                                <div id="enunciado"></div>
                             </div>
+                            <form action="<?php echo BASE_URL;?>producto/insert" method="post" accept-charset="utf-8">
                             <div class="modal-body">
-                            <form action="<?php echo BASE_URL;?>inventario/existenciaT/rcd" method="post" accept-charset="utf-8">
-                                <input type="hidden" name="idmer" id="idmer">
-                                <input type="hidden" name="idtienda" id="idtienda">
-                                <input type="hidden" name="unidadS" id="unidadS">
+                                <input type="text" name="modelo" id="m" hidden value="<?php echo $this->pro[0]['idmodelo'];?>">
+                                <input type="text" name="sub_modelo" id="sm" hidden value="<?php echo $this->pro[0]['sub_modelo_id'];?>">
+                                <input type="text" name="tipo" id="type" hidden>
 
-                                
                                 <div class="form-group col-sm-12">
-                                    <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;">Precio unitario</label>
-                                        <input type="text" class="form-control" name="precio_unitario" id="pU" onkeyup="format(this)" onchange="format(this)" required placeholder="0,00">
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">Codigo</label>
+                                        <input type="text" class="form-control" id="co" name="codigo">
                                     </div>
-                                    
-                                    <div class="col-sm-4 ">
-                                        <label class="control-label" style="float: left;" >Stock minimo</label>
-                                        <input type="text" class="form-control" name="stockmin" id="stockmin" readonly="">
-                                    </div>
-<<<<<<< HEAD
                                     <div class="col-sm-1" id="glyphicon"></div>
                                     <div class="col-sm-3">
                                         <label class="control-label" style="float: left;">Codigo anterior</label>
@@ -183,61 +178,8 @@
                             
                             <div class="modal-footer">
                                 <input type="submit" class="btn btn-primary" value="Guardar" id="botonG">
-=======
-                                    <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;" >Stock maximo</label>
-                                        <input type="text" class="form-control" name="stockmax" id="stockmax" readonly="">
-                                    </div>
-                                </div>
-                                <div class="form-group col-sm-12">
-                                    <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;">ud. de compra</label>
-                                        <select name="unidad_medida_c" class="form-control" id="unidad_medida_c" required>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-4 ">
-                                        <label class="control-label" style="float: left;">Cant. comprada</label>
-                                        <input type="text" class="form-control" name="contenidoC" id="contenidoC">
-                                    </div>
-                                </div>
-                                <div class="form-group col-sm-12">
-                                    <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;">ud. de presentacion</label>
-                                        <select name="unidad_medida_p" id="unidad_medida_p" class="form-control" required>
-                                        <option value="seleccione">Seleccione..</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-4 " id="contenidoneto" hidden>
-                                        <label class="control-label" style="float: left;">Contenido neto</label>
-                                        <input type="text" class="form-control" name="contenidoN" id="contenidoN">
-                                    </div>
-                                    <div class="col-sm-4" id="cantx"></div>
-
-                                    <div class="col-sm-4 col-sm-offset-1" hidden>
-                                        <label class="control-label" style="float: left;">ud. de sistema</label>
-                                    </div>
-                                </div>
-                                <div class="form-group col-sm-12">
-                                    <div class="col-sm-9">
-                                        <label class="control-label" style="float: left;">Descripcion</label>
-                                        <textarea rows="4" cols="50" class="form-control sty" 
-                                            placeholder="motivo de la reposicion" id="message" required
-                                            data-validation-required-message="Please enter your message" minlength="5" 
-                                            data-validation-minlength-message="Min 5 characters" 
-                                            maxlength="300" name="detalles" style="resize:none">
-                                        </textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group col-sm-12">
-                                <input type="submit" class="btn btn-primary" value="Guardar" id="botonG">
-                                </div>
-                                </form>
                             </div>
-                            <div style="border: none" class="modal-footer">    
->>>>>>> origin/prueba
-                            </div>
-                                
-                            
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -356,5 +298,5 @@
             <!-- /.container-fluid -->
             </div>
         <!-- /#page-wrapper -->
- 		<!-- no borrar -->
- 		</div>
+    <!-- no borrar -->
+    </div>
