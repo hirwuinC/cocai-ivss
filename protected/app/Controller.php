@@ -101,6 +101,25 @@
 				</div>';
 			return $messeger;
 		}
+
+	public function formula($unidadMedida, $cantidad=false, $cantidadComprada, $contenidoNeto){
+      switch ($unidadMedida) {
+        case '26':
+          $conversion = $cantidadComprada * 100;
+        break;
+        
+        default:
+          $cantidadTotal = 0;
+      if (empty($cantidad)) {
+        $conversion = $cantidadComprada * $contenidoNeto;
+      }else{
+        $cantidadTotal = $cantidad * $cantidadComprada;
+        $conversion = $cantidadTotal * $contenidoNeto;
+      }
+        break;
+      }
+      return $conversion;
+    }
 				
 	}
 ?>

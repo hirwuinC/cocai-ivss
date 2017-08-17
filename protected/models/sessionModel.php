@@ -31,5 +31,29 @@
 				
 			return $result;
 		}
+
+		public function getE($id) {
+				//echo $id;
+			$this->_query = "SELECT usuario.id, usuario.nombre as 'name', usuario.apellido, unidad_negocio.id as 'idUd', unidad_negocio.codigo, unidad_negocio.nombre as 'tienda'
+			FROM `usuario` 
+			left join usuario_has_unidad_negocio on usuario_has_unidad_negocio.usuario_id = usuario.id 
+			left join unidad_negocio on unidad_negocio.id = usuario_has_unidad_negocio.unidad_negocio_id 
+			WHERE usuario.id = $id and unidad_negocio.modelo_has_submodelo_id is null";
+			
+			$roles = $this->_db->query($this->_query);
+				
+			try {
+				$this->_db->beginTransaction();
+				$result = $roles->fetchAll();
+				$this->_db->commit();
+			}
+			catch (Exception $e) {
+				$this->_db->rollBack();
+				echo "Error :: ".$e->getMessage();
+				exit();
+			}
+				
+			return $result;
+		}
 	}
 	?>

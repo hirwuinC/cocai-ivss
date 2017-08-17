@@ -7,7 +7,7 @@
 	define('DEFAULT_CONTROLLER', 'login');
 	define('DEFAULT_METHOD', 'index');
 	
-	define('BASE_URL', 'http://localhost:8080/cocai/'); //Guarda la direccion BASE de nuestro sistema.
+	define('BASE_URL', 'http://localhost/cocai/'); //Guarda la direccion BASE de nuestro sistema.
 	define('PUBLIC_URL', BASE_URL . 'public/'); //Guarda la direccion de nuestro directorio publico
 
 	define('SIZE_PAPER', 'LEGAL');
