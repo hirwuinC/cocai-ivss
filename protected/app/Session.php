@@ -136,6 +136,13 @@
             return $modelos;
 		}
 
+		public static function empresa(){	
+		    $id = Session::get('idUsuario');
+			$company = Controller::modelSession()->getE($id);
+			#print_r($company);
+            return $company;
+		}
+
 		public static function header($header){
 		    $num = Session::get('header');
             return $num;		

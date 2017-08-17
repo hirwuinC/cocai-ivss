@@ -102,6 +102,7 @@
 			return $messeger;
 		}
 
+
 		public function formula($unidadMedida, $cantidad=false, $cantidadComprada, $contenidoNeto=false, $formulaC){
 			list($unidad, $signo, $contenidoNeto) = explode(" ", $formulaC);
 			switch ($signo) {
@@ -179,6 +180,8 @@
             }
             return $unidadM;
 		}
+
+
 				
 	}
 ?>

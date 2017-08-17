@@ -1,13 +1,35 @@
 $(document).ready(function() {
+<<<<<<< HEAD:public/js/inventario.js
     //alert('ok');
     load('referencia','familia',false);
     load('unidad_medida','unidad_medida_c',false);
     load('unidad_medida','unidad_medida_pr',false);
     load('unidad_medida','unidad_medida_s',false);  
+=======
+	//alert('ok');
+    //---------------COMBOS----------------------
+	  load2('referencia','dia_disponible',false,false);
+  	load2('referencia','tipo_producto',false,false);
+  	load2('referencia','tipo_manejo',false,false);
+    //-----------PRODUCTOS-----------------------
+    load2('referencia','dia_disponibles',false,false);
+    load2('referencia','tipo_productos',false,false);
+    load2('referencia','tipo_manejos',false,false);
+    //-----------UPDATE PRODUCTOS-----------------------
+    load2('referencia','dia_disponiblesU',false,false);
+    load2('referencia','tipo_productosU',false,false);
+    load2('referencia','tipo_manejosU',false,false);
+    load2('referencia','familia_id',false,false);
+    load2('unidad_medida','unidad_medida_c',false,false);
+    
+
+
+>>>>>>> origin/prueba:public/js/prod.js
     //mostrar o no el input de cantidad por articulo comprado (aplica para cajas y similares que contengan unidades expresadas en kg gr lt o ml)
     $('#unidad_medida_c').change(function(event) {
         var unidad_c = $('#unidad_medida_c').val();
         var textouc = $('#unidad_medida_c option:selected').text();
+<<<<<<< HEAD:public/js/inventario.js
         //alert(unidad_p);
         //$('#unidad_medida_p').find("option[value='opcion_1']").remove();
         if (textouc == 'Unidad') {
@@ -28,12 +50,17 @@ $(document).ready(function() {
           $('#cantC').empty();
           //alert("else");
         }
+=======
+        //alert(unidad_c);
+        //$('#unidad_medida_p').find("option[value='opcion_1']").remove();
+>>>>>>> origin/prueba:public/js/prod.js
         $.ajax({
           url: BASE_URL+'/inventario/setunidadT/'+unidad_c,
             type: 'POST',
             dataType: 'json'
         })
         .done(function(data) {
+<<<<<<< HEAD:public/js/inventario.js
           //alert(data[0]['id']);
           document.getElementById("formulac").value=data[0]['abreviatura']+' * ';
          // $('#unidad_medida_p').find("option[value='opcion_1']").remove();
@@ -53,6 +80,38 @@ $(document).ready(function() {
            }
         $.ajax({
             url: BASE_URL+'/inventario/setunidadT/'+unidad_s,
+=======
+          //alert(data[0]['padre_id']);
+          load2('unidad_medida','unidad_medida_p',data[0]['id'],data[0]['padre_id']);
+          
+        })
+        
+        
+        
+
+        $('#unidad_medida_p').change(function(event) {
+
+        var unidad_p = $('#unidad_medida_p').val();
+        var textoup = $('#unidad_medida_p option:selected').text();
+        if (textoup == 'Unidad' || textoup == 'Pieza') {
+          alert("iguales");
+          $('#contenidoneto').hide();
+        }else{
+          alert("diferente");
+          $('#contenidoneto').show();
+        }
+        //alert(textouc);
+        if (unidad_c != '4' && unidad_c != '5' && unidad_c != '6' && unidad_c != '12' && unidad_c != '13' && unidad_c != '14' && unidad_c != '21' && unidad_c != '26' && unidad_c != '27') {
+          $('#cantx').empty();
+          $('#cantx').append('<label class="control-label" style="float: left;">Cant. por '+textouc+'</label>'+
+                                        '<input style="width: 100%" type="text" class="form-control" name="cantidad" id="cantidad">');
+        }else{
+          $('#cantx').empty();
+          //alert("else");
+        }
+        $.ajax({
+            url: BASE_URL+'/inventario/setunidadT/'+unidad_p,
+>>>>>>> origin/prueba:public/js/prod.js
             type: 'POST',
             dataType: 'json'
           })
@@ -62,12 +121,18 @@ $(document).ready(function() {
               case '1':
                 $('#unidadS').empty();
                 $('#unidadS').val('6');
+<<<<<<< HEAD:public/js/inventario.js
                 document.getElementById("formulas").value=data[0]['abreviatura']+' * ';
+=======
+>>>>>>> origin/prueba:public/js/prod.js
               break;
               case '2':
                 $('#unidadS').empty();
                 $('#unidadS').val('12');
+<<<<<<< HEAD:public/js/inventario.js
                 document.getElementById("formulas").value=data[0]['abreviatura']+' * ';
+=======
+>>>>>>> origin/prueba:public/js/prod.js
               break;
               case '3':
                 $('#unidadS').empty();
@@ -82,6 +147,7 @@ $(document).ready(function() {
       });
         
       });
+<<<<<<< HEAD:public/js/inventario.js
 
       $('#unidad_medida_pr').change(function(event) {
 
@@ -100,6 +166,8 @@ $(document).ready(function() {
       });
 
   
+=======
+>>>>>>> origin/prueba:public/js/prod.js
 
     //---------MODAL DE CONFORMACION DE GRUPO: DEPENDENCIA DEL SELECT "TIPO"
     $('#tipo').change(function(event) {
@@ -151,6 +219,7 @@ $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
 
+<<<<<<< HEAD:public/js/inventario.js
 function formulaCompra(valor){
   var unidad = $('#formulac').val();
   var separador = '*'; // un espacio en blanco
@@ -160,6 +229,35 @@ function formulaCompra(valor){
 }
 
 function validarCodigo(code){
+=======
+function idpro(idP,idT){
+    // setear el id del sub modelo a la modal de modificar el nombre del mismo
+    //alert(idP);
+    $.ajax({
+            url: BASE_URL+'/inventario/datosPT/'+idP+'/'+idT,
+            type: 'POST',
+            dataType: 'json',
+          })
+
+    .done(function(data) {
+      //alert(data[0]['idM']);
+      $('#enunciado').empty();
+      $('#enunciado').append('<b>Actualizando los datos de '+data[0]['producto']+' '+data[0]['marca']+'</b>');
+      $('#stockmin').empty();
+      $('#stockmin').val(data[0]['stock_min']);
+      $('#idmer').empty();
+      $('#idmer').val(idP);
+      $('#idtienda').empty();
+      $('#idtienda').val(idT);
+      $('#stockmax').empty();
+      $('#stockmax').val(data[0]['stock_max']);
+      $('#pU').empty();
+      $('#pU').val(data[0]['precio_unitario']);
+    });
+}
+
+function validarCodigo(code, subM){
+>>>>>>> origin/prueba:public/js/prod.js
     $.ajax({
             url: BASE_URL+'/inventario/validarCod/'+code,
             type: 'POST',
