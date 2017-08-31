@@ -19,7 +19,7 @@
                         	<img  src="<?php $model=strtolower($this->datos[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-responsive" alt="modelo">
                         </div>
                         <div class="col-sm-6">
-                            	<h4  style="font-family: Times New Roman, Times, serif; margin-top: 0px; text-align: right; color: #337ab7;">Datos de la <?php echo $this->datos[0]['statusN']." #00".$this->datos[0]['idk'];?>
+                            	<h4  style="font-family: Times New Roman, Times, serif; margin-top: 0px; text-align: right; color: #337ab7;">Datos de la <?php echo $this->datos[0]['statusN']." #00".$this->datos[0]['idr'];?>
                             	</h4>
                             	<h4  style="font-family: Times New Roman, Times, serif; text-align: right;"><?php echo 'Destinatario: <b>'.$this->datos[0]['tiendar']."</b>";  ?></h4>
                             	<h5 style="text-align: right;">Fecha: <?php echo $this->datos[0]['fecha']." / ". $this->datos[0]['hora'] ?></h5>
@@ -67,8 +67,8 @@
                                                 <td style="text-align:left"><?php echo $g['producto'];?></td>
                                                 <td ><?php echo $g['marca'];?></td>
                                                 <td ><?php echo $g['familia'];?></td>
-                                                <td ><?php echo $g['cantidad'].' '.$g['abrevpres'];;?></td>
-                                                <td ><?php echo $g['motivo'];?></td>
+                                                <td ><?php echo $g['cantidad'].' '.$g['abrevsol'];?></td>
+                                                <td ><?php echo $g['descripcion'];?></td>
                                             </tr>
 
                                         </tbody>
@@ -81,83 +81,90 @@
                             	<h5  style="font-family: Times New Roman, Times, serif; text-align: left;"><?php echo 'Remitente: <b>'.$this->datos[0]['nombre']." ".$this->datos[0]['apellido']."</b>";  ?></h5>
                         	</div>
                         	<div class="col-sm-12">
-                                    <button type="button" style="border-radius: 5px; margin-top: 2px" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#produ"> 
+                                    <button type="button" style="border-radius: 5px; margin-top: 2px" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalremision" onclick="procesar_remi('<?php echo $this->datos[0]['idr'];?>','<?php echo $this->datos[0]['idstatusN'];?>','<?php echo $this->datos[0]['idr'];?>')" onmouseover="infoConversion('<?php echo $g['idm'];?>','<?php echo $g['idur'];?>')" id="btnprocesar"> 
                                         <font size="2"><b>Procesar &nbsp;</b>
                                             <span class="glyphicon glyphicon-check"></span>
                                         </font>
                                     </button>
                             </div>
                                      <!-- MODAL DEL LA FUNCION AGREGAR DE LOS PRODUCTOS -->
-                <div class="modal fade product" id="produ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal fade modalremision" id="modalremision" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                     <div class="modal-dialog modal-md" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <div class="modal-title" id="enunciado"></div>
+                                <div class="modal-title" id="enunciado"><h4> Procesando la <?php echo $this->datos[0]['statusN']." #00".$this->datos[0]['idr']."<br> de la unidad de negocio: <o style='text-transform: capitalize;'>".strtolower($g['tiendae'])."<o>";?> </h4></div>
                             </div>
                             <div class="modal-body">
-                            <form action="<?php echo BASE_URL;?>inventario/existenciaT/rcd" method="post" accept-charset="utf-8">
-                                <input type="hidden" name="idmer" id="idmer">
-                                <input type="hidden" name="idtienda" id="idtienda">
-                                <input type="hidden" name="unidadS" id="unidadS">
+                            <form action="<?php echo BASE_URL;?>inventario/success/ended" method="post" accept-charset="utf-8">
+                                <input type="hidden" name="idmerc" id="idmerc" value="<?php echo $g['idm']; ?>">
+                                <input type="hidden" name="idtiendasol" id="idtiendasol" value="<?php echo $g['idue']; ?>">
+                                <input type="hidden" name="statusid" id="statusid" value="<?php echo $g['idstatusN']; ?>">
+                                <input type="hidden" name="idremision" id="idremision" value="<?php echo $this->datos[0]['idr']; ?>">
+                                <input type="hidden" name="newstatus" id="newstatus" value="134">
+                                <input type="hidden" name="statusenvio" id="statusenvio" value="127">
+                                <input type="hidden" name="existenc" id="existenc" value="<?php echo $g['existencia'];?>">
+                                <input type="hidden" name="umsis" id="umsis" value="<?php echo $g['idumsist'];?>">
+                                <input type="hidden" name="idti" id="idti" value="<?php echo $g['idur'];?>">
 
+                                
                                 
                                 <div class="form-group col-sm-12">
                                     <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;">Precio unitario</label>
-                                        <input type="text" class="form-control" name="precio_unitario" id="pU" onkeyup="format(this)" onchange="format(this)" required placeholder="0,00">
+                                        <label class="control-label" style="float: left;">Producto</label>
+                                        <input type="text" class="form-control" name="nombrem" id="nombrem" value="<?php echo $g['producto'];?>" readonly>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Marca</label>
+                                        <input type="text" class="form-control" name="marcam" id="marcam" value="<?php echo $g['marca'];?>" readonly>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Cantidad Solicitada</label>
+                                        <input type="text" class="form-control" name="cantsolicitada" id="cantsolicitada" value="<?php echo $g['cantidad'].' '.$g['abrevsol'];?>" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Existencia</label><a href="#"><span style="color: #337ab7; cursor: hand; cursor: pointer; float: left; margin-left: 3%; font-size: 17px" class="fa fa-info-circle" data-toggle="modal" data-target="#modalconversion"></span></a>
+                                        <input type="text" class="form-control" name="existenciam" id="existenciam" readonly="" >
                                     </div>
                                     
                                     <div class="col-sm-4 ">
                                         <label class="control-label" style="float: left;" >Stock minimo</label>
-                                        <input type="text" class="form-control" name="stockmin" id="stockmin" readonly="">
+                                        <input type="text" class="form-control" name="stockmin" id="stockmin" readonly="" >
                                     </div>
                                     <div class="col-sm-4">
                                         <label class="control-label" style="float: left;" >Stock maximo</label>
-                                        <input type="text" class="form-control" name="stockmax" id="stockmax" readonly="">
+                                        <input type="text" class="form-control" name="stockmax" id="stockmax" readonly="" >
                                     </div>
                                 </div>
                                 <div class="form-group col-sm-12">
+                                  <div class="col-sm-4 ">
+                                        <label class="control-label" style="float: left;">Cant. Enviada</label><span style="color: #337ab7; cursor: hand; cursor: pointer; float: left; margin-left: 3%; font-size: 17px" class="fa fa-info-circle" data-toggle="modal" data-target="#modalinfo"></span>
+                                        <input type="text" class="form-control" name="cantenviada" id="cantenviada"  value="<?php echo $g['cantidad'];?>">
+                                    </div>
                                     <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;">ud. de compra</label>
-                                        <select name="unidad_medida_c" class="form-control" id="unidad_medida_c" required>
+                                        <label class="control-label" style="float: left;">Unidad de Medida</label>
+                                        <select name="umenviada" id="umenviada" class="form-control" required>
+                                          <option value="<?php echo $g['idumpresentacion'];?>"><?php echo $g['abrevcompr'];?></option>
+                                          <option selected value="<?php echo $g['idumcompra'];?>"><?php echo $g['abrevpres'];?></option>
+                                          <option value="<?php echo $g['idumsist'];?>"><?php echo $g['abrevsist'];?></option>
                                         </select>
                                     </div>
-                                    <div class="col-sm-4 ">
-                                        <label class="control-label" style="float: left;">Cant. comprada</label>
-                                        <input type="text" class="form-control" name="contenidoC" id="contenidoC">
-                                    </div>
-                                </div>
-                                <div class="form-group col-sm-12">
-                                    <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;">ud. de presentacion</label>
-                                        <select name="unidad_medida_p" id="unidad_medida_p" class="form-control" required>
-                                        <option value="seleccione">Seleccione..</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-4 " id="contenidoneto" hidden>
-                                        <label class="control-label" style="float: left;">Contenido neto</label>
-                                        <input type="text" class="form-control" name="contenidoN" id="contenidoN">
-                                    </div>
-                                    <div class="col-sm-4" id="cantx"></div>
-
-                                    <div class="col-sm-4 col-sm-offset-1" hidden>
-                                        <label class="control-label" style="float: left;">ud. de sistema</label>
-                                    </div>
-                                </div>
+                                  </div>
                                 <div class="form-group col-sm-12">
                                     <div class="col-sm-9">
-                                        <label class="control-label" style="float: left;">Descripcion</label>
+                                        <label class="control-label" style="float: left;">Observaciones</label>
                                         <textarea rows="4" cols="50" class="form-control sty" 
-                                            placeholder="motivo de la reposicion" id="message" required
-                                            data-validation-required-message="Please enter your message" minlength="5" 
-                                            data-validation-minlength-message="Min 5 characters" 
+                                            placeholder="detalles sobre el envio" id="message" required
+                                            data-validation-required-message="por favor ingrese los detalles del envio" minlength="2" 
+                                            data-validation-minlength-message="Minimo 2 caracteres" 
                                             maxlength="300" name="detalles" style="resize:none">
                                         </textarea>
                                     </div>
                                 </div>
                                 <div class="form-group col-sm-12">
-                                <input type="submit" class="btn btn-primary" value="Guardar" id="botonG">
+                                <input type="submit" class="btn btn-primary" value="Enviar" id="botonG">
                                 </div>
                                 </form>
                             </div>
@@ -168,45 +175,47 @@
                         </div>
                     </div>
                 </div>
-                                    <!-- MODAL DEL LA FUNCION AGREGAR DE LOS SUB-MODELOS -->
-                                      <div class="modal fade gr" id="new" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-                                          <div class="modal-dialog" role="document">
-                                              <div class="modal-content">
-                                                  <div class="modal-header">
-                                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                          <span aria-hidden="true">&times;</span>
-                                                      </button>
-                                                      <h4 class="modal-title">Agregar Grupo</h4>
-                                                  </div>
-                                                  <div class="modal-body">
-                                                      <form action="<?php  echo BASE_URL;?>grupo/insert" method="post" accept-charset="utf-8">
-                                                          <input type="text" name="modelo" hidden value="<?php echo $this->datos[0]['idmodelo']; ?>" >
-                                                          <input type="text" name="submodelo" hidden value="<?php echo $this->datos[0]['submodelo_id']; ?>" >
-                                                          <div class="col-sm-12">
-                                                            <div class="col-sm-2">
-                                                              <label class="control-label" style="float: left;">Orden</label>
-                                                              <input type="text" class="form-control" name="orden" required>
-                                                            </div>
-                                                            <div class="col-sm-6">
-                                                              <label class="control-label" style="float: left;">Nombre</label>
-                                                              <input type="text" class="form-control" name="nombre" required placeholder="Nombre del grupo">
-                                                            </div>
-                                                            <div class="col-sm-3">
-                                                              <label class="control-label" style="float: left;">Status</label>
-                                                              <select name="status" class="form-control" required>
-                                                                <option value="" disabled>Seleccione</option>
-                                                                <option value="0">Activo</option>
-                                                                <option value="1">Inactivo</option>
-                                                              </select>
-                                                            </div>
-                                                          </div> <br>
-                                                         <center style="margin-top:50px"> <input type="submit" class="btn btn-primary" value="Guardar" onclick="insert()"> </center>
-                                                      </form>
-                                                  </div>   
-                                              </div><!-- /.modal-content -->
-                                          </div><!-- /.modal-dialog -->
-                                      </div><!-- /.modal -->
-                                      <!-- FIN DE LA MODAL DEL LA FUNCION AGREGAR DE LOS SUB-MODELOS -->
+                                      <!-- Modal informacion de conversion de existencia-->
+                                        <div class="modal fade modalconversion" id="modalconversion" role="dialog">
+                                          <div class="modal-dialog modal-sm">
+                                            <div class="modal-content">
+                                              <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h5 class="modal-title" ><b id="t"></b></h5>
+                                              </div>
+                                              <div class="modal-body" id="cuerpo">
+                                              </div>
+                                              <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">cerrar</button>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+
+
+                                      <!-- Modal informacion de mercancia enviada-->
+                                        <div class="modal fade modalinfo" id="modalinfo" role="dialog">
+                                          <div class="modal-dialog modal-sm">
+                                            <div class="modal-content">
+                                              <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h5 class="modal-title"><b>Informacion Importante</b></h5>
+                                              </div>
+                                              <div class="modal-body">
+                                                <div class="alert alert-warning alert-dismissable" style="text-align:left">
+                                                  <p style="text-align: left;">La cantidad enviada a la unidad de negocio solicitante sera descontada automaticamente del inventario de la unidad de negocio que envia</p>
+                                                </div>
+                                              </div>
+                                              <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">cerrar</button>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+
+
                                       <!-- MODAL DEL LA FUNCION MODIFICAR DE LOS SUB-MODELOS -->
                                       <div class="modal fade gru" id="new" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
                                           <div class="modal-dialog" role="document">
@@ -267,6 +276,37 @@
                                             </div><!-- /.modal-dialog -->
                                         </div><!-- /.modal -->
                                         <!-- FIN DE LA MODAL DE CONFIRMACION -->
+
+                                        <script src="<?php echo PUBLIC_URL; ?>js/jquery.js"></script>
+                                        <script>
+                                          $('#btnprocesar').click(function(event) {
+                                            var smin = $('#stockmin').val();
+                                            var smax = $('#stockmax').val();
+                                            var cante = $('#cantenviada').val();
+                                            var idT = $('#idti').val();
+                                            var idM = $('#idmerc').val();
+                                            //alert(smin); alert(smax); alert(cante);
+                                              $('#umenviada').change(function(event) {
+                                                var umenv =$('#umenviada').val();
+                                                cante = $('#cantenviada').val();
+                                                alert(cante); alert(umenv);
+
+                                                $.ajax({
+                                                  url: BASE_URL+'/inventario/validarcante/'+idM+'/'+idT,
+                                                  type: 'POST',
+                                                  dataType: 'json',
+                                                })
+                                                .done(function() {
+                                                  console.log("success");
+                                                })
+                                                .always(function() {
+                                                  console.log("complete");
+                                                });
+                                                
+                                              });
+
+                                          });
+                                        </script>
 
                                 </div>
                             </div>

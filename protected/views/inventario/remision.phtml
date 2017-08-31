@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="us">
+<head>
+  <meta charset="utf-8">
+  <title>jQuery UI Example Page</title>
+  <link href="<?php echo PUBLIC_URL; ?>css/jquery-ui.css" rel="stylesheet">
+  <style>
+    label{
+      margin-bottom: -1%;
+      float: left;
+    }
+
+  /* Tooltip */
+  .test + .tooltip > .tooltip-inner {
+      background-color: #337ab7; 
+      color: #FFFFFF; 
+      border: none; 
+      padding: 1px;
+      font-size: 14px;
+  }
+  /* Tooltip on top */
+  .test + .tooltip.top > .tooltip-arrow {
+      border-top: 5px solid #337ab7;
+  }
+  /* Tooltip on bottom */
+  .test + .tooltip.bottom > .tooltip-arrow {
+      border-bottom: 5px solid blue;
+  }
+  /* Tooltip on left */
+  .test + .tooltip.left > .tooltip-arrow {
+      border-left: 5px solid red;
+  }
+  /* Tooltip on right */
+  .test + .tooltip.right > .tooltip-arrow {
+      border-right: 5px solid black;
+  }
+  </style>
+
+
+  
+</head>
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+<div id="body" hidden>
+<div id="page-wrapper">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-lg-12 ">
+                        
+
+                        <div style="margin-top: 2%" class="panel panel-default">
+                        <div class="panel-body">
+                        <form id="usuario" class="form-horizontal" role="form" action="<?php  echo BASE_URL;?>inventario/insertRemision"  method="post">
+                        
+                        <?php if (isset($this->_error)) {
+                            echo $this->_error;
+                        } ?>
+                        <div>
+                            <img width="10%" height="10%" style="float: right;" src="<?php $model=strtolower($this->datos[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-responsive" alt="modelo">
+                        </div>
+                        <div class="well">
+                        <fieldset>
+                            
+                          
+                            <div id="datos1" class="form-group col-sm-11">
+                              <div class="row">
+                                <div class="col-sm-2 col-sm-offset-1">
+                                    <label  for="">Destinatario:</label>
+                                        <select class="form-control" name="tiendar" id="tiendar" >
+                                        <option value="" selected disabled>Seleccione..</option>
+                                          <?php $cont=count($this->datos); 
+                                            for ($i=0; $i < $cont ; $i++) { 
+                                              echo '<option value="'.$this->datos[$i]['id'].'">'.$this->datos[$i]['nombre'].'</option>';
+                                            } 
+                                          ?>
+                                          
+                                        </select>
+                                </div>
+
+                              </div>
+
+                              <div class="row" style="padding-top: 5px">
+                                <div class="col-sm-2 col-sm-offset-1">
+                                    <label for="">Producto:</label>
+                                      <div>
+                                        <input id="autocomplete" class="form-control test" placeholder="filtrar por nombre" data-toggle="tooltip" data-placement="top" title="Escriba el nombre del producto para filtrar!">
+                                      </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label for="">Marca:</label>
+                                      <div>
+                                        <input id="autocomplete2" class="form-control test" placeholder="filtrar por marca" placeholder="filtrar por nombre" data-toggle="tooltip" data-placement="top" title="Escriba la marca del producto para filtrar!">
+                                      </div>
+                                </div>
+                                
+                                <div class="col-sm-2" id="cantis" hidden>
+                                    <label for="">Cant.:</label>
+                                      <input class="form-control" name="cantidadR" id="cantidadR" type="text">
+                                </div>
+                                <div class="col-sm-2" id="unicant" hidden>
+                                      <label for="">U/M:</label>
+                                      <select id="unidades" name="unidades" required="" class="form-control">
+                                      </select>
+                                </div>
+                                <div class="col-sm-3">
+                                  <label for="">Motivo de la solicitud:</label>
+                                  <textarea name="descripcion" id="descripcion" cols="30" rows="4" maxlength="300"></textarea>
+                                </div>
+                                    <input type="hidden" name="mercancia_id" id="mercid" >
+                                    <input type="hidden" name="tiendae" id="tiendae" value="<?php echo $this->idu;?>">
+                                    <input type="hidden" name="status_id" id="status_id" value="126">
+                              </div>
+                                  
+                            </div>
+                        </fieldset>
+                        <div class="col-sm-12 ">
+                                <button style="margin-top: 5%" class=" btn btn-sm btn-primary"  type="submit" class=""  id="btnguardar"><b>Guardar</b></button>
+                        </div>                        
+                        </div>
+
+
+                        <script src="<?php echo PUBLIC_URL; ?>js/jquery.js"></script>
+                        <script src="<?php echo PUBLIC_URL; ?>js/jquery-ui.js"></script>
+                        <script>
+                        $(document).ready(function($) {
+                          $.ajax({
+                          url: BASE_URL+'/inventario/autocompletarp',
+                          type: 'POST',
+                          dataType: 'json'
+                          })
+                          .done(function(data) {
+
+                              $( "#autocomplete" ).autocomplete({
+                              source: data
+                              });
+                            });
+                          $( "#autocomplete" ).change(function(event) {
+                            var name = $("#autocomplete").val();
+                            var nueva = name.replace(" ", "@");
+                            //alert(nueva);
+                          
+
+                          $.ajax({
+                          url: BASE_URL+'/inventario/autocompletarm/'+nueva,
+                          type: 'POST',
+                          dataType: 'json'
+                          })
+                          .done(function(data) {                         
+                              $( "#autocomplete2" ).autocomplete({
+                              source: data
+                              });
+                            });
+                          });
+                          
+                        });
+
+                        </script>
+
+
+
+
+                        </form>
+
+                  </div>
+                </div>
+              </div>
+        </div>
+</div>
+</div>
+</body>
+
+</div>
+
+
+
+<!-- Autocomplete -->
+
+</html>

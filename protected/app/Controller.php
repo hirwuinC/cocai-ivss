@@ -158,28 +158,20 @@
 			return $conversion;
 		}
 
-		public function unidadMedidaSistema($familia, $contenidoNeto){
-			switch ($familia) {
-                	case '116':
-                		if ($contenidoNeto == '') {
-                			$unidadM = 13;
-                		}else{
-                			$unidadM = 6;
-                		}
-                	break;
-                	case '119':
-                		$unidadM = 13;
-                	break;
-                	default:
-                		if ($contenidoNeto == '') {
-                			$unidadM = 13;
-                		}else{
-                			$unidadM = 12;
-                		}
-                	break;
-            }
-            return $unidadM;
+		
+
+		public function conversion($producto){
+			for ($i=0; $i < count($producto); $i++) { 
+				$unidadPresentacion = $producto[$i]['existencia'] / $producto[$i]['contenido_neto'];
+				$unidadCompra = $unidadPresentacion / $producto[$i]['cantidad_presentacion'];
+				$producto[$i]['canCompra']=$unidadCompra;
+				$producto[$i]['canConsumo']=$unidadPresentacion; 
+				$producto[$i]['conversion']= $unidadCompra.' '.$producto[$i]['unidadC']. ' = '.$unidadPresentacion.' '.$producto[$i]['unidadP'].'.<br> '.$unidadPresentacion.' '.$producto[$i]['unidadP'].' = '.$producto[$i]['existencia'].' '.$producto[$i]['unidadS'].'.';
+			}
+            return $producto;
 		}
+
+	    
 
 
 				

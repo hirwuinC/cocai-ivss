@@ -8,7 +8,7 @@
 		</ul>
 	</footer>
 	<label  hidden id="base_url"><?php echo BASE_URL; ?></label>
-		<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/jquery-2.1.4.js"></script>
+	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/jquery-2.1.4.js"></script>
 	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/jquery-1.12.1.min.js"></script>
 	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/main.js"></script>
 	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/opciones.js"></script>
@@ -43,6 +43,11 @@ $(document).ready(function(){
    /* $("a.subM").click(function(event){ event.preventDefault(); linkLocation = this.href; $('#body').fadeOut(500, redirectPage); }); function redirectPage() { window.location = linkLocation; } 
     $(".atras").click(function(event){ event.preventDefault();  $('#body').fadeOut(500); });*/
     
+});
+</script>
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();   
 });
 </script>
 

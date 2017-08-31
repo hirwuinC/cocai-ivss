@@ -77,7 +77,8 @@
                                                 <ul class="nav nav-second-level" role="menu" id="news">
                                                 </ul>';
                                                                                         
-                                        echo '</li>';    
+                                        echo '</li>';
+ 
                         for ($i=0; $i < count($privilegios); $i++) {
                         
                           if (!empty($privilegios[$i])) {
@@ -95,37 +96,46 @@
                                               <i class="fa fa-list"></i><span class="fa arrow"></span></a>
                                               <ul class="nav nav-second-level">
                                                 <li style="margin-left:25px; text-align:left">
-                                                  <a href="'.BASE_URL.'inventario/evaluar/'.$id[$j].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Stock de la ud.</a>
+                                                  <a href="'.BASE_URL.'inventario/evaluar/'.$id[$j].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Consulta de inventario</a>
                                                 </li>
                                                 <li style="margin-left:25px; text-align:left">
-                                                  <a href="'.BASE_URL.'inventario/inicio/'.$id[$j].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Remision de mercancia</a>
+                                                  <a href="'.BASE_URL.'inventario/remisionM/'.$id[$j].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Remision de mercancia</a>
                                                 </li>
                                                 <li style="margin-left:25px; text-align:left">
-                                                  <a href="'.BASE_URL.'inventario/inicio/'.$id[$j].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Kardex</a>
+                                                  <a href="'.BASE_URL.'inventario/inicio/'.$id[$j].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Movimiento de kardex</a>
                                                 </li>
                                                 <li style="margin-left:25px; text-align:left">
                                                   <a href="'.BASE_URL.'inventario/inicio/'.$id[$j].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Merma</a>
                                                 </li>
+                                                <li style="margin-left:25px; text-align:left">
+                                                  <a href="'.BASE_URL.'inventario/inicio/'.$id[$j].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Inventario final</a>
+                                                </li>
                                               </ul>  
                                           </li>
                                           <li>
-                                            <a href="#" style="margin-left:15px; text-align:left">Receta
-                                              <i class="fa fa-cutlery"></i><span class="fa arrow"></span></a>
-                                              <ul class="nav nav-second-level">
-                                                <li style="margin-left:25px; text-align:left">
-                                                  <a href="'.BASE_URL.'inventario/inicio/'.$id[$i].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Produccion</a>
-                                                </li>
-                                                <li style="margin-left:25px; text-align:left">
-                                                  <a href="'.BASE_URL.'inventario/inicio/'.$id[$i].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Recetario</a>
-                                                </li>
-                                              </ul>
+                                            <a href="'.BASE_URL.'inventario/inicio/'.$id[$i].'" style="margin-left:15px; text-align:left">Receta
+                                              <i class="fa fa-cutlery"></i></span></a>   
+                                          </li>
+                                          <li>
+                                            <a href="'.BASE_URL.'inventario/inicio/'.$id[$i].'" style="margin-left:15px; text-align:left">Generar produccion
+                                              <i class="fa fa-cogs"></i></span></a>   
+                                          </li>
+                                          <li>
+                                            <a href="'.BASE_URL.'inventario/inicio/'.$id[$i].'" style="margin-left:15px; text-align:left">Generar explosion
+                                              <i class="fa fa-bomb"></i></span></a>   
                                           </li>
                                            <li>
                                             <a href="#" style="margin-left:15px; text-align:left">Administracion
-                                              <i class="fa fa-sitemap"></i><span class="fa arrow"></span></a>
+                                              <i class="fa fa-briefcase"></i><span class="fa arrow"></span></a>
                                               <ul class="nav nav-second-level">
                                                 <li style="margin-left:25px; text-align:left">
                                                   <a href="'.BASE_URL.'inventario/inicio/'.$id[$i].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Proveedor</a>
+                                                </li>
+                                                <li style="margin-left:25px; text-align:left">
+                                                  <a href="'.BASE_URL.'inventario/inicio/'.$id[$i].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Carga factura de compra</a>
+                                                </li>
+                                                <li style="margin-left:25px; text-align:left">
+                                                  <a href="'.BASE_URL.'inventario/inicio/'.$id[$i].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Ranking de venta</a>
                                                 </li>
                                                 <li style="margin-left:25px; text-align:left">
                                                   <a href="'.BASE_URL.'inventario/inicio/'.$id[$i].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Reportes</a>
@@ -148,37 +158,49 @@
                                               <i class="fa fa-list"></i><span class="fa arrow"></span></a>
                                               <ul class="nav nav-second-level">
                                                 <li style="margin-left:25px; text-align:left">
-                                                  <a href="'.BASE_URL.'inventario/evaluar/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Stock de la ud.</a>
+                                                  <a href="'.BASE_URL.'inventario/evaluar/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Consulta de inventario</a>
+                                                </li>
+                                                <li style="margin-left:25px; text-align:left">
+                                                  <a href="'.BASE_URL.'inventario/asignacionProducto/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Asignacion de producto</a>
                                                 </li>
                                                 <li style="margin-left:25px; text-align:left">
                                                   <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Remision de mercancia</a>
                                                 </li>
                                                 <li style="margin-left:25px; text-align:left">
-                                                  <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Kardex</a>
+                                                  <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Movimiento de kardex</a>
                                                 </li>
                                                 <li style="margin-left:25px; text-align:left">
                                                   <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Merma</a>
                                                 </li>
+                                                <li style="margin-left:25px; text-align:left">
+                                                  <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Inventario final</a>
+                                                </li>
                                               </ul>  
                                           </li>
                                           <li>
-                                            <a href="#" style="margin-left:15px; text-align:left">Receta
-                                              <i class="fa fa-cutlery"></i><span class="fa arrow"></span></a>
-                                              <ul class="nav nav-second-level">
-                                                <li style="margin-left:25px; text-align:left">
-                                                  <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Produccion</a>
-                                                </li>
-                                                <li style="margin-left:25px; text-align:left">
-                                                  <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Recetario</a>
-                                                </li>
-                                              </ul>
+                                            <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" style="margin-left:15px; text-align:left">Receta
+                                              <i class="fa fa-cutlery"></i></span></a>   
+                                          </li>
+                                          <li>
+                                            <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" style="margin-left:15px; text-align:left">Generar produccion
+                                              <i class="fa fa-cogs"></i></span></a>   
+                                          </li>
+                                          <li>
+                                            <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" style="margin-left:15px; text-align:left">Generar explosion
+                                              <i class="fa fa-bomb"></i></span></a>   
                                           </li>
                                            <li>
                                             <a href="#" style="margin-left:15px; text-align:left">Administracion
-                                              <i class="fa fa-sitemap"></i><span class="fa arrow"></span></a>
+                                              <i class="fa fa-briefcase"></i><span class="fa arrow"></span></a>
                                               <ul class="nav nav-second-level">
                                                 <li style="margin-left:25px; text-align:left">
                                                   <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Proveedor</a>
+                                                </li>
+                                                <li style="margin-left:25px; text-align:left">
+                                                  <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Carga factura de compra</a>
+                                                </li>
+                                                <li style="margin-left:25px; text-align:left">
+                                                  <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Ranking de venta</a>
                                                 </li>
                                                 <li style="margin-left:25px; text-align:left">
                                                   <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"><i style="font-size: 6px; vertical-align: middle;" class="fa fa-asterisk"></i>Reportes</a>

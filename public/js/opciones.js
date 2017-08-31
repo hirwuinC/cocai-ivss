@@ -1,3 +1,12 @@
+$(document).ready(function() {
+	//alert('hola');
+	$('#dh').click(function(event) {
+        $('#datos2').slideToggle(200);
+        $('#datos2').prop("hidden", false);
+        $(this).find('.buscador').toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
+    });
+});
+
 function opciones (idsM,idm){
 	//alert(idm);
 	//$("#new").modal();

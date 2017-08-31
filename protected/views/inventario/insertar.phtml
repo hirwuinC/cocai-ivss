@@ -1,0 +1,263 @@
+<link href="<?php echo PUBLIC_URL; ?>css/jquery-ui.css" rel="stylesheet">
+  <style>
+    label{
+  /* Tooltip */
+  .test + .tooltip > .tooltip-inner {
+      background-color: #337ab7; 
+      color: #FFFFFF; 
+      border: none; 
+      padding: 1px;
+      font-size: 14px;
+  }
+  /* Tooltip on top */
+  .test + .tooltip.top > .tooltip-arrow {
+      border-top: 5px solid #337ab7;
+  }
+  /* Tooltip on bottom */
+  .test + .tooltip.bottom > .tooltip-arrow {
+      border-bottom: 5px solid blue;
+  }
+  /* Tooltip on left */
+  .test + .tooltip.left > .tooltip-arrow {
+      border-left: 5px solid red;
+  }
+  /* Tooltip on right */
+  .test + .tooltip.right > .tooltip-arrow {
+      border-right: 5px solid black;
+  }
+  </style>
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+
+<div id="body" hidden>
+	<div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                        <div class="col-sm-6">
+                            <h4 class="page-header" style="font-family: Times New Roman, Times, serif;">Inventario de productos </h4> 
+                        </div> 
+                        <div class="col-sm-offset-1">
+                            <img style="margin-left:0%;" src="<?php echo PUBLIC_URL;?>img\Corporacion multifranquicia.png" class="img-responsive" alt="modelo">
+                        </div>
+                	 <form action="<?php echo BASE_URL;?>inventario/insert" method="post" accept-charset="utf-8">
+                            <input type="text" id="idT" name="idT" hidden value="<?php echo $this->idT;?>">
+                                <input type="text" name="unidadS" hidden id="unidadS">
+                                <div class="form-group col-sm-12 well well-lg">
+                                    <fieldset>
+                                        <legend><label>Datos del producto</label></legend> 
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">Codigo</label>
+                                        <input type="text" class="form-control" id="co" name="codigo" required>
+                                    </div>
+                                    <div class="col-sm-1 col-sm-offset-1" id="glyphicon"></div>
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">Codigo anterior</label>
+                                        <input type="text" class="form-control" name="codigo_anterior" id="c_tcr">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label class="control-label" style="float: left;">Nombre</label>
+                                        <input type="text" class="form-control" name="nombre" id="nombre" required>
+                                    </div>
+                                    <div class="col-sm-1" id="glyphi"></div>
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">Marca</label>
+                                        <input type="text" class="form-control" name="marca" id="marca" required>
+                                    </div>
+                                     <div class="col-sm-1" id="glyph"></div>
+                                     <div class="col-sm-3 col-sm-offset-1">
+                                        <label class="control-label" style="float: left;">Clasificacion</label>
+                                        <select name="familia" id="familia" class="form-control" required> 
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">Peso escurrido</label>
+                                        <input type="text" class="form-control" name="pesoEs" id="pesoEs">
+                                    </div>
+                                    <div class="col-sm-3 col-sm-offset-2">
+                                        <label class="control-label" style="float: left;">Rendiemiento ideal</label>
+                                        <input type="text" class="form-control" name="rendimientoId" id="rendimientoId">
+                                    </div>
+                                    <div class="col-sm-3 col-sm-offset-1">
+                                        <label class="control-label" style="float: left;">Contenido neto</label>
+                                        <input type="text" class="form-control" name="contenidoN" id="contenidoN" required>
+                                    </div>
+                                    <input type="text" id="CNtemporal" hidden>
+                                </div>
+                                 <div class="form-group col-sm-12">
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">Stock min</label>
+                                        <input type="text" class="form-control" name="stockmin" id="stockmin" required>
+                                    </div>
+                                    <div class="col-sm-3 col-sm-offset-2">
+                                        <label class="control-label" style="float: left;">Stock max</label>
+                                        <input type="text" class="form-control" name="stockmax" id="stockmax" required>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">Cantidad comprada</label>
+                                        <input type="text" class="form-control" name="contenidoC" id="contenidoC" required>
+                                    </div>
+                                    <div class="col-sm-3 col-sm-offset-2">
+                                        <label class="control-label" style="float: left;">Unidad de compra</label>
+                                        <select name="unidad_medida_c" class="form-control" id="unidad_medida_c" required>
+                                        </select>
+                                    </div>
+                                    
+                                    <div id="cant" class="" hidden><div class="col-sm-3 col-sm-offset-1" id="cantC"></div></div>  
+                                    
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-3 ">
+                                        <label class="control-label" style="float: left;">Precio unitario</label>
+                                        <input type="text" class="form-control" name="precio_unitario" id="pU" onkeyup="format(this)" onchange="format(this)"  placeholder="0,00" required>
+                                    </div>
+                                    <div class="col-sm-3 col-sm-offset-2">
+                                        <label class="control-label" style="float: left;">Unidad Presentacion</label>
+                                        <select name="unidad_medida_p" class="form-control" id="unidad_medida_pr" required>
+                                        <option value="Seleccione">Seleccione...</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3 col-sm-offset-1">
+                                        <label class="control-label" style="float: left;">Unidad Sistema</label>
+                                        <select name="unidad_medida_s" class="form-control" id="unidad_medida_s" required>
+                                        <option value="Seleccione">Seleccione...</option>
+                                        </select>
+                                    </div>
+                                     
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-12">
+                                        <label class="control-label" style="float: left;">Descripcion</label>
+                                        <textarea class="form-control" rows="3" name="descripcion"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-12 well well-lg">
+                                    <fieldset>
+                                        <legend><label>Formulas de conversion</label></legend>
+                                    <div class="col-sm-3">
+                                        <label class="control-label" style="float: left;">U/M compra <a class="secreto" onclick="infoFormula()"><i class="fa fa-info-circle"></i></a></label>
+                                        <input type="text" class="form-control" name="formulac" id="formulac">
+                                    </div>
+                                    <div class="col-sm-3 col-sm-offset-2">
+                                        <label class="control-label" style="float: left;">U/M consumo</label>
+                                        <input type="text" class="form-control" name="formulap" id="formulap">
+                                    </div>
+                                    <div class="col-sm-3 col-sm-offset-1">
+                                        <label class="control-label" style="float: left;">U/M sistema</label>
+                                        <input type="text" class="form-control" name="formulas" id="formulas">
+                                    </div>
+                                    </fieldset>
+                                </div>
+                                    <div class="form-group col-sm-12">
+                                    <div class="col-sm-3 checkbox">
+                                        <label class="control-label" style="float: left;"><input type="checkbox" name="estatus">Inactivo</label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <div class="col-sm-5 checkbox">
+                                        <label class="control-label" style="float: left;"><input type="checkbox" name="exento">Producto exento de impuesto</label>
+                                    </div>
+                                </div>
+                                    </fieldset>
+                                </div>
+                                
+                                <div class="form-group col-sm-12 well well-lg">
+
+                                    <fieldset>
+                                        <legend style="width: 100%; border-color: #337ab7;"><label>Proveedor</label></legend>
+                                        <a type="button" style="background: #337ab7; border-color:#2e6da4; margin-right: 1%; float: right; margin-top: -35px; border-radius: 50px; color: white" class="btn btn-sm btn-default" id="dh"><b style="font-size: 12px"></b><span style="padding: 1px;  font-size: 10px" class="buscador glyphicon glyphicon-chevron-down"></span>
+                                        </a>
+                                    <div id="datos2" hidden>
+                                        <div class="form-group col-sm-12"> 
+                                            <div class="col-sm-4">
+                                                <label>Proveedor</label>
+                                                <input id="autoC" class="form-control test" placeholder="filtrar por nombre" data-toggle="tooltip" data-placement="top" title="Escriba el nombre del proveedor para filtrar!">
+                                                <input type="text" name="idProveedor" id="idProveedor" hidden>
+                                            </div>
+                                            <div class="col-sm-2" id="codeP" >
+                                                <label>Codigo P.</label>
+                                                <input class="form-control" name="codigoP" id="codigoP" type="text">
+                                            </div>
+                                            <div class="col-sm-2" id="priceP">
+                                                <label>Precio</label>
+                                                <input class="form-control" name="precioP" id="precioP" type="text" onkeyup="format(this)" onchange="format(this)"  placeholder="0,00">
+                                            </div>
+                                            <div class="col-sm-2" >
+                                                <label></label>
+                                                <button type="button" style="border-radius: 5px; margin-left: 15px" class="btn btn-sm btn-primary" onclick="asignacionProveedor()"> 
+                                                    <font size="2"><b>Agregar &nbsp;</b>
+                                                        <span class="glyphicon glyphicon-plus"></span>
+                                                    </font>
+                                                </button>
+                                            </div>
+                                        </div>
+                                          <table class="table table-bordered table-responsive">
+                                            <thead>
+                                              <tr>
+                                                <th>Proveedor</th>
+                                                <th>Codigo</th>
+                                                <th>Precio</th>
+                                                <th>Eliminar</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody id="columna">
+                                            </tbody>
+                                          </table>
+                                    </div>    
+                            
+                            </div>
+                            </fieldset>
+                                </div>
+
+                                <div class="form-group col-sm-12">
+                                <div class="col-sm-offset-9">
+                                <input type="submit" class="btn btn-primary" value="Guardar" id="botonG">
+                                </div>
+                                </div>
+                                <script src="<?php echo PUBLIC_URL; ?>js/jquery.js"></script>
+                                <script src="<?php echo PUBLIC_URL; ?>js/jquery-ui.js"></script>
+                                <script>
+                                    $(document).ready(function($) {
+                                        $.ajax({
+                                                url: BASE_URL+'/inventario/selectProveedor',
+                                                type: 'POST',
+                                                dataType: 'json'
+                                        })
+                                        .done(function(data) {
+                                            //alert(data[0][0]);
+                                            $( "#autoC" ).autocomplete({
+                                            source: data
+                                            });
+                                        });
+                                    });
+                                </script>
+                       
+                     </form>
+                     </div>
+                     </div>
+
+				</div>
+            </div>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+</div>
+<!-- /.row -->
+</div>
+<!-- /.container-fluid -->
+</div>
+<!-- /#page-wrapper -->
+<!-- no borrar -->
+</div>

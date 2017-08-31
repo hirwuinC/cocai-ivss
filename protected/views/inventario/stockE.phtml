@@ -10,15 +10,14 @@
 
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="col-sm-6">
-                            <h4 class="page-header" style="font-family: Times New Roman, Times, serif;">Lista de productos de la empresa</h4>
-                        </div> 
-                      <!--  <div class="col-sm-offset-1">
-                            <img style="margin-left:0%;" src="<?php echo PUBLIC_URL;?>img\<?php echo $this->sm[0]['modelo']; ?>.png" class="img-responsive" alt="modelo">
-                        </div> -->
-
-                        <div class="panel panel-default">
+                      <div class="panel panel-default">
                         <div class="panel-body">
+                        <div class="col-sm-6">
+                            <h4 class="page-header" style="font-family: Times New Roman, Times, serif;">Inventario de productos </h4>
+                        </div> 
+                        <div class="col-sm-offset-1">
+                            <img style="margin-left:0%;" src="<?php echo PUBLIC_URL;?>img\Corporacion multifranquicia.png" class="img-responsive" alt="modelo">
+                        </div> <br><br>
                             <?php $i = 1; ?>  
                             <div class="dataTable_wrapper ">
                              <div class="col-sm-12 table-responsive">
@@ -51,22 +50,22 @@
                                                 <td ><?php echo $i?></td>   
                                                 <td style="text-align:left"><?php echo $merca['codigo'];?></td>
                                                 <td style="text-align:left"><?php echo $merca['producto'];?></td>
-                                                <td style="text-align:left"><?php echo $merca['descripcion'];?></td>
+                                                <td style="text-align:left"><?php echo $merca['marca'];?></td>
                                                 <td style="text-align:left"><?php echo $merca['contenido_neto'];?></td>
                                                 <td style="text-align:left"><?php echo $merca['precio_unitario'];?></td>
-                                                <div class="tooltip"><td style="text-align:left"><?php echo $merca['existencia'].$merca['abreviaturaS'];?></td><span class="tooltiptext">hola</span></div>
+                                                <td style="text-align:left"><?php echo $merca['existencia'].$merca['abreviaturaS'];?><a onclick="infoConversion('<?php echo $merca['idP'];?>','<?php echo $merca['idT'];?>')"><i class="fa fa-info-circle"></i></a></td>
                                                 <td style="text-align:left"><?php echo $merca['stock_min'];?></td>
                                                 <td style="text-align:left"><?php echo $merca['stock_max'];?></td>
                                                 <td style="text-align:left"><?php echo $status;?></td>
                                                 <td style="text-align:left"><?php echo $merca['familia'];?></td>
                                                 <th>
-                                                    <center><a class="test" data-toggle="modal" data-target=".subModels" onclick="idSubmodelo('<?php echo $sm['idsm'];?>','<?php echo $sm['idmodelo'];?>')">
+                                                    <center><a class="test" data-toggle="modal" data-target="#produPdate" onclick="modalUpdate('<?php echo $merca['idP'];?>','<?php echo $merca['idT'];?>')">
                                                         <span  class="glyphicon glyphicon-edit"></span>
                                                     </a></center>
                                                 </th>
                                                 
                                                 <th>
-                                                   <center><a onclick="confirmacionDelete('<?php echo $sm['idsm'];?>','<?php echo $sm['idmodelo'];?>')">
+                                                   <center><a onclick="confirmacionDelete('<?php echo $merca['idP'];?>','<?php echo $merca['idT'];?>')">
                                                         <span  class="glyphicon glyphicon-remove"></span>
                                                     </a></center>
                                                 </th>
@@ -77,176 +76,22 @@
                                             <?php endforeach ?>
                                         </tbody>
                                     </table> 
-                                    <button type="button" style="border-radius: 5px; width: 120px; margin-left: 15px" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#produ"> 
+                                    <a href="<?php echo BASE_URL;?>inventario/insert/<?php echo $merca['idT'];?>" type="button" style="border-radius: 5px; width: 120px; margin-left: 15px" class="btn btn-sm btn-primary" onclick="codigoPropuesto('<?php echo $merca['idT'];?>')"> 
                                         <font size="2"><b>Agregar &nbsp;</b>
                                             <span class="glyphicon glyphicon-plus"></span>
                                         </font>
-                                    </button><br>
-                                    <div class="col-sm-2">
-                                        <a id="download" class="btn btn-sm btn-default" href="<?php echo BASE_URL."producto/descarga/".$this->pro[0]['sub_modelo_id'].'/'.$this->pro[0]['idmodelo'].'/'.$this->pro[0]['idDivision']?>">
-                                            <b>Asignar producto</b>
-                                            <span class="fa fa-tags"></span>
-                                            <iframe id="downloader" src="" style="display:none;"></iframe>
-                                        </a>
-                                    </div>
-                                    <!-- MODAL DEL LA FUNCION AGREGAR DE LOS PRODUCTOS -->
-                 <div class="modal fade" id="produ" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                    <div class="modal-dialog modal-md" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <div id="enunciado"></div>
-                                <h4>Nuevo producto</h4>
-                            </div>
-                            <form action="<?php echo BASE_URL;?>inventario/insert" method="post" accept-charset="utf-8">
-                            <div class="modal-body">
-                               <input type="text" id="empresa" name="tienda" hidden value="<?php echo $merca['tienda'];?>">
-                               <input type="text" id="id" name="idT" hidden value="<?php echo $merca['idT'];?>">
-                                <input type="text" name="unidadS" hidden id="unidadS">
-                                <div class="form-group col-sm-12">
-                                    <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;">Codigo</label>
-                                        <input type="text" class="form-control" id="code" name="codigo">
-                                    </div>
-                                    <div class="col-sm-1" id="glyphicon"></div>
-                                    <div class="col-sm-3">
-                                        <label class="control-label" style="float: left;">Codigo anterior</label>
-                                        <input type="text" class="form-control" name="codigo_anterior" id="c_tcr">
-                                    </div>
-                                </div>
-                                <div class="form-group col-sm-12">
-                                    <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;">Nombre</label>
-                                        <input type="text" class="form-control" name="nombre" id="nombre" required>
-                                    </div>
-                                    <div class="col-sm-1" id="glyphi"></div>
-                                    <div class="col-sm-3">
-                                        <label class="control-label" style="float: left;">Marca</label>
-                                        <input type="text" class="form-control" name="descripcion" id="marca">
-                                    </div>
-                                     <div class="col-sm-1" id="glyph"></div>
-                                </div>
-                                <div class="form-group col-sm-12">
-                                    <div class="col-sm-3">
-                                        <label class="control-label" style="float: left;">Precio unitario</label>
-                                        <input type="text" class="form-control" name="precio_unitario" id="pU" onkeyup="format(this)" onchange="format(this)" required placeholder="0,00">
-                                    </div>
-                                    <div class="col-sm-4 col-sm-offset-2">
-                                        <label class="control-label" style="float: left;">Clasificacion</label>
-                                        <select name="familia" id="familia" class="form-control" required> 
-                                        </select>
-                                    </div>
-                                </div>
-                                 <div class="form-group col-sm-12">
-                                    <div class="col-sm-3">
-                                        <label class="control-label" style="float: left;">Stock min</label>
-                                        <input type="text" class="form-control" name="stockmin" id="stockmin">
-                                    </div>
-                                    <div class="col-sm-3 col-sm-offset-2">
-                                        <label class="control-label" style="float: left;">Stock max</label>
-                                        <input type="text" class="form-control" name="stockmax" id="stockmax">
-                                    </div>
-                                </div>
-                                <div class="form-group col-sm-12">
-                                    <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;">Unidad de compra</label>
-                                        <select name="unidad_medida_c" class="form-control" id="unidad_medida_c" required>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="col-sm-4 col-sm-offset-1">
-                                        <label class="control-label" style="float: left;">Cantidad comprada</label>
-                                        <input type="text" class="form-control" name="contenidoC" id="contenidoC" required>
-                                    </div>
-                                    <div id="cant" class="" hidden><div class="col-sm-3" id="cantC"></div></div>  
-                                    
-                                </div>
-                                <div class="form-group col-sm-12">
-                                    <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;">Unidad Presentacion</label>
-                                        <select name="unidad_medida_p" class="form-control" id="unidad_medida_pr" required>
-                                        <option value="Seleccione">Seleccione...</option>
-                                        </select>
-                                    </div>
-                                    <div id="contenido" hidden>
-                                    <div class="col-sm-3 col-sm-offset-1">
-                                        <label class="control-label" style="float: left;">Contenido neto</label>
-                                        <input type="text" class="form-control" name="contenidoN" id="contenidoN" required>
-                                    </div>
-                                    </div>
-                                     
-                                </div>
-                                <div class="form-group col-sm-12">
-                                    <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;">Unidad Sistema</label>
-                                        <select name="unidad_medida_s" class="form-control" id="unidad_medida_s" required>
-                                        <option value="Seleccione">Seleccione...</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group col-sm-12 well well-lg">
-                                    <fieldset>
-                                        <legend><label>Formulas de conversion</label></legend>
-                                    <div class="col-sm-3">
-                                        <label class="control-label" style="float: left;">U/M compra</label>
-                                        <input type="text" class="form-control" name="formulac" id="formulac">
-                                        <div class="alert alert-info alert-dismissable" style="text-align:left">
-                                          <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                          <strong>¡Advertencia!</strong> Esta formula debe convertir la U/M actual en la U/M de sistema.
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3 col-sm-offset-2">
-                                        <label class="control-label" style="float: left;">U/M consumo</label>
-                                        <input type="text" class="form-control" name="formulap" id="formulap">
-                                    </div>
-                                    <div class="col-sm-3 col-sm-offset-1">
-                                        <label class="control-label" style="float: left;">U/M sistema</label>
-                                        <input type="text" class="form-control" name="formulas" id="formulas">
-                                    </div>
-                                    </fieldset>
-                                </div>
-
-                                <div class="form-group col-sm-12">
-                                <div class="col-sm-offset-9">
-                                <input type="submit" class="btn btn-primary" value="Guardar" id="botonG">
-                                </div>
-                                </div>
-                                </form>
-                            </div>
-                            <div style="border: none" class="modal-footer">    
-                            </div>  
-                        </div>
-                    </div>
-                </div>
-                                      <!-- FIN DE LA MODAL DEL LA FUNCION AGREGAR DE LOS SUB-MODELOS -->
-                                      <!-- MODAL DEL LA FUNCION MODIFICAR DE LOS SUB-MODELOS -->
-                                      <div class="modal fade subModels" id="new" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-                                          <div class="modal-dialog modal-sm" role="document">
-                                              <div class="modal-content">
-                                                  <div class="modal-header">
-                                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                          <span aria-hidden="true">&times;</span>
-                                                      </button>
-                                                      <h4 class="modal-title">Modificar sub-modelo</h4>
-                                                  </div>
-                                                  <div class="modal-body">
-                                                      <form action="<?php  echo BASE_URL;?>submodelo/update" method="post" accept-charset="utf-8">
-                                                          <input type="text" hidden name="idsm" id="idsm">
-                                                          <input type="text" hidden name="idm" id="idm">
-                                                          <input type="text" name="subModelo" class="form-control" id="Smodelo" placeholder="nombre del sub-modelo"> <br>
-                                                         <center> <input type="submit" class="btn btn-primary" value="Guardar" onclick="insert()"> </center>
-                                                      </form>
-                                                  </div>   
-                                              </div><!-- /.modal-content -->
-                                          </div><!-- /.modal-dialog -->
-                                      </div><!-- /.modal -->
-                                      <!-- FIN DE LA MODAL DEL LA FUNCION MODIFICAR DE LOS SUB-MODELOS -->
+                                    </a>
+                                        <br>
+                                   
+                                 
+                      
 
                                        <!-- MODAL DE CONFIRMACION PARA ELIMINAR-->
                                         <div class="modal fade " id="alerta" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
                                             <div class="modal-dialog modal-sm" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
+                                                        <div id="t"></div>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
@@ -283,5 +128,5 @@
             <!-- /.container-fluid -->
             </div>
         <!-- /#page-wrapper -->
- 		<!-- no borrar -->
- 		</div>
+        <!-- no borrar -->
+        </div>

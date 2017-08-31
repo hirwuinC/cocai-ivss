@@ -1,0 +1,65 @@
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+
+<div id="body" hidden>
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a data-toggle="tab" href="#home">Info <i class="fa fa-info-circle"></i></a></li>
+                                <?php  #print_r($this->datos);
+                                    for ($i=0; $i < count($this->modelo); $i++) { 
+                                        echo '<li><a data-toggle="tab" href="#'.$this->idm[$i].'">'.$this->modelo[$i].'</a></li>';
+                                        
+                                    }
+                                ?>
+                            </ul>
+                            <div class="tab-content">
+                                <div id="home" class="tab-pane fade in active">
+                                  <h4><p>Seleccione la marca a la cual pertenece la unidad de negocio a la que desea asignar los productos.</p></h4>
+                                </div>
+                                <?php
+                                for ($l=0; $l < count($this->modelo); $l++) { 
+                                    echo '<div id="'.$this->idm[$l].'" class="tab-pane fade">
+                                            <br>
+                                            <div class="form-group col-sm-4">
+                                                    <label class="control-label" style="float: left;">Unidada de negocio</label>
+                                                    <select name="tienda" id="asignacionTienda" class="form-control"> 
+                                                    <option value="" selected>Seleccione...</option>     
+                                            ';
+                                    for ($j=0; $j < count($this->datos); $j++) { 
+                                        if ($this->modelo[$l] == $this->datos[$j]['modelo']) {
+                                            echo '<option value="'.$this->datos[$j]['idU'].'">'.$this->datos[$j]['nombre'].'</option>
+                                                  
+                                                 ';  
+                                        } 
+                                    }
+                                    echo '</select></div></div>';
+                                }
+                                ?>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- /.col-lg-12 -->
+                    </div>
+                </div>
+            <!-- /.row -->
+            </div>
+        <!-- /.container-fluid -->
+        </div>
+    <!-- /#page-wrapper -->
+    <!-- no borrar -->
+    </div>
