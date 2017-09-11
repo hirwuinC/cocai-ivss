@@ -14,16 +14,16 @@
 
                         <div style="margin-top: 2%" class="panel panel-default">
                         <div class="panel-body">
-                        <div class="col-sm-12">
-                        <div class="col-sm-6">
-                        	<img  src="<?php $model=strtolower($this->datos[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-responsive" alt="modelo">
-                        </div>
-                        <div class="col-sm-6">
-                            	<h4  style="font-family: Times New Roman, Times, serif; margin-top: 0px; text-align: right; color: #337ab7;">Datos de la <?php echo $this->datos[0]['statusN']." #00".$this->datos[0]['idr'];?>
-                            	</h4>
-                            	<h4  style="font-family: Times New Roman, Times, serif; text-align: right;"><?php echo 'Destinatario: <b>'.$this->datos[0]['tiendar']."</b>";  ?></h4>
-                            	<h5 style="text-align: right;">Fecha: <?php echo $this->datos[0]['fecha']." / ". $this->datos[0]['hora'] ?></h5>
-                        </div>
+                        <div class="row"> 
+                            <div class="col-sm-6">
+                            	<img  src="<?php $model=strtolower($this->datos[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-responsive" alt="modelo">
+                            </div>
+                            <div class="col-sm-6">
+                                	<h4  style="font-family: Times New Roman, Times, serif; margin-top: 0px; text-align: right; color: #337ab7;">Datos de la <?php echo $this->datos[0]['statusN']." #00".$this->datos[0]['idr'];?>
+                                	</h4>
+                                	<h4  style="font-family: Times New Roman, Times, serif; text-align: right;"><?php echo 'Destinatario: <b>'.$this->datos[0]['tiendar']."</b>";  ?></h4>
+                                	<h5 style="text-align: right;">Fecha: <?php echo $this->datos[0]['fecha']." / ". $this->datos[0]['hora'] ?></h5>
+                            </div>
                         </div>
                         
                         <div class="col-sm-12">
@@ -35,7 +35,7 @@
                                 
 
                                     <?php foreach ($this->datos as $g): ?>
-                                    	<label for="">Datos de la unidad de negocio solicitante:</label><br>
+                                    	<label for=""><b>Datos de la unidad de negocio solicitante:</b></label><br>
                                     	<?php echo "Unidad de negocio: ".$g['tiendae']."";?><br>
                                     	<?php echo "Rif: ".$g['rife']."";?><br>
                                     	<?php echo "Razon Social: ".$g['razon_se']."";?><br>
@@ -49,8 +49,8 @@
 
 							<div style="border: solid 1px;  text-align: justify;" class="col-sm-12 "><br>
                             <div class="col-sm-12 table-responsive"> 
-                                       <table class="table table-striped table-bordered table-hover" id="tablaGru">
-                                        <thead>
+                                       <table class="table table-bordered table-striped " id="tablaGru">
+                                        <thead class="theadH">
                                             <tr>                                                 
                                                 <th ><center>Codigo</center></th>
                                                 <th ><center>Nombre<center></th> 
@@ -65,10 +65,10 @@
                                             <tr> 
                                                 <td ><?php echo $g['codim'];?></td>
                                                 <td style="text-align:left"><?php echo $g['producto'];?></td>
-                                                <td ><?php echo $g['marca'];?></td>
-                                                <td ><?php echo $g['familia'];?></td>
-                                                <td ><?php echo $g['cantidad'].' '.$g['abrevsol'];?></td>
-                                                <td ><?php echo $g['descripcion'];?></td>
+                                                <td style="text-align:left"><?php echo $g['marca'];?></td>
+                                                <td style="text-align:center"><?php echo $g['familia'];?></td>
+                                                <td style="text-align:center"><?php echo $g['cantidad'].' '.$g['abrevsol'];?></td>
+                                                <td style="text-align:left"><?php echo $g['descripcion'];?></td>
                                             </tr>
 
                                         </tbody>
@@ -80,20 +80,24 @@
                             	
                             	<h5  style="font-family: Times New Roman, Times, serif; text-align: left;"><?php echo 'Remitente: <b>'.$this->datos[0]['nombre']." ".$this->datos[0]['apellido']."</b>";  ?></h5>
                         	</div>
-                        	<div class="col-sm-12">
-                                    <button type="button" style="border-radius: 5px; margin-top: 2px" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalremision" onclick="procesar_remi('<?php echo $this->datos[0]['idr'];?>','<?php echo $this->datos[0]['idstatusN'];?>','<?php echo $this->datos[0]['idr'];?>')" onmouseover="infoConversion('<?php echo $g['idm'];?>','<?php echo $g['idur'];?>')" id="btnprocesar"> 
-                                        <font size="2"><b>Procesar &nbsp;</b>
-                                            <span class="glyphicon glyphicon-check"></span>
-                                        </font>
-                                    </button>
+                            <div class="container">
+                                <div class="row ">
+                                	<div class="col-sm-12 d-flex justify-content-center">
+                                            <button type="button" style="border-radius: 5px; margin-top: 2px" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#modalremision" onclick="procesar_remi('<?php echo $this->datos[0]['idr'];?>','<?php echo $this->datos[0]['idstatusN'];?>','<?php echo $this->datos[0]['idr'];?>')" onmouseover="infoConversion('<?php echo $g['idm'];?>','<?php echo $g['idur'];?>')" id="btnprocesar"> 
+                                                <font size="2"><b>Procesar &nbsp;</b>
+                                                    <span class="fa fa-check"></span>
+                                                </font>
+                                            </button>
+                                    </div>
+                                </div>
                             </div>
                                      <!-- MODAL DEL LA FUNCION AGREGAR DE LOS PRODUCTOS -->
                 <div class="modal fade modalremision" id="modalremision" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                     <div class="modal-dialog modal-md" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                 <div class="modal-title" id="enunciado"><h4> Procesando la <?php echo $this->datos[0]['statusN']." #00".$this->datos[0]['idr']."<br> de la unidad de negocio: <o style='text-transform: capitalize;'>".strtolower($g['tiendae'])."<o>";?> </h4></div>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             </div>
                             <div class="modal-body">
                             <form action="<?php echo BASE_URL;?>inventario/success/ended" method="post" accept-charset="utf-8">
@@ -109,42 +113,42 @@
 
                                 
                                 
-                                <div class="form-group col-sm-12">
+                                <div class="form-group row">
                                     <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;">Producto</label>
+                                        <label class="labels" >Producto</label>
                                         <input type="text" class="form-control" name="nombrem" id="nombrem" value="<?php echo $g['producto'];?>" readonly>
                                     </div>
                                     <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;">Marca</label>
+                                        <label class="labels" >Marca</label>
                                         <input type="text" class="form-control" name="marcam" id="marcam" value="<?php echo $g['marca'];?>" readonly>
                                     </div>
                                     <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;">Cantidad Solicitada</label>
+                                        <label class="labels" >Cant. Solicitada</label>
                                         <input type="text" class="form-control" name="cantsolicitada" id="cantsolicitada" value="<?php echo $g['cantidad'].' '.$g['abrevsol'];?>" readonly>
                                     </div>
                                 </div>
-                                <div class="form-group col-sm-12">
+                                <div class="form-group row">
                                     <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;">Existencia</label><a href="#"><span style="color: #337ab7; cursor: hand; cursor: pointer; float: left; margin-left: 3%; font-size: 17px" class="fa fa-info-circle" data-toggle="modal" data-target="#modalconversion"></span></a>
+                                        <label class="labels" >Existencia</label><a href="#"><span style="color: #337ab7; cursor: hand; cursor: pointer; float: left; margin-left: 3%; font-size: 17px" class="fa fa-info-circle" data-toggle="modal" data-target="#modalconversion"></span></a>
                                         <input type="text" class="form-control" name="existenciam" id="existenciam" readonly="" >
                                     </div>
                                     
                                     <div class="col-sm-4 ">
-                                        <label class="control-label" style="float: left;" >Stock minimo</label>
+                                        <label class="labels"  >Stock minimo</label>
                                         <input type="text" class="form-control" name="stockmin" id="stockmin" readonly="" >
                                     </div>
                                     <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;" >Stock maximo</label>
+                                        <label class="labels"  >Stock maximo</label>
                                         <input type="text" class="form-control" name="stockmax" id="stockmax" readonly="" >
                                     </div>
                                 </div>
-                                <div class="form-group col-sm-12">
+                                <div class="form-group row">
                                   <div class="col-sm-4 ">
-                                        <label class="control-label" style="float: left;">Cant. Enviada</label><span style="color: #337ab7; cursor: hand; cursor: pointer; float: left; margin-left: 3%; font-size: 17px" class="fa fa-info-circle" data-toggle="modal" data-target="#modalinfo"></span>
+                                        <label class="labels" >Cant. Enviada</label><span style="color: #337ab7; cursor: hand; cursor: pointer; float: left; margin-left: 3%; font-size: 17px" class="fa fa-info-circle" data-toggle="modal" data-target="#modalinfo"></span>
                                         <input type="text" class="form-control" name="cantenviada" id="cantenviada"  value="<?php echo $g['cantidad'];?>">
                                     </div>
                                     <div class="col-sm-4">
-                                        <label class="control-label" style="float: left;">Unidad de Medida</label>
+                                        <label class="labels" >Unidad de Medida</label>
                                         <select name="umenviada" id="umenviada" class="form-control" required>
                                           <option value="<?php echo $g['idumpresentacion'];?>"><?php echo $g['abrevcompr'];?></option>
                                           <option selected value="<?php echo $g['idumcompra'];?>"><?php echo $g['abrevpres'];?></option>
@@ -152,9 +156,9 @@
                                         </select>
                                     </div>
                                   </div>
-                                <div class="form-group col-sm-12">
+                                <div class="form-group row">
                                     <div class="col-sm-9">
-                                        <label class="control-label" style="float: left;">Observaciones</label>
+                                        <label class="labels" >Observaciones</label>
                                         <textarea rows="4" cols="50" class="form-control sty" 
                                             placeholder="detalles sobre el envio" id="message" required
                                             data-validation-required-message="por favor ingrese los detalles del envio" minlength="2" 
@@ -163,9 +167,16 @@
                                         </textarea>
                                     </div>
                                 </div>
-                                <div class="form-group col-sm-12">
-                                <input type="submit" class="btn btn-primary" value="Enviar" id="botonG">
+                                
+                            <div class="container">
+                                <div class="row ">
+                                    <div class="col-sm-12 d-flex justify-content-center">
+                                        <input type="submit" class="btn btn-sm btn-outline-primary" value="Enviar" id="botonG">
+                                    </div>
                                 </div>
+                            </div>
+                                
+
                                 </form>
                             </div>
                             <div style="border: none" class="modal-footer">    
@@ -180,8 +191,8 @@
                                           <div class="modal-dialog modal-sm">
                                             <div class="modal-content">
                                               <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
                                                 <h5 class="modal-title" ><b id="t"></b></h5>
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
                                               </div>
                                               <div class="modal-body" id="cuerpo">
                                               </div>
@@ -235,7 +246,7 @@
                                                             <div class="col-sm-2" id="orden"></div>
                                                             <div class="col-sm-5" id="nombre"></div>
                                                             <div class="col-sm-3" >
-                                                              <label class="control-label" style="float: left;">Status</label>
+                                                              <label class="labels" >Status</label>
                                                               <select name="status" id="status" class="form-control">
                                                               <option value="" disabled>seleccione</option>
                                                               </select>

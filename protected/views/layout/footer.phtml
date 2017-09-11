@@ -7,11 +7,11 @@
 			</li>
 		</ul>
 	</footer>
-	<label  hidden id="base_url"><?php echo BASE_URL; ?></label>
-	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/jquery-2.1.4.js"></script>
-	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/jquery-1.12.1.min.js"></script>
-	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/main.js"></script>
-	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/opciones.js"></script>
+	<label hidden id="base_url"><?php echo BASE_URL; ?></label>
+	<label hidden id="public_url"><?php echo PUBLIC_URL; ?></label>
+	<input type="text" id="valormenu">
+<script src="<?php echo PUBLIC_URL; ?>js/jquery-1.12.1.min.js"></script>
+
 	<!-- / START - page related files and scripts [optional] -->
     <?php  if (isset($_view_params['js']) && count($_view_params['js'])): ?>
 	<?php  	for ($i = 0; $i < count($_view_params['js']); $i++):  ?>
@@ -21,35 +21,48 @@
     <!-- / END - page related files and scripts [optional] -->
     
     <!-- Bootstrap Core JavaScript -->
-    <script src="<?php echo PUBLIC_URL;?>otros/vendor/bootstrap/js/bootstrap.min.js"></script>
-    <!-- Metis Menu Plugin JavaScript -->
-    <script src="<?php echo PUBLIC_URL;?>otros/vendor/metisMenu/metisMenu.min.js"></script>
-    <!-- Custom Theme JavaScript -->
-    <script src="<?php echo PUBLIC_URL;?>otros/dist/js/sb-admin-2.js"></script>
 
-	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/bootstrapValidator.min.js"></script>
-	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/index.js"></script>
-	<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/jquery.dataTables.min.js"></script>
+    
+    <script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/opciones.js"></script>
+    <script src="<?php echo PUBLIC_URL; ?>js/tether.min.js"></script>
+    <script src="<?php echo PUBLIC_URL; ?>js/bootstrap.min.js"></script>
+    <script src="<?php echo PUBLIC_URL; ?>js/jquery.cookie.js"> </script>
+    <script src="<?php echo PUBLIC_URL; ?>js/grasp_mobile_progress_circle-1.0.0.min.js"></script>
+    <script src="<?php echo PUBLIC_URL; ?>js/front.js"></script>
+    <script src="<?php echo PUBLIC_URL; ?>js/jquery.nicescroll.min.js"></script>
+    <script src="<?php echo PUBLIC_URL; ?>js/jquery.validate.min.js"></script>
+
+
+    
+
+
+
+	    <!-- you can replace it by local Font Awesome-->
+
 
 	
 	<script>
 	   var BASE_URL = $('#base_url').text();
+	   var PUBLIC_URL = $('#public_url').text();
+	   //alert(PUBLIC_URL);
 	</script>
 	<script type="text/javascript"> 
-$(document).ready(function(){
-	
-	$('#gifcargando').fadeOut(600);
-	setTimeout(function() {$('#body').fadeIn(700);}, 600);
-   /* $("a.subM").click(function(event){ event.preventDefault(); linkLocation = this.href; $('#body').fadeOut(500, redirectPage); }); function redirectPage() { window.location = linkLocation; } 
-    $(".atras").click(function(event){ event.preventDefault();  $('#body').fadeOut(500); });*/
-    
-});
-</script>
-<script>
-$(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip();   
-});
-</script>
+		$(document).ready(function(){
+
+				var texto = $('#titulocard').text();
+			$('#valormenu').val(texto);
+			var escritura = $('#valormenu').val();
+			$('#area').empty();
+			$('#area').html(escritura);
+			$('[data-toggle="tooltip"]').tooltip();   
+		    $('.nicescroll-cursors').removeAttr('style');
+			$('#gifcargando').fadeOut(600);
+			setTimeout(function() {$('#body').fadeIn(700);$('#body').prop("hidden",false)}, 600);
+		   /* $("a.subM").click(function(event){ event.preventDefault(); linkLocation = this.href; $('#body').fadeOut(500, redirectPage); }); function redirectPage() { window.location = linkLocation; } 
+		    $(".atras").click(function(event){ event.preventDefault();  $('#body').fadeOut(500); });*/ 
+		});
+	</script>
+
 
 
 </body>

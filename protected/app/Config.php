@@ -7,7 +7,7 @@
 	define('DEFAULT_CONTROLLER', 'login');
 	define('DEFAULT_METHOD', 'index');
 	
-	define('BASE_URL', 'http://localhost:8080/cocai/'); //Guarda la direccion BASE de nuestro sistema.
+	define('BASE_URL', 'http://localhost/cocai/'); //Guarda la direccion BASE de nuestro sistema.
 	define('PUBLIC_URL', BASE_URL . 'public/'); //Guarda la direccion de nuestro directorio publico
 
 	define('SIZE_PAPER', 'LEGAL');
@@ -15,7 +15,7 @@
 	define('LANGUAJE_PDF', 'en');
 	define('CHARSET_PDF', 'utf-8');
 	
-	define('APP_NAME', 'nombre de la app');
+	define('APP_NAME', 'EPOC-MVD');
 	define('APP_LOGO', '');
 	define('APP_OTHER', '');
 	define('SESSION_TIME', 20);

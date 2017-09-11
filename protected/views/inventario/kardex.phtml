@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="us">
+<head>
+  <meta charset="utf-8">
+  <title>jQuery UI Example Page</title>
+
+
+
+  
+</head>
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+<div id="body" hidden>
+<div id="page-wrapper">
+            <div style="margin-top: 2%;" class="container-fluid">
+
+                <div class="row">
+                    <div class="col-12 ">
+                        
+
+                        <div class="card cardH">
+
+                            <div class="card-header">
+                              <center><h3 ><o id="titulocard">Movimientos de Kardex</o> <?php $ti=strtolower($this->model[0]['udn']); echo "[".ucwords($ti)."]"; ?></h3></center>
+                            </div>
+                          
+                          <div class="card-block">
+
+
+
+                        
+                        <?php if (isset($this->_error)) {
+                            echo $this->_error;
+                        } ?>
+                        <?php if ($this->model[0]['modelo'] != null): ?>
+                            <div>
+                              <img width="10%" height="10%" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-responsive" alt="">
+                            </div>
+                          <?php else: ?>
+                            <div>
+                              <img width="8%" height="8%" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->model[0]['udn']; ?>.png" class="img-responsive" alt="">
+                            </div>
+                        <?php endif ?>
+                        
+                        
+                        <input type="hidden" name="idudn" id="idudn" value="<?php echo $this->model[0]['idU']; ?>">
+
+                        <fieldset>
+                            
+                          
+                            <div id="" class="form-group row">
+                                <div class="col-sm-3 col-sm-offset-1">
+                                    <label class="labels"  for="">Fecha de incio:</label>
+                                      <input class="form-control" name="fecha_ini" id="fecha_ini" type="date">
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="labels"  for="">Fecha limite:</label>
+                                      <input class="form-control test" name="fecha_fin" id="fecha_fin" type="date" disabled data-toggle="tooltip" data-placement="bottom" title="el valor debe ser posterior o igual a la fecha de inicio">
+                                </div>
+                            </div>
+
+                             <div id="" class="form-group row">
+                                <div class="col-sm-3 col-sm-offset-1">
+                                    <label class="labels" for="">Tipo de mov.:</label>
+                                      <select  id="tipoMov" name="tipoMov"  class="form-control" disabled>
+                                        <option selected disabled value="seleccione">Seleccione..</option>
+                                        <option value="131">Entradas</option>
+                                        <option value="132">Salidas</option>
+                                      </select>
+                                </div>
+                                <div class="col-sm-3">
+                                      <label class="labels" for="">Motivo:</label>
+                                      <select id="motivo" name="motivo" class="form-control" disabled>
+                                        <option selected disabled value="seleccione">Seleccione..</option>
+                                      </select>
+                                </div>
+                                
+                                    <input type="hidden" name="mercancia_id" id="mercid" >
+                                    <input type="hidden" name="tiendae" id="tiendae" value="<?php echo $this->idu;?>">
+                                    <input type="hidden" name="status_id" id="status_id" value="126">
+                              </div>
+
+                                  
+
+                            <div class="container">
+                              <div class="row justify-content-center">
+                                <div class="col-1">
+                                  <div id="botonf">
+                                    <input  type="button" class="btn btn-sm btn-outline-primary"  name="" value="Consultar" disabled>
+                                  </div>
+                                  <div id="botonv">  
+                                  </div>
+                                </div>
+                              </div>
+                              
+                            </div>
+                            
+                            
+                        </fieldset>
+                                               
+                        </div>
+                        <center>
+    <div id="load" hidden>
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+
+                        <div class="dataTable_wrapper " id="tablaoculta" hidden>
+                             <div class="col-sm-12 table-responsive">
+                                <table id="tablakardex" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%" >
+                                  <thead class="theadH">
+                                      <tr>
+                                          <th>Producto</th>
+                                          <th>Grupo</th>
+                                          <th>Tipo</th>
+                                          <th>Cantidad</th>
+                                          <th>Motivo</th>
+                                          <th>Descripcion</th>
+                                          <th>Hora</th>
+                                          <th>Usuario</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody id="cuerpo"></tbody>
+                                  
+                              </table>
+                                       
+                                </div>
+                            </div>
+                            
+
+
+
+                  </div>
+                </div>
+              </div>
+        </div>
+</div>
+</div>
+</body>
+
+
+</div>
+</html>
+</div>
+</div>
+
+
+
+<!-- Autocomplete -->
+
+</html>

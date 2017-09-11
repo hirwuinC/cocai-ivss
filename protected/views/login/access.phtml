@@ -2,10 +2,11 @@
 
         <!-- CSS -->
         <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-        <link rel="stylesheet" href="<?php echo PUBLIC_URL; ?>css/bootstrap.min.css">
+        <link rel="stylesheet" href="<?php echo PUBLIC_URL; ?>css/bootstrap.css">
         <link rel="stylesheet" href="<?php echo PUBLIC_URL; ?>font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" href="<?php echo PUBLIC_URL; ?>css/form-elements.css">
         <link rel="stylesheet" href="<?php echo PUBLIC_URL; ?>css/style.css">
+        <link rel="stylesheet" href="<?php echo PUBLIC_URL; ?>css/custom.css">
         <title>EPOC-WEB</title>
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -15,55 +16,118 @@
         <![endif]-->
 
         <!-- Top content -->
-        <div class="top-content">
-          
-            <div class="inner-bg">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-5 col-sm-offset-4 form-box">
-                          <div class="form-top">
-                            <div class="form-top-left">
-                                <div>
-                                     <img src="<?php echo PUBLIC_URL;?>img\epoc-logo.jpg" class="img-responsive" alt="epoc">
-                                     <legend ></legend>
-                                    </div>
-                                    <h4><strong>EPOC-WEB</strong></h4><h5>Control de costos y administracion de inventario</h5>
+<center>
+    <div style="margin-top: 15%" id="cargando">
+        <img class="img" src="<?php echo PUBLIC_URL; ?>img/epoc-logo.jpg"><br>
+        <img class="img" width="150px" src="<?php echo PUBLIC_URL; ?>img/loading.gif">
+    </div>
+</center>
+<div id="body" hidden>
+<div class="container py-5 ">
+    <div class="row ">
+        <div class="col-md-12 ">
+            <div class="row">
+            <div class="col-5 hidden-sm-up">
+                                <img style=" float: right;" src="<?php echo PUBLIC_URL;?>img\epoc-logo.png" class="img-fluid imghd" alt="img">
                             </div>
-                            <div class="form-top-right">
-                              <img style="width: 80px; height: 80px; margin-top: 5px; margin-left: 15px" src="<?php echo PUBLIC_URL;?>img\llave.jpg" class="img-responsive" alt="img">
-                            </div>
-                            </div>
-                            <div class="form-bottom">
-                          <form id="login" class="form-signin" action='<?php echo BASE_URL . 'login/signIn'?>' method="post">
-                            <?php if (isset($this->_error)) echo $this->_error; ?>
-                            <div class="input-group col-sm-8 col-sm-offset-2 input-group-lg">
-                               <div class="input-group-addon"><span class="fa fa-lg fa-lock"/></div>
-                                    <input type="password"  class="form-control" id="clave" placeholder="Contrase&ntilde;a" name="password"/>
-                            </div><br>
-                            <div class="col-sm-8 col-sm-offset-2 input-group-lg">
-                                
-                            
-                            <button type="submit" id="btn-login" class="button-three btn btn-sm"><span style="margin-left: -20px; font-size: 20px" class="glyphicon glyphicon-log-in"></span><font style="margin-left: 0px" size="4">  Iniciar Sesion</font></button></div>
-                        </form>
+                <div class="col-md-6 mx-auto">
+                    <span class="anchor" id="formLogin"></span>
 
-                            <div ><br>
-                            <a style="margin-left: 45%; margin-top: 4px" type="button" name="" onclick="window.close();"  class="btn btn-xs button-two btn-primary"><span class="glyphicon glyphicon-remove"></span> Salir</a>
+                    <!-- form card login -->
+
+                    <div class="card rounded-0">
+                        <div class="card-header">
+                            <div class="row ">
+                                <div class="col-3 hidden-xs-down">
+                                    <img  src="<?php echo PUBLIC_URL;?>img\epoc-logo.png" class="img-fluid" alt="epoc" style="float: left">
+                                </div>
+                                <div class="col">
+                                        <h6 class="text-center textoh6">Inicio de sesion</h6>
+                                </div>
+                                <div class="col-3">
+                                        <button class="btn btn-sm btn-outline-secondary" style="cursor: hand; cursor: pointer; border-radius: 4px; float: right;" type="button" name="" onclick="window.close();"  >
+                                            <span class="fa fa-remove"></span>
+                                        </button>
+                                </div>
+
+                            </div>
+                            
                         </div>
+
+                        <div class="card-body">
+                        <div class="row mb-3 pb-3">
+                            <div class="col-10">
+                                    <h5 class="text-left"><strong>EPOC-WEB</strong></h5>
+                                    <div class="row">
+                                        <div class="col">
+                                        <h6 class="text-left">Control de costos y administracion de inventario</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            <div class="col-2 hidden-xs-down">
+                                <img style=" float: right;" src="<?php echo PUBLIC_URL;?>img\llave.jpg" class="img-fluid imghd" alt="img">
+                            </div>
                         </div>
+                        
+                        
+                        
+                            <form id="login" class="form-signin" action='<?php echo BASE_URL . 'login/signIn'?>' method="post">
+                                <?php if (isset($this->_error)) echo $this->_error; ?>
+                                
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon fa fa-lg fa-lock" id="basic-addon1"></span>
+                                        <input type="password"  class="form-control" id="clave" placeholder="Contrase&ntilde;a" name="password"/>
+                                    </div>
+                                </div>
+                                
+                                <div class="input-group justify-content-center">
+                                    <button style="cursor: hand; cursor: pointer" type="submit" id="btn-login" class="btn btn-outline-primary">
+                                        <span  class="fa fa-sign-in"></span>
+                                        <font style="margin-left: 1px;" size="4">  Iniciar Sesion</font>
+                                    </button>
+                                </div>
+
+                                
+                            </form>
                         </div>
+                        
+                        <!--/card-block-->
                     </div>
+                    <p class="text-right">Powered by EPOC</p>
+                    <!-- /form card login -->
+
                 </div>
+
+
             </div>
-            
+            <!--/row-->
+
         </div>
+        <!--/col-->
+    </div>
+    <!--/row-->
+</div>
+<!--/container-->
+</div>
+
+
         <footer></footer>
 
 
         <!-- Javascript -->
-        <script src="<?php echo PUBLIC_URL; ?>js/jquery-1.11.1.min.js"></script>
+        <script src="<?php echo PUBLIC_URL; ?>js/jquery-1.12.1.min.js"></script>
         <script src="<?php echo PUBLIC_URL; ?>js/bootstrap.min.js"></script>
         <script src="<?php echo PUBLIC_URL; ?>js/jquery.backstretch.min.js"></script>
         <script src="<?php echo PUBLIC_URL; ?>js/scripts.js"></script>
+        <script type="text/javascript"> 
+        $(document).ready(function(){
+            $('#cargando').fadeOut(700);
+            setTimeout(function() {$('#body').fadeIn(800);$('#body').prop("hidden",false)}, 700);
+           /* $("a.subM").click(function(event){ event.preventDefault(); linkLocation = this.href; $('#body').fadeOut(500, redirectPage); }); function redirectPage() { window.location = linkLocation; } 
+            $(".atras").click(function(event){ event.preventDefault();  $('#body').fadeOut(500); });*/ 
+        });
+    </script>
         
         <!--[if lt IE 10]>
             <script src="assets/js/placeholder.js"></script>

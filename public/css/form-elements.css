@@ -62,80 +62,9 @@ textarea::-webkit-input-placeholder, textarea.form-control::-webkit-input-placeh
 
 
 
-button.btn {
-    height: 50px;
-    margin: 0;
-    padding: 0 20px;
-    vertical-align: middle;
-    background: #009FE3;
-    border: 0;
-    font-family: 'Roboto', sans-serif;
-    font-size: 16px;
-    font-weight: 300;
-    line-height: 50px;
-    color: #fff;
-    -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
-    text-shadow: none;
-    -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none;
-    -o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; -ms-transition: all .3s; transition: all .3s;
-}
 
 
 
 
 
 
-h1, button{
-  color:#fff;
-  text-align: center;
-  padding: 20px;
-}
-
-.button-three{
-  text-align: center;
-  cursor: pointer;
-  font-size:24px;
- 
-}
-
-
-/*Button Three*/
-.button-three {
-    position: relative;
-    background-color: #;
-    border: none;
-    padding: 20px;
-    width: 200px;
-    text-align: center;
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;
-    text-decoration: none;
-    overflow: hidden;
-}
-
-.button-three:hover{
-   background:#4DB1CE;
-   box-shadow:0px 1px 1px 1px black;
-   font-weight: bold;
-   color:white;
-}
-
-.button-three:after {
-    content: "";
-    background: #C5D9C0;
-    display: block;
-    position: absolute;
-    padding-top: 300%;
-    padding-left: 350%;
-    margin-left: -20px !important;
-    margin-top: -20%;
-    opacity: 0;
-    transition: all 0.6s
-}
-
-.button-three:active:after {
-    padding: 0;
-    margin: 0;
-    opacity: 1;
-    transition: 0s
-}

@@ -4,7 +4,8 @@ $(document).ready(function() {
     load('referencia','familia',false);
     load('unidad_medida','unidad_medida_c',false);
     load('unidad_medida','unidad_medida_pr',false);
-    load('unidad_medida','unidad_medida_s',false);  
+    load('unidad_medida','unidad_medida_s',false);
+    load('referencia','motivo',false,false);
     //mostrar o no el input de cantidad por articulo comprado (aplica para cajas y similares que contengan unidades expresadas en kg gr lt o ml)
     $('#unidad_medida_c').change(function(event) {
         var unidad_c = $('#unidad_medida_c').val();
@@ -146,7 +147,7 @@ function validarCodigo(code){
       $('#glyphicon').empty();
         if (data === true) {
           //alert('Este codigo esta asignado a un producto');
-          $('#glyphicon').append('<span style="color:red; margin-top:75%; margin-right:115%; font-size:20px;" class="glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="bottom" title="Este codigo esta asignado a un producto"></span>');
+          $('#glyphicon').append('<span style="color:red; margin-top:75%; margin-right:115%; font-size:20px;" class="fa fa-remove" data-toggle="tooltip" data-placement="bottom" title="Este codigo esta asignado a un producto"></span>');
           $('#botonG').prop('disabled',true);
         }else{
           $('#glyphicon').empty();
@@ -172,8 +173,8 @@ function validarProducto(marca){
       $('#glyphi').empty();
         if (data === true) {
           //alert('Este codigo esta asignado a un producto');
-          $('#glyphi').append('<span style="color:red; margin-top:75%; margin-right:115%; font-size:20px;" class="glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="bottom" title="Este producto esta registrado con este nombre en esta marca"></span>');
-          $('#glyph').append('<span style="color:red; margin-top:75%; margin-right:115%; font-size:20px;" class="glyphicon glyphicon-remove" data-toggle="tooltip" data-placement="bottom" title="Este nombre esta asignado a un producto"></span>');
+          $('#glyphi').append('<span style="color:red; margin-top:75%; margin-right:115%; font-size:20px;" class="fa fa-remove" data-toggle="tooltip" data-placement="bottom" title="Este producto esta registrado con este nombre en esta marca"></span>');
+          $('#glyph').append('<span style="color:red; margin-top:75%; margin-right:115%; font-size:20px;" class="fa fa-remove" data-toggle="tooltip" data-placement="bottom" title="Este nombre esta asignado a un producto"></span>');
           $('#botonG').prop('disabled',true);
         }else{
           $('#glyphi').empty();
@@ -284,7 +285,7 @@ function format(input){
   }
 }
 
-
+//Este bloque de Codigo me da problemas con las notificaciones
    window.onload =function codigoPropuesto(){
    // $('#kodigo').empty();
     var idT = $('#idT').val(); 
@@ -314,6 +315,7 @@ function format(input){
         });
     
 }
+//hasta aqui arroja el problema
 
 
 function confirmacionDelete(idp,idt){
@@ -331,8 +333,8 @@ $.ajax({
       $('#cuerpo').append(
         '<div class="alert alert-danger alert-dismissable" style="text-align:left">'+
         'Usted esta por eliminar el producto "'+data[0]['producto']+'" marca "'+data[0]['marca']+'". Realmente desea continuar?<br>Recuerde que eliminar dicho producto puede afectar las recetas en el que este forma parte y de la unidades de negocio que se encuentra asignado.<br>'+
-      '<center><button class="btn btn-sm btn-success" onclick="eliminarPro('+idp+','+idt+')"><span class="glyphicon glyphicon-ok"></span> Si</button>'+
-      '<button class="btn btn-sm btn-danger" onclick="cancelar()"><span class="glyphicon glyphicon-remove"></span> No</button></center>'+
+      '<center><button class="btn btn-sm btn-success" onclick="eliminarPro('+idp+','+idt+')"><span class="fa fa-ok"></span> Si</button>'+
+      '<button class="btn btn-sm btn-danger" onclick="cancelar()"><span class="fa fa-remove"></span> No</button></center>'+
       '</div>');
 })
 }
@@ -393,7 +395,7 @@ function tablaCombo(data){
                                '<td>'+data[i]['cantidad']+'</td>'+
                                '<th>'+
                                '<center><a Onclick="eliminarAgregadoCombo('+data[i]['id']+')">'+
-                                '<span  class="glyphicon glyphicon-remove"></span>'+
+                                '<span  class="fa fa-remove"></span>'+
                                 '</a></center>'+
                                 '</th>'+
                                '</tr>'
@@ -489,7 +491,7 @@ function infoConversion(idP, idT){
     $('#alerta').modal('show');
     $('#cuerpo').empty();
     $('#t').empty();
-    $('#t').append('¡Conversion!<br><br>');
+    $('#t').append('¡Conversion!');
     $('#cuerpo').append(
       '<div class="alert alert-info alert-dismissable" style="text-align:left">'+
        '<p>El producto tiene una existencia de: <br>'+data[0]['conversion']+'</p>'+
@@ -525,7 +527,7 @@ function asignacionProveedor(){
                                  '<td>'+
                                  '<center>'+
                                  '<a onclick="deleteProve('+i+')">'+
-                                 '<span  class="glyphicon glyphicon-remove"></span>'+
+                                 '<span  class="fa fa-remove"></span>'+
                                  '</a>'+
                                  '</center>'+
                                  '</th>'+
@@ -537,7 +539,7 @@ function asignacionProveedor(){
 }
 
 function deleteProve(indice){
-  alert(indice);
+  //alert(indice);
   if (indice == 0) {
     var indice = 'cero';
   }
@@ -548,7 +550,7 @@ function deleteProve(indice){
     })
     .done(function(data) {
       if (data == false) {
-        alert('por aqui');
+        //alert('por aqui');
         $('#columna').empty();
       }else{
       $('#columna').empty();
@@ -560,7 +562,7 @@ function deleteProve(indice){
                                  '<td>'+
                                  '<center>'+
                                  '<a onclick="deleteProve('+i+')">'+
-                                 '<span  class="glyphicon glyphicon-remove"></span>'+
+                                 '<span  class="fa fa-remove"></span>'+
                                  '</a>'+
                                  '</center>'+
                                  '</th>'+

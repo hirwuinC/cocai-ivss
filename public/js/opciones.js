@@ -3,7 +3,7 @@ $(document).ready(function() {
 	$('#dh').click(function(event) {
         $('#datos2').slideToggle(200);
         $('#datos2').prop("hidden", false);
-        $(this).find('.buscador').toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
+        $(this).find('.buscador').toggleClass('fa-chevron-down fa-chevron-up');
     });
 });
 
