@@ -16,9 +16,7 @@ jQuery(document).ready(function($) {
                      
 
 
-			$('#botonf').hide();
-		    $('#botonv').empty();
-		    $('#botonv').append('<input type="button" class="btn btn-sm btn-outline-primary" id="consult" name="consult" value="Consultar">');
+				$('#consult').prop("disabled",false);
 			    $('#consult').click(function(event) {
 			    	$('#load').show();
 			    	$('#load').prop("hidden",false);
@@ -35,23 +33,29 @@ jQuery(document).ready(function($) {
   	//alert(modelo); 
   $('#tablaoculta').hide();
   $('#load').fadeOut(600);
-  setTimeout(function() {$('#tablaoculta').fadeIn(700);$('#tablaoculta').prop("hidden",false);}, 600);
+  setTimeout(function() {$('#tablaoculta').fadeIn(500);$('#tablaoculta').prop("hidden",false);}, 400);
   
-    $('#tablaproduct').DataTable({
+    
+		$('#tablaproduct').DataTable({
             "ajax": BASE_URL+'/receta/consultarpro/'+modelo,
             "columns": [
                 { "data": "codip" , className: "tdleft"},
                 { "data": "producto" , className: "tdleft"},
                 { "data": "costo" , className: "tdleft"},
                 { "data": "pvpa" , className: "tdright" },
-                { "data": "idrec" , className: "tdcenter",
-          render : function(data, type, row) {
-              return ''+data+' <span data-toggle="tooltip" data-placement="top" onclick="vering('+row['idpro']+')" class="fa '+row['icon']+' test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="'+row['titulo']+'" id="spanvering"></span>'
-          }    
-       }    
+                { "data": "idrec" , className: "tdcenter",   
+	          	render : function(data, type, row) { 
+		          	if (data == 'Si') {
+		              	return ''+data+' <span data-toggle="tooltip" data-placement="top" onclick="vering('+row['idpro']+')" class="fa '+row['icon']+' test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="'+row['titulo']+'" id="spanvering"></span>'
+		         	}else{ 
+		         		return ''+data+' <span data-toggle="tooltip" data-placement="top" onclick="creareceta('+row['idpro']+')" class="fa '+row['icon']+' test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="'+row['titulo']+'" id="spanvering"></span>'  
+		         	}
+	       		} 
+   				}   
             ],
             destroy: true,
-            responsive: true
+            responsive: true,
+
         });
     $('#tablaproduct').css("width","100%");
 
@@ -134,15 +138,18 @@ jQuery(document).ready(function($) {
 			$('#recetasysubs').hide();
 			//alert(data.length);
 			$('#mensaje').empty();
-			$('#mensaje').append('<img src="http://localhost/COCAI/public/img/check1.gif" alt="exito"/>');
-			$('#mensaje').fadeOut(1000);
-			setTimeout(function() {vering(data);}, 1000);
+			$('#mensaje').append('<img width="5%" height="5%" src="http://localhost/COCAI/public/img/check1.gif" alt="exito"/>');
+			$('#mensaje').fadeOut(500);
+			setTimeout(function() {vering(data);}, 500);
 			
 		})
 
 	 }
 
 	 jQuery(document).ready(function($) {
+	 	$('#dh').click(function(event) {
+	 		$('#hidetab').slideToggle();
+	 	});
 	 	$('.filtro').bind("keyup click",function(event) {
 	 		//var filtro = $('#filtro').val();
 	 		var producto = $('#idproduct').val();
@@ -178,8 +185,9 @@ jQuery(document).ready(function($) {
 	 });
 
 	 function agregaring(producto,ingrediente,receta){
+	 	$('#cuerpoagregar').empty();
 	 	//alert(producto); alert(ingrediente); alert(receta);
-	 	$('#modalcant').modal('show');
+	 	$('#mcant').modal('show');
 	 	$('#unidadmed').empty();
 	 	$.ajax({
 			url: BASE_URL+'/receta/mercancia/'+ingrediente,
@@ -192,15 +200,15 @@ jQuery(document).ready(function($) {
 				$('#unidadmed').append('<option value="'+data[0]['idUS']+'">'+data[0]['US']+'</option>'+
 					'<option selected value="'+data[0]['idUP']+'">'+data[0]['UP']+'</option>');
 				$('#bot').append('<button class="btn btn-sm btn-default" id="cancelarag">Cancelar</button><span style="margin-right: 1%; margin-left: 1%; "></span><button class="btn btn-sm btn-primary"  onclick="agregado('+producto+','+ingrediente+','+receta+')" id="agregari">Agregar</button>  ');
-			$('#cancelarag').click(function(event) {
-			$('#modalcant').modal('hide');
-		});
+				$('#cancelarag').click(function(event) {
+					$('#mcant').modal('hide');
+				});
 		})
 		
 
 	 }
 
-	 function agregado(producto,ingrediente,receta){
+	function agregado(producto,ingrediente,receta){
 
     	var cantxing = $('#canti').val();
     	var unidad = $('#unidadmed').val();
@@ -211,22 +219,21 @@ jQuery(document).ready(function($) {
             dataType: 'json'
 		})
 		.done(function(data) {
-			if (data == 'duplicado') {
+		if (data == 'duplicado') {
 				$('#cuerpoagregar').empty();
 				$('#cuerpoagregar').append('<div class="alert alert-danger" style="text-align: left"><i style="float: right; color: black; font-size: 14px" class="fa fa-close" id="equis"></i></a><b>El ingrediente que intenta agregar ya pertenece a esta receta, intente con un ingrediente diferente</b></div>');
 				$('#equis').click(function(event) {
-					//alert("cerrar");
-				$('#modalcant').modal('hide');
-		});
+					$('#mcant').modal('hide');
+				});
 			}else{
-			$('#modalcant').modal('hide');
-			$('#modaling').modal('hide');
 			$('#recetasysubs').hide();
-			//alert(data.length);
+			$('#modaling').modal('hide');
+			$('#mcant').modal('hide');
 			$('#mensaje').empty();
-			$('#mensaje').append('<img src="http://localhost/COCAI/public/img/check1.gif" alt="exito"/>');
-			$('#mensaje').fadeOut(1000);
-			setTimeout(function() {vering(data);}, 1000);
+			$('#mensaje').append('<img width="5%" height="5%" src="http://localhost/COCAI/public/img/check1.gif" alt="exito"/>');
+			$('#mensaje').fadeOut(700);
+			setTimeout(function() {vering(data);}, 700);
+			
 			}
 			
 			
@@ -236,6 +243,45 @@ jQuery(document).ready(function($) {
 		})
 
 
+	}
+
+	 function creareceta(producto){
+	//alert(producto);
+	var modelo = $('#modelo_id').val();
+	var idpr = producto;
+	$.ajax({
+ 		url: BASE_URL+'/receta/nombrepro/'+producto,
+            type: 'POST',
+            dataType: 'json'
+ 	})
+ 	.done(function(data) {
+ 		//alert(data[0]['nombre']);
+ 		var nombrep = data[0]['producto'];
+ 		$('#cuerpo').empty();
+ 		$('#cuerpo').append('<h4>Desea crear una receta para '+nombrep+'?</h4>');
+ 		$('#modalrec').modal('show');
+ 		$('#bots').empty();
+ 		$('#bots').append('<button class="btn btn-sm btn-default" id="cancelarinsert">Cancelar</button><span style="margin-right: 1%; margin-left: 1%; "></span><button class="btn btn-sm btn-primary"  onclick="crear('+idpr+','+modelo+')" id="agregarec">Agregar</button>  ');
+			$('#cancelarinsert').click(function(event) {
+			$('#modalrec').modal('hide');
+		});
+ 		
+
+ 	})
+
+	 }
+
+	 function crear(idproducto,modelo){
+	 	alert(idproducto); alert(modelo);
+	 	$.ajax({
+ 		url: BASE_URL+'/receta/crearreceta/'+idproducto+'/'+modelo,
+            type: 'POST',
+            dataType: 'json'
+ 		})
+ 		.done(function(data) {
+ 			$('#modalrec').modal('hide');
+ 			verproductos(modelo);
+ 		});
 	 }
 
 

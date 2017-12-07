@@ -49,6 +49,8 @@ function load(tabla,item,valor,model){
 
 }
 
+
+
 function load2(tabla,item,valor,otro){
 		//alert(item);
 	var select = $('#'+item);

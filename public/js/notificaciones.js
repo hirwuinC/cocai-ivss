@@ -12,12 +12,19 @@ function verificarN(valor){
       $('#circulo').css({'visibility': 'visible'});
       $('#notifications').empty();
       if (notif !=0) {
-        $('#notifications').append(notif);
+        $('#not').attr('data-toggle','dropdown');
         $('.fa-bell-slash').toggleClass('fa-bell-slash fa-bell');
-    }else{
-      $('.fa-bell').toggleClass('fa-bell-slash fa-bell');
-      $('#circulo').css({'visibility': 'hidden'});
-    }
+        if (notif >=9) {
+          $('#notifications').append('9+');
+        }else{
+          $('#notifications').append(notif);
+        }
+        
+      }else{
+        $('.fa-bell').toggleClass('fa-bell-slash fa-bell');
+        $('#circulo').css({'visibility': 'hidden'});
+      }
+
       notifications(notif,data);
   })
   
@@ -52,12 +59,22 @@ function notifications(notif,data){
         }
     v=c+ +i;
     if (data.length > 0) {
-    $('#news').append('<li>'+
-                              '<a class="notif" href="'+BASE_URL+'inventario/'+func+'/'+data[i][3]+'/'+data[i][1]+'/'+data[i][2]+'/'+notif+'"">'+
-                                  ''+st+' #'+data[i][1]+'  <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['fecha']+'</o>'+' <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['hora']+'</o>'+
-                              '</a>'+
-                            '</li>'
-    );
+      if (data[i]['fecharemi']!=null) {
+          $('#news').append('<li>'+
+                          '<a class="notif" href="'+BASE_URL+'inventario/'+func+'/'+data[i][3]+'/'+data[i][1]+'/'+data[i][2]+'/'+notif+'"">'+
+                              ''+st+' #'+data[i][1]+'  <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['fecharemi']+'</o>'+' <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['horaremi']+'</o>'+
+                          '</a>'+
+                        '</li>'
+          );
+      }else{
+        $('#news').append('<li>'+
+                          '<a class="notif" href="'+BASE_URL+'inventario/'+func+'/'+data[i][3]+'/'+data[i][1]+'/'+data[i][2]+'/'+notif+'"">'+
+                              ''+st+' #'+data[i][0]+'  <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['fecharepo']+'</o>'+' <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['horarepo']+'</o>'+
+                          '</a>'+
+                        '</li>'
+          );
+      }
+      
   }else{
     $('#news').empty();
   }

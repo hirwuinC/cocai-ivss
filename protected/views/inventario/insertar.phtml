@@ -47,7 +47,7 @@
 
                         <div class="card cardH" >
 
-                            <div class="card-header">
+                            <div class="card-header" style="padding: 5px; height: 25%">
                               <center><h3 class="page-header" style="font-family: Times New Roman, Times, serif;">Agregar productos </h3> </center>
                             </div>
                           
@@ -60,7 +60,7 @@
                                 <div class="col-12 d-flex justify-content-center">
                                     <img style="margin-left:0%;" src="<?php echo PUBLIC_URL;?>img\Corporacion multifranquicia.png" class="img-responsive" alt="modelo">
                                 </div>
-                            </div><br><br>
+                            </div>
 
                 	 <form action="<?php echo BASE_URL;?>inventario/insert" method="post" accept-charset="utf-8">
                             <input type="text" id="idT" name="idT" hidden value="<?php echo $this->idT;?>">
@@ -72,13 +72,14 @@
                                 <div class="form-group row d-flex justify-content-start offset-1 ">
                                         <div class="col-xs-4 col-sm-4 col-md-3">
                                             <label class="labels" style="float: left;">Codigo</label>
-
-                                            <input type="text" class="form-control" id="co" name="codigo" required>
+                                            <div class="col-1 d-flex offset-10" id="glyphicon" data-toggle="tooltip" data-placement="right" title="Este codigo esta asignado a otro producto">
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm codigop" id="co" name="codigo" required>
                                         </div>
-                                        <div class="col-1 " id="glyphicon"></div>
+                                        
                                         <div class="col-xs-4 col-sm-4 col-md-3">
                                             <label class="labels" style="float: left;">Codigo anterior</label>
-                                            <input type="text" class="form-control" name="codigo_anterior" id="c_tcr">
+                                            <input type="text" class="form-control form-control-sm" name="codigo_anterior" id="c_tcr">
                                         </div>
                                 </div>
                                 
@@ -86,17 +87,21 @@
                                 <div class="form-group row d-flex justify-content-start offset-1">
                                     <div class="col-xs-4 col-sm-4 col-md-3">
                                         <label class="labels" style="float: left;">Nombre</label>
-                                        <input type="text" class="form-control" name="nombre" id="nombre" required>
+                                        <div class="col-1 d-flex offset-10" id="glyphi" data-toggle="tooltip" data-placement="right" title="ya existe un producto con el mismo nombre y marca">
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" name="nombre" id="nombre" required>
+
                                     </div>
-                                    <div class="col-1" id="glyphi"></div>
+                                    
                                     <div class="col-xs-4 col-sm-4 col-md-3">
                                         <label class="labels" style="float: left;">Marca</label>
-                                        <input type="text" class="form-control" name="marca" id="marca" required>
+                                        <div class="col-1 d-flex offset-10" id="glyph" data-toggle="tooltip" data-placement="right" title="ya existe un producto con el mismo nombre y marca">
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" name="marca" id="marca" required>
                                     </div>
-                                     <div class="col-1" id="glyph"></div>
-                                     <div class="col-xs-4 col-sm-4 col-md-3 ">
+                                    <div class="col-xs-4 col-sm-4 col-md-3 ">
                                         <label class="labels" style="float: left;">Clasificacion</label>
-                                        <select name="familia" id="familia" class="form-control" required> 
+                                        <select name="familia" id="familia" class="form-control form-control-sm" required> 
 
                                         </select>
                                     </div>
@@ -104,41 +109,46 @@
                                 <div class="form-group row d-flex justify-content-start offset-1">
                                     <div class="col-xs-4 col-sm-4 col-md-3">
                                         <label class="labels" style="float: left;">Peso escurrido</label>
-                                        <input type="text" class="form-control" name="pesoEs" id="pesoEs">
+                                        <input type="text" class="form-control form-control-sm" name="pesoEs" id="pesoEs">
                                     </div>
-                                    <div class="col-1 " ></div>
+                                    
                                     <div class="col-xs-4 col-sm-4 col-md-3">
                                         <label class="labels" style="float: left;">Rendiemiento ideal</label>
-                                        <input type="text" class="form-control" name="rendimientoId" id="rendimientoId">
+                                        <input type="text" class="form-control form-control-sm" name="rendimientoId" id="rendimientoId">
                                     </div>
-                                    <div class="col-1 " ></div>
+                                    
                                     <div class="col-xs-4 col-sm-4 col-md-3 ">
                                         <label class="labels" style="float: left;">Contenido neto</label>
-                                        <input type="text" class="form-control" name="contenidoN" id="contenidoN" required>
+                                        <input type="text" class="form-control form-control-sm contneto" name="contenidoN" id="contenidoN" autocomplete="off" required>
                                     </div>
                                     <input type="text" id="CNtemporal" hidden>
                                 </div>
                                  <div class="form-group row d-flex justify-content-start offset-1">
                                     <div class="col-xs-4 col-sm-4 col-md-3">
                                         <label class="labels" style="float: left;">Stock min</label>
-                                        <input type="text" class="form-control" name="stockmin" id="stockmin" required>
+                                        <input type="text" class="form-control form-control-sm" name="stockmin" id="stockmin" required>
                                     </div>
-                                    <div class="col-1 " ></div>
+                                    
                                     <div class="col-xs-4 col-sm-4 col-md-3 ">
                                         <label class="labels" style="float: left;">Stock max</label>
-                                        <input type="text" class="form-control" name="stockmax" id="stockmax" required>
+                                        <input type="text" class="form-control form-control-sm" name="stockmax" id="stockmax" required>
                                     </div>
                                 </div>
                                 <div class="form-group row d-flex justify-content-start offset-1">
                                     <div class="col-xs-4 col-sm-4 col-md-3">
                                         <label class="labels" style="float: left;">Cantidad comprada</label>
-                                        <input type="text" class="form-control" name="contenidoC" id="contenidoC" required>
+                                        <input type="text" class="form-control form-control-sm" name="contenidoC" id="contenidoC" required>
                                     </div>
-                                    <div class="col-1 " ></div>
+                                    
                                     <div class="col-xs-4 col-sm-4 col-md-3 ">
                                         <label class="labels" style="float: left;">Unidad de compra</label>
-                                        <select name="unidad_medida_c" class="form-control" id="unidad_medida_c" required>
+                                        <select name="unidad_medida_c" class="form-control form-control-sm umc" id="unidad_medida_c" required>
                                         </select>
+                                    </div>
+
+                                    <div class="col-xs-4 col-sm-4 col-md-3" id="canti" hidden>
+                                        <label class="labels" style="float: left;">ud por <o id="uc"></o></label>
+                                        <input type="text" class="form-control form-control-sm" name="cantidadConsumo" id="cantidadConsumo" >
                                     </div>
                                     
                                     <div id="cant" class="" hidden><div class="col-xs-4 col-sm-4 col-md-3 " id="cantC"></div></div>  
@@ -147,19 +157,19 @@
                                 <div class="form-group row d-flex justify-content-start offset-1">
                                     <div class="col-xs-4 col-sm-4 col-md-3 ">
                                         <label class="labels" style="float: left;">Precio unitario</label>
-                                        <input type="text" class="form-control" name="precio_unitario" id="pU" onkeyup="format(this)" onchange="format(this)"  placeholder="0,00" required>
+                                        <input type="text" class="form-control form-control-sm" name="precio_unitario" id="pU" onkeyup="format(this)" onchange="format(this)"  placeholder="0,00" required>
                                     </div>
-                                    <div class="col-1 " ></div>
+                                    
                                     <div class="col-xs-4 col-sm-4 col-md-3 ">
                                         <label class="labels" style="float: left;">Unidad Presentacion</label>
-                                        <select name="unidad_medida_p" class="form-control" id="unidad_medida_pr" required>
+                                        <select name="unidad_medida_p" class="form-control form-control-sm ump" id="unidad_medida_pr" required>
                                         <option value="Seleccione">Seleccione...</option>
                                         </select>
                                     </div>
-                                    <div class="col-1 " ></div>
+                                    
                                     <div class="col-xs-4 col-sm-4 col-md-3 ">
                                         <label class="labels" style="float: left;">Unidad Sistema</label>
-                                        <select name="unidad_medida_s" class="form-control" id="unidad_medida_s" required>
+                                        <select name="unidad_medida_s" class="form-control form-control-sm" id="unidad_medida_s" required>
                                         <option value="Seleccione">Seleccione...</option>
                                         </select>
                                     </div>
@@ -168,7 +178,7 @@
                                 <div class="form-group row d-flex justify-content-start offset-1">
                                     <div class="col-xs-4 col-sm-4 col-md-3">
                                         <label class="labels" style="float: left;">Descripcion</label>
-                                        <textarea class="form-control" rows="3" name="descripcion"></textarea>
+                                        <textarea class="form-control form-control-sm" rows="3" name="descripcion"></textarea>
                                     </div>
                                 </div>
                             
@@ -181,16 +191,16 @@
                                             <div style="background: #eee; border-top: 1px outset  #DDDDDD; border-left: 1px outset  #DDDDDD" class="card pb-3 mb-3">
                                                 <div class="row align-items-center d-flex justify-content-center ">
                                                     <div class="col-xs-4 col-sm-4 col-md-3 mt-3">
-                                                        <label class="labels" style="float: left;">U/M compra <a class="secreto" onclick="infoFormula()"><i class="fa fa-info-circle"></i></a></label>
-                                                        <input type="text" class="form-control" name="formulac" id="formulac">
+                                                        <label class="labels" style="float: left;">U/M compra <a style="cursor: hand;" class="secreto" onclick="infoFormula()"><i data-toggle="tooltip" data-placement="top" title="Click para informacion sobre esta formula" class="fa fa-info-circle"></i></a></label>
+                                                        <input type="text" class="form-control form-control-sm formulac" name="formulac" id="formulac">
                                                     </div>
                                                     <div class="col-xs-4 col-sm-4 col-md-3 mt-3">
                                                         <label class="labels" style="float: left;">U/M consumo</label>
-                                                        <input type="text" class="form-control" name="formulap" id="formulap">
+                                                        <input type="text" class="form-control form-control-sm formulap" name="formulap" id="formulap">
                                                     </div>
                                                     <div class="col-xs-4 col-sm-4 col-md-3 mt-3">
                                                         <label class="labels" style="float: left;">U/M sistema</label>
-                                                        <input type="text" class="form-control" name="formulas" id="formulas">
+                                                        <input type="text" class="form-control form-control-sm" name="formulas" id="formulas">
                                                     </div>
                                                 </div>
                                             </div>
@@ -204,19 +214,25 @@
                                         <label class="custom-control custom-checkbox">
                                           <input type="checkbox" class="custom-control-input" name="estatus">
                                           <span class="custom-control-indicator"></span>
-                                          <span class="custom-control-description">Inactivo</span>
+                                          <span class="custom-control-description" style="line-height: 1.8;">Inactivo</span>
                                         </label>
                                     </div>
-                                </div>
-                                <div class="row offset-1">
-                                    <div class="col-xs-4 col-sm-4 col-md-3 checkbox">
+                                    <div class="col-xs-4 col-sm-4 col-md-4 checkbox">
                                         <label class="custom-control custom-checkbox">
                                           <input type="checkbox" class="custom-control-input" name="exento">
                                           <span class="custom-control-indicator"></span>
-                                          <span class="custom-control-description">Producto exento de impuesto</span>
+                                          <span class="custom-control-description" style="line-height: 1.8;">Producto exento de impuesto</span>
                                         </label>
                                     </div>
+                                    <!-- <div class="col-xs-4 col-sm-4 col-md-3 checkbox">
+                                        <label class="custom-control custom-checkbox">
+                                          <input type="checkbox" class="custom-control-input" name="estatus">
+                                          <span class="custom-control-indicator"></span>
+                                          <span class="custom-control-description" style="line-height: 1.8;">Contiene Receta</span>
+                                        </label>
+                                    </div> -->
                                 </div>
+
                                     </fieldset>
                     <div class="row ">
                         <div class="col-12 ">
@@ -241,23 +257,22 @@
 
                                             <div class="col-xs-2 col-sm-3 col-md-2">
                                                 <label class="labels">Proveedor</label>
-                                                <input id="autoC" class="form-control test" placeholder="filtrar por nombre" data-toggle="tooltip" data-placement="top" title="Escriba el nombre del proveedor para filtrar!">
+                                                <input id="autoC" class="form-control form-control-sm test" placeholder="filtrar por nombre" data-toggle="tooltip" data-placement="top" title="Escriba el nombre del proveedor para filtrar!">
                                                 <input type="text" name="idProveedor" id="idProveedor" hidden>
                                             </div>
                                             <div class="col-xs-2 col-sm-3 col-md-2" id="codeP" >
                                                 <label class="labels">Codigo P.</label>
-                                                <input class="form-control" name="codigoP" id="codigoP" type="text">
+                                                <input class="form-control form-control-sm" name="codigoP" id="codigoP" type="text">
                                             </div>
 
                                             <div class="col-xs-2 col-sm-3 col-md-2" id="priceP">
                                                 <label class="labels">Precio</label>
-                                                <input class="form-control" name="precioP" id="precioP" type="text" onkeyup="format(this)" onchange="format(this)"  placeholder="0,00">
+                                                <input class="form-control form-control-sm" name="precioP" id="precioP" type="text" onkeyup="format(this)" onchange="format(this)"  placeholder="0,00">
                                             </div>
 
-                                        <div class="row ">
-                                            <div class="col-xs-2 col-sm-3 col-md-2 offset-xs-5" >
-                                                <label></label>
-                                                <button type="button" style="border-radius: 5px; margin-left: 15px;" class="btn btn-sm py-1 px-2 btn-primary " onclick="asignacionProveedor()"> 
+                                        <div class="row d-flex ">
+                                            <div class="col-xs-2 col-sm-3 col-md-1 offset-xs-5 mt-2" >
+                                                <button type="button" style="margin-left: 15px;" class="btn mt-3 btn-xs py-1 px-2 btn-outline-primary " onclick="asignacionProveedor()"> 
                                                     <font size="4"><b>
                                                         <span class="fa fa-plus"></span></b>
                                                     </font>
@@ -292,11 +307,38 @@
                     </div>
                             <div class="row  pt-3 mt-3">
                                 <div class="col d-flex justify-content-center">
-                                    <input type="submit" class="btn btn-outline-primary" value="Guardar" id="botonG">
+                                    <input type="submit" class="btn btn-sm btn-outline-primary" value="Guardar" id="botonG">
                                 </div>
                             </div>
                             
                 </div>
+                <!-- MODAL DE CONFIRMACION PARA ELIMINAR-->
+                                        <div class="modal fade " id="alerta" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                                            <div class="modal-dialog modal-sm" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <div id="t"></div>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+
+
+                                                    </div>
+                                                    <div class="modal-body" >
+
+                                                       <div id="cuerpo"></div><br><br>
+                                                        <center>    
+                                                            <div id="espera" hidden>
+                                                                <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+                                                            </div>
+                                                            <div id="exito" hidden>
+                                                                <img width="140px" height="140px" class="img" src="<?php echo PUBLIC_URL; ?>img/check1.gif">
+                                                            </div>
+                                                        </center>
+                                                    </div>   
+                                                </div><!-- /.modal-content -->
+                                            </div><!-- /.modal-dialog -->
+                                        </div><!-- /.modal -->
                                 
 
                     

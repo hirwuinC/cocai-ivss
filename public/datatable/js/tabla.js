@@ -12,10 +12,11 @@
     $('#tablarecetario').DataTable({
                 responsive: true
         });
-    $('#tablaproduct').DataTable({
+
+    $('#tablafiltraje').DataTable({
                 responsive: true
         });
-    $('#tablafiltraje').DataTable({
+    $('#tablarepo2').DataTable({
                 responsive: true
         });
     

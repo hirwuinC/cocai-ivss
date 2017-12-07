@@ -3,8 +3,8 @@ $(document).ready(function() {
   
   $('#fecha_ini').change(function(event) {
     var fecha1 = $('#fecha_ini').val();
-    $('#fecha_fin').val(fecha1);
-    $('#fecha_fin').attr('min', fecha1)
+    $('#fecha_fin').val(fecha1);//asigno el mismo valor de la fecha de inicio a la fecha final
+    $('#fecha_fin').attr('min', fecha1);//limito la fecha final para q el minimo sea la fecha de inicio
     $('#fecha_fin').prop('disabled', false);
     $('#tipoMov').prop('disabled', true);
     $('#motivo').prop('disabled', true);
@@ -89,7 +89,7 @@ $(document).ready(function() {
   $('#tablaoculta').hide();
   $('#load').fadeOut(600);
   setTimeout(function() {$('#tablaoculta').fadeIn(700);}, 600);
-  
+  if (idU != 59) {
     $('#tablakardex').DataTable({
             "ajax": BASE_URL+'/inventario/consultarkardex/'+fechaini+'/'+fechafin+'/'+tipomov+'/'+motiv+'/'+idU,
             "columns": [
@@ -107,5 +107,25 @@ $(document).ready(function() {
             responsive: true
         });
     $('#tablakardex').css("width","100%");
+}else{
+    $('#tablakardex').DataTable({
+            "ajax": BASE_URL+'/inventario/consultarkardex/'+fechaini+'/'+fechafin+'/'+tipomov+'/'+motiv+'/'+idU,
+            "columns": [
+                { "data": "tienda" },
+                { "data": "mercancia" },
+                { "data": "familia" },
+                { "data": "tipomov" },
+                { "data": "cantidad" },
+                { "data": "motivo" },
+                { "data": "descripcion" },
+                { "data": "hora" },
+                { "data": "Nombre" }
+                
+            ],
+            destroy: true,
+            responsive: true
+        });
+    $('#tablakardex').css("width","100%");
+}
 
  }

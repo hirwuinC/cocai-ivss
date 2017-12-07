@@ -15,7 +15,7 @@ jQuery(document).ready(function($) {
 		var marc = $('#autocomplete2').val();
 		var marca = marc.replace(/ /gi, "@");
 
-		alert(nueva); alert(marc);
+		//alert(nueva); alert(marc);
 		$.ajax({
 			url: BASE_URL+'/inventario/mercancia/'+nueva+'/'+marca,
             type: 'POST',
@@ -34,16 +34,17 @@ jQuery(document).ready(function($) {
 		
 		});
 	});
-
+	var idT = $('#tiendae').val();
+	//alert(idT);
 	$('#tablaremi').DataTable({
-            "ajax": BASE_URL+'/receta/cargaringredientes/',
+            "ajax": BASE_URL+'/receta/cargaringredientes/'+idT,
             "columns": [
                 { "data": "codigi", className: "tdleft"},
                 { "data": "ingrediente", className: "tdleft"},
                 { "data": null , className: "tdcenter",
           render : function(data, type, row) {
           	//var ingr = row['ingrediente'].replace(/ /gi, "@"); 
-              return '<span  onclick="agregarcant('+row['idi']+')" class="fa fa-check test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="agregar"></span>'
+              return '<span  onclick="agregaringrediente('+row['idi']+','+idT+')" class="fa fa-check test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="agregar"></span>'
           }    
        }                 
             ],
@@ -53,10 +54,28 @@ jQuery(document).ready(function($) {
 
     $('#tablaremi').css("width","100%");
 
+    $('#tablarepo').DataTable({
+            "ajax": BASE_URL+'/receta/cargaringredientes/'+idT,
+            "columns": [
+                { "data": "codigi", className: "tdleft"},
+                { "data": "ingrediente", className: "tdleft"},
+                { "data": null , className: "tdcenter",
+          render : function(data, type, row) {
+          	//var ingr = row['ingrediente'].replace(/ /gi, "@"); 
+              return '<span  onclick="addmerc('+row['idi']+','+idT+')" class="fa fa-check test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="agregar"></span>'
+          }    
+       }                 
+            ],
+            destroy: true,
+            responsive: true
+        });
+
+    $('#tablarepo').css("width","100%");
+
 
 });
 
-function agregarcant(ingrediente){
+function agregaringrediente(ingrediente,idt){
 	//alert(ingrediente);
 	$('#mercid').val('');
 	$('#mercid').val(ingrediente);
@@ -72,6 +91,50 @@ function agregarcant(ingrediente){
 		$('#unidades').empty();
 				$('#unidades').append('<option value="'+data[0]['idUS']+'">'+data[0]['unidadS']+'</option>'+
 					'<option selected value="'+data[0]['idUP']+'">'+data[0]['unidadP']+'</option>');	
+		});
+	
+	$('#modalcant').modal('show');
+	
+
+}
+
+function addmerc(ingrediente,idt){
+	//alert(ingrediente);
+	$('#cantidadR').empty();
+	$.ajax({
+		url: BASE_URL+'/inventario/selectprov/'+ingrediente,
+        type: 'POST',
+        dataType: 'json'
+	})
+	.done(function(data) {
+		$('#prove').empty();
+		$('#prove').append('<option value="" selected disabled>Seleccione..</option>');
+		for (var i = 0; i <= data.length; i++) {
+			$('#prove').append('<option value="'+data[i]['id']+'">'+data[i]['nombre']+'</option>');
+		}
+					
+	});
+	$('#mercid').val('');
+	$('#mercid').val(ingrediente);
+	$.ajax({
+		url: BASE_URL+'/receta/mercancia/'+ingrediente,
+        type: 'POST',
+        dataType: 'json'
+	})
+	.done(function(data) {
+		//alert(data[0]['nombre']);
+		$('#tit').empty();
+		$('#tit').append('Solicitar '+data[0]['nombre']+' '+data[0]['marca']);
+		$('#unidades').empty();
+		if (data[0]['idUC'] != data[0]['idUP']) {
+			$('#unidades').append('<option value="" selected disabled>Seleccione..</option>'+
+					'<option value="'+data[0]['idUC']+'">'+data[0]['unidadC']+'</option>'+
+					'<option value="'+data[0]['idUP']+'">'+data[0]['unidadP']+'</option>');
+		}else{
+			$('#unidades').append('<option value="" selected disabled>Seleccione..</option>'+
+					'<option value="'+data[0]['idUP']+'">'+data[0]['unidadP']+'</option>');
+		}
+					
 		});
 	
 	$('#modalcant').modal('show');

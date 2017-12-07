@@ -36,7 +36,7 @@
 		    $this->_view->setJs(array('datatable/js/datatable.b4.min'));
 		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
 		    $this->_view->setJs(array('datatable/js/tabla'));
-			$query = "SELECT unidad_negocio.id as idU, unidad_negocio.nombre as udn, modelo.nombre as modelo From unidad_negocio
+			$query = "SELECT unidad_negocio.id as idU, unidad_negocio.nombre as udn, modelo.nombre as modelo, modelo.id as idm, empresa_id From unidad_negocio
     		left join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
       		left join modelo on modelo.id = modelo_has_submodelo.modelo_id where unidad_negocio.id = $id";
     		$mo = $this->_main->select($query);
@@ -63,7 +63,7 @@
 
 		public function nombrepro($producto){
 			$query = "SELECT producto.id as idpr, producto.nombre as producto, receta.id as idre from producto
-inner join receta on receta_id = receta.id 
+left join receta on receta_id = receta.id 
 where producto.id = $producto";
     		$data = $this->_main->select($query);
     		echo json_encode($data);
@@ -141,14 +141,15 @@ WHERE modelo_has_submodelo.modelo_id = $modelo";
 
 		}
 
-		public function cargaringredientes(){
+		public function cargaringredientes($idt){
 
 				//Controller::varDump($_POST);exit();
 				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, mercancia.precio_unitario as precioU  FROM `mercancia`
 			inner join unidad_medida as umc on umc.id = mercancia.unidad_medida_compra_id
             inner join unidad_medida as ump on ump.id = mercancia.unidad_medida_consumo_id
             inner join unidad_medida as ums on ums.id = mercancia.unidad_medida_sistema_id
-			";
+            inner join mercancia_has_unidad_negocio as mudn on mudn.mercancia_id = mercancia.id
+            where mudn.unidad_negocio_id = $idt";
 			$data = $this->_main->select($query);
 
     		$response = array("data"=>$data);
@@ -165,6 +166,26 @@ WHERE modelo_has_submodelo.modelo_id = $modelo";
     		where mercancia.id = $idingrediente group by US,UP,UC";
     		$conte = $this->_main->select($query);
     		echo json_encode($conte);
+
+    	}
+
+    	function nombreproducto($producto){
+			$query = "SELECT producto.id as idpr, producto.nombre as producto, receta.id as idre from producto
+			left join receta on receta_id = receta.id 
+			where producto.id = $producto";
+    		$data = $this->_main->select($query);
+    		return $data;
+		}
+
+		public function crearreceta($idpro,$idmodelo){
+    		$datosp = $this->nombreproducto($idpro);
+    		$query = "INSERT INTO `receta`(`nombre`) VALUES ('".$datosp[0]['producto']."')";
+    		$idr = $this->_main->insertar($query);
+    		$query = "INSERT INTO `modelo_has_receta`(`modelo_id`, `receta_id`) VALUES ('".$idmodelo."','".$idr."')";
+    		$idrm = $this->_main->insertar($query);
+    		$query = "UPDATE `producto` SET `receta_id`='".$idr."' WHERE producto.id = $idpro";
+    		$this->_main->modificar($query);
+    		echo json_encode($idpro);
 
     	}
 

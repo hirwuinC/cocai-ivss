@@ -1,4 +1,5 @@
 <!-- header.phtml -->
+<script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/jquery-1.12.4.min.js"></script>
 <script type="text/javascript" src="<?php echo PUBLIC_URL; ?>js/notificaciones.js"></script>
 <?php $bussines= Session::empresa('idUsuario');
   if (!empty($bussines)) {
@@ -18,11 +19,11 @@
     background-color: #eee;
   } 
 </style>
-<script type="text/javascript">
-            window.onload = function() {
+        <script type="text/javascript">
+            jQuery(document).ready(function($) {
               var valor = $('#valor').val();
                     setInterval('verificarN("'+valor+'")',3000);
-            }
+            });
         </script>
 
     <?php #$menu= Session::modelo('idUsuario'); print_r($menu); ?>
@@ -79,6 +80,9 @@
                                                 </li>
                                                 <li ">
                                                   <a href="'.BASE_URL.'inventario/remisionM/'.$id[$j].'" class="subM" style="margin-left:12px; "></i>Remision de mercancia</a>
+                                                </li>
+                                                <li ">
+                                                  <a href="'.BASE_URL.'inventario/reposicionM/'.$id[$j].'" class="subM" style="margin-left:12px; "></i>Reposicion de mercancia</a>
                                                 </li>
                                                 <li ">
                                                   <a href="'.BASE_URL.'inventario/indexk/'.$id[$j].'" class="subM" style="margin-left:12px; "></i>Movimientos de kardex</a>
@@ -141,7 +145,10 @@
                                                   <a style="margin-left:12px; " href="'.BASE_URL.'inventario/evaluar/'.$menu[$p]['idUd'].'" class="subM"></i>Consulta de inventario</a>
                                                 </li>
                                                 <li ">
-                                                  <a style="margin-left:12px; " href="'.BASE_URL.'inventario/asignacionProducto/'.$menu[$p]['idUd'].'" class="subM"></i>Asignacion de producto</a>
+                                                  <a href="'.BASE_URL.'inventario/reposicionM/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; "></i>Reposicion de mercancia</a>
+                                                </li>
+                                                <li ">
+                                                  <a style="margin-left:12px; " href="'.BASE_URL.'inventario/asignacionProducto/'.$menu[$p]['idUd'].'" class="subM"></i>Asignacion de productos</a>
                                                 </li>
                                                 <!--<li ">
                                                   <a style="margin-left:12px; " href="'.BASE_URL.'inventario/remisionM/'.$menu[$p]['idUd'].'" class="subM"></i>Remision de mercancia</a>
@@ -211,11 +218,11 @@
         <nav class="navbar">
           <div class="container-fluid">
             <div class="navbar-holder d-flex align-items-center justify-content-between">
-              <div class="navbar-header"><a id="toggle-btn" href="#" class="menu-btn"><i class="icon-bars"> </i></a><a href="<?php echo BASE_URL.'index/index/'; ?>" class="navbar-brand">
+              <div class="navbar-header"><a id="toggle-btn" href="#" class="menu-btn" style="height: 30px"><i style="font-size: 1.5em" class="icon-bars"> </i></a><a href="<?php echo BASE_URL.'index/index/'; ?>" class="navbar-brand">
                   <div class="text-default hidden-sm-down"><i class="material-icons" style="font-size: 16px; vertical-align: top">home</i> COCAI <strong class="text-primary"> WEB</strong></div></a></div>
               <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
                 <li class="nav-item dropdown"> 
-                  <a id="not" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link">
+                  <a id="not" rel="nofollow" data-target="#" href="#"  aria-haspopup="true" aria-expanded="false" class="nav-link">
                     <i class="fa fa-bell-slash"></i>
                       <span id="circulo" style="border-radius: 10px; font-size: 11px; visibility: hidden;" class="badge badge-danger">
                         <o id="notifications"></o>

@@ -111,8 +111,7 @@
                         <div class="dataTable_wrapper " id="tablaoculta" hidden>
                              <div class="col-sm-12 table-responsive">
                                 <table id="tablakardex" class="table table-sm table-striped table-bordered table-hover" cellspacing="0" width="100%" >
-                                  <?php if ($this->model[0]['idU'] != 59): ?>
-                                    <thead class="theadH">
+                                  <thead class="theadH">
                                       <tr>
                                           <th>Producto</th>
                                           <th>Grupo</th>
@@ -124,23 +123,6 @@
                                           <th>Usuario</th>
                                       </tr>
                                   </thead>
-                                  <?php else: ?>
-                                    <thead class="theadH">
-                                      <tr>
-                                          <th>Tienda</th>
-                                          <th>Producto</th>
-                                          <th>Grupo</th>
-                                          <th>Tipo</th>
-                                          <th>Cantidad</th>
-                                          <th>Motivo</th>
-                                          <th>Descripcion</th>
-                                          <th>Hora</th>
-                                          <th>Usuario</th>
-                                      </tr>
-                                  </thead>
-
-                                  <?php endif ?>
-                                  
                                   <tbody id="cuerpo"></tbody>
                                   
                               </table>

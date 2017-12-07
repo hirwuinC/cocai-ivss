@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="us">
+<head>
+  <meta charset="utf-8">
+  <title>jQuery UI Example Page</title>
+
+
+
+  
+</head>
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+<div id="body" hidden>
+<div id="page-wrapper">
+            <div style="margin-top: 2%;" class="container-fluid">
+
+                <div class="row">
+                    <div class="col-12 ">
+                        
+
+                        <div class="card cardH">
+
+                            <div class="card-header">
+                              <center><h3 ><o id="titulocard">Solicitud enviada</o> <?php $ti=strtolower($this->_tienda[0]['udn']); echo "[".ucwords($ti)."]"; ?></h3></center>
+                            </div>
+                          
+                          <div class="card-block">
+
+
+
+                        
+                        <?php if (isset($this->_error)) {
+                            echo $this->_error;
+                        } ?>
+                        <?php if ($this->_tienda[0]['modelo'] != null): ?>
+                            <div class="col-12 d-flex justify-content-end">
+                              <img width="14%" height="10%" style="float: right;" src="<?php $model=strtolower($this->_tienda[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-fluid" alt="">
+                            </div>
+                          <?php else: ?>
+                            <div class="col-12 d-flex justify-content-end">
+                              <img width="8%" height="8%" style="float: right;" src="<?php $model=strtolower($this->_tienda[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->_tienda[0]['udn']; ?>.png" class="img-fluid" alt="">
+                            </div>
+                        <?php endif ?>
+                        
+                        
+                            
+                            <div class="dataTable_wrapper " >
+                               <div class="col-sm-12 table-responsive">
+                               
+                                  <table id="tablarepo2" class=" table-sm table-striped table-bordered table-hover" width="100%">
+                                    <thead class="theadH">
+                                        <tr>
+                                            <th><center><b>#</b></center></th>
+                                            <th><center><b>Codigo</b></center></th>
+                                            <th><center><b>Producto</b></center></th>
+                                            <th><center><b>Cantidad</b></center></th>
+                                            <th><center><b>Proveedor</b></center></th>
+                                            <th><center><b>Precio</b></center></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="">
+                                        <?php for ($i = 1; $i< count($this->_pedido); $i++){ ?>
+                                          <tr>
+                                            <td ><?php echo $i?></td>
+                                            <td><center><b><?php echo $this->_pedido[$i]['codigo']; ?></b></center></td>
+                                            <td><center><b><?php echo $this->_pedido[$i]['nombre']; ?></b></center></td>
+                                            <td><center><b><?php echo $this->_pedido[$i]['cantidad']; ?></b></center></td>
+                                            <td><center><b><?php echo $this->_pedido[$i]['proveedor']; ?></b></center></td>
+                                            <td><center><b><?php echo $this->_pedido[$i]['precio']; ?></b></center></td>
+                                          </tr>
+                                        <?php } ?>
+                                    </tbody> 
+                                </table>       
+                              </div>            
+                            </div>
+                          <div class="row d-flex justify-content-center">
+                              <div class="col-sm-2">
+                                <a href="<?php echo BASE_URL ?>inventario/reposicionM/<?php echo $this->_idtienda; ?>" class="btn btn-sm btn-outline-primary">Nueva Solicitud</a>
+                              </div>
+                          </div>
+                           
+                            
+                            
+                                               
+                        </div>
+
+                            
+
+
+
+                  </div>
+                </div>
+              </div>
+        </div>
+</div>
+</div>
+</body>
+
+
+</div>
+</html>
+</div>
+</div>
+
+
+
+<!-- Autocomplete -->
+
+</html>

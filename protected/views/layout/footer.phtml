@@ -9,7 +9,7 @@
 	</footer>
 	<label hidden id="base_url"><?php echo BASE_URL; ?></label>
 	<label hidden id="public_url"><?php echo PUBLIC_URL; ?></label>
-	<input type="text" id="valormenu">
+	<input type="hidden" id="valormenu">
 <script src="<?php echo PUBLIC_URL; ?>js/jquery-1.12.1.min.js"></script>
 
 	<!-- / START - page related files and scripts [optional] -->
@@ -55,7 +55,7 @@
 			$('#area').empty();
 			$('#area').html(escritura);
 			$('[data-toggle="tooltip"]').tooltip();   
-		    $('.nicescroll-cursors').removeAttr('style');
+		    //$('.nicescroll-cursors').removeAttr('style');
 			$('#gifcargando').fadeOut(600);
 			setTimeout(function() {$('#body').fadeIn(700);$('#body').prop("hidden",false)}, 600);
 		   /* $("a.subM").click(function(event){ event.preventDefault(); linkLocation = this.href; $('#body').fadeOut(500, redirectPage); }); function redirectPage() { window.location = linkLocation; } 
