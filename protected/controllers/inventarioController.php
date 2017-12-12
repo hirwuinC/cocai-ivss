@@ -564,7 +564,7 @@ FROM notificacion_has_remision
     	}
 
     	function reposicionM($id,$success = false){
-    		$this->_view->setJs(array('js/jquery-1.12.4.min'));
+    		$this->_view->setJs(array('js/jquery-1.12.4'));
     		$this->_view->setJs(array('js/remision'));
     		$this->_view->setJs(array('js/carrito'));
     		$this->_view->setCss(array('datatable/css/bootstrap4.min'));
@@ -679,9 +679,6 @@ FROM notificacion_has_remision
 
     	}
 
-    	 function validarcante(){
-
-    	}
 
     	/*public function conversionExistencia($idP, $idT){
     		$query = "SELECT mercancia.id as 'idP', mercancia.codigo, mercancia.codigo_anterior, mercancia.nombre as 'producto', mercancia.marca, mercancia.contenido_neto, mercancia.formula_c, mercancia.formula_p, mercancia.formula_s, mercancia.cantidad_presentacion,  mc.existencia, mc.stock_min, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.id as 'idf', ref.referencia as 'familia', mc.status FROM mercancia 
@@ -1174,6 +1171,23 @@ FROM notificacion_has_remision
         #var_dump($orden); echo "</br><br>";
         #var_dump($totalPagar); echo "</br>";exit();    
     }
+
+    public function cargaringredientes($idt){
+
+				//Controller::varDump($_POST);exit();
+				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, mercancia.precio_unitario as precioU  FROM `mercancia`
+			inner join unidad_medida as umc on umc.id = mercancia.unidad_medida_compra_id
+            inner join unidad_medida as ump on ump.id = mercancia.unidad_medida_consumo_id
+            inner join unidad_medida as ums on ums.id = mercancia.unidad_medida_sistema_id
+            inner join mercancia_has_unidad_negocio as mudn on mudn.mercancia_id = mercancia.id
+            where mudn.unidad_negocio_id = $idt";
+			$data = $this->_main->select($query);
+
+    		$response = array("data"=>$data);
+    		//print_r($response);
+    		echo json_encode($response);
+
+		}
 
     function asignacionProducto($id){
     		$this->_view->setCss(array('datatable/css/bootstrap4.min'));

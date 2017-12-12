@@ -8,36 +8,7 @@ $(document).ready(function() {
     load('unidad_medida','unidad_medida_pr',false);
     load('unidad_medida','unidad_medida_s',false);
     load('referencia','motivo',false,false);
-    //mostrar o no el input de cantidad por articulo comprado (aplica para cajas y similares que contengan unidades expresadas en kg gr lt o ml)
-    /*$('#unidad_medida_c').change(function(event) {
-        var unidad_c = $('#unidad_medida_c').val();
-        var textouc = $('#unidad_medida_c option:selected').text();
-        //alert(unidad_p);
-        //$('#unidad_medida_p').find("option[value='opcion_1']").remove();
-        if (unidad_c != '4' && unidad_c != '5' && unidad_c != '6' && unidad_c != '12' && unidad_c != '13' && unidad_c != '14' && unidad_c != '21' && unidad_c != '26' && unidad_c != '27' && unidad_c != '7' && unidad_c != '8' && unidad_c != '15' && unidad_c != '17' && unidad_c != '18' && unidad_c != '20' && unidad_c != '22' && unidad_c != '23' && unidad_c != '24' && unidad_c != '25' && unidad_c != '28' && unidad_c != '10') {
-          //alert("si");
-          $('#cant').show();
-          $('#cantC').empty();
-          $('#cantC').append('<label class="control-label" style="float: left;">Ud. por '+textouc+'</label>'+
-                             '<input style="width: 50%" type="text" class="form-control" name="cantidadConsumo">');
-        }else{
-          $('#cant').hide();
-          $('#cantC').empty();
-          //alert("else");
-        }
-        $.ajax({
-          url: BASE_URL+'/inventario/setunidadT/'+unidad_c,
-            type: 'POST',
-            dataType: 'json'
-        })
-        .done(function(data) {
-          //alert(data[0]['id']);
-          var valor = $('#contenidoN').val();
-          document.getElementById("formulac").value=data[0]['abreviatura']+' * '+valor;
-         // $('#unidad_medida_p').find("option[value='opcion_1']").remove();
-        })
-        
-      });*/
+    
 
     $('.umc').change(function(event) {
       var idmcom = $('.umc').val();

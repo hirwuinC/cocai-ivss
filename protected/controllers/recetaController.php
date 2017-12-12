@@ -61,23 +61,40 @@
     		echo json_encode($data);
 		}
 
-		public function nombrepro($producto){
-			$query = "SELECT producto.id as idpr, producto.nombre as producto, receta.id as idre from producto
-left join receta on receta_id = receta.id 
-where producto.id = $producto";
+		public function nombrepro($producto, $ingrediente){
+			if ($producto !=999999) {
+				$query = "SELECT producto.id as idpr, producto.nombre as producto, receta.id as idre, receta.nombre as receta, receta_id from producto
+			left join receta on receta_id = receta.id 
+			where producto.id = $producto";
+    		$data = $this->_main->select($query);
+			}else{
+				$query = "SELECT mercancia.id as idpr, mercancia.nombre as producto, marca, receta.id as idre, receta.nombre as receta, mercancia.receta_id from mercancia
+			left join ingrediente_has_receta on ingrediente_id = mercancia.id
+			left join receta on mercancia.receta_id = receta.id 
+			where mercancia.id = $ingrediente";
+    		$data = $this->_main->select($query);
+			}
+    		echo json_encode($data);
+		}
+
+		public function nombreing($ingrediente){
+			$query = "SELECT mercancia.id as idm, mercancia.nombre as producto, marca, receta.id as idre from mercancia
+left join ingrediente_has_receta on ingrediente_id = mercancia.id
+			left join receta on receta_id = receta.id 
+			where mercancia.id = $ingrediente";
     		$data = $this->_main->select($query);
     		echo json_encode($data);
 		}
 
 		public function consultarpro($modelo){
-			$query = "SELECT producto.id as idpro, producto.codigo as codip, producto.nombre as producto, costo, precioVta_A as pvpa, precioVta_B as pvpb, receta_id as idre FROM `producto`
+			$query = "SELECT producto.id as idpro, producto.codigo as codip, producto.nombre as producto, costo, format(costo,2,'de_DE') as costom, format(precioVta_A,2,'de_DE') as pvpam, precioVta_A as pvpa, precioVta_B as pvpb, receta_id as idr FROM `producto`
 inner join producto_has_unidad_negocio on producto_has_unidad_negocio.producto_id = producto.id
 inner join unidad_negocio on unidad_negocio.id = producto_has_unidad_negocio.unidad_negocio_id
 inner join modelo_has_submodelo on unidad_negocio.modelo_has_submodelo_id = modelo_has_submodelo.id
 WHERE modelo_has_submodelo.modelo_id = $modelo";
     		$data = $this->_main->select($query);
     		for ($i=0; $i < count($data); $i++) { 
-    			if ($data[$i]['idre'] != null) {
+    			if ($data[$i]['idr'] != null) {
     				$idreceta[$i] = 'Si';
     				$icono[$i] = 'fa-edit';
     				$ver[$i] = 'Editar';
@@ -99,14 +116,27 @@ WHERE modelo_has_submodelo.modelo_id = $modelo";
     		echo json_encode($response);
 		}
 
-		public function consultasp($idp){
-			$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, ixr.cantidad, abreviatura, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, producto.id as idprod, producto.nombre as producto, mercancia.precio_unitario as precioU, receta.id as idreceta  FROM `ingrediente_has_receta` as ixr
+		public function consultasp($idp,$idreceta){
+			if ($idp != 999999) {
+				//echo "if<br>"; 
+				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, ixr.cantidad, abreviatura, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, producto.id as idprod, producto.nombre as producto, format(mercancia.precio_unitario,2,'de_DE') as costo, mercancia.precio_unitario as precioU, receta.id as idreceta, mercancia.receta_id, receta.nombre as receta  FROM `ingrediente_has_receta` as ixr
 			inner join receta on receta.id = ixr.receta_id
 			inner join unidad_medida on unidad_medida.id = ixr.unidad_medida_id
 			inner join mercancia on mercancia.id = ixr.ingrediente_id
 			inner join producto on receta.id = producto.receta_id
 			WHERE producto.id = $idp";
     		$data = $this->_main->select($query);
+			}else{
+				//echo "else<br>"; 
+				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, ixr.cantidad, abreviatura, mercancia.nombre as producto, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, format(mercancia.precio_unitario,2,'de_DE') as costo, mercancia.precio_unitario as precioU, ixr.receta_id as idreceta, mercancia.receta_id, receta.nombre as receta  
+					FROM `mercancia`
+					inner join ingrediente_has_receta as ixr on mercancia.id = ixr.ingrediente_id
+					inner join receta on receta.id = ixr.receta_id
+                    inner join unidad_medida on unidad_medida.id = ixr.unidad_medida_id
+					WHERE ixr.receta_id = $idreceta";
+		    		$data = $this->_main->select($query);
+			}
+			
     		/*for ($i=0; $i < count($data); $i++) { 
     			$total[] = $data[$i]['cantidad'] * $data[$i]['precioU'];
     		}
@@ -132,25 +162,62 @@ WHERE modelo_has_submodelo.modelo_id = $modelo";
 		}
 
 		public function eliminarIngrediente($producto,$idmer,$idreceta){
-
-				//Controller::varDump($_POST);exit();
 				$query = "DELETE FROM `ingrediente_has_receta` where ingrediente_id = $idmer and receta_id = $idreceta";
 				$idD = $this->_main->eliminar($query);
-				$data = $producto;
-			echo json_encode($data);
-
+				$data[0]['producto'] = $producto;
+				$data[0]['ingrediente'] = $idmer;
+				echo json_encode($data);
 		}
 
-		public function cargaringredientes($idt){
+		
 
-				//Controller::varDump($_POST);exit();
-				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, mercancia.precio_unitario as precioU  FROM `mercancia`
+		public function loadingredientes($idm){
+		$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, mercancia.precio_unitario as precioU  FROM `mercancia`
 			inner join unidad_medida as umc on umc.id = mercancia.unidad_medida_compra_id
             inner join unidad_medida as ump on ump.id = mercancia.unidad_medida_consumo_id
             inner join unidad_medida as ums on ums.id = mercancia.unidad_medida_sistema_id
             inner join mercancia_has_unidad_negocio as mudn on mudn.mercancia_id = mercancia.id
-            where mudn.unidad_negocio_id = $idt";
-			$data = $this->_main->select($query);
+            inner join unidad_negocio on unidad_negocio.id = mudn.unidad_negocio_id
+            inner join modelo_has_submodelo as mhsm on mhsm.id = unidad_negocio.modelo_has_submodelo_id
+            inner join modelo on mhsm.modelo_id = modelo.id
+            where modelo.id = $idm";
+            $data = $this->_main->select($query);
+
+    		$response = array("data"=>$data);
+    		//print_r($response);
+    		echo json_encode($response);
+
+		}
+
+
+		public function ingredientesreceta($idm){
+		$query = "SELECT DISTINCT(mercancia.codigo) as codigi, mercancia.id as idi , unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, mercancia.precio_unitario as costo, format(mercancia.precio_unitario,2,'de_DE') as precioU, mercancia.contenido_neto, CONCAT(contenido_neto,' ',ums.abreviatura) as contenido, mercancia.receta_id as idr FROM `mercancia`
+			inner join unidad_medida as umc on umc.id = mercancia.unidad_medida_compra_id
+            inner join unidad_medida as ump on ump.id = mercancia.unidad_medida_consumo_id
+            inner join unidad_medida as ums on ums.id = mercancia.unidad_medida_sistema_id
+            inner join mercancia_has_unidad_negocio as mudn on mudn.mercancia_id = mercancia.id
+            inner join unidad_negocio on unidad_negocio.id = mudn.unidad_negocio_id
+            inner join modelo_has_submodelo as mhsm on mhsm.id = unidad_negocio.modelo_has_submodelo_id
+            inner join modelo on mhsm.modelo_id = modelo.id
+            where modelo.id = $idm";
+            $data = $this->_main->select($query);
+            for ($i=0; $i < count($data); $i++) { 
+    			if ($data[$i]['idr'] != null) {
+    				$idreceta[$i] = 'Si';
+    				$icono[$i] = 'fa-edit';
+    				$ver[$i] = 'Editar';
+    				$titulo[$i] = 'Editar receta de';
+    			}else{
+    				$idreceta[$i] = 'No';
+    				$icono[$i] = 'fa-plus-square-o';
+    				$ver[$i] = 'Asignar';
+    				$titulo[$i] = 'Agregar receta para';
+    			}
+    			$data[$i]['idrec'] = $idreceta[$i];
+    			$data[$i]['icon'] = $icono[$i];
+    			$data[$i]['ver'] = $ver[$i];
+    			$data[$i]['titulo'] = $titulo[$i];
+    		}
 
     		$response = array("data"=>$data);
     		//print_r($response);
@@ -177,15 +244,37 @@ WHERE modelo_has_submodelo.modelo_id = $modelo";
     		return $data;
 		}
 
-		public function crearreceta($idpro,$idmodelo){
-    		$datosp = $this->nombreproducto($idpro);
-    		$query = "INSERT INTO `receta`(`nombre`) VALUES ('".$datosp[0]['producto']."')";
-    		$idr = $this->_main->insertar($query);
+		function nombreingrediente($iding){
+			$query = "SELECT mercancia.id, mercancia.nombre, mercancia.marca, contenido_neto, unidad_medida.abreviatura as US, unidad_medida.unidad as unidadS, um.abreviatura as UP, um.unidad as unidadP, um2.abreviatura as UC, um2.unidad as unidadC, unidad_medida_sistema_id as idUS, unidad_medida_consumo_id as idUP, unidad_medida_compra_id as idUC from mercancia
+    		inner join unidad_medida on unidad_medida_sistema_id = unidad_medida.id
+    		inner join unidad_medida as um on um.id = unidad_medida_consumo_id
+    		inner join unidad_medida as um2 on um2.id = unidad_medida_compra_id
+    		where mercancia.id = $iding";
+    		$data = $this->_main->select($query);
+    		return $data;
+		}
+
+		public function crearreceta($idpro,$idmodelo,$ingrediente){
+    		
+    		
+    		
+    		if ($ingrediente == 999999) {
+    			$datosp = $this->nombreproducto($idpro);
+    			$query = "INSERT INTO `receta`(`nombre`) VALUES ('".$datosp[0]['producto']."')";
+    			$idr = $this->_main->insertar($query);
+    			$query = "UPDATE `producto` SET `receta_id`='".$idr."' WHERE producto.id = $idpro";
+    			$this->_main->modificar($query);
+    		}else{
+    			$datosp = $this->nombreingrediente($ingrediente);
+    			$query = "INSERT INTO `receta`(`nombre`) VALUES ('".$datosp[0]['nombre'].' '.$datosp[0]['marca']."')";
+    			$idr = $this->_main->insertar($query);
+    			$query = "UPDATE `mercancia` SET `receta_id`='".$idr."' WHERE mercancia.id = $ingrediente";
+    			$this->_main->modificar($query);
+    		}
     		$query = "INSERT INTO `modelo_has_receta`(`modelo_id`, `receta_id`) VALUES ('".$idmodelo."','".$idr."')";
     		$idrm = $this->_main->insertar($query);
-    		$query = "UPDATE `producto` SET `receta_id`='".$idr."' WHERE producto.id = $idpro";
-    		$this->_main->modificar($query);
-    		echo json_encode($idpro);
+    		
+    		echo json_encode($idr);
 
     	}
 

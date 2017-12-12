@@ -23,7 +23,7 @@ $(document).ready(function() {
     	//alert(data[1][0]+' Bs'); alert(data[1][1]+' Bs'); alert(data[1][2]+' Bs'); 
     	if (data == true) {
 			$('#cancelar').prop('disabled',true);
-			$('#botonfin').prop('disabled',true);
+			$('#solicitar').prop('disabled',true);
 		};  
 		$('#st').append('<td style="border: none; padding: 3px">SubTotal:</td>'+
                         '<td style="text-align: right;border: none; padding: 3px"><b>'+data[1][2]+' '+moneda+'</b></td>');
@@ -204,14 +204,12 @@ function eliminarProducto(id){
 function confirmarCancelarPedido(){
 	//alert('O.o');
 	$('#botonescancelar').empty();
-    $('#botonescancelar').append('<div class="col-sm-12">'+
-                                    '<div class="col-xs-5 col-sm-6">'+
-                                        '<button class="btn btn-warning" id="cerrarModal">Cancelar</button>'+
+    $('#botonescancelar').append('<div class="col-xs-12 col-sm-2">'+
+                                        '<button class="btn btn-sm btn-outline-secondary" id="cerrarModal">No</button>'+
                                     '</div>'+
-                                    '<div class="col-xs-5 col-sm-6">'+
-                                        '<button class="btn btn-danger" onclick="cancelarPedido()">confirmar</button>'+
-                                    '</div>'+
-                                '</div>');
+                                    '<div class="col-xs-12 col-sm-2">'+
+                                        '<button class="btn btn-sm btn-outline-primary" onclick="cancelarPedido()">Si</button>'+
+                                    '</div>');
     $('#cerrarModal').click(function(event) {
         $('#closem2').trigger('click');
     });
@@ -220,7 +218,7 @@ function confirmarCancelarPedido(){
 
 function cancelarPedido(){
 	//alert('si llegue');
-	
+	$('#modalanular2').modal('hide');
 	$.ajax({
         url: BASE_URL+'/inventario/cancelarPedido',
         type: 'POST',
@@ -233,6 +231,7 @@ function cancelarPedido(){
 }
 
 function tablaPedido(data){
+
     if (data == 'false') {
         $('#carrito-i').slideUP('slow');
     }else{
@@ -245,10 +244,14 @@ function tablaPedido(data){
     
     //$('#closem2').trigger('click');
     //alert(data[1]);
+    if (data) {
+        $('#cancelar').prop('disabled',false);
+        $('#solicitar').prop('disabled',false);
+    }
     if (data == true) {
-            $('#cancelar').prop('disabled',true);
-            $('#botonfin').prop('disabled',true);
-        };
+        $('#cancelar').prop('disabled',true);
+        $('#solicitar').prop('disabled',true);
+    }
     $('#pedido').empty(); $('#t').empty(); $('#ti').empty(); $('#st').empty();
     $('#st').append('<td style="border: none; padding: 3px">SubTotal:</td>'+
                         '<td style="text-align: right;border: none; padding: 3px"><b>'+data[1][2]+' '+moneda+'</b></td>');
@@ -313,7 +316,7 @@ function imgXseleccion(id,idc){
         //alert(data[1][0]+' Bs'); alert(data[1][1]+' Bs'); alert(data[1][2]+' Bs'); 
         if (data == true) {
             $('#cancelar').prop('disabled',true);
-            $('#botonfin').prop('disabled',true);
+            $('#solicitar').prop('disabled',true);
         };  
         $('#sts').append('<td style="border: none; padding: 3px">SubTotal:</td>'+
                         '<td style="text-align: right;border: none; padding: 3px"><b>'+data[1][0]+' Bs</b></td>');

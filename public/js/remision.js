@@ -37,7 +37,7 @@ jQuery(document).ready(function($) {
 	var idT = $('#tiendae').val();
 	//alert(idT);
 	$('#tablaremi').DataTable({
-            "ajax": BASE_URL+'/receta/cargaringredientes/'+idT,
+            "ajax": BASE_URL+'/inventario/cargaringredientes/'+idT,
             "columns": [
                 { "data": "codigi", className: "tdleft"},
                 { "data": "ingrediente", className: "tdleft"},
@@ -55,7 +55,7 @@ jQuery(document).ready(function($) {
     $('#tablaremi').css("width","100%");
 
     $('#tablarepo').DataTable({
-            "ajax": BASE_URL+'/receta/cargaringredientes/'+idT,
+            "ajax": BASE_URL+'/inventario/cargaringredientes/'+idT,
             "columns": [
                 { "data": "codigi", className: "tdleft"},
                 { "data": "ingrediente", className: "tdleft"},

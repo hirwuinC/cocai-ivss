@@ -50,7 +50,7 @@
             <div class="container-fluid">
 
                 <div class="row">
-                    <div class="col-lg-12 ">
+                    <div class="col-sm-12 ">
                         
 
                         <div style="margin-top: 1%" class="card cardH">
@@ -72,7 +72,6 @@
                              echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-fluid" alt="modelo">
                         </div>
 
-                        <fieldset>
                             
                           
                             <div id="datos1" class="form-group col-sm-12">
@@ -81,7 +80,7 @@
                                 <div class="dataTable_wrapper " >
                                        <div class="col-sm-12 table-responsive">
                                        
-                                          <table id="tablarepo" class=" table-sm table-striped table-bordered table-hover" >
+                                          <table id="tablarepo" class="table table-sm table-striped table-bordered table-hover" >
                                             <thead class="theadH">
                                                 <tr>
                                                     <th>Codigo</th>
@@ -99,7 +98,24 @@
                                           
                                   </div>
 
-
+                                <!-- Modal anular-->
+                                <div  class="modal fade" id="modalanular2" role="dialog">
+                                  <div class="modal-dialog modal-sm" >
+                                    <div class="modal-content modalp3" >
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" style="text-align: left">Cancelar solicitud</h5>
+                                        <button type="button" class="close" data-dismiss="modal" id="closem2">&times;</button>
+                                      </div>
+                                      <div class="modal-body" >
+                                          <h5 style="color: red; text-align: left"><b>Seguro que desea cancelar esta solicitud??<br>Esta acción no se puede deshacer.</b></h5>
+                                      </div>
+                                      <div class="modal-footer" id="botonescancelar">
+                                        
+                                      </div>
+                                    </div>
+                                  
+                                  </div>
+                                </div>
                                   <!-- Modal cantidad x ingrediente-->
                               <div class="modal fade modalcant" id="modalcant" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-sm">
@@ -157,7 +173,7 @@
                                  
                             </div>
 
-                        </fieldset>
+
 
                   <div class="container-fluid">
 
