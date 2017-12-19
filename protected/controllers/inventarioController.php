@@ -1146,14 +1146,14 @@ FROM notificacion_has_remision
 				$query = "INSERT INTO notificacion_has_remision (`reposicion_id`, `unidad_negocio_id`, `status_id`) VALUES ($idr,'".$idempresa[0][0]."',129)";
 				$idn =$this->_main->insertar($query);
 				for ($i=1; $i < count($orden); $i++) { 
-		              $query = "INSERT INTO mercancia_has_reposicion(cantidad, precio, ingrediente_id, unidad_medida_id, proveedor_id) VALUES  
-		              ('".$orden[$i]['cantidad']."','".$orden[$i]['precio']."','".$orden[$i]['id']."','".$orden[$i]['idumc']."',NULL)"; 
+		              $query = "INSERT INTO mercancia_has_reposicion(cantidad, precio, ingrediente_id, unidad_medida_id, proveedor_id, reposicion_id) VALUES  
+		              ('".$orden[$i]['cantidad']."','".$orden[$i]['precio']."','".$orden[$i]['id']."','".$orden[$i]['idumc']."',NULL,$idr)"; 
 		              $mhr = $this->_main->insertar($query);
 		          }
 			}else{
 				for ($i=0; $i < count($orden); $i++) { 
-               $query = "INSERT INTO mercancia_has_reposicion(cantidad, precio, ingrediente_id, unidad_medida_id, proveedor_id) VALUES  
-              ('".$orden[$i]['cantidad']."','".$orden[$i]['precio']."','".$orden[$i]['id']."','".$orden[$i]['idumc']."','".$orden[$i]['idproveedor']."')"; 
+               $query = "INSERT INTO mercancia_has_reposicion(cantidad, precio, ingrediente_id, unidad_medida_id, proveedor_id, reposicion_id) VALUES  
+              ('".$orden[$i]['cantidad']."','".$orden[$i]['precio']."','".$orden[$i]['id']."','".$orden[$i]['idumc']."','".$orden[$i]['idproveedor']."',$idr)"; 
               $mhr = $this->_main->insertar($query);
 			}
 			
@@ -1166,7 +1166,7 @@ FROM notificacion_has_remision
         $this->_view->_idtienda = $idtienda;
         $this->_view->render('solicitudcreada', 'inventario', '');
         }else{
-        $this->_view->render('index', 'inventario', '');
+        $this->_view->render('reposicion', 'inventario', '','');
         }
         #var_dump($orden); echo "</br><br>";
         #var_dump($totalPagar); echo "</br>";exit();    

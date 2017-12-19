@@ -80,7 +80,7 @@
 		public function nombreing($ingrediente){
 			$query = "SELECT mercancia.id as idm, mercancia.nombre as producto, marca, receta.id as idre from mercancia
 left join ingrediente_has_receta on ingrediente_id = mercancia.id
-			left join receta on receta_id = receta.id 
+			left join receta on ingrediente_has_receta.receta_id = receta.id 
 			where mercancia.id = $ingrediente";
     		$data = $this->_main->select($query);
     		echo json_encode($data);

@@ -1,0 +1,191 @@
+<head>
+  <meta charset="utf-8">
+  <title>Explosion</title>
+
+
+
+  
+</head>
+<center>
+    <div style="margin-top: 15%" id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+<div id="body" hidden>
+    <div id="page-wrapper">
+            <div style="margin-top: 2%;" class="container-fluid">
+
+                <div class="row">
+                    <div class="col-12 ">
+                        
+
+                        <div class="card cardH">
+
+                            <div class="card-header" style="padding: 5px; height: 25%">
+                              <center><h3 ><o id="titulocard">Generar explosión</o> <?php $ti=strtolower($this->model[0]['udn']); echo "[".ucwords($ti)."]"; ?></h3></center>
+                            </div>
+                          
+                          <div class="card-block">
+                            <ul class="nav nav-tabs" role="tablist">
+                              <li class="active nav-item">
+                                <a data-toggle="tab" href="#consultar" class="nav-link" id="expconsulta">Consultas </a>
+                              </li>
+                              <li class="nav-item" id="tab-r">
+                                <a   class="nav-link" id="expranking">Procesar rankings </a>
+                              </li>
+                              
+                            </ul>
+                            <div class="tab-content">
+                              <div id="consultar" class="tab-pane fade in active mt-3" role="tabpanel">
+                                <!-- <?php if (isset($this->_error)) {
+                                    echo $this->_error;
+                                } ?> -->
+                                <?php if ($this->model[0]['modelo'] != null): ?>
+                                    <div>
+                                      <img width="12%" height="10%" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-responsive" alt="">
+                                    </div>
+                                  <?php else: ?>
+                                    <div>
+                                      <img width="8%" height="8%" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->model[0]['udn']; ?>.png" class="img-responsive" alt="">
+                                    </div>
+                                <?php endif ?>
+                                
+                                
+                                <input type="hidden" name="codit" id="codit" value="<?php echo $this->model[0]['codigo']; ?>">
+                                <input type="hidden" name="idudn" id="idudn" value="<?php echo $this->model[0]['idU']; ?>">
+                                <!-- Small modal -->
+                                
+
+                                <div class="modal fade " tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="modalcerrado">
+                                  <div class="modal-dialog modal-sm">
+                                    <div class="modal-content" >
+                                      <div class="modal-header">
+                                        <h5 class="modal-title">Aviso!</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                      </div>
+                                      <div class="modal-body" >
+                                        <h5>Ya se genero la explosion correspondiente al dia en curso</h5>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal" >
+                                          Cerrar
+                                        </button>
+                                      </div>
+                                      
+                                    </div>
+                                  </div>
+                                </div>
+                                <fieldset>
+                                    
+                                  
+                                    <div id="" class="form-group row">
+                                        <div class="col-sm-3 col-sm-offset-1">
+                                            <label class="labels"  for="">Fecha de incio:</label>
+                                              <input class="form-control form-control-sm" name="fecha_ini" id="fecha_ini" type="date">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="labels"  for="">Fecha limite:</label>
+                                              <input class="form-control form-control-sm test" name="fecha_fin" id="fecha_fin" type="date" disabled data-toggle="tooltip" data-placement="bottom" title="el valor debe ser posterior o igual a la fecha de inicio">
+                                        </div>
+                                    </div>
+
+                                     <!-- <div id="" class="form-group row">
+                                        <div class="col-sm-3 col-sm-offset-1">
+                                            <label class="labels" for="">Tipo de mov.:</label>
+                                              <select  id="tipoMov" name="tipoMov"  class="form-control form-control-sm" disabled>
+                                                <option selected disabled value="seleccione">Seleccione..</option>
+                                                <option value="131">Entradas</option>
+                                                <option value="132">Salidas</option>
+                                              </select>
+                                        </div>
+                                        <div class="col-sm-3">
+                                              <label class="labels" for="">Motivo:</label>
+                                              <select id="motivo" name="motivo" class="form-control form-control-sm" disabled>
+                                                <option selected disabled value="seleccione">Seleccione..</option>
+                                              </select>
+                                        </div>
+                                        
+                                            <input type="hidden" name="mercancia_id" id="mercid" >
+                                            <input type="hidden" name="tiendae" id="tiendae" value="<?php echo $this->idu;?>">
+                                            <input type="hidden" name="status_id" id="status_id" value="126">
+                                      </div> -->
+            
+                                          
+
+                                    <div class="container">
+                                      <div class="row justify-content-center">
+                                        <div class="col-1">
+                                          <div id="botonv">
+                                            <input type="button" class="btn btn-sm btn-outline-primary" id="consult" name="consult" value="Consultar" disabled>  
+                                          </div>
+                                        </div>
+                                      </div>
+                                      
+                                    </div>
+                                    
+                                    
+                                </fieldset>
+                              </div>
+                              <div id="generar" class="tab-pane fade in active mt-3" role="tabpanel">
+                                <!-- Small modal -->
+                                
+
+                                <div class="modal fade " tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="modaladvertencia">
+                                  <div class="modal-dialog modal-sm">
+                                    <div class="modal-content" >
+                                      <div class="modal-header">
+                                        <h5 class="modal-title">Aviso!</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <h5>Existen varios rankings por procesar, verifique la fecha de los mismos y proceda a cargarlos de forma ordenada.</h5>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal" >
+                                          Cerrar
+                                        </button>
+                                      </div>
+                                      
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div id="cuerpor">
+                                  
+                                </div>
+                                <?php if ($this->model[0]['modelo'] != null): ?>
+                                    <div>
+                                      <img width="12%" height="10%" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-responsive" alt="">
+                                    </div>
+                                  <?php else: ?>
+                                    <div>
+                                      <img width="8%" height="8%" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->model[0]['udn']; ?>.png" class="img-responsive" alt="">
+                                    </div>
+                                <?php endif ?>
+                                
+                                
+                                <input type="hidden" name="idudn" id="idudn" value="<?php echo $this->model[0]['idU']; ?>">
+                                
+
+                              </div>
+                              
+                          </div>
+
+
+                        
+                        
+                                               
+                        </div>
+</div>
+      <!-- Header Section-->
+ 	
+ 	
+ 				
+ 					
+ 					
+ 					
+ 					
