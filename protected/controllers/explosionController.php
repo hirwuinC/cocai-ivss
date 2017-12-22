@@ -66,10 +66,35 @@
 			echo json_encode($data);
 		}
 
+		function leerarchivos($fecha,$codigot){
+			$directorio = BASE_URL.'public/archivos/';
+			$ruta = $directorio.$fecha."-".$codigot.".txt";
+         	$lineas = count(file($ruta));
+         	$fp= fopen($ruta,"r");
+         $arrayfichero=file($ruta); // print_r($arrayfichero); exit();
+	        for ($j=0; $j < $lineas; $j++) { 
+	            list($grupo,$cod,$descripcion,$cantidad,$monto,$porcentajeVentas,$costo,$costoTotal,$porcentajeCosto) = explode(',',$arrayfichero[$j]);
+	            $gru[$j]= $grupo;
+	            $pro[$j]=$cod;
+	            $info[$j]=array('grupo'=>$grupo,
+	                            'codigo' =>$cod,
+	                            'descripcion'=>$descripcion,
+	                            'cantidad'=>$cantidad,
+	                            'monto'=>$monto,
+	                            'porcentajeVentas'=>$porcentajeVentas,
+	                            'costo'=>$costo,
+	                            'costoTotal'=>$costoTotal,
+	                            'porcentajeCosto'=>$porcentajeCosto);
+	         }
+	            return $info;
+
+		}
+
 		function insertarexplosion($fecha,$codigot,$idt){
 			$directorio = BASE_URL.'public/archivos/';
 			$ruta = $directorio.$fecha."-".$codigot.".txt";
          	$lineas = count(file($ruta));
+			$info = $this->leerarchivos($fecha,$codigot);
          	$fechaexp = date('Y-m-d');
          	$dia = substr($fecha, -2);
          	$mes = substr($fecha, -4, 2);
@@ -77,28 +102,14 @@
          	$fecharanking = $year."-".$mes."-".$dia;
 
          //echo $ruta."<br>".$valor['t']."<br>".$lineas."<br>"; 
-         $fp= fopen($ruta,"r");
-         $arrayfichero=file($ruta); // print_r($arrayfichero); exit();
-        for ($j=0; $j < $lineas; $j++) { 
-            list($grupo,$cod,$descripcion,$cantidad,$monto,$porcentajeVentas,$costo,$costoTotal,$porcentajeCosto) = explode(',',$arrayfichero[$j]);
-            $gru[$j]= $grupo;
-            $pro[$j]=$cod;
-            $info[$j]=array('grupo'=>$grupo,
-                            'codigo' =>$cod,
-                            'descripcion'=>$descripcion,
-                            'cantidad'=>$cantidad,
-                            'monto'=>$monto,
-                            'porcentajeVentas'=>$porcentajeVentas,
-                            'costo'=>$costo,
-                            'costoTotal'=>$costoTotal,
-                            'porcentajeCosto'=>$porcentajeCosto);
+         for ($j=0; $j < $lineas; $j++) {
             $receid[] = $this->validarrecetas($info[$j]['codigo']);
             
             $query = "INSERT INTO `explosion`(`fecha`, `fecha_ranking`, `grupo`, `codigo_prod`, `producto`, `cantidad`, `monto`, `porcentaje_vta`, `costo`, `costo_total`, `porcentaje_costo`, `unidad_negocio_id`) 
     		VALUES ('".$fechaexp."','".$fecharanking."','".$info[$j]['grupo']."','".$info[$j]['codigo']."','".$info[$j]['descripcion']."','".$info[$j]['cantidad']."','".$info[$j]['monto']."','".$info[$j]['porcentajeVentas']."','".$info[$j]['costo']."','".$info[$j]['costoTotal']."','".$info[$j]['porcentajeCosto']."',$idt)";
     		$explo[] = $this->_main->insertar($query);
             if (!isset($receid[$j][0]['receta_id'])) {
-            	$this->resultadoexplosion($info[$j],$explo[$j]);
+            	$this->resultadoexplosion($info[$j],$explo[$j],$fecha,$codigot,$idt);
             }else{
             	$rec = $this->ingredientesexplosion($info[$j]['codigo'],$idt,$info[$j]['cantidad']);
         	
@@ -106,14 +117,14 @@
 	            	//echo $rec[$m]['recetaing']."<br>";
 	            		if (isset($rec[$m]['recetaing'])) {
 							$idrece = $rec[$m]['recetaing'];
-							$sub = $this->subrecetas($idrece,$explo[$j]);
+							$sub = $this->subrecetas($idrece,$explo[$j],$info[$j]['cantidad'],$fecha,$codigot,$idt);
 							//echo "rec"; print_r($rec);  echo "<br>";
 							//echo "if cantidad: ".$rec[$m]['cantidad']."<br>";
 						}else{
 							//echo "en el otro else<br>";
 							//echo "rec"; print_r($rec);  echo "<br>";
 							//echo "else cantidad: ".$rec[$m]['cantidad']."<br>";
-							$this->resultadoexplosion($rec[$m],$explo[$m]/*,$rec[0]['cantidad'],$rec[0]['unidad_medida_id']*/);
+							$this->resultadoexplosion($rec[$m],$explo[$j],$fecha,$codigot,$idt);
 						}
 	            }
             }
@@ -150,16 +161,19 @@
 	    		//echo "ingredientes:"; print_r($ingredientes); echo "<br>";
 		    		for ($j=0; $j <=count($ingredientes) ; $j++) {
 						if (isset($ingredientes[$i][$j]['idi'])) {
+							$cant = $cantidad*$ingredientes[$i][$j]['cantidad'];
 							//echo $ingredientes[$i][$j]['idi'];
 							$nuevo[] = array('iding'=>$ingredientes[$i][$j]['idi'],
 		                               	 'codigoing' =>$ingredientes[$i][$j]['codigi'],
-		                                 'cantidad'=>$ingredientes[$i][$j]['cantidad'],
+		                                 'cantidad'=>$cant,
 		                                 'abreviatura'=>$ingredientes[$i][$j]['abreviatura'],
 		                                 'ingredientes'=>$ingredientes[$i][$j]['ingrediente'],
 		                                 'unidad_medida_id'=>$ingredientes[$i][$j]['unidad_medida_id'],
 		                                 'costo'=>$ingredientes[$i][$j]['costo'],
 		                                 'idreceta'=>$ingredientes[$i][$j]['idreceta'],
 		                                 'recetaing'=>$ingredientes[$i][$j]['recetaing'],
+		                                 'contenido_neto'=>$ingredientes[$i][$j]['contenido_neto'],
+		                                 'formula_c'=>$ingredientes[$i][$j]['formula_c'],
 		                             	 'idpadre'=>$ingredientes[$i][$j]['idprod'],
 		                                 'padre'=>$ingredientes[$i][$j]['producto']);
 						}					 					
@@ -170,9 +184,9 @@
 			return $nuevo;
 		}
 
-		function subrecetas($idreceta,$explo){
+		function subrecetas($idreceta,$explo,$cantidad,$fecha,$codigot,$idt){
 			//echo "id=";print_r($idreceta); echo "<br><br>";
-			$query = "SELECT mercancia.id as idi, mercancia.receta_id, mercancia.codigo as codigi, mercancia.receta_id as recetaing, ixr.cantidad, abreviatura, mercancia.nombre as producto, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, format(mercancia.precio_unitario,2,'de_DE') as costo, mercancia.precio_unitario as precioU, ixr.receta_id as idreceta, receta.nombre as receta, ixr.unidad_medida_id
+			$query = "SELECT mercancia.id as idi, mercancia.receta_id, mercancia.codigo as codigi, mercancia.receta_id as recetaing, ixr.cantidad, abreviatura, mercancia.nombre as producto, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, format(mercancia.precio_unitario,2,'de_DE') as costo, mercancia.precio_unitario as precioU, mercancia.contenido_neto, mercancia.formula_c, ixr.receta_id as idreceta, receta.nombre as receta, ixr.unidad_medida_id
 					FROM `mercancia`
 					inner join ingrediente_has_receta as ixr on mercancia.id = ixr.ingrediente_id
 					inner join receta on receta.id = ixr.receta_id
@@ -182,25 +196,28 @@
 					//print_r($ingredientes);
 					for ($k=0; $k <=count($ingredientes) ; $k++) {
 						if (isset($ingredientes[$k]['idi'])) {
+							$cant = $cantidad*$ingredientes[$k]['cantidad'];
 							$subreceta[] = array('iding'=>$ingredientes[$k]['idi'],
 		                               	 'codigoing' =>$ingredientes[$k]['codigi'],
-		                                 'cantidad'=>$ingredientes[$k]['cantidad'],
+		                                 'cantidad'=>$cant,
 		                                 'abreviatura'=>$ingredientes[$k]['abreviatura'],
 		                                 'ingredientes'=>$ingredientes[$k]['ingrediente'],
 		                                 'unidad_medida_id'=>$ingredientes[$k]['unidad_medida_id'],
 		                                 'costo'=>$ingredientes[$k]['precioU'],
 		                                 'idreceta'=>$ingredientes[$k]['idreceta'],
-		                                 'recetaing'=>$ingredientes[$k]['recetaing']);
+		                                 'recetaing'=>$ingredientes[$k]['recetaing'],
+		                             	 'contenido_neto'=>$ingredientes[$k]['contenido_neto'],
+		                             	 'formula_c'=>$ingredientes[$k]['formula_c']);
 							
 						}
 						if (isset($subreceta[$k]['recetaing'])) {
 							//echo $subrece[$k]['recetaing']."<br>";
 							$idrc = $subreceta[$k]['recetaing'];
-							$subs = $this->subrecetas($idrc,$explo);
+							$subs = $this->subrecetas($idrc,$explo,$subreceta[$k]['cantidad'],$fecha,$codigot,$idt);
 							//echo "en el if<br>";
 							for ($i=0; $i <count($subs) ; $i++) { 
 								if (!isset($subs[$i]['recetaing'])) {
-									$this->resultadoexplosion($subs[$i],$explo/*,$subs[0]['cantidad'],$subs[0]['unidad_medida_id']*/);
+									$this->resultadoexplosion($subs[$i],$explo,$fecha,$codigot,$idt);
 								}
 								
 							}
@@ -212,9 +229,40 @@
 					return $subreceta;
 		}
 
-		function resultadoexplosion($receta){
-			echo "a";print_r($receta); echo "<br><br>";
+		function resultadoexplosion($receta,$explo,$fecha,$codigot,$idt){
+			$info = $this->leerarchivos($fecha,$codigot);
+			$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.marca, mc.descripcion, mc.existencia, mercancia.contenido_neto, mc.stock_min, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.referencia as 'familia', submodelo.nombre as 'subM', model.nombre as modelo 
+			FROM `unidad_negocio` 
+			inner join mercancia_has_unidad_negocio as mc on mc.unidad_negocio_id = unidad_negocio.id 
+			inner join mercancia on mercancia.id = mc.mercancia_id 
+			inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_sistema_id
+			inner join unidad_medida as unidad_presentacion on unidad_presentacion.id = mercancia.unidad_medida_consumo_id 
+			inner join unidad_medida as unidad_compra on unidad_compra.id = mercancia.unidad_medida_compra_id 
+			inner join referencia as ref on ref.id = mercancia.familia_id 
+			inner join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id 
+			inner join modelo on modelo.id = modelo_has_submodelo.modelo_id
+			inner join modelo as model on model.id = modelo_has_submodelo.modelo_id
+			inner join modelo as submodelo on submodelo.id = modelo_has_submodelo.sub_modelo_id
+			WHERE unidad_negocio.id = $idt ORDER BY mc.status = 1";
+			$udn = $this->_main->select($query);	
+
+			//print_r($info); exit();
+			//$total = Controller::formula($receta['unidad_medida_id'], false, $receta['cantidad'], $receta['contenido_neto'], $receta['formula_s']);
+			$query="SELECT unidad_medida_sistema_id From mercancia where mercancia.id = '".$receta['iding']."'";
+			$umsid = $this->_main->select($query);
+			//print_r($umsid[0]);
+			$query = "INSERT INTO `ingredientes_has_explosion`(`explosion_id`, `ingrediente_id`, `cantidad`, `unidad_medida_id`) 
+			VALUES ($explo, '".$receta['iding']."', '".$receta['cantidad']."', '".$umsid[0][0]."')";
+			$this->_main->insertar($query);
+			//echo "insert ingredientes: ";print_r($receta); echo "<br><br>";
 			//exit();
+			$info[0]['idt'] = $idt;	
+			$info[0]['tienda'] = $udn[0]['tienda'];	
+			$info[0]['modelo'] = $udn[0]['modelo'];	
+			$this->_view->ranking = $info;
+			$archivo = 'public/archivos/'.$fecha.'-'.$codigot.'.txt';
+        	unlink($archivo);
+			$this->_view->render('ranking', 'explosion', '','');
 		}
 
 		function validarrecetas($codigop){
@@ -222,6 +270,42 @@
 			$datosprod = $this->_main->select($query);
 			//print_r($datosprod);
 			return $datosprod;
+		}
+
+		public function consultarexplosion($fechaini,$fechafin,$idt){
+			$cantidades = 0;
+			$query = "SELECT explosion_id, SUM(ixe.cantidad) as quantity, unidad_medida_sistema_id, mercancia.codigo as coding, CONCAT(mercancia.nombre,' ',mercancia.marca) as ingrediente,
+			 mercancia.precio_unitario as costo, contenido_neto, fecha_ranking, unidad_medida.abreviatura, unidad_medida.unidad 
+			 FROM ingredientes_has_explosion as ixe 
+			 inner join mercancia on mercancia.id = ixe.ingrediente_id 
+			 inner join unidad_medida on mercancia.unidad_medida_sistema_id = unidad_medida.id 
+			 inner join explosion on explosion.id = explosion_id 
+			where fecha_ranking BETWEEN '".$fechaini."' and '".$fechafin."' and explosion.unidad_negocio_id = $idt GROUP BY mercancia.codigo";
+			$data = $this->_main->select($query);
+			/*$query ="SELECT codigo from mercancia";
+			$codigos = $this->_main->select($query);
+			for ($i=0; $i <count($codigos) ; $i++) { 
+				for ($j=0; $j <count($explosion) ; $j++) { 
+					if ($codigos[$i][0] == $explosion[$j]['coding']) {
+						$suma = $cantidades[$i]+$explosion[$j]['cantidad'];
+						$cantidades[] = $suma;
+					}else{
+						//$data[] = $explosion[$i]['coding'];
+					}
+					
+				}
+			}*///print_r($explosion);
+			$response = array("data"=>$data);
+    		//print_r($response);
+    		echo json_encode($response);
+		}
+
+		public function consultaranking($fechaini,$fechafin,$idt){
+			$query = "SELECT * FROM explosion where fecha_ranking BETWEEN '".$fechaini."' and '".$fechafin."' and explosion.unidad_negocio_id = $idt";
+			$data = $this->_main->select($query);
+			$response = array("data"=>$data);
+    		//print_r($response);
+    		echo json_encode($response);
 		}
 
 			

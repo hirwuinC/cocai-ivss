@@ -1,0 +1,97 @@
+<style type="text/css" media="screen">
+    .control-label{
+        margin-bottom: 0px;
+    }
+</style>
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+
+<div id="body" hidden>
+<div id="page-wrapper">
+            <div style="margin-top: 2%;" class="container-fluid">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                    <div class="card cardH">
+
+                            <div class="card-header">
+                              <center><h4 ><o id="titulocard">Ranking de venta</o> <?php $ti=strtolower($this->ranking[0]['tienda']); echo "[".ucwords($ti)."]";  ?></h4></center>
+                            </div>
+                          
+                          <div class="card-block">
+                            <div class="row d-flex flex-wrap">
+                                <!--<div class="col-6">
+                                     <h4 class="page-header" style="font-family: Times New Roman, Times, serif; text-align: center">Unidad de negocio <?php echo $this->mercancia[0]['tienda'];?></h4> 
+                                </div>-->
+                            
+                                <div class="col-12 d-flex justify-content-end">
+                                    <img  style="margin-left:0%;" src="<?php $model=strtolower($this->ranking[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-fluid" alt="modelo">
+                                </div>
+                            </div>
+                            <?php $i = 1; ?>  
+                            <div class="dataTable_wrapper ">
+                             <div class="col-sm-12 table-responsive">
+                                <table class="table table-sm table-striped table-bordered table-hover" id="tablaSM">
+                                        <thead class="theadH">
+                                            <tr>
+                                                <th>#</th>                                                    
+                                                <th >Codigo</th>
+                                                <th >Producto</th> 
+                                                <th >Grupo</th>
+                                                <th >Cant</th>
+                                                <th >Precio ud.</th>
+                                                <th >% Vta</th>
+                                                <th >Costo</th>
+                                                <th >Costo total</th>
+                                                <th >% Costo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($this->ranking as $rank): ?>
+                                            <tr> 
+                                                <td ><?php echo $i?></td>   
+                                                <td style="text-align:left"><?php echo $rank['codigo'];?></td>
+                                                <td style="text-align:left"><?php echo $rank['descripcion'];?></td>
+                                                <td style="text-align:left"><?php echo $rank['grupo'];?></td>
+                                                <td style="text-align:left"><?php echo $rank['cantidad'];?></td>
+                                                <td style="text-align:left"><?php echo number_format($rank['monto'],2,",",".")." Bs";?></td>
+                                                <td style="text-align:left"><?php echo $rank['porcentajeVentas']."%";?></td>
+                                                <td style="text-align:left"><?php echo $rank['costo'];?></td>
+                                                <td style="text-align:left"><?php echo $rank['costoTotal'];?></td>
+                                                <td style="text-align:left"><?php echo $rank['porcentajeCosto']."%";?></td>                                                   
+                                            </tr>
+                                            <?php $i++; ?>
+
+                                            <?php endforeach ?>
+                                        </tbody>
+                                    </table>                                 
+                                        <div class="container " >
+                                        <div class="row ">
+                                        <div class="col d-flex justify-content-center my-3">
+                                            <a href="<?php echo BASE_URL;?>explosion/index/<?php echo $this->ranking[0]['idt'];?>" class="btn btn-sm btn-outline-primary" > 
+                                                <b>Consultar Explosion</b>
+                                            </a>
+                                        </div>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+                    <!-- /.col-lg-12 -->
+        </div>
+</div>
+                <!-- /.row -->
+                </div>
+            <!-- /.container-fluid -->
+            </div>
+        <!-- /#page-wrapper -->
+        <!-- no borrar -->
+        </div>

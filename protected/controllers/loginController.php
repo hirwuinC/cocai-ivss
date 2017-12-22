@@ -19,7 +19,7 @@
 			
 		}
 		
-		public function signIn() {
+		public function signIn($valor=false) {
 			
 						
 			if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -44,6 +44,9 @@
 					);
 					$this->_view->render('access', '','login');
 					exit();
+				}
+				if ($valor == 1) {
+					Session::set('header',$valor);
 				}
 				Session::set('clave', $_POST['password']);
 				Session::set('idUsuario', $data['id']);

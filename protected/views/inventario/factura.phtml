@@ -1,0 +1,212 @@
+<style type="text/css" media="screen">
+    .control-label{
+        margin-bottom: 0px;
+    }
+</style>
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+
+<div id="body" hidden>
+<div id="page-wrapper">
+            <div style="margin-top: 2%;" class="container-fluid">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                    <div class="card cardH">
+
+                            <div class="card-header">
+                              <center><h4 ><o id="titulocard">Factura de compra directa</o> <?php $ti=strtolower($this->g[0]['tienda']); echo "[".ucwords($ti)."] Sub-modelo ".$this->g[0]['subM'];  ?></h4></center>
+                            </div>
+                          
+                          <div class="card-block">
+                            <div class="row d-flex flex-wrap">
+                                <div class="col-6">
+                                    <h4 class="page-header" style="font-family: Times New Roman, Times, serif; text-align: center">Unidad de negocio <?php echo $this->g[0]['tienda']; echo '<br> Sub-modelo '.$this->g[0]['subM'];  ?></h4>
+                                </div>
+                            
+                                <div class="col-6 d-flex justify-content-end">
+                                    <img  style="margin-left:0%;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-fluid" alt="modelo">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <h4 style="border-bottom: solid 1px #A5A5A5;">Datos de la factura</h4>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: left;">Fecha de compra</label>
+                                    <input type="date" class="form-control form-control-sm fechac" name="fechac" id="fechac" autocomplete="off">
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: left;">N° de factura</label>
+                                    <input type="text" class="form-control form-control-sm num_factura" name="num_factura" id="num_factura" autocomplete="off" placeholder="numero de factura">
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: left;">Proveedor</label>
+                                    <select name="selectp" id="selectp" class="form-control form-control-sm">
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="form-prov" hidden>
+                            <div class="form-group row" >
+                                <div class="col-sm-12">
+                                    <h4 style="border-bottom: solid 1px #A5A5A5;">Datos del proveedor</h4>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: left;">Nombre</label>
+                                    <input type="text" class="form-control form-control-sm nombreprov" name="nombreprov" id="nombreprov" autocomplete="off" placeholder="Nombre del proveedor" required>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: left;">Rif</label>
+                                    <input type="text" class="form-control form-control-sm rifprov" name="rifprov" id="rifprov" autocomplete="off" placeholder="RIF del proveedor">
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: left;">Razon Social</label>
+                                    <input type="text" class="form-control form-control-sm razonprov" name="razonprov" id="razonprov" autocomplete="off" placeholder="Razon social del proveedor">
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="control-label" style="float: left;">Correo</label>
+                                    <input type="text" class="form-control form-control-sm razonprov" name="razonprov" id="razonprov" autocomplete="off" placeholder="Correo del proveedor">
+                                </div>
+                                <div class="col-sm-12 mt-3">
+                                    <center><h5 style="border-bottom: solid 1px #A5A5A5;">Direccion del proveedor</h5></center>
+                                </div>  
+                                <div class="col-sm-3">
+                                    <input type="radio" name="tipo_habi" id="building"><i class="fa fa-building"> Edificio</i>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="radio" name="tipo_habi" id="office" class="house"><i class="fa fa-hospital-o"> Local comercial</i>
+                                </div>
+                            </div>
+                            <div id="dir-prov" hidden>
+                                <div class="form-group row">
+                                <div class="col-xs-12 col-sm-4 col-md-3 col-xs-offset-0 col-sm-offset-0 col-md-offset-1">
+                                    <label style="margin-bottom: -5px" for="">Estado:</label>
+                                    <select data-toggle="tooltip" data-placement="top" title="Seleccione un estado" class="form-control form-control-sm" name="estado" id="estado" required=""></select>
+                                </div>
+                                <div class="col-xs-12 col-sm-4 col-md-3">
+                                    <label style="margin-bottom: -5px" for="">Municipio:</label>
+                                      <select data-toggle="tooltip" data-placement="top" title="Seleccione un municipio" class="form-control form-control-sm" name="municipio" id="municipio" required="">
+                                          <option value="Seleccione">Seleccione..</option>
+                                      </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-4 col-md-3">
+                                    <label style="margin-bottom: -5px" for="">Parroquia:</label>
+                                      <select data-toggle="tooltip" data-placement="top" title="seleccione una parroquia" class="form-control form-control-sm" name="parroquia_id" id="parroquia" required="">
+                                          <option value="Seleccione">Seleccione..</option>
+                                      </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-4 col-md-3 col-xs-offset-0 col-sm-offset-0 col-md-offset-1">
+                                    <label style="margin-bottom: -5px" for="">Urbanizacion:</label>
+                                     <input data-toggle="tooltip" data-placement="top" title="el nombre de la urbanizacion puede contener letras, numeros, espacios y signos y un maximo de 60 caracteres" type="text" class="form-control form-control-sm " name="urbanizacion" id="urbanizacion" placeholder="Nombre de urbanizacion" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{3,60}" >
+                                </div>
+                                <div class="col-xs-12 col-sm-4 col-md-3">
+                                    <label style="margin-bottom: -5px" for="">Calle:</label>
+                                      <input data-toggle="tooltip" data-placement="top" title="el nombre de la calle puede contener letras, numeros, espacios y signos y un maximo de 60 caracteres" type="text" class="form-control form-control-sm" name="calle" id="calle" placeholder="Nombre de calle" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{1,60}" required="">
+                                </div>
+                                <div class="col-xs-12 col-sm-4 col-md-3" id="edif" hidden>
+                                    <label style="margin-bottom: -5px" for="">Edificio:</label>
+                                    <input data-toggle="tooltip" data-placement="top" title="el nombre del edificio puede contener letras, numeros, espacios y signos y un maximo de 60 caracteres" type="text" class="form-control form-control-sm" name="edificio" id="edificio" placeholder="Nombre de Edif." pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{1,60}" >
+                                </div>
+                                <div class="col-xs-12 col-sm-4 col-md-3" id="house" hidden>
+                                    <label style="margin-bottom: -5px" for="">Local:</label>
+                                    <input data-toggle="tooltip" data-placement="top" title="el nombre de la casa puede contener letras, numeros, espacios y signos y un maximo de 60 caracteres" type="text" class="form-control form-control-sm" name="casa" id="casa" placeholder="nombre o nro de local comercial" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{1,60}" >
+                                </div>
+                                <div class="col-xs-12 col-sm-4 col-md-3 col-sm-offset-0" id="ptoref">
+                                    <label style="margin-bottom: -5px" for="">Punto de referencia:</label>
+                                      <textarea data-toggle="tooltip" data-placement="top" title="el punto de referencia puede contener letras, numeros, espacios y signos y un maximo de 160 caracteres" class="form-control form-control-sm" name="p_referencia" id="p_referencia" placeholder="punto de referencia para ubicar facilmente el lugar de entrega" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{5,160}" required="" rows="3"></textarea>
+                                </div>   
+                            </div>
+                            </div>
+                            
+                            
+
+
+                            
+                            
+                            </div>
+                                    <div class="dataTable_wrapper">
+                                        <div class="table-responsive col-sm-12">
+                                            <table class="table table-bordered table-hover table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>header</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>data</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                     <!--Modal compra directa-->
+                                      <div class="modal" tabindex="-1" role="dialog" id="modalreposicion">
+                                          <div class="modal-dialog " role="document">
+                                            <div class="modal-content">
+                                              <div class="modal-header">
+                                                <h5 class="modal-title" id="titulorep"></h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                                </button>
+                                              </div>
+                                              <div class="modal-body">
+                                                <form action="<?php echo BASE_URL;?>inventario/compraDirecta" method="post" accept-charset="utf-8">
+                                                    <input type="hidden" name="idT" id="idT2" value="<?php echo $this->g[0]['idT'];?>">
+                                                    <input type="hidden" name="idP" id="idP2" >
+                                                    <input type="hidden" name="unidad_medida_si" id="umsis">
+                                                    <input type="hidden" name="motivo" id="motivo" value="122">
+                                                <div class="form-group row ">
+                                                    
+                                                    <div class="col-sm-4">
+                                                        <label class="control-label" style="float: left;">Contenido neto</label>
+                                                        <div class="col-1 d-flex offset-10" id="glyphi" data-toggle="tooltip" data-placement="right" title="ya existe un producto con el mismo nombre y marca">
+                                                        </div>
+                                                        <input type="text" class="form-control form-control-sm contneto" name="contneto" id="contneto" autocomplete="off">
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <label class="control-label" style="float: left;">Cant. comprada</label>
+                                                        <div class="col-1 d-flex offset-10" id="glyphi" data-toggle="tooltip" data-placement="right" title="ya existe un producto con el mismo nombre y marca">
+                                                        </div>
+                                                        <input type="text" class="form-control form-control-sm" name="cantcomprada" id="cantcomprada" required>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <label class="control-label" style="float: left;">U/M Compra</label>
+                                                        <select name="umcompra" class="form-control form-control-sm umc" id="umcompra" required>
+                                                            <option value="selected disabled">Seleccione..</option>}
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <label for="" class="control-label" style="float: left;">Conversion a <o id="conver"></o></label>
+                                                        <input type="text" class="form-control form-control-sm formulac" name="formulacomp" id="formulacomp">
+                                                    </div> 
+                                                    <div class="col-sm-4" id="canti" hidden>
+                                                        <label class="control-label" style="float: left;"><o id="up"></o><o class="uc"></o></label>
+                                                        <input type="text" class="form-control form-control-sm cantix" name="cantix" id="cantix">
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <label class="control-label" style="float: left;">Descripcion de compra</label>
+                                                        <textarea class="form-control form-control-sm" rows="2" name="descripcion"></textarea>
+                                                    </div>                                                 
+                                                </div>
+                                                
+                                              </div>
+                                              <div class="modal-footer">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+                                                <input type="submit" class="btn btn-sm btn-outline-primary" value="Guardar">
+                                              </div>
+                                            </form>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      <!-- fin de la modal compra directa -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>

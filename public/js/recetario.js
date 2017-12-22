@@ -323,7 +323,15 @@ jQuery(document).ready(function($) {
 	 		
 	 		
 	 	});
-
+	 	$('#canti').keyup(function(event) {
+	 		var c = $('#canti').val();
+	 	if (c.length>0) {
+	 		$('#agregari').prop('disabled', false);
+	 	}else{
+	 		$('#agregari').prop('disabled', true);
+	 	}
+	 	});
+	 	
 
 	 });
 
@@ -332,6 +340,7 @@ jQuery(document).ready(function($) {
 	 	//alert(producto); alert(ingrediente); alert(receta);
 	 	$('#mcant').modal('show');
 	 	$('#unidadmed').empty();
+	 	$('#unidadmedf').empty();
 	 	$.ajax({
 			url: BASE_URL+'/receta/mercancia/'+iding,
             type: 'POST',
@@ -340,9 +349,10 @@ jQuery(document).ready(function($) {
 		.done(function(data) {
 			$('#unidadmed').empty();
 			$('#bot').empty();
-				$('#unidadmed').append('<option value="'+data[0]['idUS']+'">'+data[0]['US']+'</option>'+
-					'<option selected value="'+data[0]['idUP']+'">'+data[0]['UP']+'</option>');
-				$('#bot').append('<button class="btn btn-sm btn-default" id="cancelarag">Cancelar</button><span style="margin-right: 1%; margin-left: 1%; "></span><button class="btn btn-sm btn-primary"  onclick="agregado('+producto+','+ingrediente+','+iding+','+receta+')" id="agregari">Agregar</button>  ');
+				$('#unidadmedf').val(data[0]['US']);
+				$('#unidadmed').val(data[0]['idUS']);
+					
+				$('#bot').append('<button class="btn btn-sm btn-default" id="cancelarag">Cancelar</button><span style="margin-right: 1%; margin-left: 1%; "></span><button class="btn btn-sm btn-primary"  onclick="agregado('+producto+','+ingrediente+','+iding+','+receta+')" id="agregari" disabled>Agregar</button>  ');
 				$('#cancelarag').click(function(event) {
 					$('#mcant').modal('hide');
 				});

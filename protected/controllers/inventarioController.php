@@ -37,17 +37,7 @@
             }
 		}
 
-		function stockT($tienda){
-			$this->_view->setJs(array('js/jquery-1.12.4.min'));
-    		$this->_view->setJs(array('js/inventario'));
-    		$this->_view->setCss(array('datatable/css/bootstrap4.min'));
-		    $this->_view->setjs(array('datatable/js/jquerydatatable.min'));
-		    $this->_view->setJs(array('datatable/js/datatable.b4.min'));
-		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
-		    $this->_view->setJs(array('datatable/js/tabla'));
-
-            
-            Session::time();
+		function datostienda($tienda){
 			$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.marca, mc.descripcion, mc.existencia, mercancia.contenido_neto, mc.stock_min, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.referencia as 'familia', submodelo.nombre as 'subM', model.nombre as modelo 
 			FROM `unidad_negocio` 
 			inner join mercancia_has_unidad_negocio as mc on mc.unidad_negocio_id = unidad_negocio.id 
@@ -63,6 +53,19 @@
 			WHERE unidad_negocio.id = $tienda ORDER BY mc.status = 1"; 
 
 			$valores = $this->_main->select($query); #print_r($valores);
+			return $valores;
+		}
+
+		function stockT($tienda){
+			$this->_view->setJs(array('js/jquery-1.12.4.min'));
+    		$this->_view->setJs(array('js/inventario'));
+    		$this->_view->setCss(array('datatable/css/bootstrap4.min'));
+		    $this->_view->setjs(array('datatable/js/jquerydatatable.min'));
+		    $this->_view->setJs(array('datatable/js/datatable.b4.min'));
+		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
+		    $this->_view->setJs(array('datatable/js/tabla'));
+            Session::time();
+			$valores = $this->datostienda($tienda); #print_r($valores);
 			$cantidad= count($valores);
 			if ($cantidad > 0) {
 				$this->_view->g = $valores;	
@@ -607,9 +610,16 @@ FROM notificacion_has_remision
       		$this->_view->render('reposicion', 'inventario', '',''); 		
     	}
 
+    	function facturasdecompra($tienda){
+    		$this->_view->setJs(array('js/facturas'));
+			$valores = $this->datostienda($tienda);
+			$this->_view->g = $valores;
+    		$this->_view->render('factura', 'inventario', '',''); 
+    	}
+
     	function compraDirecta(){
     		if ($_SERVER['REQUEST_METHOD']=='POST') {
-    			Controller::varDump($_POST); 
+    			//Controller::varDump($_POST); 
 	    		$conversion = Controller::formula($_POST['umcompra'],$_POST['cantix'],$_POST['cantcomprada'],$_POST['contneto'],$_POST['formulacomp']); 
 	    		//print_r($conversion);//exit();
 	    		$query = "SELECT existencia FROM `mercancia_has_unidad_negocio` 
@@ -622,7 +632,7 @@ FROM notificacion_has_remision
 	    		$updated = $this->_main->modificar($query);
 
 	    		$this->entradaOsalida($_POST['idP'],$_POST['idT'],$incremento, $_POST['unidad_medida_si'],$_POST['motivo'],$_POST['descripcion']); 
-    			$accion='Modificado'; 
+    			$accion='Compra directa'; 
                 $this->log($_POST['idP'],$_POST['idT'],$accion);
                 $this->_view->redirect('inventario/evaluar/'.$_POST['idT']);
 

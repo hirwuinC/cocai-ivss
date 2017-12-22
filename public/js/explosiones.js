@@ -14,111 +14,86 @@ $(document).ready(function() {
     load('referencia','motivo',false,false);
     $('#fecha_fin').focus();
   });
-  $('#fecha_fin').change(function(event) {
-    var idU = $('#idudn').val();
-    var fechaini = $('#fecha_ini').val();
-    var fechafin = $('#fecha_fin').val();
-    $('#tipoMov').prop('disabled', false);
-    $('#motivo').prop('disabled', true);
-    $('#tipoMov').val('seleccione');
-    $('#tipoMov').focus();
-    $('#motivo').empty();
-    load('referencia','motivo',false,false);
-    $('#botonf').hide();
-    $('#botonv').empty();
-    $('#botonv').append('<input type="button" class="btn btn-sm btn-outline-primary" id="consult" name="consult" value="Consultar">');
-    $('#consult').click(function(event) {
-        $('#load').show();
-        $('#tablaoculta').show();
-        $('#load').prop('hidden', false);
-        $('#tablaoculta').prop('hidden', false);
-        //alert(fechaini); alert(fechafin); alert(tipomov); alert(motiv);
-        explotion(fechaini,fechafin,tipomov,motiv,idU,empresa);
-  
-        
-     }); 
-  });
-  $('#tipoMov').change(function(event) {
-    var fechaini = $('#fecha_ini').val();
-    var fechafin = $('#fecha_fin').val();
-    var tipomov = $('#tipoMov').val();
-    var motiv = 'false';
-    var idU = $('#idudn').val();
-    $('#motivo').prop('disabled', false);
-    $('#motivo').empty();
-    load('referencia','motivo',false,false);
-    $('#motivo').focus();
-    $('#botonf').hide();
-    $('#botonv').empty();
-    $('#botonv').append('<input type="button" class="btn btn-sm btn-outline-primary" id="consult" name="consult" value="Consultar">');
-    $('#consult').click(function(event) {
-        $('#load').show();
-        $('#tablaoculta').show();
-        $('#load').prop('hidden', false);
-        $('#tablaoculta').prop('hidden', false);
-        //alert(fechaini); alert(fechafin); alert(tipomov); alert(motiv);
-        explotion(fechaini,fechafin,tipomov,motiv,idU,empresa);
-  
-        
-     }); 
-  });
+
+
     
     $('#consult').click(function(event) {
         $('#load').show();
         var fechaini = $('#fecha_ini').val();
         var fechafin = $('#fecha_fin').val();
-        //alert(fechaini); alert(fechafin); alert(tipomov); alert(motiv);
-        explotion(fechaini,fechafin,tipomov,motiv,idU,empresa);  
+        var idt = $('#idudn').val();
+        //alert(fechaini); alert(fechafin); alert(idt); 
+        explotionrank(fechaini,fechafin,idt);  
+     });
+     $('#consultaingredientes').click(function(event) {
+        $('#load').show();
+        var fechaini = $('#fecha_ini').val();
+        var fechafin = $('#fecha_fin').val();
+        var idt = $('#idudn').val();
+        //alert(fechaini); alert(fechafin); alert(idt); 
+        explotion(fechaini,fechafin,idt);  
      });       
 
     $('#expconsulta').trigger('click');
 
 });
 
- function explotion(fechaini,fechafin,tipomov,motiv,idU,empresa){
-  //alert(fechaini); alert(fechafin); alert(tipomov); alert(motiv); alert(idU);
-  $('#tablaoculta').hide();
+ function explotionrank(fechaini,fechafin,idt){
+    $('#consultaingredientes').prop('hidden', false);
+  //alert(fechaini); alert(fechafin); alert(idt); 
+  $('#tablaoculta1').hide();
+  
   $('#load').fadeOut(600);
-  setTimeout(function() {$('#tablaoculta').fadeIn(700);}, 600);
-  if (idU != 59) {
-    $('#tablaexplosion').DataTable({
-            "ajax": BASE_URL+'/explosion/consultarexplosion/'+fechaini+'/'+fechafin+'/'+tipomov+'/'+motiv+'/'+idU+'/'+empresa,
-            "columns": [
-                { "data": "mercancia" },
-                { "data": "familia" },
-                { "data": "tipomov" },
-                { "data": "cantidad" },
-                { "data": "motivo" },
-                { "data": "descripcion" },
-                { "data": "hora" },
-                { "data": "Nombre" }
-                
-            ],
-            destroy: true,
-            responsive: true
-        });
-    $('#tablaexplosion').css("width","100%");
-}else{
-    $('#tablaexplosion').DataTable({
-            "ajax": BASE_URL+'/explosion/consultarexplosion/'+fechaini+'/'+fechafin+'/'+tipomov+'/'+motiv+'/'+idU+'/'+empresa,
-            "columns": [
-                { "data": "tienda" },
-                { "data": "mercancia" },
-                { "data": "familia" },
-                { "data": "tipomov" },
-                { "data": "cantidad" },
-                { "data": "motivo" },
-                { "data": "descripcion" },
-                { "data": "hora" },
-                { "data": "Nombre" }
-                
-            ],
-            destroy: true,
-            responsive: true
-        });
-    $('#tablaexplosion').css("width","100%");
-}
+  setTimeout(function() {$('#tablaoculta1').fadeIn(700);$('#tablaoculta1').prop('hidden', false)}, 600);
 
+    $('#tablarank').DataTable({
+            "ajax": BASE_URL+'/explosion/consultaranking/'+fechaini+'/'+fechafin+'/'+idt,
+            "columns": [
+                { "data": "codigo_prod" },
+                { "data": "producto" },
+                { "data": "grupo" },
+                { "data": "cantidad" },
+                { "data": "monto" },
+                { "data": "porcentaje_vta" },
+                { "data": "costo" },
+                { "data": "costo_total" },
+                { "data": "porcentaje_costo" },
+                { "data": "fecha_ranking" }
+                
+            ],
+            destroy: true,
+            responsive: true
+        });
+    $('#tablarank').css("width","100%");
+ } 
+
+ function explotion(fechaini,fechafin,idt){
+    
+  //alert(fechaini); alert(fechafin); alert(idt); 
+  $('#tablaoculta').hide();
+  
+  $('#load').fadeOut(600);
+  $('#consultaingredientes').fadeOut(700);
+  setTimeout(function() {$('#tablaoculta').fadeIn(700);$('#tablaoculta').prop('hidden', false);}, 600);
+
+    $('#tablaexplosion').DataTable({
+            "ajax": BASE_URL+'/explosion/consultarexplosion/'+fechaini+'/'+fechafin+'/'+idt,
+            "columns": [
+                { "data": "coding" },
+                { "data": "ingrediente" },
+                { "data": "quantity", 
+                    render : function(data, type, row) { 
+                        return ''+data+' '+row['abreviatura']
+                    }
+                },
+                { "data": "costo" },
+                { "data": "fecha_ranking" }
+                
+            ],
+            destroy: true,
+            responsive: true
+        });
+    $('#tablaexplosion').css("width","100%");
  }
 
  $(document).ready(function() {

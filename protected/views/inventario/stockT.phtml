@@ -94,9 +94,9 @@
                                                         <a style="cursor: hand; font-size: 17px" class="test" data-toggle="modal" data-target="#prodUpdate" onclick="modalUpdate('<?php echo $g['idP'];?>','<?php echo $g['idT'];?>')">
                                                             <span  class="fa fa-edit" data-toggle="tooltip" data-placement="top" title="Editar Producto"></span>
                                                         </a>
-                                                        <a style="cursor: hand; margin-left: 10px; font-size: 17px" class="test" data-toggle="modal" data-target="#modalreposicion" onclick="compradirecta('<?php echo $g['idP'];?>','<?php echo $g['idT'];?>')">
+                                                        <!-- <a style="cursor: hand; margin-left: 10px; font-size: 17px" class="test" data-toggle="modal" data-target="#modalreposicion" onclick="compradirecta('<?php echo $g['idP'];?>','<?php echo $g['idT'];?>')">
                                                             <span data-toggle="tooltip" data-placement="top" title="Reposicion de mercancia por compra directa" class="fa fa-money"></span>
-                                                        </a>
+                                                        </a> -->
                                                     </center>
                                                 </th>
 
@@ -108,6 +108,17 @@
                                     </table> 
                                   <?php endif; ?>
                                     <br>
+                                                
+                                    <div class="container " >
+                                        <div class="row ">
+                                            <div class="col d-flex justify-content-center my-3">
+                                                <a href="<?php echo BASE_URL;?>inventario/facturasdecompra/<?php echo $g['idT'];?>" class="btn btn-sm btn-outline-primary"> 
+                                                    <b>Cargar factura de compra directa </b>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>        
+                                    
                                     <!-- <div class="container">
                                         <div class="row ">
                                             <div class="col-sm-12 d-flex justify-content-center">
@@ -320,66 +331,7 @@
                                           </div><!-- /.modal-dialog -->
                                       </div><!-- /.modal -->
                                       <!-- FIN DE LA MODAL DEL LA FUNCION MODIFICAR DE LOS SUB-MODELOS -->
-                                        <!--Modal compra directa-->
-                                      <div class="modal" tabindex="-1" role="dialog" id="modalreposicion">
-                                          <div class="modal-dialog " role="document">
-                                            <div class="modal-content">
-                                              <div class="modal-header">
-                                                <h5 class="modal-title" id="titulorep"></h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                  <span aria-hidden="true">&times;</span>
-                                                </button>
-                                              </div>
-                                              <div class="modal-body">
-                                                <form action="<?php echo BASE_URL;?>inventario/compraDirecta" method="post" accept-charset="utf-8">
-                                                    <input type="hidden" name="idT" id="idT2" value="<?php echo $this->g[0]['idT'];?>">
-                                                    <input type="hidden" name="idP" id="idP2" >
-                                                    <input type="hidden" name="unidad_medida_si" id="umsis">
-                                                    <input type="hidden" name="motivo" id="motivo" value="122">
-                                                <div class="form-group row ">
-                                                    
-                                                    <div class="col-sm-4">
-                                                        <label class="control-label" style="float: left;">Contenido neto</label>
-                                                        <div class="col-1 d-flex offset-10" id="glyphi" data-toggle="tooltip" data-placement="right" title="ya existe un producto con el mismo nombre y marca">
-                                                        </div>
-                                                        <input type="text" class="form-control form-control-sm contneto" name="contneto" id="contneto">
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <label class="control-label" style="float: left;">Cant. comprada</label>
-                                                        <div class="col-1 d-flex offset-10" id="glyphi" data-toggle="tooltip" data-placement="right" title="ya existe un producto con el mismo nombre y marca">
-                                                        </div>
-                                                        <input type="text" class="form-control form-control-sm" name="cantcomprada" id="cantcomprada" required>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <label class="control-label" style="float: left;">U/M Compra</label>
-                                                        <select name="umcompra" class="form-control form-control-sm umc" id="umcompra" required>
-                                                            <option value="selected disabled">Seleccione..</option>}
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <label for="" class="control-label" style="float: left;">Conversion a <o id="conver"></o></label>
-                                                        <input type="text" class="form-control form-control-sm formulac" name="formulacomp" id="formulacomp">
-                                                    </div> 
-                                                    <div class="col-sm-4" id="canti" hidden>
-                                                        <label class="control-label" style="float: left;"><o id="up"></o><o class="uc"></o></label>
-                                                        <input type="text" class="form-control form-control-sm cantix" name="cantix" id="cantix">
-                                                    </div>
-                                                    <div class="col-sm-8">
-                                                        <label class="control-label" style="float: left;">Descripcion de compra</label>
-                                                        <textarea class="form-control form-control-sm" rows="2" name="descripcion"></textarea>
-                                                    </div>                                                 
-                                                </div>
-                                                
-                                              </div>
-                                              <div class="modal-footer">
-                                                <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Cancelar</button>
-                                                <input type="submit" class="btn btn-sm btn-outline-primary" value="Guardar">
-                                              </div>
-                                            </form>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      <!-- fin de la modal compra directa -->
+                                       
                                         <!-- MODAL DE CONFIRMACION PARA ELIMINAR-->
                                         <div class="modal fade " id="alerta" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
                                             <div class="modal-dialog modal-sm" role="document">

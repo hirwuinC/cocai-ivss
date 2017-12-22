@@ -104,7 +104,7 @@
                                               <i class="fa fa-cogs"></i></span></a>   
                                           </li>
                                           <li>
-                                            <a href="'.BASE_URL.'explosion/index/'.$id[$j].'" style="margin-left:5px; ">Generar explosion
+                                            <a href="'.BASE_URL.'explosion/index/'.$id[$j].'" style="margin-left:5px; ">Explosion de ingredientes
                                               <i class="fa fa-bomb"></i></span></a>   
                                           </li>
                                            <li>
@@ -124,8 +124,8 @@
                                                   <a href="'.BASE_URL.'inventario/inicio/'.$id[$i].'" class="subM" style="margin-left:12px; "></i>Reportes</a>
                                                 </li>
                                               </ul>
-                                          </li>
-                                        </ul>  ';
+                                          </li>';
+                                  echo '</ul>  ';
                                   echo '</li>';
                             }
 
@@ -193,8 +193,8 @@
                                                   <a href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'" class="subM"></i>Reportes</a>
                                                 </li>
                                               </ul>
-                                          </li>
-                                        </ul>  ';
+                                          </li>';
+                                  echo '</ul>  ';
                                   echo '</li>';
                               }
                             }
@@ -204,10 +204,21 @@
                         
                         echo '<li>
                                   <a style="" href="'.PUBLIC_URL.'guia/Instructivo_para_el_uso_del_aplicativo_admin_productos_ventas.pdf" target="_blank" class="subM"><i class="fa fa-info-circle"></i> Ayuda</a>
-                              </li>
-                              <li>
-                                  <a style="" href="'.BASE_URL.'login/close"><i class="fa fa-sign-out fa-fw"></i>Cerrar Sesión</a>
                               </li>';
+                              if (Session::get('header') == 1) {
+                                          echo '<li>
+                                            <form id="corporativa" class="form-horizontal" role="form"  action=""  method="post"> 
+
+                                            <button type="submit" fomr="corporativa" formmethod="post" formaction="http://www.hdjgr.com.ve/epoc-web/support/login/signIn/"  class="btn btn-primary " style="width:100%; border-radius:0px; text-align:left;" name="password" id="corp"  value="'.Session::get('clave').'" ><i class="fa fa-sign-in" aria-hidden="true"></i> Area corporativa</a>
+                                            </button>
+                                          </form>
+                                        </li>';
+                              }else{
+                                echo '<li>
+                                  <a style="" href="'.BASE_URL.'login/close"><i class="fa fa-sign-out fa-fw"></i>Cerrar Sesión</a>
+                                </li>';
+                              }
+                              
                       ?>             
             
     </nav>
