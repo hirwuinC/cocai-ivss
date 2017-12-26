@@ -1,4 +1,13 @@
 jQuery(document).ready(function($) {
+
+	$('#updatepvp').click(function(event) {
+		var precio = $('#pU').val();
+		var producto = $('#idproduct').val();
+ 		var ingrediente = $('#iding').val();
+ 		var receid = $('#idrece').val();
+		updateprecio(precio,producto,ingrediente,receid);
+	});
+
 	//alert("read");
 	load('modelo','modelo_id',false);
 	$('#pventa').trigger('click');
@@ -38,6 +47,35 @@ jQuery(document).ready(function($) {
 
 });
 
+	function updateprecio(precio,producto,ingrediente,receid){
+		$.ajax({
+	 		url: BASE_URL+'/receta/costototal/'+producto+'/'+ingrediente,
+	        type: 'POST',
+	        dataType: 'json'
+	 	})
+	 	.done(function(datos) {
+	 		var costor = datos[0][0];
+	 		//alert(costor);
+	 		$.ajax({
+		 		url: BASE_URL+'/receta/updatepvp/'+precio+'/'+producto+'/'+receid+'/'+costor,
+		        type: 'POST',
+		        dataType: 'json'
+		 	})
+		 	.done(function(data) {
+		 		//alert(data);
+		 		$('#np').empty();
+		 		$('#np2').empty();
+		 		$('#np').append(data[0]['producto']);
+		 		$('#np2').append(precio);
+		 		$('#actualizado').fadeIn(100);
+					$('#actualizado').prop('hidden', false);
+					//alert(data[0]['producto']); alert(data[0]['ingrediente']);
+					
+					setTimeout(function() {$('#consult').trigger('click');vering(producto,ingrediente,receid);$('#actualizado').fadeOut();}, 3000);
+		 	});
+	 	});
+	}
+
     function verproductos(modelo){
   	//alert(modelo); 
   $('#tablaoculta').hide();
@@ -56,6 +94,7 @@ jQuery(document).ready(function($) {
 			          	return ''+data+' '+moneda
 		       		} 
             	},
+            	{ "data": "porcentajec" , className: "tdleft"},
                 { "data": "pvpam" , className: "tdright",
                 	render : function(data, type, row) { 
 			          	return ''+data+' '+moneda
@@ -136,7 +175,7 @@ jQuery(document).ready(function($) {
  	$('#iding').val("");
  	$('#iding').val(ingrediente);
  	var moneda = "Bs";
- 	//alert(producto);alert(ingrediente);
+ 	//alert(producto);alert(ingrediente);alert(idrec);
  	$.ajax({
  		url: BASE_URL+'/receta/nombrepro/'+producto+'/'+ingrediente,
             type: 'POST',
@@ -155,8 +194,51 @@ jQuery(document).ready(function($) {
  		$('#enunciado').append('<h4>Nuevo ingrediente para '+receta+'</h4>');
  		$('#idrece').val("");
  		$('#idrece').val(idrec);
+ 		$('#pU').empty();
+ 		$('#pU').val(data[0]['precioU']);
+	 		$('#pU').keyup(function(event) {
+				var pu = $('#pU').val();
+				if (pu != data[0]['precioU']) {
+					$('#updatepvp').prop('disabled', false);
+				}else{
+					$('#updatepvp').prop('disabled', true);
+					$('#updatepvp').attr('title', 'No se ha modificado el precio');
+				}
+			});
+
+ 		$.ajax({
+	 		url: BASE_URL+'/receta/costototal/'+producto+'/'+idrec,
+	        type: 'POST',
+	        dataType: 'json'
+	 	})
+	 	.done(function(datos) {
+	 		$('#costot').empty();
+	 		var ttl = datos[0][1];
+	 		if (ttl == null) {
+	 			var totalcosto = false;
+	 			var total = false;
+	 		}else{
+	 			var totalcosto = ttl;
+	 			var total = datos[0][0];
+	 			if (datos[0][4]) {
+		 			var multi = total*100;
+		 			$('#parapvp').prop('hidden', false);
+		 			var pvp = datos[0][4];
+		 			var porcentajec = multi/pvp;
+		 			$('#costot').append('<b>Total costo: '+totalcosto+' Bs / % de costo: ['+porcentajec.toLocaleString('es-ES', { maximumFractionDigits: 2 },{ minimumFractionDigits: 2 })+']</b>');
+		 		}else{
+		 			$('#parapvp').prop('hidden', true);
+		 			$('#costot').append('<b>Total costo: '+totalcosto+'</b>');
+		 		}
+	 		}
+	 		
+	 		//alert(multi);
+	 		//alert(data[0][1]);
+	 	});	
 
  	});
+
+
  	
  	//alert(producto);alert(ingrediente);alert(idrec);
  	
@@ -190,7 +272,7 @@ jQuery(document).ready(function($) {
           	//var ingr = row['ingrediente'].replace(/ /gi, "@"); 
               return '<span  onclick="editaring('+row['idi']+')" class="fa fa-edit test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="editar ingrediente"></span>'+
               '<span style="margin-right: 8px; margin-left: 8px; "></span>'+
-              '<span  onclick="eliminaring('+producto+','+row['idi']+','+row['idreceta']+')" class="fa fa-trash test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="eliminar '+row['ingrediente']+' de esta receta"></span>'
+              '<span  onclick="eliminaring('+producto+','+row['idi']+','+row['idreceta']+','+ingrediente+')" class="fa fa-trash test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="eliminar '+row['ingrediente']+' de esta receta"></span>'
           }     
        }                 
             ],
@@ -247,8 +329,8 @@ jQuery(document).ready(function($) {
  		
  	}
 
-	 function eliminaring(producto, iding, idreceta){
-	 	//alert(iding); alert(producto);
+	 function eliminaring(producto, iding, idreceta,ingrediente){
+	 	//alert(producto); alert(iding); alert(idreceta); alert(ingrediente);
 	 	$.ajax({
  		url: BASE_URL+'/receta/mercancia/'+iding,
             type: 'POST',
@@ -260,17 +342,17 @@ jQuery(document).ready(function($) {
 		 	$('#modaldelete').modal("show");
 		 	$('#cuerpodelete').empty();
 		 	$('#cuerpodelete').append('<p>Usted está por eliminar el ingrediente '+data[0]['nombre']+' '+data[0]['marca']+' de esta receta. ¿Desea continuar?</p>');
-		 	$('#botones').append('<button class="btn btn-sm btn-default" value="Cancelar" id="cancelardelete">Cancelar</button><span style="margin-right: 1%; margin-left: 1%; "></span><button class="btn btn-sm btn-primary" value="Continuar" onclick="eliminado('+producto+','+iding+','+idreceta+')" id="borra">Continuar</button>  ');
+		 	$('#botones').append('<button class="btn btn-sm btn-default" value="Cancelar" id="cancelardelete">Cancelar</button><span style="margin-right: 1%; margin-left: 1%; "></span><button class="btn btn-sm btn-primary" value="Continuar" onclick="eliminado('+producto+','+iding+','+idreceta+','+ingrediente+')" id="borra">Continuar</button>  ');
 		 	$('#cancelardelete').click(function(event) {
 				$('#modaldelete').modal("hide");
 			});
 	 	});
 	 }
 
-	 function eliminado(producto, ingrediente, idreceta){
+	 function eliminado(producto, iding, idreceta,ingrediente){
 	 	//alert(producto); alert(ingrediente); alert(idreceta);
 	 	$.ajax({
-			url: BASE_URL+'/receta/eliminaringrediente/'+producto+'/'+ingrediente+'/'+idreceta,
+			url: BASE_URL+'/receta/eliminaringrediente/'+producto+'/'+iding+'/'+idreceta,
             type: 'POST',
             dataType: 'json'
 		})
@@ -281,8 +363,35 @@ jQuery(document).ready(function($) {
 			$('#mensaje').fadeIn(100);
 			$('#mensaje').prop('hidden', false);
 			//alert(data[0]['producto']); alert(data[0]['ingrediente']);
+			$.ajax({
+		 		url: BASE_URL+'/receta/costototal/'+producto+'/'+idreceta,
+		        type: 'POST',
+		        dataType: 'json'
+		 	})
+		 	.done(function(datos) {
+		 		var ttl = datos[0][0];
+		 		if (ttl == null) {
+		 			var totalcosto = false;
+		 			var porcentajec = false;
+		 		}else{
+		 			var totalcosto = ttl;
+		 			var multi = totalcosto*100;
+					var pvp = datos[0][4];
+		 			var porcentajec = multi/pvp;
+		 		}
+		 		
+		 		//alert(totalcosto);
+		 		$.ajax({
+			 		url: BASE_URL+'/receta/updatecosto/'+producto+'/'+ingrediente+'/'+totalcosto+'/'+porcentajec,
+			        type: 'POST',
+			        dataType: 'json'
+			 	})
+			 	.done(function(data2) {
+			 		//alert("data2");
+			 	});
+		 	});
 			
-			setTimeout(function() {vering(producto,ingrediente,idreceta);$('#mensaje').fadeOut();}, 300);
+			setTimeout(function() {$('#consult').trigger('click');vering(producto,ingrediente,idreceta);$('#mensaje').fadeOut();}, 300);
 			
 		})
 
@@ -361,13 +470,13 @@ jQuery(document).ready(function($) {
 
 	 }
 
-	function agregado(producto,ingrediente,idng,receta){
+	function agregado(producto,ingrediente,iding,receta){
 
     	var cantxing = $('#canti').val();
     	var unidad = $('#unidadmed').val();
     	//alert(producto);alert(ingrediente);alert(receta);
 		$.ajax({
-			url: BASE_URL+'/receta/insertIngrediente/'+producto+'/'+receta+'/'+idng+'/'+cantxing+'/'+unidad,
+			url: BASE_URL+'/receta/insertIngrediente/'+producto+'/'+receta+'/'+iding+'/'+cantxing+'/'+unidad,
             type: 'POST',
             dataType: 'json'
 		})
@@ -385,14 +494,40 @@ jQuery(document).ready(function($) {
 			$('#mensaje').fadeIn(100);
 			$('#mensaje').prop('hidden', false);
 			//alert(data[0]['producto']); alert(data[0]['ingrediente']);
-			setTimeout(function() {vering(producto,ingrediente,receta);$('#mensaje').fadeOut();}, 300);
+			setTimeout(function() {$('#consult').trigger('click');vering(producto,ingrediente,receta);$('#mensaje').fadeOut();}, 300);
 			
 			}
+
+		$.ajax({
+	 		url: BASE_URL+'/receta/costototal/'+producto+'/'+receta,
+	        type: 'POST',
+	        dataType: 'json'
+	 	})
+	 	.done(function(datos) {
+	 		var ttl = datos[0][0];
+	 		if (ttl == null) {
+	 			var totalcosto = false;
+	 		}else{
+	 			var totalcosto = ttl;
+	 		}
+	 		var multi = totalcosto*100;
+			var pvp = datos[0][4];
+	 		var porcentajec = multi/pvp;
+	 		//alert(totalcosto);
+	 			$.ajax({
+			 		url: BASE_URL+'/receta/updatecosto/'+producto+'/'+ingrediente+'/'+totalcosto+'/'+porcentajec,
+			        type: 'POST',
+			        dataType: 'json'
+		 		})
+			 	.done(function(data2) {
+			 	});
+	 		
+	 	});
 			
 			
 		})
 		.fail(function(data){
-			alert("fallo");
+			alert("no se pudo agregar");
 		})
 
 

@@ -519,17 +519,7 @@ function activarCod(idSm, idm){
   codigoPropuesto(idSm,idm)
 }
 
-function format(input){
-  var num = input.value.replace(/\D/g, "");
-  if(!isNaN(num)){
-    num = num.split('').join('').replace(/([0-9])([0-9]{2})$/, '$1,$2');
-    num = num.toString().split('').join('').replace(/\B(?=(\d{3})+(?!\d)\.?)/g, ".");
-    //num = num.toString().split('').join('').replace(/\B(?=(\d{3})+(?!\d)\.?)/g, ".");
-    input.value = num;
-  }else{ alert('Solo se permiten numeros');
-    input.value = input.value.replace(/[^\d\.]*/g,'');
-  }
-}
+
 
 
    window.onload =function codigoPropuesto(){

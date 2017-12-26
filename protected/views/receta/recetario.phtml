@@ -217,9 +217,10 @@
                                               <th><center>#</center></th>
                                               <th><center>Codigo</center></th>
                                               <th><center>Nombre</center></th>
-                                              <th><center>costo</center></th>
-                                              <th><center>precio unit.</center></th>
-                                              <th><center>receta</center></th>
+                                              <th><center>Costo</center></th>
+                                              <th><center>%Costo</center></th>
+                                              <th><center>PVP</center></th>
+                                              <th><center>Receta</center></th>
                                           </tr>
                                       </thead>
                                       <tbody id="cuerpo"></tbody>
@@ -233,8 +234,8 @@
                                               <th><center>#</center></th>
                                               <th><center>Codigo</center></th>
                                               <th><center>Nombre</center></th>
-                                              <th><center>costo</center></th>
-                                              <th><center>receta</center></th>
+                                              <th><center>Costo</center></th>
+                                              <th><center>Receta</center></th>
                                           </tr>
                                       </thead>
                                       <tbody id="cuerpo"></tbody>
@@ -251,10 +252,25 @@
                         <center><div id="mensaje" hidden><img width="45px" height="45px" src="http://localhost/COCAI/public/img/check1.gif" alt="exito"/></div></center>
                              
                         <div class="" id="recetasysubs" hidden>
- 
+                          
                           <div class="dataTable_wrapper " >
                             <h5 style="background: #ddd; text-align: center; margin-bottom: 5px; width: 88%; margin-left: 6%" id="titulo2"></h5>
                              <div class="col-sm-12 table-responsive">    
+                              <div class="container">
+                              <div class="form-group row" id="parapvp">
+                                <div class="col-sm-3" style="margin-left: 3%">
+                                  <label>PVP:</label>
+                                  <div class="input-group">
+                                  <input id="pU" type="text" class="form-control form-control-sm" name="pvp" id="pvp" onclick="format(this)" onkeyup="format(this)" onchange="format(this)">
+                                  <span class="input-group-btn">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" id="updatepvp" title="No se ha modificado el precio"  disabled><i class="fa fa-refresh"></i></button>
+                                  </span>
+                                </div>
+                              </div>
+                              <div class="alert alert-success" id="actualizado" hidden>
+                                    <h4>El precio del producto: <o id="np"></o> ha sido actualizado a: <o id="np2"></o></h4>
+                                </div>
+                            </div>
                                 <table id="tablarecetario" class="display table table-sm table-striped table-bordered table-hover" >
                                   <thead class="theadH">
                                       <tr>
@@ -276,6 +292,13 @@
 
                                     <button class="btn btn-sm btn-outline-primary filtro" value="1" id="btnagregar" data-toggle="modal" data-target="#modaling">Agregar ingrediente</button>
                                   </div>                                  
+                                </div>
+                              </div>
+                              <div class="container">
+                                <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
+                                  <div class="col-12" id="costot">
+                                    
+                                  </div>
                                 </div>
                               </div>
                             </div>

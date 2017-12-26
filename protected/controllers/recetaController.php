@@ -63,7 +63,7 @@
 
 		public function nombrepro($producto, $ingrediente){
 			if ($producto !=999999) {
-				$query = "SELECT producto.id as idpr, producto.nombre as producto, receta.id as idre, receta.nombre as receta, receta_id from producto
+				$query = "SELECT producto.id as idpr, producto.nombre as producto, receta.id as idre, receta.nombre as receta, receta_id, producto.precioVta_A as pvp, format(precioVta_A,2,'de_DE') as precioU from producto
 			left join receta on receta_id = receta.id 
 			where producto.id = $producto";
     		$data = $this->_main->select($query);
@@ -77,17 +77,47 @@
     		echo json_encode($data);
 		}
 
+        public function updatepvp($precio,$producto,$receid,$costor){
+            $mystring = $precio;
+            $findme   = ',';
+            $pos = strpos($mystring, $findme);
+            if ($pos != false) {
+                $p1 = str_replace(".","",$precio);
+                $pvp = str_replace(",",".",$p1);
+            }else{
+                $pvp = $precio;
+            }
+            $query = "UPDATE `producto` SET `precioVta_A`= $pvp WHERE producto.id = $producto";
+            $idp = $this->_main->modificar($query);
+
+            $data = $this->nombreproducto($producto);
+
+            echo json_encode($data);
+        }
+
+        public function updatecosto($producto,$ingrediente,$totalcosto,$porcentajec){
+            if ($producto != 999999) {
+                $query = "UPDATE `producto` SET `costo` = $totalcosto, `porcentaje_costo`= $porcentajec WHERE producto.id = $producto";
+                $data = $this->_main->modificar($query);
+            }else{
+                $query = "UPDATE `mercancia` SET `precio_unitario` = $totalcosto WHERE mercancia.id = $ingrediente";
+                $data = $this->_main->modificar($query);
+            }
+            echo json_encode($data);
+        }
+
 		public function nombreing($ingrediente){
 			$query = "SELECT mercancia.id as idm, mercancia.nombre as producto, marca, receta.id as idre from mercancia
 left join ingrediente_has_receta on ingrediente_id = mercancia.id
 			left join receta on ingrediente_has_receta.receta_id = receta.id 
 			where mercancia.id = $ingrediente";
-    		$data = $this->_main->select($query);
+    		$this->_main->select($query);
+            $data = true;
     		echo json_encode($data);
 		}
 
 		public function consultarpro($modelo){
-			$query = "SELECT producto.id as idpro, producto.codigo as codip, producto.nombre as producto, costo, format(costo,2,'de_DE') as costom, format(precioVta_A,2,'de_DE') as pvpam, precioVta_A as pvpa, precioVta_B as pvpb, receta_id as idr FROM `producto`
+			$query = "SELECT producto.id as idpro, producto.codigo as codip, producto.nombre as producto, costo, format(costo,2,'de_DE') as costom, porcentaje_costo, format(porcentaje_costo,2,'de_DE') as porcentajec, format(precioVta_A,2,'de_DE') as pvpam, precioVta_A as pvpa, format(precioVta_A,2,'de_DE') as pvp, precioVta_B as pvpb, receta_id as idr FROM `producto`
 inner join producto_has_unidad_negocio on producto_has_unidad_negocio.producto_id = producto.id
 inner join unidad_negocio on unidad_negocio.id = producto_has_unidad_negocio.unidad_negocio_id
 inner join modelo_has_submodelo on unidad_negocio.modelo_has_submodelo_id = modelo_has_submodelo.id
@@ -145,6 +175,29 @@ WHERE modelo_has_submodelo.modelo_id = $modelo";
     		//print_r($response);
     		echo json_encode($response);
 		}
+
+        public function costototal($idp,$idreceta){
+            if ($idp != 999999) {
+                $query = "SELECT SUM(mercancia.precio_unitario) as costototal, format(SUM(mercancia.precio_unitario),2,'de_DE') as costot, receta.id as idreceta, receta.nombre as receta, precioVta_A as pvp  
+FROM `ingrediente_has_receta` as ixr
+            inner join receta on receta.id = ixr.receta_id
+            inner join unidad_medida on unidad_medida.id = ixr.unidad_medida_id
+            inner join mercancia on mercancia.id = ixr.ingrediente_id
+            inner join producto on receta.id = producto.receta_id
+            WHERE producto.id = $idp";
+            $data = $this->_main->select($query);
+            }else{
+                $query = "SELECT SUM(mercancia.precio_unitario) as costototal, format(SUM(mercancia.precio_unitario),2,'de_DE') as costot, receta.id as idreceta, receta.nombre as receta 
+                    FROM `mercancia`
+                    inner join ingrediente_has_receta as ixr on mercancia.id = ixr.ingrediente_id
+                    inner join receta on receta.id = ixr.receta_id
+                    WHERE ixr.receta_id = $idreceta";
+                    $data = $this->_main->select($query);
+
+            }
+            echo json_encode($data);
+
+        }
 
 		public function insertIngrediente($idpro,$idrec,$idmer,$cantxing,$unidad){
 				$query = "SELECT * from ingrediente_has_receta where ingrediente_id = $idmer and receta_id = $idrec";

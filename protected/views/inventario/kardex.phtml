@@ -78,28 +78,25 @@
                                       </select>
                                 </div>
                                 
+                                    
+                              </div>
                                     <input type="hidden" name="mercancia_id" id="mercid" >
                                     <input type="hidden" name="tiendae" id="tiendae" value="<?php echo $this->idu;?>">
                                     <input type="hidden" name="status_id" id="status_id" value="126">
-                              </div>
-
-                                  
-
-                            <div class="container">
-                              <div class="row justify-content-center">
-                                <div class="col-1">
-                                  <div id="botonf">
+                            
+                        </fieldset>
+                        <div class="container">
+                              <div class="row d-flex justify-content-center">
+                                <div>
+                                  <div class="col" id="botonf">
                                     <input  type="button" class="btn btn-sm btn-outline-primary"  name="" value="Consultar" disabled>
                                   </div>
-                                  <div id="botonv">  
+                                  <div class="col" id="botonv">  
                                   </div>
                                 </div>
                               </div>
                               
                             </div>
-                            
-                            
-                        </fieldset>
                                                
                         </div>
                         <center>
@@ -107,7 +104,15 @@
         <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
     </div>
 </center>
-
+                                    <div class="container " >
+                                        <div class="row ">
+                                            <div class="col d-flex justify-content-center my-3">
+                                                <a href="<?php echo BASE_URL;?>inventario/facturasdecompra/<?php echo $this->model[0]['idU'];?>" class="btn btn-sm btn-outline-primary"> 
+                                                    <b>Cargar factura de compra directa </b>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
                         <div class="dataTable_wrapper " id="tablaoculta" hidden>
                              <div class="col-sm-12 table-responsive">
                                 <table id="tablakardex" class="table table-sm table-striped table-bordered table-hover" cellspacing="0" width="100%" >
