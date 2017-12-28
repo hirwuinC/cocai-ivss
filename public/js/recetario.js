@@ -89,12 +89,12 @@ jQuery(document).ready(function($) {
             	{ "data": null, className: "tdcenter"},
                 { "data": "codip" , className: "tdleft"},
                 { "data": "producto" , className: "tdleft"},
-                { "data": "costom" , className: "tdleft",
+                { "data": "costom" , className: "tdright",
                 	render : function(data, type, row) { 
 			          	return ''+data+' '+moneda
 		       		} 
             	},
-            	{ "data": "porcentajec" , className: "tdleft"},
+            	{ "data": "porcentajec" , className: "tdright"},
                 { "data": "pvpam" , className: "tdright",
                 	render : function(data, type, row) { 
 			          	return ''+data+' '+moneda
@@ -225,7 +225,7 @@ jQuery(document).ready(function($) {
 		 			$('#parapvp').prop('hidden', false);
 		 			var pvp = datos[0][4];
 		 			var porcentajec = multi/pvp;
-		 			$('#costot').append('<b>Total costo: '+totalcosto+' Bs / % de costo: ['+porcentajec.toLocaleString('es-ES', { maximumFractionDigits: 2 },{ minimumFractionDigits: 2 })+']</b>');
+		 			$('#costot').append('<b>Total costo: '+totalcosto+' Bs / % de costo: ['+porcentajec.toLocaleString('es-ES', { maximumFractionDigits: 2 })+']</b>');
 		 		}else{
 		 			$('#parapvp').prop('hidden', true);
 		 			$('#costot').append('<b>Total costo: '+totalcosto+'</b>');
@@ -387,11 +387,11 @@ jQuery(document).ready(function($) {
 			        dataType: 'json'
 			 	})
 			 	.done(function(data2) {
-			 		//alert("data2");
+			 		setTimeout(function() {$('#consult').trigger('click');vering(producto,ingrediente,idreceta);$('#mensaje').fadeOut();}, 300);
 			 	});
 		 	});
 			
-			setTimeout(function() {$('#consult').trigger('click');vering(producto,ingrediente,idreceta);$('#mensaje').fadeOut();}, 300);
+			
 			
 		})
 
@@ -494,7 +494,7 @@ jQuery(document).ready(function($) {
 			$('#mensaje').fadeIn(100);
 			$('#mensaje').prop('hidden', false);
 			//alert(data[0]['producto']); alert(data[0]['ingrediente']);
-			setTimeout(function() {$('#consult').trigger('click');vering(producto,ingrediente,receta);$('#mensaje').fadeOut();}, 300);
+			
 			
 			}
 
@@ -520,6 +520,7 @@ jQuery(document).ready(function($) {
 			        dataType: 'json'
 		 		})
 			 	.done(function(data2) {
+			 		setTimeout(function() {$('#consult').trigger('click');vering(producto,ingrediente,receta);$('#mensaje').fadeOut();}, 300);
 			 	});
 	 		
 	 	});

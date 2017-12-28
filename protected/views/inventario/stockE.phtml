@@ -65,9 +65,9 @@
                                                 <td style="text-align:left"><?php echo $merca['marca'];?></td>
                                                 <td style="text-align:left"><?php echo $merca['contenido_neto'];?></td>
                                                 <td style="text-align:left"><?php echo number_format($merca['precio_unitario'],2,",",".")." Bs";?></td>
-                                                <td style="text-align:left"><?php echo $merca['existencia'].$merca['abreviaturaS'];?><a style="cursor: pointer; cursor: hand;" onclick="infoConversion('<?php echo $merca['idP'];?>','<?php echo $merca['idT'];?>')"><i class="fa fa-info-circle"></i></a></td>
-                                                <td style="text-align:left"><?php echo $merca['stock_min'];?></td>
-                                                <td style="text-align:left"><?php echo $merca['stock_max'];?></td>
+                                                <td style="text-align:right;"><?php echo $merca['stock'].$merca['abreviaturaS'];?><a style="cursor: pointer; cursor: hand;" onclick="infoConversion('<?php echo $merca['idP'];?>','<?php echo $merca['idT'];?>')"><i class="fa fa-info-circle"></i></a></td>
+                                                <td style="text-align:right;"><?php echo $merca['stockm'];?></td>
+                                                <td style="text-align:right;"><?php echo $merca['stockm2'];?></td>
                                                 <td style="text-align:left"><?php echo $status;?></td>
                                                 <td style="text-align:left"><?php echo $merca['familia'];?></td>
                                                 <th>
