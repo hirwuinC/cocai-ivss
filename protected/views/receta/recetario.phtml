@@ -122,7 +122,9 @@
                         <div style="margin-top: 2%" class="card cardH">
                         <div class="card-header">
                             <center><h3><o id="titulocard">Recetario</o> <?php $ti=strtolower($this->model[0]['udn']); echo "[".ucwords($ti)."]"; ?></h3></center>
-                        </div><input type="hidden" name="" id="idtienda" value="<?php echo $this->model[0]['idU']?>">
+                        </div>
+                        <input type="hidden" name="" id="idtienda" value="<?php echo $this->model[0]['idU']?>">
+                        <input type="hidden" name="" id="idempr" value="<?php echo $this->model[0]['empresa_id']?>">
                         <?php if ($this->model[0]['modelo'] != null): ?>
                             <div>
                               <img width="10%" height="10%" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-responsive" alt="">
@@ -257,6 +259,7 @@
                             <h5 style="background: #ddd; text-align: center; margin-bottom: 5px; width: 88%; margin-left: 6%" id="titulo2"></h5>
                              <div class="col-sm-12 table-responsive">    
                               <div class="container">
+                            <?php if (is_null($this->model[0]['empresa_id'])): ?>
                               <div class="form-group row" id="parapvp">
                                 <div class="col-sm-3" style="margin-left: 3%">
                                   <label>PVP:</label>
@@ -271,6 +274,8 @@
                                     <h4>El precio del producto: <o id="np"></o> ha sido actualizado a: <o id="np2"></o></h4>
                                 </div>
                             </div>
+                          <?php endif ?>
+
                                 <table id="tablarecetario" class="display table table-sm table-striped table-bordered table-hover" >
                                   <thead class="theadH">
                                       <tr>
@@ -279,21 +284,24 @@
                                           <th><center>Cantidad</center></th>
                                           <th><center>U/M</center></th>
                                           <th><center>Costo</center></th>
+                                        <?php if (is_null($this->model[0]['empresa_id'])): ?>
                                           <th><center>Acciones</center></th>
+                                        <?php endif ?>
 
                                       </tr>
                                   </thead>
                                   <tbody id="cuerpo_r"></tbody>
                                   
                               </table>
+                              <?php if (is_null($this->model[0]['empresa_id'])): ?>
                               <div class="container">
                               <div class="row justify-content-center">
                                   <div class="col-1">
-
-                                    <button class="btn btn-sm btn-outline-primary filtro" value="1" id="btnagregar" data-toggle="modal" data-target="#modaling">Agregar ingrediente</button>
+                                      <button class="btn btn-sm btn-outline-primary filtro" value="1" id="btnagregar" data-toggle="modal" data-target="#modaling">Agregar ingrediente</button>
                                   </div>                                  
                                 </div>
                               </div>
+                              <?php endif ?>
                               <div class="container">
                                 <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
                                   <div class="col-12" id="costot">
@@ -425,7 +433,7 @@
                                     <div id="cuerpoagregar"></div>
                                         <div class="form-group">
                                           <label class="form-control-label">Cantidad:</label>
-                                          <input id="canti" class="form-control " placeholder="cantidad"  title="cantidad por ingrediente" >
+                                          <input id="canti" class="form-control monto" placeholder="cantidad"  title="cantidad por ingrediente" >
                                         </div>
                                         <div class="form-group">
                                           <label class="form-control-label">Unidad de medida:</label>

@@ -38,7 +38,7 @@
 		}
 
 		function datostienda($tienda){
-			$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.marca, mc.descripcion, format(mc.existencia,2,'de_DE') as stock, mc.existencia, mercancia.contenido_neto, format(mc.stock_min,2,'de_DE') as stockm, mc.stock_min, format(mc.stock_max,2,'de_DE') as stockm2, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.referencia as 'familia', submodelo.nombre as 'subM', model.nombre as modelo 
+			$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.marca, mc.descripcion, format(mc.existencia,4,'de_DE') as stock, mc.existencia, mercancia.contenido_neto, format(mc.stock_min,4,'de_DE') as stockm, mc.stock_min, format(mc.stock_max,4,'de_DE') as stockm2, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.referencia as 'familia', submodelo.nombre as 'subM', model.nombre as modelo 
 			FROM `unidad_negocio` 
 			inner join mercancia_has_unidad_negocio as mc on mc.unidad_negocio_id = unidad_negocio.id 
 			inner join mercancia on mercancia.id = mc.mercancia_id 
@@ -91,7 +91,7 @@
 		    $this->_view->setJs(array('datatable/js/tabla'));
             #$idUser =Session::modelo('idUsuario'); echo $idUser[0]['id'];
             Session::time();
-			$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.marca, format(mc.existencia,2,'de_DE') as stock, mc.existencia, mercancia.contenido_neto, mercancia.cantidad_presentacion, format(mc.stock_min,2,'de_DE') as stockm, mc.stock_min, format(mc.stock_max,2,'de_DE') as stockm2, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.referencia as 'familia' FROM `unidad_negocio` 
+			$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.marca, format(mc.existencia,4,'de_DE') as stock, mc.existencia, mercancia.contenido_neto, mercancia.cantidad_presentacion, format(mc.stock_min,4,'de_DE') as stockm, mc.stock_min, format(mc.stock_max,4,'de_DE') as stockm2, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.referencia as 'familia' FROM `unidad_negocio` 
 						inner join mercancia_has_unidad_negocio as mc on mc.unidad_negocio_id = unidad_negocio.id 
 						inner join mercancia on mercancia.id = mc.mercancia_id 
 						inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_sistema_id
@@ -110,6 +110,9 @@
 			if ($_SERVER['REQUEST_METHOD']=='POST') {		
                	//print_r($_POST); echo "<br>"; exit();
                	$mystring = $_POST['precio_unitario'];
+                $minvalor = $_POST['stockmin'];
+                $maxvalor = $_POST['stockmax'];
+                $conte = $_POST['contenidoN'];
 				$findme   = ',';
 				$pos = strpos($mystring, $findme);
 				if ($pos != false) {
@@ -118,16 +121,42 @@
 				}else{
 					$precioU = $_POST['precio_unitario'];
 				}
+
+				$pos2 = strpos($minvalor, $findme);
+				if ($pos2 != false) {
+					$p2 = str_replace(".","",$_POST['stockmin']);
+               		$stmin = str_replace(",",".",$p2);
+				}else{
+					$stmin = $_POST['stockmin'];
+				}
+
+				$pos3 = strpos($maxvalor, $findme);
+				if ($pos3 != false) {
+					$p3 = str_replace(".","",$_POST['stockmax']);
+               		$stmax = str_replace(",",".",$p3);
+				}else{
+					$stmax = $_POST['stockmax'];
+				}	
+
+				$pos4 = strpos($conte, $findme);
+				if ($pos4 != false) {
+					$p4 = str_replace(".","",$_POST['contenidoN']);
+               		$contenidoN = str_replace(",",".",$p4);
+				}else{
+					$contenidoN = $_POST['contenidoN'];
+				}			
+
+				
                	//echo $precioU; exit();
                	Session::destroy('carrito');
                	$campos = $this->verificarFormulasYcamposVacios($_POST); #print_r($campos); exit();
                	if ($campos[5] == 1) { 
-                	$conversion = Controller::formula($_POST['unidad_medida_c'],false,$_POST['contenidoC'],$_POST['contenidoN'],$_POST['formulac']); 
+                	$conversion = Controller::formula($_POST['unidad_medida_c'],false,$_POST['contenidoC'],$contenidoN,$_POST['formulac']); 
                 	$accion = 'Creado'; //var_dump($conversion); exit();
 			    	$query = "INSERT INTO `mercancia`(`codigo`, `codigo_anterior`, `nombre`, `marca`, `precio_unitario`, `contenido_neto`, `cantidad_presentacion`, `formula_c`, `formula_p`, `formula_s`, `familia_id`, `unidad_medida_compra_id`, `unidad_medida_consumo_id`, `unidad_medida_sistema_id`, `peso_escurrido`, `descripcion`, `exento_impuesto`, `rendimiento`) 
-			    	values ('".$_POST['codigo']."','".$campos[2]."','".$_POST['nombre']."','".$_POST['marca']."','".$precioU."',".$_POST['contenidoN'].",".$_POST['contenidoC'].",'".$_POST['formulac']."','".$campos[0]."','".$campos[1]."','".$_POST['familia']."',".$_POST['unidad_medida_c'].",".$_POST['unidad_medida_p'].",".$_POST['unidad_medida_s'].",".$campos[3].",'".$campos[8]."',".$campos[6].",".$campos[4].")";
+			    	values ('".$_POST['codigo']."','".$campos[2]."','".$_POST['nombre']."','".$_POST['marca']."',".$precioU.",".$contenidoN.",".$_POST['contenidoC'].",'".$_POST['formulac']."','".$campos[0]."','".$campos[1]."','".$_POST['familia']."',".$_POST['unidad_medida_c'].",".$_POST['unidad_medida_p'].",".$_POST['unidad_medida_s'].",".$campos[3].",'".$campos[8]."',".$campos[6].",".$campos[4].")";
 					$idP=$this->_main->insertar($query); 
-			   		 $query = "INSERT INTO `mercancia_has_unidad_negocio`(`mercancia_id`, `unidad_negocio_id`, `existencia`, `stock_min`, `stock_max`, `status`, `descripcion`) VALUES (".$idP.",".$_POST['idT'].",".$conversion.",".$_POST['stockmin'].",".$_POST['stockmax'].",".$campos[7].",'".$_POST['descripcion']."')"; 
+			   		 $query = "INSERT INTO `mercancia_has_unidad_negocio`(`mercancia_id`, `unidad_negocio_id`, `existencia`, `stock_min`, `stock_max`, `status`, `descripcion`) VALUES (".$idP.",".$_POST['idT'].",".$conversion.",".$stmin.",".$stmax.",".$campos[7].",'".$_POST['descripcion']."')"; 
                		$this->_main->insertar($query);
 					$this->insertProveedor($idP);
 					$this->log($idP,$_POST['idT'],$accion);
@@ -137,9 +166,9 @@
                 }else{
 	                $conversion = Controller::formula($_POST['unidad_medida_c'],$campos[5],$_POST['contenidoC'],$_POST['contenidoN'],$_POST['formulac']); 
 	                $accion = 'Creado'; //var_dump($conversion); exit();
-				    $query = "INSERT INTO `mercancia`(`codigo`, `codigo_anterior`, `nombre`, `marca`, `precio_unitario`, `contenido_neto`, `cantidad_presentacion`, `formula_c`, `formula_p`, `formula_s`, `familia_id`, `unidad_medida_compra_id`, `unidad_medida_consumo_id`, `unidad_medida_sistema_id`) values ('".$_POST['codigo']."','".$_POST['codigo_anterior']."','".$_POST['nombre']."','".$_POST['marca']."','".$precioU."',".$_POST['contenidoN'].",".$campos[5].",'".$_POST['formulac']."','".$campos[0]."','".$campos[1]."',".$_POST['familia'].",".$_POST['unidad_medida_c'].",".$_POST['unidad_medida_p'].",".$_POST['unidad_medida_s'].")";
+				    $query = "INSERT INTO `mercancia`(`codigo`, `codigo_anterior`, `nombre`, `marca`, `precio_unitario`, `contenido_neto`, `cantidad_presentacion`, `formula_c`, `formula_p`, `formula_s`, `familia_id`, `unidad_medida_compra_id`, `unidad_medida_consumo_id`, `unidad_medida_sistema_id`) values ('".$_POST['codigo']."','".$_POST['codigo_anterior']."','".$_POST['nombre']."','".$_POST['marca']."','".$precioU."',".$contenidoN.",".$campos[5].",'".$_POST['formulac']."','".$campos[0]."','".$campos[1]."',".$_POST['familia'].",".$_POST['unidad_medida_c'].",".$_POST['unidad_medida_p'].",".$_POST['unidad_medida_s'].")";
 					$idP=$this->_main->insertar($query); 
-				    $query = "INSERT INTO `mercancia_has_unidad_negocio`(`mercancia_id`, `unidad_negocio_id`, `stock_min`, `stock_max`, `existencia`, `descripcion`, `status`) VALUES (".$idP.",".$_POST['idT'].",".$_POST['stockmin'].",".$_POST['stockmax'].",".$conversion.",'".$_POST['descripcion']."',".$campos[7].")";
+				    $query = "INSERT INTO `mercancia_has_unidad_negocio`(`mercancia_id`, `unidad_negocio_id`, `stock_min`, `stock_max`, `existencia`, `descripcion`, `status`) VALUES (".$idP.",".$_POST['idT'].",".$stmin.",".$stmax.",".$conversion.",'".$_POST['descripcion']."',".$campos[7].")";
 					$this->_main->insertar($query);
 					$this->insertProveedor($idP);
 					$this->log($idP,$_POST['idT'],$accion);
@@ -205,6 +234,10 @@
             if ($_SERVER['REQUEST_METHOD']=='POST') {
                 //print_r($_POST); echo"<br>"; exit();
                 $mystring = $_POST['precio_unitario'];
+                $minvalor = $_POST['stockmin'];
+                $maxvalor = $_POST['stockmax'];
+                $exi = $_POST['existencia'];
+                $conte = $_POST['contenidoN'];
 				$findme   = ',';
 				$pos = strpos($mystring, $findme);
 				if ($pos != false) {
@@ -213,13 +246,44 @@
 				}else{
 					$precioU = $_POST['precio_unitario'];
 				}
+
+				$pos2 = strpos($minvalor, $findme);
+				if ($pos2 != false) {
+					$p2 = str_replace(".","",$_POST['stockmin']);
+               		$stmin = str_replace(",",".",$p2);
+				}else{
+					$stmin = $_POST['stockmin'];
+				}
+
+				$pos3 = strpos($maxvalor, $findme);
+				if ($pos3 != false) {
+					$p3 = str_replace(".","",$_POST['stockmax']);
+               		$stmax = str_replace(",",".",$p3);
+				}else{
+					$stmax = $_POST['stockmax'];
+				}
+
+				$pos4 = strpos($exi, $findme);
+				if ($pos4 != false) {
+					$p4 = str_replace(".","",$_POST['existencia']);
+               		$existencia = str_replace(",",".",$p4);
+				}else{
+					$existencia = $_POST['existencia'];
+				}
+
+				$pos5 = strpos($conte, $findme);
+				if ($pos5 != false) {
+					$p5 = str_replace(".","",$_POST['contenidoN']);
+               		$contenidoN = str_replace(",",".",$p5);
+				}else{
+					$contenidoN = $_POST['contenidoN'];
+				}
                 
-                $existencia = $_POST['existencia']; 
                 $this->entradaOsalida($_POST['idP'],$_POST['idT'],$existencia, $_POST['unidad_medida_si']);
                 
-                $query = "UPDATE `mercancia` SET `codigo`='".$_POST['codigo']."',`codigo_anterior`='".$_POST['codigo_tcr']."',`nombre`='".$_POST['nombre']."',`marca`='".$_POST['marca']."',`precio_unitario`='".$precioU."',`contenido_neto`='".$_POST['contenidoN']."',`cantidad_presentacion`='".$_POST['cantidad']."',`formula_c`='".$_POST['formulac']."',`formula_p`='".$_POST['formulap']."',`formula_s`='".$_POST['formulas']."',`familia_id`=".$_POST['familia_id'].",`unidad_medida_compra_id`=".$_POST['unidad_medida_co'].",`unidad_medida_consumo_id`=".$_POST['unidad_medida_pr'].",`unidad_medida_sistema_id`=".$_POST['unidad_medida_si']." WHERE `id`= ".$_POST['idP']."";
+                $query = "UPDATE `mercancia` SET `codigo`='".$_POST['codigo']."',`codigo_anterior`='".$_POST['codigo_tcr']."',`nombre`='".$_POST['nombre']."',`marca`='".$_POST['marca']."',`precio_unitario`='".$precioU."',`contenido_neto`='".$contenidoN."',`cantidad_presentacion`='".$_POST['cantidad']."',`formula_c`='".$_POST['formulac']."',`formula_p`='".$_POST['formulap']."',`formula_s`='".$_POST['formulas']."',`familia_id`=".$_POST['familia_id'].",`unidad_medida_compra_id`=".$_POST['unidad_medida_co'].",`unidad_medida_consumo_id`=".$_POST['unidad_medida_pr'].",`unidad_medida_sistema_id`=".$_POST['unidad_medida_si']." WHERE `id`= ".$_POST['idP']."";
                 $this->_main->modificar($query);
-                $query = "UPDATE `mercancia_has_unidad_negocio` SET `existencia`='".$existencia."',`stock_min`='".$_POST['stockmin']."',`stock_max`='".$_POST['stockmax']."',`status`=".$_POST['status']." WHERE `mercancia_id`= ".$_POST['idP']." and unidad_negocio_id = ".$_POST['idT']."";
+                $query = "UPDATE `mercancia_has_unidad_negocio` SET `existencia`='".$existencia."',`stock_min`='".$stmin."',`stock_max`='".$stmax."',`status`=".$_POST['status']." WHERE `mercancia_id`= ".$_POST['idP']." and unidad_negocio_id = ".$_POST['idT']."";
                 $this->_main->modificar($query);
                 $accion='Modificado'; 
                 $this->log($_POST['idP'],$_POST['idT'],$accion);
@@ -672,13 +736,22 @@ FROM notificacion_has_remision
     	}
 
     	function insertRemision(){
+    		$mystring = $_POST['cantidadR'];
+				$findme   = ',';
+				$pos = strpos($mystring, $findme);
+				if ($pos != false) {
+					$p1 = str_replace(".","",$_POST['cantidadR']);
+               		$cantidadr = str_replace(",",".",$p1);
+				}else{
+					$cantidadr = $_POST['precio_unitario'];
+				}
     		$fecha = date('Y-m-d');
 			$hora = date('g:i:s a');
 			$idUsuario = Session::get('idUsuario');
 			#echo $fecha.' '.$hora;exit(); 
 			if ($_SERVER['REQUEST_METHOD']=='POST') {
 				//Controller::varDump($_POST);exit();
-				$query = "INSERT INTO remision (`fecha`, `hora`, `descripcion`, `cantidad`, `unidad_medida_id`, `unidad_negocio_id`, `usuario_id`, `mercancia_id`) VALUES ('".$fecha."','".$hora."','".$_POST['descripcion']."','".$_POST['cantidadR']."','".$_POST['unidades']."','".$_POST['tiendae']."',$idUsuario,'".$_POST['mercancia_id']."');";
+				$query = "INSERT INTO remision (`fecha`, `hora`, `descripcion`, `cantidad`, `unidad_medida_id`, `unidad_negocio_id`, `usuario_id`, `mercancia_id`) VALUES ('".$fecha."','".$hora."','".$_POST['descripcion']."','".$cantidadr."','".$_POST['unidades']."','".$_POST['tiendae']."',$idUsuario,'".$_POST['mercancia_id']."');";
 				$idr = $this->_main->insertar($query);
 				$query = "INSERT INTO notificacion_has_remision (`remision_id`, `unidad_negocio_id`, `status_id`) VALUES ($idr,'".$_POST['tiendar']."','".$_POST['status_id']."')";
 				$idn =$this->_main->insertar($query);

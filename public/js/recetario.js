@@ -78,6 +78,7 @@ jQuery(document).ready(function($) {
 
     function verproductos(modelo){
   	//alert(modelo); 
+  	var empresa = $('#idempr').val();
   $('#tablaoculta').hide();
   $('#load').fadeOut(600);
   setTimeout(function() {$('#tablaoculta').fadeIn(500);$('#tablaoculta').prop("hidden",false);}, 400);
@@ -105,7 +106,12 @@ jQuery(document).ready(function($) {
 		          	if (data == 'Si') {
 		              	return ''+data+' <span data-toggle="tooltip" data-placement="top" onclick="vering('+row['idpro']+',999999,'+row['idr']+')" class="fa '+row['icon']+' test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="'+row['titulo']+'" id="spanvering"></span>'
 		         	}else{ 
-		         		return ''+data+' <span data-toggle="tooltip" data-placement="top" onclick="creareceta('+row['idpro']+',999999,'+row['idr']+')" class="fa '+row['icon']+' test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="'+row['titulo']+'" id="spanvering"></span>'  
+		         		if (empresa.length ==0) {
+		         			return ''+data+' <span data-toggle="tooltip" data-placement="top" onclick="creareceta('+row['idpro']+',999999,'+row['idr']+')" class="fa '+row['icon']+' test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="'+row['titulo']+'" id="spanvering"></span>'  
+		         		}else{
+		         			return ''+data+' <span data-toggle="tooltip" data-placement="top"  class="test" style="cursor: default; color: #337ab7"  title="'+row['titulo']+'" id="spanvering"></span>'  
+		         		}
+		         		
 		         	}
 	       		} 
    				}   
@@ -175,6 +181,7 @@ jQuery(document).ready(function($) {
  	$('#iding').val("");
  	$('#iding').val(ingrediente);
  	var moneda = "Bs";
+ 	var empresa = $('#idempr').val();
  	//alert(producto);alert(ingrediente);alert(idrec);
  	$.ajax({
  		url: BASE_URL+'/receta/nombrepro/'+producto+'/'+ingrediente,
@@ -246,6 +253,8 @@ jQuery(document).ready(function($) {
   	setTimeout(function() {$('#recetasysubs').slideDown(300);$('#tablarecetario').prop('hidden',false); $('#tablarecetario').fadeIn(400);$('#recetasysubs').prop('hidden',false);$('html,body').animate({
             scrollTop: $("#tablarecetario").offset().top
         }, 1000);}, 300);
+  	//alert(empresa);
+  	if (empresa.length == 0) {
  	$('#tablarecetario').DataTable({
             "ajax": BASE_URL+'/receta/consultasp/'+producto+'/'+idrec,
             "columns": [
@@ -269,16 +278,45 @@ jQuery(document).ready(function($) {
             	},
                 { "data": null , className: "tdcenter",
           render : function(data, type, row) {
-          	//var ingr = row['ingrediente'].replace(/ /gi, "@"); 
-              return '<span  onclick="editaring('+row['idi']+')" class="fa fa-edit test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="editar ingrediente"></span>'+
+          //var ingr = row['ingrediente'].replace(/ /gi, "@");  
+          		return '<span  onclick="editaring('+row['idi']+')" class="fa fa-edit test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="editar ingrediente"></span>'+
               '<span style="margin-right: 8px; margin-left: 8px; "></span>'+
               '<span  onclick="eliminaring('+producto+','+row['idi']+','+row['idreceta']+','+ingrediente+')" class="fa fa-trash test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="eliminar '+row['ingrediente']+' de esta receta"></span>'
+          	
+          	         
           }     
        }                 
             ],
             destroy: true,
             responsive: true
         });
+ 	}else{
+ 		$('#tablarecetario').DataTable({
+            "ajax": BASE_URL+'/receta/consultasp/'+producto+'/'+idrec,
+            "columns": [
+                { "data": "codigi", className: "tdleft"},
+                { "data": "ingrediente", className: "tdleft",
+                render : function(data, type, row) {
+                	//var ingr = row['ingrediente'].replace(/ /gi, "@"); 
+                	if (row['receta_id']) {
+                		 return '<i onclick="detaller('+row['receta_id']+','+row['idi']+')" style="margin-right: 8px; margin-left: 8px; cursor: pointer; cursor:hand; color: #337ab7" title="Click para ver receta de '+data+'">'+data+'</i>'
+                	}else{
+                		return '<span style="margin-right: 8px; margin-left: 8px; ">'+data+'</span>'	
+                	}
+                }
+            	},
+                { "data": "cantidad" },
+                { "data": "abreviatura" },
+                { "data": "costo" , className: "tdright",
+                	render : function(data, type, row) { 
+			          	return ''+data+' '+moneda
+		       		} 
+            	}                 
+            ],
+            destroy: true,
+            responsive: true
+        });
+ 	}
 
     $('#tablarecetario').css("width","100%");
  }
@@ -446,6 +484,7 @@ jQuery(document).ready(function($) {
 
 	 function agregaring(producto,ingrediente,iding,receta){
 	 	$('#cuerpoagregar').empty();
+	 	$('#canti').val('');
 	 	//alert(producto); alert(ingrediente); alert(receta);
 	 	$('#mcant').modal('show');
 	 	$('#unidadmed').empty();

@@ -63,7 +63,7 @@
 
 		public function nombrepro($producto, $ingrediente){
 			if ($producto !=999999) {
-				$query = "SELECT producto.id as idpr, producto.nombre as producto, receta.id as idre, receta.nombre as receta, receta_id, producto.precioVta_A as pvp, format(precioVta_A,2,'de_DE') as precioU from producto
+				$query = "SELECT producto.id as idpr, producto.nombre as producto, receta.id as idre, receta.nombre as receta, receta_id, producto.precioVta_A as pvp, format(precioVta_A,4,'de_DE') as precioU from producto
 			left join receta on receta_id = receta.id 
 			where producto.id = $producto";
     		$data = $this->_main->select($query);
@@ -117,7 +117,7 @@ left join ingrediente_has_receta on ingrediente_id = mercancia.id
 		}
 
 		public function consultarpro($modelo){
-			$query = "SELECT producto.id as idpro, producto.codigo as codip, producto.nombre as producto, costo, format(costo,2,'de_DE') as costom, porcentaje_costo, format(porcentaje_costo,2,'de_DE') as porcentajec, format(precioVta_A,2,'de_DE') as pvpam, precioVta_A as pvpa, format(precioVta_A,2,'de_DE') as pvp, precioVta_B as pvpb, receta_id as idr FROM `producto`
+			$query = "SELECT producto.id as idpro, producto.codigo as codip, producto.nombre as producto, costo, format(costo,4,'de_DE') as costom, porcentaje_costo, format(porcentaje_costo,2,'de_DE') as porcentajec, format(precioVta_A,4,'de_DE') as pvpam, precioVta_A as pvpa, format(precioVta_A,4,'de_DE') as pvp, precioVta_B as pvpb, receta_id as idr FROM `producto`
 inner join producto_has_unidad_negocio on producto_has_unidad_negocio.producto_id = producto.id
 inner join unidad_negocio on unidad_negocio.id = producto_has_unidad_negocio.unidad_negocio_id
 inner join modelo_has_submodelo on unidad_negocio.modelo_has_submodelo_id = modelo_has_submodelo.id
@@ -126,9 +126,9 @@ WHERE modelo_has_submodelo.modelo_id = $modelo";
     		for ($i=0; $i < count($data); $i++) { 
     			if ($data[$i]['idr'] != null) {
     				$idreceta[$i] = 'Si';
-    				$icono[$i] = 'fa-edit';
+    				$icono[$i] = 'fa-cutlery';
     				$ver[$i] = 'Editar';
-    				$titulo[$i] = 'Editar Receta';
+    				$titulo[$i] = 'Ver receta';
     			}else{
     				$idreceta[$i] = 'No';
     				$icono[$i] = 'fa-plus-square-o';
@@ -149,7 +149,7 @@ WHERE modelo_has_submodelo.modelo_id = $modelo";
 		public function consultasp($idp,$idreceta){
 			if ($idp != 999999) {
 				//echo "if<br>"; 
-				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, ixr.cantidad, abreviatura, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, producto.id as idprod, producto.nombre as producto, format(mercancia.precio_unitario,2,'de_DE') as costo, mercancia.precio_unitario as precioU, receta.id as idreceta, mercancia.receta_id, receta.nombre as receta  FROM `ingrediente_has_receta` as ixr
+				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, format(ixr.cantidad,4,'de_DE') as cantidad, abreviatura, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, producto.id as idprod, producto.nombre as producto, format(mercancia.precio_unitario,4,'de_DE') as costo, mercancia.precio_unitario as precioU, receta.id as idreceta, mercancia.receta_id, receta.nombre as receta  FROM `ingrediente_has_receta` as ixr
 			inner join receta on receta.id = ixr.receta_id
 			inner join unidad_medida on unidad_medida.id = ixr.unidad_medida_id
 			inner join mercancia on mercancia.id = ixr.ingrediente_id
@@ -158,7 +158,7 @@ WHERE modelo_has_submodelo.modelo_id = $modelo";
     		$data = $this->_main->select($query);
 			}else{
 				//echo "else<br>"; 
-				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, ixr.cantidad, abreviatura, mercancia.nombre as producto, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, format(mercancia.precio_unitario,2,'de_DE') as costo, mercancia.precio_unitario as precioU, ixr.receta_id as idreceta, mercancia.receta_id, receta.nombre as receta  
+				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, format(ixr.cantidad,4,'de_DE') as cantidad, abreviatura, mercancia.nombre as producto, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, format(mercancia.precio_unitario,4,'de_DE') as costo, mercancia.precio_unitario as precioU, ixr.receta_id as idreceta, mercancia.receta_id, receta.nombre as receta  
 					FROM `mercancia`
 					inner join ingrediente_has_receta as ixr on mercancia.id = ixr.ingrediente_id
 					inner join receta on receta.id = ixr.receta_id
@@ -178,7 +178,7 @@ WHERE modelo_has_submodelo.modelo_id = $modelo";
 
         public function costototal($idp,$idreceta){
             if ($idp != 999999) {
-                $query = "SELECT SUM(mercancia.precio_unitario) as costototal, format(SUM(mercancia.precio_unitario),2,'de_DE') as costot, receta.id as idreceta, receta.nombre as receta, precioVta_A as pvp  
+                $query = "SELECT SUM(mercancia.precio_unitario) as costototal, format(SUM(mercancia.precio_unitario),4,'de_DE') as costot, receta.id as idreceta, receta.nombre as receta, precioVta_A as pvp  
 FROM `ingrediente_has_receta` as ixr
             inner join receta on receta.id = ixr.receta_id
             inner join unidad_medida on unidad_medida.id = ixr.unidad_medida_id
@@ -187,7 +187,7 @@ FROM `ingrediente_has_receta` as ixr
             WHERE producto.id = $idp";
             $data = $this->_main->select($query);
             }else{
-                $query = "SELECT SUM(mercancia.precio_unitario) as costototal, format(SUM(mercancia.precio_unitario),2,'de_DE') as costot, receta.id as idreceta, receta.nombre as receta 
+                $query = "SELECT SUM(mercancia.precio_unitario) as costototal, format(SUM(mercancia.precio_unitario),4,'de_DE') as costot, receta.id as idreceta, receta.nombre as receta 
                     FROM `mercancia`
                     inner join ingrediente_has_receta as ixr on mercancia.id = ixr.ingrediente_id
                     inner join receta on receta.id = ixr.receta_id
@@ -244,7 +244,7 @@ FROM `ingrediente_has_receta` as ixr
 
 
 		public function ingredientesreceta($idm){
-		$query = "SELECT DISTINCT(mercancia.codigo) as codigi, mercancia.id as idi , unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, mercancia.precio_unitario as costo, format(mercancia.precio_unitario,2,'de_DE') as precioU, mercancia.contenido_neto, CONCAT(contenido_neto,' ',ums.abreviatura) as contenido, mercancia.receta_id as idr FROM `mercancia`
+		$query = "SELECT DISTINCT(mercancia.codigo) as codigi, mercancia.id as idi , unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, mercancia.precio_unitario as costo, format(mercancia.precio_unitario,4,'de_DE') as precioU, mercancia.contenido_neto, CONCAT(contenido_neto,' ',ums.abreviatura) as contenido, mercancia.receta_id as idr FROM `mercancia`
 			inner join unidad_medida as umc on umc.id = mercancia.unidad_medida_compra_id
             inner join unidad_medida as ump on ump.id = mercancia.unidad_medida_consumo_id
             inner join unidad_medida as ums on ums.id = mercancia.unidad_medida_sistema_id

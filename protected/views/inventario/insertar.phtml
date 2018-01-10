@@ -109,29 +109,29 @@
                                 <div class="form-group row d-flex justify-content-start offset-1">
                                     <div class="col-xs-4 col-sm-4 col-md-3">
                                         <label class="labels" style="float: left;">Peso escurrido</label>
-                                        <input type="text" class="form-control form-control-sm" name="pesoEs" id="pesoEs">
+                                        <input type="text" class="form-control form-control-sm monto" name="pesoEs" id="pesoEs">
                                     </div>
                                     
                                     <div class="col-xs-4 col-sm-4 col-md-3">
                                         <label class="labels" style="float: left;">Rendiemiento ideal</label>
-                                        <input type="text" class="form-control form-control-sm" name="rendimientoId" id="rendimientoId">
+                                        <input type="text" class="form-control form-control-sm monto" name="rendimientoId" id="rendimientoId">
                                     </div>
                                     
                                     <div class="col-xs-4 col-sm-4 col-md-3 ">
                                         <label class="labels" style="float: left;">Contenido neto</label>
-                                        <input type="text" class="form-control form-control-sm contneto" name="contenidoN" id="contenidoN" autocomplete="off" required>
+                                        <input type="text" class="form-control form-control-sm contneto monto" name="contenidoN" id="contenidoN" autocomplete="off" required>
                                     </div>
                                     <input type="text" id="CNtemporal" hidden>
                                 </div>
                                  <div class="form-group row d-flex justify-content-start offset-1">
                                     <div class="col-xs-4 col-sm-4 col-md-3">
                                         <label class="labels" style="float: left;">Stock min</label>
-                                        <input type="text" class="form-control form-control-sm" name="stockmin" id="stockmin" required>
+                                        <input type="text" class="form-control form-control-sm monto" name="stockmin" id="stockmin" required>
                                     </div>
                                     
                                     <div class="col-xs-4 col-sm-4 col-md-3 ">
                                         <label class="labels" style="float: left;">Stock max</label>
-                                        <input type="text" class="form-control form-control-sm" name="stockmax" id="stockmax" required>
+                                        <input type="text" class="form-control form-control-sm monto" name="stockmax" id="stockmax" required>
                                     </div>
                                 </div>
                                 <div class="form-group row d-flex justify-content-start offset-1">
@@ -157,7 +157,7 @@
                                 <div class="form-group row d-flex justify-content-start offset-1">
                                     <div class="col-xs-4 col-sm-4 col-md-3 ">
                                         <label class="labels" style="float: left;">Precio unitario</label>
-                                        <input type="text" class="form-control form-control-sm" name="precio_unitario" id="pU" onkeyup="format(this)" onchange="format(this)"  placeholder="0,00" required>
+                                        <input type="text" class="form-control form-control-sm precios" name="precio_unitario" id="pU" placeholder="0,00" required>
                                     </div>
                                     
                                     <div class="col-xs-4 col-sm-4 col-md-3 ">
@@ -267,7 +267,7 @@
 
                                             <div class="col-xs-2 col-sm-3 col-md-2" id="priceP">
                                                 <label class="labels">Precio</label>
-                                                <input class="form-control form-control-sm" name="precioP" id="precioP" type="text" onkeyup="format(this)" onchange="format(this)"  placeholder="0,00">
+                                                <input class="form-control form-control-sm precios" name="precioP" id="precioP" type="text"  placeholder="0,00">
                                             </div>
 
                                         <div class="row d-flex ">

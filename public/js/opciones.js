@@ -5,6 +5,8 @@ $(document).ready(function() {
         $('#datos2').prop("hidden", false);
         $(this).find('.buscador').toggleClass('fa-chevron-down fa-chevron-up');
     });
+    $(".monto").number(true, 4, ',', '');
+    $(".precios").number(true, 4, ',', '.');
 });
 
 function opciones (idsM,idm){
