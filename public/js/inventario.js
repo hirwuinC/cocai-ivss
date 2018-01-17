@@ -11,6 +11,8 @@ $(document).ready(function() {
     
 
     $('.umc').change(function(event) {
+      $('#cantidadConsumo').val('');
+      $('#cantidadConsumo').val(1);
       var idmcom = $('.umc').val();
       var valor = $('.contneto').val();
       //alert(idmcom);

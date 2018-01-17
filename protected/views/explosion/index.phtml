@@ -1,10 +1,17 @@
 <head>
   <meta charset="utf-8">
   <title>Explosion</title>
-
-
-
-  
+  <style>
+  .tdleft{
+    text-align: left;
+  }
+  .tdcenter{
+    text-align: center;
+  }
+  .tdright{
+    text-align: right;
+  }
+  </style>
 </head>
 <center>
     <div style="margin-top: 15%" id="gifcargando">
@@ -22,7 +29,7 @@
                         <div class="card cardH">
 
                             <div class="card-header" style="padding: 5px; height: 25%">
-                              <center><h3 ><o id="titulocard">Generar explosión</o> <?php $ti=strtolower($this->model[0]['udn']); echo "[".ucwords($ti)."]"; ?></h3></center>
+                              <center><h3 ><o id="titulocard">Rankings de ventas</o> <?php $ti=strtolower(str_replace('(PTY)', '', $this->model[0]['udn'])); echo "[".ucwords($ti)."]"; ?></h3></center>
                             </div>
                           
                           <div class="card-block">
@@ -31,7 +38,7 @@
                                 <a data-toggle="tab" href="#consultar" class="nav-link" id="expconsulta">Consultas </a>
                               </li>
                               <li class="nav-item" id="tab-r">
-                                <a   class="nav-link" id="expranking">Procesar rankings </a>
+                                <a   class="nav-link" id="expranking">Rankings pendientes por procesar</a>
                               </li>
                               
                             </ul>
@@ -94,8 +101,8 @@
                                     <div class="container">
                                       <div class="row justify-content-center">
                                         <div class="col-1">
-                                            <button class="btn btn-sm btn-outline-primary" id="consult">
-                                              Consultar
+                                            <button class="btn btn-sm btn-outline-primary" id="consult" disabled>
+                                              <o data-toggle="tooltip" data-placement="top" title="Seleccione un rango de fechas y haga click aqui para consultar el ranking de venta">Consultar</o>
                                             </button>
                                         </div>
                                       </div>
@@ -117,16 +124,16 @@
                                     <thead class="theadH">
                                       <tr>
                                           <tr>                                                   
-                                              <th >Codigo</th>
-                                              <th >Producto</th> 
-                                              <th >Grupo</th>
-                                              <th >Cant</th>
-                                              <th >Precio</th>
-                                              <th >% Vta</th>
-                                              <th >Costo</th>
-                                              <th >Costo total</th>
-                                              <th >% Costo</th>
-                                              <th >fecha</th>
+                                              <th><center>Codigo</center></th>
+                                              <th><center>Producto</center></th> 
+                                              <th><center>Grupo</center></th>
+                                              <th><center>Cant</center></th>
+                                              <th><center>Precio</center></th>
+                                              <th><center>% Vta</center></th>
+                                              <th><center>Costo</center></th>
+                                              <th><center>Costo total</center></th>
+                                              <th><center>% Costo</center></th>
+                                              <th><center>fecha</center></th>
                                           </tr>
                                       </tr>
                                   </thead>
@@ -146,12 +153,13 @@
                         
                       
                             <ul class="nav nav-tabs " role="tablist">
-                              <li class="active nav-item">
-                                <a data-toggle="tab" href="#porproductos" class="nav-link" id="porpro">Explosion de ingredientes por productos </a>
-                              </li>
                               <li class="nav-item" id="tab-r">
                                 <a data-toggle="tab" href="#consolidado"  class="nav-link" id="consolid"> Consolidado de explosion de ingredientes </a>
                               </li>
+                              <li class="active nav-item">
+                                <a data-toggle="tab" href="#porproductos" class="nav-link" id="porpro">Explosion de ingredientes por productos </a>
+                              </li>
+                              
                               
                             </ul>
                       <div class="tab-content">
@@ -162,13 +170,14 @@
                                   
                                     <thead class="theadH">
                                       <tr>
-                                          <th>#</th>
-                                          <th>codigo</th>
-                                          <th>Ingrediente</th>
-                                          <th>cantidad</th>
-                                          <th>costo</th>
-                                          <th>fecha</th>
-                                          <th>producto</th>
+                                          <th><center>#</center></th>
+                                          <th><center>codigo</center></th>
+                                          <th><center>Ingrediente</center></th>
+                                          <th><center>Cantidad</center></th>
+                                          <th><center>Costo</center></th>
+                                          <th><center>Costo total</center></th>
+                                          <th><center>Fecha</center></th>
+                                          <th><center>Producto</center></th>
                                       </tr>
                                   </thead>
                                   <tbody id="cuerpo"></tbody>
@@ -188,12 +197,13 @@
                                         
                                           <thead class="theadH">
                                             <tr>
-                                                <th>#</th>
-                                                <th>codigo</th>
-                                                <th>Ingrediente</th>
-                                                <th>cantidad</th>
-                                                <th>costo</th>
-                                                <th>fecha</th>
+                                                <th><center>#</center></th>
+                                                <th><center>codigo</center></th>
+                                                <th><center>Ingrediente</center></th>
+                                                <th><center>Cant.usada</center></th>
+                                                <th><center>En inventario</center></th>
+                                                <th><center>costo</center></th>
+                                                <th><center>Costo total</center></th>
                                             </tr>
                                         </thead>
                                         <tbody id="cuerpo"></tbody>
@@ -272,8 +282,9 @@
                               </div>
                               
                           </div>
-
-
+                          <div class="col-sm-6">
+                            <h5 style="color: black" id="leyenda" class="mt-3">* Para consultar la explosion de ingredientes, primero debe consultar el ranking de venta correspondiente.</h5>
+                          </div>
                         
                         
                                                

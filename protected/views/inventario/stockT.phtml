@@ -18,13 +18,13 @@
                     <div class="card cardH">
 
                             <div class="card-header">
-                              <center><h4 ><o id="titulocard">Consulta de inventario</o> <?php $ti=strtolower($this->g[0]['tienda']); echo "[".ucwords($ti)."] Sub-modelo ".$this->g[0]['subM'];  ?></h4></center>
+                              <center><h4 ><o id="titulocard">Consulta de inventario</o> <?php $ti=strtolower(str_replace('(PTY)', '', $this->g[0]['tienda'])); echo "[".ucwords($ti)."] Sub-modelo ".$this->g[0]['subM'];  ?></h4></center>
                             </div>
                           
                           <div class="card-block">
                             <div class="row d-flex flex-wrap">
                                 <div class="col-6">
-                                    <h4 class="page-header" style="font-family: Times New Roman, Times, serif; text-align: center">Unidad de negocio <?php echo $this->g[0]['tienda']; echo '<br> Sub-modelo '.$this->g[0]['subM'];  ?></h4>
+                                    <h4 class="page-header" style="font-family: Times New Roman, Times, serif; text-align: center">Unidad de negocio <?php echo str_replace('(PTY)', '', $this->g[0]['tienda']); echo '<br> Sub-modelo '.$this->g[0]['subM'];  ?></h4>
                                 </div>
                             
                                 <div class="col-6 d-flex justify-content-end">
@@ -82,7 +82,7 @@
                                                 <td style="text-align:left"><?php echo $g['producto'];?></td>
                                                 <td ><?php echo $g['marca'];?></td>
                                                 <td style="text-align:right;"><?php echo $g['stock'];?>
-                                                    <a style="cursor: pointer; cursor: hand;" onclick="infoConversion('<?php echo $g['idP'];?>','<?php echo $g['idT'];?>')"><i class="fa fa-info-circle"></i>
+                                                    <a style="cursor: pointer; cursor: hand;" onclick="infoConversion('<?php echo $g['idP'];?>','<?php echo $g['idT'];?>')"><i data-toggle="tooltip" data-placement="top" title="Ver informacion detallada de la existencia" class="fa fa-info-circle"></i>
                                                     </a>
                                                 </td>
                                                 <td ><?php echo $g['unidadS'];?></td>
@@ -128,7 +128,9 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <div id="enunciadoU"></div>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
                             <form action="<?php echo BASE_URL;?>inventario/update" method="post" accept-charset="utf-8">
                             <div class="modal-body">
@@ -186,7 +188,7 @@
                                     </div>
                                     <div class="col-sm-3">
                                         <label class="control-label">Existencia <o class="abrevia"></o></label>
-                                        <input style="cursor: not-allowed" type="text" class="form-control form-control-sm monto" name="existencia" id="existencia" readonly="" title="Se actualiza al cargar las remisiones y/o reposicion de mercancia">
+                                        <input style="cursor: not-allowed" type="text"  class="form-control form-control-sm monto" name="existencia" id="existencia" readonly="" title="Se actualiza al cargar las remisiones y/o reposicion de mercancia">
                                     </div>
                                 </div>
                                 <div class="form-group row ">
@@ -208,13 +210,18 @@
                                     <div class="col-sm-3 ">
                                         <label class="control-label">Contenido neto</label>
                                         <input type="text" class="form-control form-control-sm monto" name="contenidoN" id="contenidoN">
-                                    </div>                             
+                                    </div>  
+
                                 </div>
                                 <div class="form-group row">
-                                <div class="col-sm-3 ">
+                                    <div class="col-sm-3 ">
                                         <label class="control-label"><o id="abrevU"></o></label>
                                         <input type="text" class="form-control form-control-sm" name="cantidad" id="cantidad">
-                                    </div> 
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label class="labels" style="float: left;">Peso escurrido</label>
+                                        <input type="text" class="form-control form-control-sm monto" name="pesoEs" id="pesoEs">
+                                    </div>
                                 </div>
 
                                 <label class="control-label">Formulas de conversion</label>
@@ -224,7 +231,7 @@
                                             
                                                 <div class="row align-items-center d-flex justify-content-center ">
                                                     <div class="col-xs-4 col-sm-4 col-md-3 mt-3">
-                                                        <label class="labels" style="float: left;">U/M compra <a class="secreto" onclick="infoFormula()"><i class="fa fa-info-circle"></i></a></label>
+                                                        <label class="labels" style="float: left;">U/M compra <a class="secreto" onclick="infoFormula()"><i data-toggle="tooltip" data-placement="top" title="Ver informacion" class="fa fa-info-circle" style="cursor: hand; cursor: pointer;"></i></a></label>
                                                         <input type="text" class="form-control form-control-sm formulac" name="formulac" id="formulac">
                                                     </div>
                                                     <div class="col-xs-4 col-sm-4 col-md-3 mt-3">
@@ -242,9 +249,20 @@
                                     
 
                                 </div>
-                            
+                                
+                            <div class="row mt-3">
+                                    <div class="col-sm-12">
+                                        <h6>* La existencia se actualiza automaticamente al cargar las remisiones y/o reposicion de mercancia</h6>
+                                    </div>
+                                </div>
                             <div class="modal-footer">
-                                <input type="submit" class="btn btn-primary" value="Guardar" id="botonG">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <input type="submit" class="btn btn-primary" value="Guardar" id="botonG">
+                                    </div>
+                                </div>
+                                
+                                
                             </div>
                             </form>
                         </div>

@@ -14,6 +14,7 @@ $(document).ready(function() {
     $('#tipoMov').val('seleccione');
     $('#tipoMov').val('seleccione');
     $('#motivo').empty();
+    $('#consult').prop('disabled', false);
     load('referencia','motivo',false,false);
     $('#fecha_fin').focus();
   });
@@ -38,6 +39,14 @@ $(document).ready(function() {
      });       
 
     $('#expconsulta').trigger('click');
+
+    $('#expconsulta').click(function(event) {
+        $('#leyenda').fadeIn(700);
+    });
+
+    $('#expranking').click(function(event) {
+        $('#leyenda').hide();
+    });
 
     $('#consolid').click(function(event) {
         
@@ -67,13 +76,13 @@ $(document).ready(function() {
                 { "data": "codigo_prod" },
                 { "data": "producto" },
                 { "data": "grupo" },
-                { "data": "cantidad" },
-                { "data": "monto" },
-                { "data": "porcentaje_vta" },
-                { "data": "costo" },
-                { "data": "costo_total" },
-                { "data": "porcentaje_costo" },
-                { "data": "fecha_ranking" }
+                { "data": "cantidad", className: "tdcenter"  },
+                { "data": "monto", className: "tdright" },
+                { "data": "porcentaje_vta", className: "tdright"  },
+                { "data": "costo", className: "tdright" },
+                { "data": "costo_total", className: "tdright" },
+                { "data": "porcentaje_costo", className: "tdright"  },
+                { "data": "fecha_ranking", className: "tdcenter"  }
                 
             ],
             destroy: true,
@@ -86,46 +95,47 @@ $(document).ready(function() {
   $('#tabsexplotion').slideDown(400);
   $('#tabsexplotion').prop('hidden', false);
   //alert(fechaini); alert(fechafin); alert(idt); 
-  $('#porpro').trigger('click');
+  $('#consolid').trigger('click');
   $('#tablaoculta').hide();
   $('#tablaoculta2').hide();
   
   $('#load').fadeOut(600);
   $('#consultaingredientes').hide('fast');
-  setTimeout(function() {$('#tablaoculta').fadeIn(700);$('#tablaoculta').prop('hidden', false);}, 600);
+  setTimeout(function() {$('#tablaoculta2').fadeIn(700);$('#tablaoculta2').prop('hidden', false);}, 600);
   
 
     var table = $('#tablaexplosion').DataTable({
             "ajax": BASE_URL+'/explosion/consultarexplosion/'+fechaini+'/'+fechafin+'/'+idt,
             "columns": [
-                { "data": null },
+                { "data": null, className: "tdcenter"  },
                 { "data": "coding" },
                 { "data": "ingrediente" },
-                { "data": "quantity", 
+                { "data": "quantity", className: "tdright" , 
                     render : function(data, type, row) { 
                         return ''+data+' '+row['abreviatura']
                     }
                 },
-                { "data": "costo" },
-                { "data": "fecha_ranking" },
+                { "data": "costo", className: "tdright" },
+                { "data": "costot", className: "tdright" },
+                { "data": "fecha_ranking", className: "tdcenter"  },
                 { "data": "nombre" }
                 
             ],
             "columnDefs": [
-                { "visible": false, "targets": 6 }/*,
+                { "visible": false, "targets": 7 }/*,
                 { "visible": true, "orderable": false, "targets": [0,1,2,3,4] }*/
             ],
-            "order": [[ 6, 'asc' ]],
+            "order": [[ 7, 'asc' ]],
             "displayLength": 25,
             "drawCallback": function ( settings ) {
             var api = this.api();
             var rows = api.rows( {page:'current'} ).nodes();
             var last=null;
  
-            api.column(6, {page:'current'} ).data().each( function ( group, i ) {
+            api.column(7, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group ) {
                     $(rows).eq( i ).before(
-                        '<tr class="group"><td colspan="6" style="background:#ADD8E6"><b>'+group+'</b></td></tr>'
+                        '<tr class="group"><td colspan="7" style="background:#ADD8E6; cursor:hand; cursor:pointer;"><b>'+group+'</b></td></tr>'
                     );
  
                     last = group;
@@ -137,11 +147,11 @@ $(document).ready(function() {
         });
     $('#tablaexplosion tbody').on( 'click', 'tr.group', function () {
         var currentOrder = table.order()[0];
-        if ( currentOrder[0] === 6 && currentOrder[1] === 'asc' ) {
-            table.order( [ 6, 'desc' ] ).draw();
+        if ( currentOrder[0] === 7 && currentOrder[1] === 'asc' ) {
+            table.order( [ 7, 'desc' ] ).draw();
         }
         else {
-            table.order( [ 6, 'asc' ] ).draw();
+            table.order( [ 7, 'asc' ] ).draw();
         }
     });
     $('#tablaexplosion').css("width","100%");
@@ -154,16 +164,21 @@ $(document).ready(function() {
     var t2 = $('#tablaexplosion2').DataTable({
             "ajax": BASE_URL+'/explosion/consultaconsolidada/'+fechaini+'/'+fechafin+'/'+idt,
             "columns": [
-                { "data": null },
+                { "data": null, className: "tdcenter" },
                 { "data": "coding" },
                 { "data": "ingrediente" },
-                { "data": "quantity", 
+                { "data": "quantity", className: "tdright",
                     render : function(data, type, row) { 
                         return ''+data+' '+row['abreviatura']
                     }
                 },
-                { "data": "costo" },
-                { "data": "fecha_ranking" }
+                { "data": "existencia", className: "tdright",
+                    render : function(data, type, row) { 
+                        return ''+data+' '+row['abreviatura']
+                    }
+                },
+                { "data": "costo", className: "tdright" },
+                { "data": "costot", className: "tdright" }
                 
             ],
             destroy: true,
@@ -227,19 +242,18 @@ $(document).ready(function() {
            var fecha = new Array();   
            fecha.push(data[i].substr(0,8));
            if (codigo == codit ) {
+                
                 $.ajax({
                     url: BASE_URL+'/explosion/validarcierre/'+fecha+'/'+idt,
                     type: 'POST',
                     dataType: 'json',
                 })
-                .done(function(datos) {
-                    for (var j = 0; j < datos.length; j++) {
-                        var fechadelete = new Array();   
-                        fechadelete.push(datos[j][2].substr(0,10));
+                .done(function(datos) {                   
                         var fe = new Array();
-                        fe.push(fechadelete[j].replace(/-/g,""));
-                        var archivo = fe+'-'+codigo+'.txt';
-                        //alert(archivo);
+                        fe.push(datos[0][0].replace(/-/g, ""));
+                        if (fecha = fe) {
+                        var archivo = fecha+'-'+codit+'.txt';
+                            //alert(archivo);
                         $.ajax({
                             url: BASE_URL+'/explosion/borrador/'+archivo,
                             type: 'POST',
@@ -247,21 +261,18 @@ $(document).ready(function() {
                         })
                         .done(function(data2) {
                             location.reload();
-                        })
-                        .fail(function(){
-                            alert("fallo");
-                        })
-                    }
+                        });
+                        }                 
                 });
            }
-           var c=0;
-        
-
+                        var c=0;
                            if (codigo == codit ) {
                             if (fecha!=hoy) {
                                 //alert(hoy);
+                                //alert(fecha);
                                 var validarankinghoy = '<h5 style="color: red">Aun no ha sido cargado el ranking del dia en curso</h5>';
                             }else{
+                                //alert(fecha);
                                 var validarankinghoy = '';
                             }
                             $('#cuerpor').append('<a href="'+BASE_URL+'/explosion/insertarexplosion/'+fecha+'/'+codigo+'/'+idt+'" title="">Ranking de '+fecha+"</a><br>");
@@ -292,7 +303,3 @@ $(document).ready(function() {
 
 
  });
-
- function eliminarprocesados(data,idt,codit){
-    
- }

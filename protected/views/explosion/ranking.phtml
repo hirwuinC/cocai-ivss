@@ -18,7 +18,7 @@
                     <div class="card cardH">
 
                             <div class="card-header">
-                              <center><h4 ><o id="titulocard">Ranking de venta</o> <?php $ti=strtolower($this->ranking[0]['tienda']); echo "[".ucwords($ti)."]";  ?></h4></center>
+                              <center><h4 ><o id="titulocard">Ranking de venta</o> <?php $ti=strtolower(str_replace('(PTY)', '', $this->ranking[0]['tienda'])); echo "[".ucwords($ti)."]";  ?></h4></center>
                             </div>
                           
                           <div class="card-block">
@@ -33,35 +33,35 @@
                             </div>
                             <?php $i = 1; ?>  
                             <div class="dataTable_wrapper ">
-                             <div class="col-sm-12 table-responsive">
-                                <table class="table table-sm table-striped table-bordered table-hover" id="tablaSM">
+                             <div class=" table-responsive">
+                                <table class="table table-sm table-striped table-bordered table-hover" id="tablara">
                                         <thead class="theadH">
                                             <tr>
-                                                <th>#</th>                                                    
-                                                <th >Codigo</th>
-                                                <th >Producto</th> 
-                                                <th >Grupo</th>
-                                                <th >Cant</th>
-                                                <th >Precio ud.</th>
-                                                <th >% Vta</th>
-                                                <th >Costo</th>
-                                                <th >Costo total</th>
-                                                <th >% Costo</th>
+                                                <th><center>#</th></center>     
+                                                <th><center>Codigo</center></th>
+                                                <th><center>Producto</center></th> 
+                                                <th><center>Grupo</center></th>
+                                                <th><center>Cant</center></th>
+                                                <th><center>Precio ud.</center></th>
+                                                <th><center>% Vta</center></th>
+                                                <th><center>Costo</center></th>
+                                                <th><center>Costo total</center></th>
+                                                <th><center>% Costo</center></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php foreach ($this->ranking as $rank): ?>
                                             <tr> 
-                                                <td ><?php echo $i?></td>   
+                                                <td style="text-align:center"><?php echo $i?></td>   
                                                 <td style="text-align:left"><?php echo $rank['codigo'];?></td>
                                                 <td style="text-align:left"><?php echo $rank['descripcion'];?></td>
                                                 <td style="text-align:left"><?php echo $rank['grupo'];?></td>
-                                                <td style="text-align:left"><?php echo $rank['cantidad'];?></td>
-                                                <td style="text-align:left"><?php echo number_format($rank['monto'],2,",",".")." Bs";?></td>
-                                                <td style="text-align:left"><?php echo $rank['porcentajeVentas']."%";?></td>
-                                                <td style="text-align:left"><?php echo $rank['costo'];?></td>
-                                                <td style="text-align:left"><?php echo $rank['costoTotal'];?></td>
-                                                <td style="text-align:left"><?php echo $rank['porcentajeCosto']."%";?></td>                                                   
+                                                <td style="text-align:center"><?php echo $rank['cantidad'];?></td>
+                                                <td style="text-align:right;"><?php echo number_format($rank['monto'],2,",",".")." Bs";?></td>
+                                                <td style="text-align:right;"><?php echo $rank['porcentajeVentas']."%";?></td>
+                                                <td style="text-align:right;"><?php echo $rank['costo'];?></td>
+                                                <td style="text-align:right;"><?php echo $rank['costoTotal'];?></td>
+                                                <td style="text-align:right;"><?php echo $rank['porcentajeCosto']."%";?></td>                                                   
                                             </tr>
                                             <?php $i++; ?>
 

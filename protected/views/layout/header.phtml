@@ -68,8 +68,9 @@
                                       <ul class="collapse side-menu list-unstyled" id="modelo'.$i.'">';
                            for ($j=0; $j < count($menu); $j++) { 
                                 if ($privilegios[$i] == $menu[$j]['modelo']) { 
+                                  $ti = str_replace('(PTY)', '', $menu[$j]['tienda']);
                                   echo  '<li>
-                                          <a style="" href="#tienda'.$j.'" data-toggle="collapse" aria-expanded="false"><i class="fa fa-home"></i> '.$menu[$j]['tienda'].'<div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>';
+                                          <a style="" href="#tienda'.$j.'" data-toggle="collapse" aria-expanded="false"><i class="fa fa-home"></i> '.$ti.'<div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>';
                                   echo '<ul class="side-menu collapse list-unstyled" id="tienda'.$j.'">
                                           <li>
                                               <a href="#inv'.$j.'" data-toggle="collapse" aria-expanded="false" style="margin-left:5px; ">Inventario
@@ -107,7 +108,7 @@
                                               <i class="fa fa-cogs"></i></span></a>   
                                           </li>
                                           <li>
-                                            <a href="'.BASE_URL.'explosion/index/'.$id[$j].'" style="margin-left:5px; ">Explosion de ingredientes
+                                            <a href="'.BASE_URL.'explosion/index/'.$id[$j].'" style="margin-left:5px; ">Ranking / Explosión de ingredientes
                                               <i class="fa fa-bomb"></i></span></a>   
                                           </li>
                                            <li>
@@ -137,13 +138,18 @@
                           }else{
                             for ($p=0; $p < count($menu); $p++) { 
                               if ($menu[$p]['modelo'] == null) {
+                                //$ti = str_replace('(PTY))', '', $menu[$p]['tienda']);
                                 echo  '<li>
-                                      <a style="" href="#empresa'.$p.'" data-toggle="collapse" aria-expanded="false"><i class="fa fa-university"></i> '.$menu[$p]['tienda'].'<div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>';
+                                      <a style="" href="#empresa'.$p.'" data-toggle="collapse" aria-expanded="false"><i class="fa fa-university"></i> Centro de produccion
+                                      <div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>';
                                   echo '<ul class="collapse list-unstyled" id="empresa'.$p.'">
                                           <li>
                                               <a href="#tiendae'.$p.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Inventario
                                               <i class="fa fa-list"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
                                               <ul class="collapse list-unstyled" id="tiendae'.$p.'">
+                                              <li ">
+                                                  <a href="'.BASE_URL.'inventario/insert/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; "></i>Crear producto de inventario</a>
+                                                </li>
                                                 <li ">
                                                   <a style="margin-left:12px; " href="'.BASE_URL.'inventario/evaluar/'.$menu[$p]['idUd'].'" class="subM"></i>Consulta de inventario</a>
                                                 </li>
@@ -176,13 +182,13 @@
                                               <i class="fa fa-cogs"></i></span></a>   
                                           </li>
                                           <li>
-                                            <a href="'.BASE_URL.'explosion/index/'.$menu[$p]['idUd'].'" style="margin-left:5px; ">Generar explosion
+                                            <a href="'.BASE_URL.'explosion/index/'.$menu[$p]['idUd'].'" style="margin-left:5px; ">Ranking / Explosión de ingredientes
                                               <i class="fa fa-bomb"></i></span></a>   
                                           </li>
                                            <li>
-                                            <a href="#adm'.$j.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Administracion
+                                            <a href="#adm'.$p.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Administracion
                                               <i class="fa fa-briefcase"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
-                                              <ul class="collapse list-unstyled" id="adm'.$j.'">
+                                              <ul class="collapse list-unstyled" id="adm'.$p.'">
                                                 <li style="margin-left:12px; ">
                                                   <a /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM"></i>Proveedor</a>
                                                 </li>

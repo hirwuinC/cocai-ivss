@@ -126,14 +126,14 @@ WHERE modelo_has_submodelo.modelo_id = $modelo";
     		for ($i=0; $i < count($data); $i++) { 
     			if ($data[$i]['idr'] != null) {
     				$idreceta[$i] = 'Si';
-    				$icono[$i] = 'fa-cutlery';
+    				$icono[$i] = 'fa-eye';
     				$ver[$i] = 'Editar';
-    				$titulo[$i] = 'Ver receta';
+    				$titulo[$i] = 'Ver receta de';
     			}else{
     				$idreceta[$i] = 'No';
     				$icono[$i] = 'fa-plus-square-o';
     				$ver[$i] = 'Asignar';
-    				$titulo[$i] = 'Agregar receta';
+    				$titulo[$i] = 'Agregar receta para';
     			}
     			$data[$i]['idrec'] = $idreceta[$i];
     			$data[$i]['icon'] = $icono[$i];
@@ -214,6 +214,13 @@ FROM `ingrediente_has_receta` as ixr
 
 		}
 
+        public function updateIngrediente($idpro,$idrec,$idmer,$cantxing){      
+                $query = "UPDATE `ingrediente_has_receta` SET `cantidad`=$cantxing where ingrediente_id = $idmer and receta_id = $idrec";
+                    $this->_main->insertar($query);
+                    $data = $idpro;
+                echo json_encode($data);    
+        }
+
 		public function eliminarIngrediente($producto,$idmer,$idreceta){
 				$query = "DELETE FROM `ingrediente_has_receta` where ingrediente_id = $idmer and receta_id = $idreceta";
 				$idD = $this->_main->eliminar($query);
@@ -257,9 +264,9 @@ FROM `ingrediente_has_receta` as ixr
             for ($i=0; $i < count($data); $i++) { 
     			if ($data[$i]['idr'] != null) {
     				$idreceta[$i] = 'Si';
-    				$icono[$i] = 'fa-edit';
+    				$icono[$i] = 'fa-eye';
     				$ver[$i] = 'Editar';
-    				$titulo[$i] = 'Editar receta de';
+    				$titulo[$i] = 'Ver receta de';
     			}else{
     				$idreceta[$i] = 'No';
     				$icono[$i] = 'fa-plus-square-o';
@@ -307,19 +314,26 @@ FROM `ingrediente_has_receta` as ixr
     		return $data;
 		}
 
-		public function crearreceta($idpro,$idmodelo,$ingrediente){
-    		
-    		
+		public function crearreceta($idpro,$idmodelo,$ingrediente,$rendimiento,$umr){
+    		$mystring = $rendimiento;
+            $findme   = ',';
+            $pos = strpos($mystring, $findme);
+            if ($pos != false) {
+                $p1 = str_replace(".","",$rendimiento);
+                $rendi = str_replace(",",".",$p1);
+            }else{
+                $rendi = $rendimiento;
+            }
     		
     		if ($ingrediente == 999999) {
     			$datosp = $this->nombreproducto($idpro);
-    			$query = "INSERT INTO `receta`(`nombre`) VALUES ('".$datosp[0]['producto']."')";
+    			$query = "INSERT INTO `receta`(`nombre`,`rendimiento`,`unidad_medida_id`) VALUES ('".$datosp[0]['producto']."',$rendi,$umr)";
     			$idr = $this->_main->insertar($query);
     			$query = "UPDATE `producto` SET `receta_id`='".$idr."' WHERE producto.id = $idpro";
     			$this->_main->modificar($query);
     		}else{
     			$datosp = $this->nombreingrediente($ingrediente);
-    			$query = "INSERT INTO `receta`(`nombre`) VALUES ('".$datosp[0]['nombre'].' '.$datosp[0]['marca']."')";
+    			$query = "INSERT INTO `receta`(`nombre`,`rendimiento`,`unidad_medida_id`) VALUES ('".$datosp[0]['nombre'].' '.$datosp[0]['marca']."',$rendi,$umr)";
     			$idr = $this->_main->insertar($query);
     			$query = "UPDATE `mercancia` SET `receta_id`='".$idr."' WHERE mercancia.id = $ingrediente";
     			$this->_main->modificar($query);

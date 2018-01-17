@@ -61,7 +61,7 @@
 		}
 
 		public function validarcierre($hoy,$idt){
-			$query ="SELECT * from explosion where fecha_ranking = '".$hoy."' and unidad_negocio_id = $idt";
+			$query ="SELECT DISTINCT(fecha_ranking) from explosion where fecha_ranking = '".$hoy."' and unidad_negocio_id = $idt";
 			$data = $this->_main->select($query);
 			echo json_encode($data);
 		}
@@ -260,6 +260,12 @@
 		}
 
 		function resultadoexplosion($receta,$explo,$fecha,$codigot,$idt){
+			$this->_view->setJs(array('js/jquery-1.12.4.min'));
+    		$this->_view->setCss(array('datatable/css/bootstrap4.min'));
+		    $this->_view->setjs(array('datatable/js/jquerydatatable.min'));
+		    $this->_view->setJs(array('datatable/js/datatable.b4.min'));
+		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
+		    $this->_view->setJs(array('datatable/js/tabla'));
 			$info = $this->leerarchivos($fecha,$codigot);
 			if (isset($receta['iding'])) {
 				$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.marca, mc.descripcion, mc.existencia, mercancia.contenido_neto, mc.stock_min, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.referencia as 'familia', submodelo.nombre as 'subM', model.nombre as modelo 
@@ -321,7 +327,7 @@
 		public function consultarexplosion($fechaini,$fechafin,$idt){
 			
 			$query = "SELECT explosion_id, ixe.cantidad as cantidad, format(ixe.cantidad,4,'de_DE') as quantity, unidad_medida_sistema_id as unidad_medida_id, mercancia.codigo as coding, CONCAT(mercancia.nombre,' ',mercancia.marca) as ingrediente,
-			  format(mercancia.precio_unitario,4,'de_DE') as costo, fecha_ranking, unidad_medida.abreviatura, unidad_medida.unidad, producto.nombre 
+			  format(mercancia.precio_unitario,4,'de_DE') as costo, format((mercancia.precio_unitario*ixe.cantidad),4,'de_DE') as costot, fecha_ranking, unidad_medida.abreviatura, unidad_medida.unidad, producto.nombre 
 			 FROM explosion  
              inner join ingredientes_has_explosion as ixe on explosion.id = ixe.explosion_id 
 			 inner join mercancia on mercancia.id = ixe.ingrediente_id 
@@ -336,7 +342,7 @@
 			 inner join unidad_medida on mercancia.unidad_medida_sistema_id = unidad_medida.id 
 			 inner join explosion on explosion.id = explosion_id 
 			where fecha_ranking BETWEEN '".$fechaini."' and '".$fechafin."' and explosion.unidad_negocio_id = $idt GROUP BY mercancia.codigo";*/
-			$query = "SELECT explosion_id, ixe.cantidad as cantidad, format(ixe.cantidad,4,'de_DE') as quantity, unidad_medida_id, producto.codigo as coding, producto.nombre as ingrediente, format(producto.costo,4,'de_DE') as costo, fecha_ranking, unidad_medida.abreviatura, unidad_medida.unidad, producto.nombre 
+			$query = "SELECT explosion_id, ixe.cantidad as cantidad, format(ixe.cantidad,4,'de_DE') as quantity, unidad_medida_id, producto.codigo as coding, producto.nombre as ingrediente, format(producto.costo,4,'de_DE') as costo, format((producto.costo*ixe.cantidad),4,'de_DE') as costot, fecha_ranking, unidad_medida.abreviatura, unidad_medida.unidad, producto.nombre 
 			FROM explosion 
 			inner join ingredientes_has_explosion as ixe on explosion.id = ixe.explosion_id 
 			inner join producto on producto.id = ixe.producto_id
@@ -366,17 +372,19 @@
 		public function consultaconsolidada($fechaini,$fechafin,$idt){
 			
 			$query = "SELECT explosion_id, ixe.cantidad as cantidad, format(SUM(ixe.cantidad),4,'de_DE') as quantity, unidad_medida_sistema_id, mercancia.codigo as coding, CONCAT(mercancia.nombre,' ',mercancia.marca) as ingrediente,
-			 format(mercancia.precio_unitario,4,'de_DE') as costo, contenido_neto, fecha_ranking, unidad_medida.abreviatura, unidad_medida.unidad 
+			 format(mercancia.precio_unitario,4,'de_DE') as costo, format(SUM(mercancia.precio_unitario*ixe.cantidad),4,'de_DE') as costot, contenido_neto, fecha_ranking, unidad_medida.abreviatura, unidad_medida.unidad,format(existencia,4,'de_DE') as existencia 
 			 FROM ingredientes_has_explosion as ixe 
-			 inner join mercancia on mercancia.id = ixe.ingrediente_id 
+			 inner join mercancia on mercancia.id = ixe.ingrediente_id
+			 inner join mercancia_has_unidad_negocio as mhun on mercancia.id = mhun.mercancia_id
 			 inner join unidad_medida on mercancia.unidad_medida_sistema_id = unidad_medida.id 
 			 inner join explosion on explosion.id = explosion_id 
 			where fecha_ranking BETWEEN '".$fechaini."' and '".$fechafin."' and explosion.unidad_negocio_id = $idt GROUP BY mercancia.codigo";
 			$data = $this->_main->select($query);
-			$query = "SELECT explosion_id, ixe.cantidad as cantidad, format(ixe.cantidad,4,'de_DE') as quantity, unidad_medida_id, producto.codigo as coding, producto.nombre as ingrediente, format(producto.costo,4,'de_DE') as costo, fecha_ranking, unidad_medida.abreviatura, unidad_medida.unidad, producto.nombre 
+			$query = "SELECT explosion_id, ixe.cantidad as cantidad, format(ixe.cantidad,4,'de_DE') as quantity, unidad_medida_id, producto.codigo as coding, producto.nombre as ingrediente, format(producto.costo,4,'de_DE') as costo, format(SUM(producto.costo*ixe.cantidad),4,'de_DE') as costot, fecha_ranking, unidad_medida.abreviatura, unidad_medida.unidad, producto.nombre, format(stock_venta,4,'de_DE') as existencia  
 			FROM explosion 
 			inner join ingredientes_has_explosion as ixe on explosion.id = ixe.explosion_id 
 			inner join producto on producto.id = ixe.producto_id
+			inner join producto_has_unidad_negocio as phun on producto.id = phun.producto_id
 			inner join unidad_medida on ixe.unidad_medida_id = unidad_medida.id
 			where fecha_ranking BETWEEN '".$fechaini."' and '".$fechafin."' and explosion.unidad_negocio_id = $idt";
 			$datos = $this->_main->select($query);

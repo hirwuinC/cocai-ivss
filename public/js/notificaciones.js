@@ -61,14 +61,14 @@ function notifications(notif,data){
     if (data.length > 0) {
       if (data[i]['fecharemi']!=null) {
           $('#news').append('<li>'+
-                          '<a class="notif" href="'+BASE_URL+'inventario/'+func+'/'+data[i][3]+'/'+data[i][1]+'/'+data[i][2]+'/'+notif+'"">'+
+                          '<a class="notif" href="'+BASE_URL+'inventario/'+func+'/'+data[i][3]+'/'+data[i][1]+'/'+data[i][8]+'/'+notif+'"">'+
                               ''+st+' #'+data[i][1]+'  <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['fecharemi']+'</o>'+' <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['horaremi']+'</o>'+
                           '</a>'+
                         '</li>'
           );
       }else{
         $('#news').append('<li>'+
-                          '<a class="notif" href="'+BASE_URL+'inventario/'+func+'/'+data[i][3]+'/'+data[i][1]+'/'+data[i][2]+'/'+notif+'"">'+
+                          '<a class="notif" href="'+BASE_URL+'inventario/'+func+'/'+data[i][3]+'/'+data[i][1]+'/'+data[i][8]+'/'+notif+'"">'+
                               ''+st+' #'+data[i][0]+'  <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['fecharepo']+'</o>'+' <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['horarepo']+'</o>'+
                           '</a>'+
                         '</li>'

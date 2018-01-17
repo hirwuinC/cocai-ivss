@@ -19,6 +19,9 @@
     $('#tablarepo2').DataTable({
                 responsive: true
         });
+    $('#tablara').DataTable({
+                responsive: true
+        });
     
 });
  
