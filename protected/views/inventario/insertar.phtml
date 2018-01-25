@@ -39,7 +39,7 @@
 <div id="body" hidden>
 	<div id="page-wrapper">
         <div id="page-wrapper">
-            <div style="margin-top: 2%;" class="container-fluid">
+            <div style="margin-top: 2%;" class="">
 
                 <div class="row">
                     <div class="col-12 ">
@@ -48,7 +48,7 @@
                         <div class="card cardH" >
 
                             <div class="card-header" style="padding: 5px; height: 25%">
-                              <center><h3 class="page-header" style="font-family: Times New Roman, Times, serif;">Agregar productos </h3> </center>
+                              <center><h3 class="page-header" style="font-family: Times New Roman, Times, serif;"><o id="titulocard">Agregar productos de inventario<o/></h3> </center>
                             </div>
                           
                           <div class="card-block">
@@ -68,137 +68,167 @@
 
                                 <div class="card" style="box-shadow: 1px;  background: #eee">
                                     <fieldset>
-                                        <center><legend><label>Datos del producto</label></legend> </center>
-                                <div class="form-group row d-flex justify-content-start offset-1 ">
-                                        <div class="col-xs-4 col-sm-4 col-md-3">
+                                        <center><legend><label>Datos del producto de inventario</label></legend> </center>
+                                <div class="form-group row d-flex justify-content-start ml-2 mr-2 ">
+                                        <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
+                                            <label class="labels" style="float: left;">Clasificacion</label>
+                                            <select name="familia" id="familia" class="form-control form-control-sm" required> 
+
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
+                                            <label class="labels" style="float: left;">Sub-Clasificacion</label>
+                                            <select name="subfamilia" id="sub_familia" class="form-control form-control-sm" required> 
+
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
+                                            <label class="labels" style="float: left;">Tipo de producto</label>
+                                            <select name="tipo_ingrediente" id="tipo_ingrediente" class="form-control form-control-sm" required>
+                                              <option value="" disabled selected="">Seleccione..</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
                                             <label class="labels" style="float: left;">Codigo</label>
                                             <div class="col-1 d-flex offset-10" id="glyphicon" data-toggle="tooltip" data-placement="right" title="Este codigo esta asignado a otro producto">
                                             </div>
                                             <input type="text" class="form-control form-control-sm codigop" id="co" name="codigo" required>
                                         </div>
                                         
-                                        <div class="col-xs-4 col-sm-4 col-md-3">
+                                        <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
                                             <label class="labels" style="float: left;">Codigo anterior</label>
                                             <input type="text" class="form-control form-control-sm" name="codigo_anterior" id="c_tcr">
                                         </div>
+                                        
                                 </div>
                                 
 
-                                <div class="form-group row d-flex justify-content-start offset-1">
-                                    <div class="col-xs-4 col-sm-4 col-md-3">
+                                <div class="form-group row d-flex justify-content-start ml-2 mr-2">
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
                                         <label class="labels" style="float: left;">Nombre</label>
                                         <div class="col-1 d-flex offset-10" id="glyphi" data-toggle="tooltip" data-placement="right" title="ya existe un producto con el mismo nombre y marca">
                                         </div>
                                         <input type="text" class="form-control form-control-sm" name="nombre" id="nombre" required>
 
                                     </div>
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 agrupado" hidden>
+                                        <label class="labels" style="float: left;">Descripcion</label>
+                                        <textarea class="form-control form-control-sm" rows="3" name="descripcion2"></textarea>
+                                    </div>
                                     
-                                    <div class="col-xs-4 col-sm-4 col-md-3">
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
                                         <label class="labels" style="float: left;">Marca</label>
                                         <div class="col-1 d-flex offset-10" id="glyph" data-toggle="tooltip" data-placement="right" title="ya existe un producto con el mismo nombre y marca">
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" name="marca" id="marca" required>
+                                        <input type="text" class="form-control form-control-sm" name="marca" id="marca" >
                                     </div>
-                                    <div class="col-xs-4 col-sm-4 col-md-3 ">
-                                        <label class="labels" style="float: left;">Clasificacion</label>
-                                        <select name="familia" id="familia" class="form-control form-control-sm" required> 
 
+                                    <!-- <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
+                                        <label class="labels" style="float: left;">tipo de producto</label>
+                                        <select name="tipopr" id="tipopr" class="form-control form-control-sm" required>
+                                          <option value="0" disabled selected="">Seleccione..</option>
+                                          <option value="136">Semi terminado</option>
+                                          <option value="137">Producto de compra</option>
                                         </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row d-flex justify-content-start offset-1">
-                                    <div class="col-xs-4 col-sm-4 col-md-3">
-                                        <label class="labels" style="float: left;">Peso escurrido</label>
-                                        <input type="text" class="form-control form-control-sm monto" name="pesoEs" id="pesoEs">
-                                    </div>
-                                    
-                                    <!-- <div class="col-xs-4 col-sm-4 col-md-3">
-                                        <label class="labels" style="float: left;">Rendiemiento ideal</label>
-                                        <input type="text" class="form-control form-control-sm monto" name="rendimientoId" id="rendimientoId">
                                     </div> -->
                                     
-                                    <div class="col-xs-4 col-sm-4 col-md-3 ">
+                                </div>
+                                
+                                <div class="simples">
+                                  <div class="form-group row d-flex justify-content-start ml-2 mr-2 ">
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
+                                        <label class="labels" style="float: left;">Stock min</label>
+                                        <input type="text" class="form-control form-control-sm monto" name="stockmin" id="stockmin" placeholder="0,0000">
+                                    </div>
+                                    
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
+                                        <label class="labels" style="float: left;">Stock max</label>
+                                        <input type="text" class="form-control form-control-sm monto" name="stockmax" id="stockmax" placeholder="0,0000">
+                                    </div>
+
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
+                                        <label class="labels" style="float: left;">Peso escurrido</label>
+                                        <input type="text" class="form-control form-control-sm monto" name="pesoEs" id="pesoEs" placeholder="0,0000">
+                                    </div>
+                                  </div>
+                                </div>
+                                 
+
+                              <div class="productoscompra simples" hidden>
+                                  
+                                
+
+                                <div class="form-group row d-flex justify-content-start ml-2 mr-2">
+                                    
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
                                         <label class="labels" style="float: left;">Contenido neto</label>
-                                        <input type="text" class="form-control form-control-sm contneto monto" name="contenidoN" id="contenidoN" autocomplete="off" required>
+                                        <input type="text" class="form-control form-control-sm contneto monto" name="contenidoN" id="contenidoN" autocomplete="off" placeholder="0,0000">
                                     </div>
                                     <input type="text" id="CNtemporal" hidden>
-                                </div>
-                                 <div class="form-group row d-flex justify-content-start offset-1">
-                                    <div class="col-xs-4 col-sm-4 col-md-3">
-                                        <label class="labels" style="float: left;">Stock min</label>
-                                        <input type="text" class="form-control form-control-sm monto" name="stockmin" id="stockmin" required>
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
+                                        <label class="labels" style="float: left;">Precio unitario</label>
+                                        <input type="text" class="form-control form-control-sm precios" name="precio_unitario" id="pU" placeholder="0,0000" >
                                     </div>
-                                    
-                                    <div class="col-xs-4 col-sm-4 col-md-3 ">
-                                        <label class="labels" style="float: left;">Stock max</label>
-                                        <input type="text" class="form-control form-control-sm monto" name="stockmax" id="stockmax" required>
-                                    </div>
-                                </div>
-                                <div class="form-group row d-flex justify-content-start offset-1">
-                                    <div class="col-xs-4 col-sm-4 col-md-3">
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
                                         <label class="labels" style="float: left;">Cantidad comprada</label>
-                                        <input type="text" class="form-control form-control-sm" name="contenidoC" id="contenidoC" required>
+                                        <input type="text" class="form-control form-control-sm" name="contenidoC" id="contenidoC" placeholder="0,0000">
                                     </div>
-                                    
-                                    <div class="col-xs-4 col-sm-4 col-md-3 ">
+                                </div>
+                                
+                              </div>
+
+
+                                <div class="form-group row d-flex justify-content-start ml-2 mr-2 simples">
+
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 productoscompra simples" hidden>
                                         <label class="labels" style="float: left;">Unidad de compra</label>
-                                        <select name="unidad_medida_c" class="form-control form-control-sm umc" id="unidad_medida_c" required>
+                                        <select name="unidad_medida_c" class="form-control form-control-sm umc" id="unidad_medida_c" >
                                         </select>
                                     </div>
 
-                                    <div class="col-xs-4 col-sm-4 col-md-3" id="canti" hidden>
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2" id="canti" hidden>
                                         <label class="labels" style="float: left;">ud por <o id="uc"></o></label>
                                         <input type="text" class="form-control form-control-sm" name="cantidadConsumo" id="cantidadConsumo" value="1">
                                     </div>
                                     
-                                    <div id="cant" class="" hidden><div class="col-xs-4 col-sm-4 col-md-3 " id="cantC"></div></div>  
-                                    
-                                </div>
-                                <div class="form-group row d-flex justify-content-start offset-1">
-                                    <div class="col-xs-4 col-sm-4 col-md-3 ">
-                                        <label class="labels" style="float: left;">Precio unitario</label>
-                                        <input type="text" class="form-control form-control-sm precios" name="precio_unitario" id="pU" placeholder="0,00" required>
-                                    </div>
-                                    
-                                    <div class="col-xs-4 col-sm-4 col-md-3 ">
-                                        <label class="labels" style="float: left;">Unidad Presentacion</label>
-                                        <select name="unidad_medida_p" class="form-control form-control-sm ump" id="unidad_medida_pr" required>
+                                    <div id="cant" class="" hidden><div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 " id="cantC"></div></div> 
+
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
+                                        <label class="labels" style="float: left;">Unidad Consumo</label>
+                                        <select name="unidad_medida_p" class="form-control form-control-sm ump" id="unidad_medida_pr">
                                         <option value="Seleccione">Seleccione...</option>
                                         </select>
                                     </div>
                                     
-                                    <div class="col-xs-4 col-sm-4 col-md-3 ">
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
                                         <label class="labels" style="float: left;">Unidad Sistema</label>
                                         <select name="unidad_medida_s" class="form-control form-control-sm" id="unidad_medida_s" required>
                                         <option value="Seleccione">Seleccione...</option>
                                         </select>
                                     </div>
-                                     
-                                </div>
-                                <div class="form-group row d-flex justify-content-start offset-1">
-                                    <div class="col-xs-4 col-sm-4 col-md-3">
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
                                         <label class="labels" style="float: left;">Descripcion</label>
                                         <textarea class="form-control form-control-sm" rows="3" name="descripcion"></textarea>
                                     </div>
                                 </div>
                             
                                 
-                                    <fieldset>
-                                        <center><legend><label>Formulas de conversion</label></legend></center>
+                                    <fieldset class="simples">
+                                    <center><legend><label>Formulas de conversion<a style="cursor: hand;" class="secreto" onclick="infoFormula()"><img class="img ml-1 mb-1" src="<?php echo PUBLIC_URL; ?>img/info.icon.png" data-toggle="tooltip" data-placement="top" title="Click para informacion sobre esta formula"></a></label></legend></center>
                                         
                                     <div class="row ">
                                         <div class="col-10 offset-1">
                                             <div style="background: #eee; border-top: 1px outset  #DDDDDD; border-left: 1px outset  #DDDDDD" class="card pb-3 mb-3">
                                                 <div class="row align-items-center d-flex justify-content-center ">
-                                                    <div class="col-xs-4 col-sm-4 col-md-3 mt-3">
-                                                        <label class="labels" style="float: left;">U/M compra <a style="cursor: hand;" class="secreto" onclick="infoFormula()"><i data-toggle="tooltip" data-placement="top" title="Click para informacion sobre esta formula" class="fa fa-info-circle"></i></a></label>
+                                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 mt-3 productoscompra simples" hidden>
+                                                        <label class="labels" style="float: left;">U/M compra </label>
                                                         <input type="text" class="form-control form-control-sm formulac" name="formulac" id="formulac">
                                                     </div>
-                                                    <div class="col-xs-4 col-sm-4 col-md-3 mt-3">
+                                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 mt-3">
                                                         <label class="labels" style="float: left;">U/M consumo</label>
                                                         <input type="text" class="form-control form-control-sm formulap" name="formulap" id="formulap">
                                                     </div>
-                                                    <div class="col-xs-4 col-sm-4 col-md-3 mt-3">
+                                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 mt-3">
                                                         <label class="labels" style="float: left;">U/M sistema</label>
                                                         <input type="text" class="form-control form-control-sm" name="formulas" id="formulas">
                                                     </div>
@@ -207,34 +237,35 @@
                                         </div>
                                     </div>
                                     </fieldset>
+                                    <div class="row offset-1 simples">
+                                      <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 checkbox">
+                                          <label class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" name="estatus">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description" style="line-height: 1.8;">Inactivo</span>
+                                          </label>
+                                      </div>
+                                      <div class="col-xs-4 col-sm-4 col-md-4 checkbox productoscompra simples" hidden>
+                                          <label class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" name="exento">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description" style="line-height: 1.8;">Producto exento de impuesto</span>
+                                          </label>
+                                      </div>
+                                  <!--<div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 checkbox">
+                                          <label class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" name="estatus">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description" style="line-height: 1.8;">Contiene Receta</span>
+                                          </label>
+                                      </div> -->
+                                    </div>
                                 </div>
                                 
-                                    <div class="row offset-1">
-                                    <div class="col-xs-4 col-sm-4 col-md-3 checkbox">
-                                        <label class="custom-control custom-checkbox">
-                                          <input type="checkbox" class="custom-control-input" name="estatus">
-                                          <span class="custom-control-indicator"></span>
-                                          <span class="custom-control-description" style="line-height: 1.8;">Inactivo</span>
-                                        </label>
-                                    </div>
-                                    <div class="col-xs-4 col-sm-4 col-md-4 checkbox">
-                                        <label class="custom-control custom-checkbox">
-                                          <input type="checkbox" class="custom-control-input" name="exento">
-                                          <span class="custom-control-indicator"></span>
-                                          <span class="custom-control-description" style="line-height: 1.8;">Producto exento de impuesto</span>
-                                        </label>
-                                    </div>
-                                    <!-- <div class="col-xs-4 col-sm-4 col-md-3 checkbox">
-                                        <label class="custom-control custom-checkbox">
-                                          <input type="checkbox" class="custom-control-input" name="estatus">
-                                          <span class="custom-control-indicator"></span>
-                                          <span class="custom-control-description" style="line-height: 1.8;">Contiene Receta</span>
-                                        </label>
-                                    </div> -->
-                                </div>
+                                  
 
                                     </fieldset>
-                    <div class="row ">
+                    <div class="row productoscompra simples" hidden>
                         <div class="col-12 ">
                         
                             <div class="card mb-3 " style="background: #eee;">
@@ -274,7 +305,7 @@
                                             <div class="col-xs-2 col-sm-3 col-md-1 offset-xs-5 mt-2" >
                                                 <button type="button" style="margin-left: 15px;" class="btn mt-3 btn-xs py-1 px-2 btn-outline-primary " onclick="asignacionProveedor()"> 
                                                     <font size="4"><b>
-                                                        <span class="fa fa-plus"></span></b>
+                                                        <span class="fa fa-plus" data-toggle="tooltip" data-placement="top" title="Agregar datos del proveedor"></span></b>
                                                     </font>
                                                 </button>
                                             </div>
@@ -312,7 +343,7 @@
                             </div>
                             
                 </div>
-                <!-- MODAL DE CONFIRMACION PARA ELIMINAR-->
+                <!-- MODAL DE ALERTA-->
                                         <div class="modal fade " id="alerta" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
                                             <div class="modal-dialog modal-sm" role="document">
                                                 <div class="modal-content">
@@ -339,6 +370,37 @@
                                                 </div><!-- /.modal-content -->
                                             </div><!-- /.modal-dialog -->
                                         </div><!-- /.modal -->
+
+                    <!-- MODAL DE AGREGAR SUB_FAMILIAS NUEVAS-->
+                    <div class="modal fade " id="modalsubfamilia" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                        <div class="modal-dialog modal-sm" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <div id="t"><h6>Agregar nueva Sub-Clasificacion</h6></div>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+
+
+                                </div>
+                                <div class="modal-body" >
+
+                                   <div id="cuerpo"></div>
+                                   <div class="form-group">
+                                    <div class="col-sm-12">
+                                      <label class="labels">Nombre de Sub-Clasificacion</label>
+                                      <input type="text" id="nuevasub" class="form-control form-control-sm">
+                                    </div>
+                                   </div>
+                                    
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal" id="mcancelar">Cancelar</button>
+                                  <button type="button" class="btn btn-sm btn-outline-primary" id="mcontinuar">Continuar</button>
+                                </div>   
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
                                 
 
                     

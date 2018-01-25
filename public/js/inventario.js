@@ -1,13 +1,87 @@
 //$.noConflict();
 $(document).ready(function() {
     //alert('ok');
+    /*$('#pcompra').click(function(event) {
+      $('#tabs2').fadeIn('slow');
+      $('.proasignados').empty();
+      $('.proasignados').append('Productos de inventario asignados');
+    });
+    $('#pventa').click(function(event) {
+      $('#tabs2').fadeIn('slow');
+      $('.proasignados').empty();
+      $('.proasignados').append('Productos de venta asignados');
+    });*/
 
+    $('#tipo_ingrediente').change(function(event) {
+      var tipo = $('#tipo_ingrediente option:selected').text();
+      if (tipo == 'Agrupado') {
+        $('#unidad_medida_pr').val(13);
+        $('#unidad_medida_s').val(13);
+        $('#formulap').val('');
+        $('#formulap').val('Un * ');
+        $('#formulas').val('');
+        $('#formulas').val('Un * ');
+        $('.simples').fadeOut(500);
+        $('.agrupado').fadeIn(600);
+        $('.agrupado').prop('hidden', false);
+      }else if (tipo == 'Asociado') {
+        alert("asociados");
+      }else{
+        $('.simples').fadeIn(500);
+        $('.agrupado').fadeOut('fast');
+      }
+    });
+
+    $('#familia').change(function(event) {
+      $('.simples').fadeIn(500);
+      load('referencia','tipo_ingrediente',false,false);
+      var family = $('#familia').val();
+      if (family != 135) {
+          $('.productoscompra').fadeIn('fast');
+          $('.productoscompra').prop('hidden', false);
+      }else{
+          $('#canti').fadeOut('fast');
+        $('#canti').prop('hidden', true);
+        $('.productoscompra').fadeOut('fast');
+        $('.productoscompra').prop('hidden', true);
+      }
+      codigoPropuesto(family);
+    });
+
+    $('#sub_familia').change(function(event) {
+      var sf = $('#sub_familia').val();
+      if (sf == 148) {
+        $('#modalsubfamilia').modal('show');
+      }
+    });
+    $('#mcontinuar').click(function(event) {
+      var subf = $('#nuevasub').val();
+      var subfamily = subf.replace(/ /g, "@");
+      $.ajax({
+            url: BASE_URL+'/inventario/agregarsubfamilia/'+subfamily,
+            type: 'POST',
+            dataType: 'json'
+          })
+      .done(function(data) {
+        load('referencia','sub_familia',false,false);
+        $('#modalsubfamilia').modal('hide');
+        setTimeout(function() {$('#sub_familia').val(data);}, 2500);
+        
+      })
+      .fail(function() {
+        alert("fallo al agregar una nueva sub clasificacion");
+        load('referencia','sub_familia',false,false);
+        $('#modalsubfamilia').modal('hide');
+      });
+      
+    });
     $('.continue').prop('disabled', true);
     load('referencia','familia',false);
     load('unidad_medida','unidad_medida_c',false);
     load('unidad_medida','unidad_medida_pr',false);
     load('unidad_medida','unidad_medida_s',false);
     load('referencia','motivo',false,false);
+    load('referencia','sub_familia',false,false);
     
 
     $('.umc').change(function(event) {
@@ -162,6 +236,12 @@ $(document).ready(function() {
         validarProducto(marca);
     });
 
+    $('#nombre').keyup(function(event) {
+        var marca = $('#marca').val();
+        //alert(marca);
+        validarProducto(marca);
+    });
+
     $('.AT').change(function(event) {
         tienda = $(this).val();
         idt2 = $(this).attr('id');
@@ -172,8 +252,12 @@ $(document).ready(function() {
 
 
     $('.continue').click(function(event) {
+      $('#tabs2').prop('hidden', false);
+      var idboton = $(this).attr("id");
+      $('#botoncontinuar').val('');
+      $('#botoncontinuar').val(idboton);
 
-      setTimeout(function() {$('.tablas').fadeOut('fast');$('.tablas').fadeIn('slow');$('.tablas').prop('hidden', false);}, 100);
+      setTimeout(function() {$('.tablas').fadeOut('fast');$('.tablas').fadeIn('slow');$('.tablas').prop('hidden', false);$('#pventa').trigger('click');}, 400);
         var at = $('.continue').val();
         idt = $(this).val();
         idemp = $('#idempresa').val();
@@ -229,7 +313,7 @@ $(document).ready(function() {
       }else{
         $('#bodytabla2').empty();
       for (var i = 0; i<= data.length; i++) {
-        $('#bodytabla2').append('<tr id="t'+data[i]['idpro']+'"><td>'+data[i]['producto']+' '+data[i]['marca']+'<i class="fa fa-remove" style="float: right; cursor: pointer;" ><input type="hidden" value="'+data[i]['idpro']+'"/></i></td></tr>');
+        $('#bodytabla2').append('<tr id="t'+data[i]['idpro']+'"><td>'+data[i]['producto']+' '+data[i]['marca']+'<i class="fa fa-remove remove1" style="float: right; cursor: pointer;" ><input type="hidden" value="'+data[i]['idpro']+'"/></i></td></tr>');
       }
       }
       
@@ -237,20 +321,87 @@ $(document).ready(function() {
     });
         
        }, 400); 
+
+
+        setTimeout(function() {
+        var t2 = $('#tablaproduct2').DataTable({
+
+            "ajax": BASE_URL+'/inventario/pventa/'+idt+'/'+idemp,
+            "columns": [
+                { "data": null, className: "tdcenter"},
+                { "data": "codigo" , className: "tdleft"},
+                { "data": "producto" , className: "tdleft"},
+                { "data": "idpro" , className: "tdcenter",  
+                  render : function(data, type, row) { 
+                        return '<label class="custom-control custom-checkbox" >'+
+                                          '<input type="checkbox" class="custom-control-input" name="producto[]" id="id'+row['idpro']+'" value="'+row['idpro']+'" onclick="add2('+row['idpro']+')">'+
+                                          '<span class="custom-control-indicator check" ></span>'+
+                                        '</label>'
+                  } 
+                }   
+            ],
+            "columnDefs": [ {
+            "searchable": false,
+            "orderable": false,
+            "targets": 0
+                } ],
+                "order": [[ 1, 'asc' ]],
+            destroy: true,
+            responsive: true
+
+        });
+        $('#tablaproduct2').css("width","100%");
+        t2.on( 'order.dt search.dt', function () {
+        t2.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+        } );
+    } ).draw();
+//alert(idt);
+      $.ajax({
+      url: BASE_URL+'/inventario/pventat/'+idt,
+      type: 'POST',
+      dataType: 'json',
+    })
+    .done(function(data) {
+      nombret = $('#'+idt2+' option:selected').text();
+        $('.nombretienda').empty();
+        $('.nombretienda').append(nombret);
+      //alert(data.length);
+      if (data.length == 0) {
+        $('#bodytablapro').empty();
+        $('#bodytablapro').append('<tr><td>La tienda seleccionada aun no tiene ningun producto asignado</td></tr>');
+      }else{
+        $('#bodytablapro').empty();
+      for (var i = 0; i<= data.length; i++) {
+        $('#bodytablapro').append('<tr id="tp'+data[i]['idpro']+'"><td>'+data[i]['producto']+' <i class="fa fa-remove remove2" style="float: right; cursor: pointer;" ><input type="hidden" value="'+data[i]['idpro']+'"/></i></td></tr>');
+      }
+      }
+      
+      
+    });
+        
+       }, 400);
+
+
     });
 
     $('#info').click(function(event) {
       $('.tablas').fadeOut('slow');
+      $('#tabs2').fadeOut('slow');
+      $('.nombretienda').empty();
     });  
 
 
 
-    $(document).on("click", ".fa-remove", function(){
+    $(document).on("click", ".remove1", function(){
       var idpro = $(this).children().val();
       var idti = $('#idti').val();
       var nombret = $('#nombretienda').text();
-      //alert(idt);
-      //alert(idpro);
+      var btn = $('#botoncontinuar').val();
+      $('#modcontinuar').removeClass('mcontinuar2');
+      $('#modcontinuar').addClass('mcontinuar');
+      /*alert(idt);
+      alert(idpro);*/
       $.ajax({
             url: BASE_URL+'/inventario/modalUpdate/'+idpro+'/'+idti,
             type: 'POST',
@@ -269,7 +420,7 @@ $(document).ready(function() {
         });
         $('#modaldelete').modal('show');
       
-      $('#mcontinuar').click(function(event) {
+      $('.mcontinuar').click(function(event) {
         $.ajax({
           url: BASE_URL+'/inventario/borrarasignacion/'+idpro+'/'+idti,
           type: 'POST',
@@ -278,11 +429,57 @@ $(document).ready(function() {
         .done(function(data) {
           //alert("llego aqui");
           $('#modaldelete').modal('hide');
-          $('.fa-remove').closest("tr").remove();
-          $('#continue').trigger('click');
+          $('.remove1').closest("tr").remove();
+          $('#'+btn).trigger('click');
+          setTimeout(function() {$('#pcompra').trigger('click');}, 2000);
         });
 
       });
+    });
+
+    $(document).on("click", ".remove2", function(){
+      var idpro = $(this).children().val();
+      var idti = $('#idti').val();
+      var nombret = $('#nombretienda').text();
+      var btn = $('#botoncontinuar').val();
+      $('#modcontinuar').removeClass('mcontinuar');
+      $('#modcontinuar').addClass('mcontinuar2');
+      
+      $.ajax({
+            url: BASE_URL+'/inventario/nombrepro/'+idpro+'/'+idti,
+            type: 'POST',
+            dataType: 'json',     
+        })
+        .done(function(data) {
+          //alert(data[0][1]);
+            $('#modtitle').empty();
+            $('#modtitle').append('Eliminar '+data[0]['producto']);
+            $('#modbody').empty();
+            $('#modbody').append(
+              '<div class="alert alert-danger" style="text-align:left">'+
+              'Usted esta por eliminar el producto "'+data[0]['producto']+'", de la tienda '+nombret+'. ¿Realmente desea continuar?<br>Recuerde que eliminar dicho producto establecera la existencia del mismo en cero (0), si se lo vuelve a asignar mas adelante.<br>'+
+              '</div>');
+            
+        });
+      $('.mcontinuar2').click(function(event) {
+          //alert(idpro);
+        $.ajax({
+          url: BASE_URL+'/inventario/borrarasignacionp/'+idpro+'/'+idti,
+          type: 'POST',
+          dataType: 'json',
+        })
+        .done(function(data) {
+          //alert("llego aqui");
+          $('#modaldelete').modal('hide');
+          $('.remove2').closest("tr").remove();
+          $('#'+btn).trigger('click');
+        });
+
+      });
+
+        $('#modaldelete').modal('show');
+      
+      
     });
 
     
@@ -358,6 +555,50 @@ $(function () {
     }
     }
 
+    function add2(idp){
+      //alert(id);
+    if ($('#id'+idp).is(':checked')) {
+      //alert('checked');
+      var valor = $('#valore2').val();
+      valor++;
+      $('#valore2').val(valor);
+      //alert(valor);
+      if (valor>0) {
+        $('#asignar2').prop('disabled', false);
+      }else{
+        $('#asignar2').prop('disabled', true);
+        $('#asignar2').attr('title','No se han realizado cambios');
+      }
+      $.ajax({
+      url: BASE_URL+'/inventario/pros/'+idp,
+      type: 'POST',
+      dataType: 'json',
+    })
+    .done(function(data) {
+      $('#bodytablapro').append('<tr id="tp'+data[0]['id']+'"><td style="color: green">'+data[0]['nombre']+'</td></tr>');
+    });
+    }else {
+      var valor = $('#valore2').val();
+      valor--;
+      $('#valore2').val(valor);
+      //alert(valor);
+      if (valor>0) {
+        $('#asignar2').prop('disabled', false);
+      }else{
+        $('#asignar2').prop('disabled', true);
+        $('#asignar2').attr('title','No se han realizado cambios');
+      }
+      $.ajax({
+      url: BASE_URL+'/inventario/pros/'+idp,
+      type: 'POST',
+      dataType: 'json',
+    })
+    .done(function(data) {
+      $('#tp'+data[0]['id']).remove();
+    });
+    }
+    }
+
 function compradirecta(idP,idT){
   //alert(idP); alert(idT);
   
@@ -416,20 +657,27 @@ function validarCodigo(code){
 function validarProducto(marca){
    n = marca.split(' ');
    resultN= n.join(':');
+
    var name = $('#nombre').val();
+   var nomb = name.replace(/ /g, "@");
+   var codigo = $('#co').val();
+   //alert(resultN);
     $.ajax({
-            url: BASE_URL+'/inventario/validarProducto/'+name+'/'+resultN,
+            url: BASE_URL+'/inventario/validarProducto/'+nomb+'/'+resultN+'/'+codigo,
             type: 'POST',
             dataType: 'json',
           })
 
     .done(function(data) {
       //alert(data);
+      $('#glyphicon').empty();
       $('#glyphi').empty();
+      $('#glyph').empty();
         if (data === true) {
           //alert('Este codigo esta asignado a un producto');
           $('#glyphi').append('<span style="color:red; margin-top:75%; margin-right:115%; font-size:20px;" class="fa fa-remove" ></span>');
           $('#glyph').append('<span style="color:red; margin-top:75%; margin-right:115%; font-size:20px;" class="fa fa-remove" ></span>');
+          $('#glyphicon').append('<span style="color:red; margin-top:75%; margin-right:115%; font-size:20px;" class="fa fa-remove"></span>');
           $('#botonG').prop('disabled',true);
         }else{
           $('#glyphi').empty();
@@ -524,32 +772,23 @@ function activarCod(idSm, idm){
 
 
 
-   window.onload =function codigoPropuesto(){
+function codigoPropuesto(familia){
    // $('#kodigo').empty();
-    var idT = $('#idT').val(); 
+    
     $('#co').empty();
     $.ajax({
-                url: BASE_URL+'/inventario/codigoP/'+idT,
+                url: BASE_URL+'/inventario/codigoP/'+familia,
                 type: 'post',
                 dataType: 'json'
         })
         .done(function(cod) {
-          //alert(cod[1]);
-            document.getElementById("co").value=cod[1]+'00'+cod[0];
-                /*$('#kodigo').append(
-                     '<label class="control-label" style="float: left;">Codigo</label>'+
-                     '<input type="text" class="form-control" name="codigo" value="'+cod[1]+''+cod[2]+'00'+cod[0]+'" id="c">'
-                    );*/
-               /* $('#code').append(
-                     '<label class="control-label" style="float: left;">Codigo</label>'+
-                     '<input type="text" class="form-control" id="co" name="codigo" value="'+cod[1]+''+cod[2]+'00'+cod[0]+'">'
-                    );  */
+          $('#co').val(cod);
         })
         .fail(function() {
-             //   alert('Error');
+          $('#co').val('');
         })
         .always(function() {
-                console.log("complete");
+          console.log("complete");
         });
     
 }
@@ -712,7 +951,7 @@ function infoFormula(){
     $('#t').append('¡Informacion!<br><br>');
     $('#cuerpo').append(
       '<div class="alert alert-info alert-dismissable" style="text-align:left">'+
-       '<strong>¡Advertencia!</strong> Esta formula debe convertir la U/M de compra en la U/M de sistema.<br> Ejemplo: (U/M) / CN o (U/M) * CN <br> U/M = Unidad de medida <br> CN = Contenido neto'+
+       '<strong>¡Advertencia!</strong> Estas formulas deben convertir las U/M de compra o consumo en la U/M de sistema.<br> Ejemplo:<br></Ejemplo:br> (U/M) / CN ó (U/M) * CN <br> U/M = Unidad de medida <br> CN = Contenido neto'+
        '</div>'
     );
 }
@@ -906,18 +1145,40 @@ function carga(tabla,item,valor,model,idP,idT){
 }*/
   $(document).on('click','#asignar',function(e) {
   var data = $("#form-asignar").serialize();
+  var btn =$('#botoncontinuar').val();
       $.ajax({
          data: data,
          type: 'post',
          url: BASE_URL+'inventario/insertasignacion/',
          success: function(data){
               $('#asignar').blur();
-              $('#exitofin').slideDown();
-              $('#exitofin').prop('hidden', false);
+              $('.exitofin').slideDown();
+              $('.exitofin').prop('hidden', false);
               $('html,body').animate({
-                  scrollTop: $("#exitofin").offset().top
+                  scrollTop: $(".exitofin").offset().top
               }, 1200);
-              setTimeout(function() {$('#exitofin').slideUp();$('#continue').trigger('click');}, 3000);
+              setTimeout(function() {$('.exitofin').slideUp();$('#'+btn).trigger('click');}, 3000);
+              setTimeout(function() {$('#pcompra').trigger('click');}, 5000);
+         }
+      });
+ });  
+
+  $(document).on('click','#asignar2',function(e) {
+  var data = $("#form-asignar").serialize();
+  var btn =$('#botoncontinuar').val();
+      $.ajax({
+         data: data,
+         type: 'post',
+         url: BASE_URL+'inventario/insertasignacionp/',
+         success: function(data){
+              $('#asignar2').blur();
+              $('.exitofin').slideDown();
+              $('.exitofin').prop('hidden', false);
+              $('html,body').animate({
+                  scrollTop: $(".exitofin").offset().top
+              }, 1200);
+              setTimeout(function() {$('.exitofin').slideUp();$('#'+btn).trigger('click');}, 3000);
+
          }
       });
  });

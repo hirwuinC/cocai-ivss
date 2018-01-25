@@ -177,6 +177,16 @@ $(document).ready(function() {
                         return ''+data+' '+row['abreviatura']
                     }
                 },
+                { "data": null, className: "tdright",
+                    render : function(data, type, row) { 
+                        return ''
+                    }
+                },
+                { "data": null, className: "tdright",
+                    render : function(data, type, row) { 
+                        return ''
+                    }
+                },
                 { "data": "costo", className: "tdright" },
                 { "data": "costot", className: "tdright" }
                 

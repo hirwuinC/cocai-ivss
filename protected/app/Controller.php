@@ -161,12 +161,19 @@
 		
 
 		public function conversion($producto){
-			for ($i=0; $i < count($producto); $i++) { 
-				$unidadPresentacion = $producto[$i]['existencia'] / $producto[$i]['contenido_neto'];
+			for ($i=0; $i < count($producto); $i++) {
+				if ($producto[$i]['contenido_neto']!=0.0000) {
+					$unidadPresentacion = $producto[$i]['existencia'] / $producto[$i]['contenido_neto'];
 				$unidadCompra = $unidadPresentacion / $producto[$i]['cantidad_presentacion'];
 				$producto[$i]['canCompra']=$unidadCompra;
 				$producto[$i]['canConsumo']=$unidadPresentacion; 
 				$producto[$i]['conversion']= $unidadCompra.' '.$producto[$i]['unidadC']. ' = '.$unidadPresentacion.' '.$producto[$i]['unidadP'].'.<br> '.$unidadPresentacion.' '.$producto[$i]['unidadP'].' = '.$producto[$i]['existencia'].' '.$producto[$i]['unidadS'].'.';
+				}else{
+					$unidadPresentacion = $producto[$i]['existencia'];
+					$producto[$i]['canConsumo']=$unidadPresentacion; 
+					$producto[$i]['conversion']= $unidadPresentacion.' '.$producto[$i]['unidadP'].'.<br> '.$unidadPresentacion.' '.$producto[$i]['unidadP'].' = '.$producto[$i]['existencia'].' '.$producto[$i]['unidadS'].'.';
+				}
+				
 			}
             return $producto;
 		}

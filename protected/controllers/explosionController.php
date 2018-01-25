@@ -180,7 +180,7 @@
 				inner join producto on receta.id = producto.receta_id
 				inner join unidad_medida as unidad_sistema on unidad_sistema.id = mercancia.unidad_medida_sistema_id
 				inner join unidad_medida as unidad_presentacion on unidad_presentacion.id = mercancia.unidad_medida_consumo_id 
-				inner join unidad_medida as unidad_compra on unidad_compra.id = mercancia.unidad_medida_compra_id
+				left join unidad_medida as unidad_compra on unidad_compra.id = mercancia.unidad_medida_compra_id
 				WHERE producto.codigo = '".$info."' and unidad_negocio.id = $idt ";
 	    		$ingredientes = $this->_main->select($query);
 	    		//echo "ingredientes:"; print_r($ingredientes); echo "<br>";
@@ -274,7 +274,7 @@
 					inner join mercancia on mercancia.id = mc.mercancia_id 
 					inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_sistema_id
 					inner join unidad_medida as unidad_presentacion on unidad_presentacion.id = mercancia.unidad_medida_consumo_id 
-					inner join unidad_medida as unidad_compra on unidad_compra.id = mercancia.unidad_medida_compra_id 
+					left join unidad_medida as unidad_compra on unidad_compra.id = mercancia.unidad_medida_compra_id 
 					inner join referencia as ref on ref.id = mercancia.familia_id 
 					inner join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id 
 					inner join modelo on modelo.id = modelo_has_submodelo.modelo_id

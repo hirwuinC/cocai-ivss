@@ -117,7 +117,7 @@ left join ingrediente_has_receta on ingrediente_id = mercancia.id
 		}
 
 		public function consultarpro($modelo){
-			$query = "SELECT producto.id as idpro, producto.codigo as codip, producto.nombre as producto, costo, format(costo,4,'de_DE') as costom, porcentaje_costo, format(porcentaje_costo,2,'de_DE') as porcentajec, format(precioVta_A,4,'de_DE') as pvpam, precioVta_A as pvpa, format(precioVta_A,4,'de_DE') as pvp, precioVta_B as pvpb, receta_id as idr FROM `producto`
+			$query = "SELECT DISTINCT(producto.id) as idpro, producto.codigo as codip, producto.nombre as producto, costo, format(costo,4,'de_DE') as costom, porcentaje_costo, format(porcentaje_costo,2,'de_DE') as porcentajec, format(precioVta_A,4,'de_DE') as pvpam, precioVta_A as pvpa, format(precioVta_A,4,'de_DE') as pvp, precioVta_B as pvpb, receta_id as idr FROM `producto`
 inner join producto_has_unidad_negocio on producto_has_unidad_negocio.producto_id = producto.id
 inner join unidad_negocio on unidad_negocio.id = producto_has_unidad_negocio.unidad_negocio_id
 inner join modelo_has_submodelo on unidad_negocio.modelo_has_submodelo_id = modelo_has_submodelo.id
@@ -233,7 +233,7 @@ FROM `ingrediente_has_receta` as ixr
 
 		public function loadingredientes($idm){
 		$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, mercancia.precio_unitario as precioU  FROM `mercancia`
-			inner join unidad_medida as umc on umc.id = mercancia.unidad_medida_compra_id
+			left join unidad_medida as umc on umc.id = mercancia.unidad_medida_compra_id
             inner join unidad_medida as ump on ump.id = mercancia.unidad_medida_consumo_id
             inner join unidad_medida as ums on ums.id = mercancia.unidad_medida_sistema_id
             inner join mercancia_has_unidad_negocio as mudn on mudn.mercancia_id = mercancia.id
@@ -251,15 +251,16 @@ FROM `ingrediente_has_receta` as ixr
 
 
 		public function ingredientesreceta($idm){
-		$query = "SELECT DISTINCT(mercancia.codigo) as codigi, mercancia.id as idi , unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, mercancia.precio_unitario as costo, format(mercancia.precio_unitario,4,'de_DE') as precioU, mercancia.contenido_neto, CONCAT(contenido_neto,' ',ums.abreviatura) as contenido, mercancia.receta_id as idr FROM `mercancia`
-			inner join unidad_medida as umc on umc.id = mercancia.unidad_medida_compra_id
+		$query = "SELECT DISTINCT(mercancia.codigo) as codigi, mercancia.id as idi , unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, mercancia.precio_unitario as costo, format(mercancia.precio_unitario,4,'de_DE') as precioU, mercancia.contenido_neto, CONCAT(contenido_neto,' ',ums.abreviatura) as contenido, mercancia.receta_id as idr, familia_id, referencia.referencia as familia FROM `mercancia`
+            inner join referencia on referencia.id = mercancia.familia_id
+			left join unidad_medida as umc on umc.id = mercancia.unidad_medida_compra_id
             inner join unidad_medida as ump on ump.id = mercancia.unidad_medida_consumo_id
             inner join unidad_medida as ums on ums.id = mercancia.unidad_medida_sistema_id
             inner join mercancia_has_unidad_negocio as mudn on mudn.mercancia_id = mercancia.id
             inner join unidad_negocio on unidad_negocio.id = mudn.unidad_negocio_id
             inner join modelo_has_submodelo as mhsm on mhsm.id = unidad_negocio.modelo_has_submodelo_id
             inner join modelo on mhsm.modelo_id = modelo.id
-            where modelo.id = $idm";
+            where modelo.id = $idm and familia_id = 157";
             $data = $this->_main->select($query);
             for ($i=0; $i < count($data); $i++) { 
     			if ($data[$i]['idr'] != null) {
@@ -289,7 +290,7 @@ FROM `ingrediente_has_receta` as ixr
     		$query = "SELECT mercancia.id, mercancia.nombre, mercancia.marca, contenido_neto, unidad_medida.abreviatura as US, unidad_medida.unidad as unidadS, um.abreviatura as UP, um.unidad as unidadP, um2.abreviatura as UC, um2.unidad as unidadC, unidad_medida_sistema_id as idUS, unidad_medida_consumo_id as idUP, unidad_medida_compra_id as idUC from mercancia
     		inner join unidad_medida on unidad_medida_sistema_id = unidad_medida.id
     		inner join unidad_medida as um on um.id = unidad_medida_consumo_id
-    		inner join unidad_medida as um2 on um2.id = unidad_medida_compra_id
+    		left join unidad_medida as um2 on um2.id = unidad_medida_compra_id
     		where mercancia.id = $idingrediente group by US,UP,UC";
     		$conte = $this->_main->select($query);
     		echo json_encode($conte);
@@ -308,7 +309,7 @@ FROM `ingrediente_has_receta` as ixr
 			$query = "SELECT mercancia.id, mercancia.nombre, mercancia.marca, contenido_neto, unidad_medida.abreviatura as US, unidad_medida.unidad as unidadS, um.abreviatura as UP, um.unidad as unidadP, um2.abreviatura as UC, um2.unidad as unidadC, unidad_medida_sistema_id as idUS, unidad_medida_consumo_id as idUP, unidad_medida_compra_id as idUC from mercancia
     		inner join unidad_medida on unidad_medida_sistema_id = unidad_medida.id
     		inner join unidad_medida as um on um.id = unidad_medida_consumo_id
-    		inner join unidad_medida as um2 on um2.id = unidad_medida_compra_id
+    		left join unidad_medida as um2 on um2.id = unidad_medida_compra_id
     		where mercancia.id = $iding";
     		$data = $this->_main->select($query);
     		return $data;

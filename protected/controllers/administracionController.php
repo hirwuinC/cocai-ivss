@@ -28,7 +28,7 @@
 		    $this->_view->setJs(array('datatable/js/dataTables.bootstrap.min'));
 		    $this->_view->setJs(array('datatable/js/tabla'));
             $this->_view->setJs(array('js/subM'));
-			$query = "SELECT mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.descripcion, mercancia.cantidad_inventariada, mercancia.contenido_neto, mercancia.stock_minimo, mercancia.stock_maximo, mercancia.status, mercancia.precio_unitario, unidad_medida.id as 'idUM',unidad_medida.unidad, unidad_medida.abreviatura, ref.referencia as 'familia' FROM `mercancia` inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_compra_id inner join referencia as ref on ref.id = mercancia.familia_id order by ref.referencia ASC";
+			$query = "SELECT mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.descripcion, mercancia.cantidad_inventariada, mercancia.contenido_neto, mercancia.stock_minimo, mercancia.stock_maximo, mercancia.status, mercancia.precio_unitario, unidad_medida.id as 'idUM',unidad_medida.unidad, unidad_medida.abreviatura, ref.referencia as 'familia' FROM `mercancia` left join unidad_medida on unidad_medida.id = mercancia.unidad_medida_compra_id inner join referencia as ref on ref.id = mercancia.familia_id order by ref.referencia ASC";
 			$valores = $this->_main->select($query);
 			$this->_view->mercancia=$valores;
 			$this->_view->render('inicio', 'administracion', '','');

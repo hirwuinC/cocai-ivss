@@ -20,7 +20,7 @@
 </center>
 <div id="body" hidden>
     <div id="page-wrapper">
-            <div style="margin-top: 2%;" class="container-fluid">
+            <div style="margin-top: 2%;" class="">
 
                 <div class="row">
                     <div class="col-12 ">
@@ -32,7 +32,7 @@
                               <center><h3 ><o id="titulocard">Rankings de ventas</o> <?php $ti=strtolower(str_replace('(PTY)', '', $this->model[0]['udn'])); echo "[".ucwords($ti)."]"; ?></h3></center>
                             </div>
                           
-                          <div class="card-block">
+                          <div class="card-block ml-3">
                             <ul class="nav nav-tabs" role="tablist">
                               <li class="active nav-item">
                                 <a data-toggle="tab" href="#consultar" class="nav-link" id="expconsulta">Consultas </a>
@@ -201,7 +201,9 @@
                                                 <th><center>codigo</center></th>
                                                 <th><center>Ingrediente</center></th>
                                                 <th><center>Cant.usada</center></th>
-                                                <th><center>En inventario</center></th>
+                                                <th><center>Exist. teorica</center></th>
+                                                <th><center>Exist. Real</center></th>
+                                                <th><center>Diferencias</center></th>
                                                 <th><center>costo</center></th>
                                                 <th><center>Costo total</center></th>
                                             </tr>
@@ -282,12 +284,10 @@
                               </div>
                               
                           </div>
-                          <div class="col-sm-6">
-                            <h5 style="color: black" id="leyenda" class="mt-3">* Para consultar la explosion de ingredientes, primero debe consultar el ranking de venta correspondiente.</h5>
+                          <div class="col-sm-12">
+                            <h5 style="color: black" id="leyenda" class="mt-3"><img class="img mb-2" src="<?php echo PUBLIC_URL; ?>img/info.icon.png"> Para consultar la explosion de ingredientes, primero debe consultar el ranking de venta correspondiente.</h5>
                           </div>
-                        
-                        
-                                               
+      
                         </div>
 </div>
       <!-- Header Section-->

@@ -1,2 +1,0 @@
-Alimentos,ST0187,Ensalada de papas,2,30000.0000,70.00,0,0,0,0
-Alimentos,ST0013,Arroz con pollo,4,50000.0000,85.00,0,0,0,0

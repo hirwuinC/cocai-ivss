@@ -11,9 +11,9 @@
 
 <div id="body" hidden>
 <div id="page-wrapper">
-            <div style="margin-top: 2%;" class="container-fluid">
+            <div style="margin-top: 2%;" class="">
 
-                <div class="row">
+                <div class="row justify-content-center">
                     <div class="col-lg-12">
                     <div class="card cardH">
 
@@ -33,7 +33,7 @@
                             </div>
                             <?php $i = 1; ?>  
                             <div class="dataTable_wrapper ">
-                             <div class="col-sm-12 table-responsive">
+                             <div class=" table-responsive">
                                 <table class="table table-sm table-striped table-bordered table-hover" id="tablaSM">
                                         <thead class="theadH">
                                             <tr>
@@ -79,6 +79,11 @@
                                                     <a style="cursor: hand; margin-left: 5px; font-size: 17px" class="test" data-toggle="modal" data-target="#modalreposicion" onclick="compradirecta('<?php echo $merca['idP'];?>','<?php echo $merca['idT'];?>')">
                                                         <span data-toggle="tooltip" data-placement="top" title="Reposicion de mercancia por compra directa" class="fa fa-money"></span>
                                                     </a>
+                                                    <?php if ($merca['tipo_ingrediente'] == 'Agrupado') {?>
+                                                        <a href="<?php echo BASE_URL;?>inventario/agrupados/<?php echo $merca['idT'].'/'.$merca['idP'].'/'.$merca['receta_id'];?>" style="cursor: hand; margin-left: 5px; font-size: 17px" class="test">
+                                                        <span data-toggle="tooltip" data-placement="top" title="Agregar mas ingredientes" class="fa fa-plus-circle"></span>
+                                                        </a>
+                                                    <?php } ?>
 
                                                     </center>
                                                 </th>
@@ -121,8 +126,7 @@
                             </div>
                             <form action="<?php echo BASE_URL;?>inventario/update" method="post" accept-charset="utf-8">
                             <div class="modal-body">
-                                <!-- <input type="text" name="modelo" id="m" hidden value="<?php echo $this->pro[0]['idmodelo'];?>">
-                                <input type="text" name="sub_modelo" id="sm" hidden value="<?php echo $this->pro[0]['sub_modelo_id'];?>"> -->
+                                
                                 <input type="text" name="idT" id="idT" hidden value="<?php echo $this->mercancia[0]['idT'];?>">
                                 <input type="text" name="idP" id="idP" hidden >
                                 <input type="text" name="tipo" id="type" hidden>
