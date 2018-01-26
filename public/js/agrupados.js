@@ -11,7 +11,7 @@ $(document).ready(function() {
             "columns": [
                 { "data": "codigi", className: "tdleft"},
                 { "data": "ingrediente", className: "tdleft"},
-                { "data": "precioU", className: "tdright"},
+                { "data": "costo", className: "tdright"},
                 { "data": null , className: "tdcenter",
           render : function(data, type, row) {
           	//var ingr = row['ingrediente'].replace(/ /gi, "@"); 

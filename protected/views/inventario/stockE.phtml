@@ -42,7 +42,7 @@
                                                 <th >Nombre</th> 
                                                 <th >Marca</th>
                                                 <th >Cont. neto</th>
-                                                <th >Precio ud.</th>
+                                                <th >Costo</th>
                                                 <th >Existencia</th>
                                                 <th >Stock min</th>
                                                 <th >Stock max</th>
@@ -81,7 +81,7 @@
                                                     </a>
                                                     <?php if ($merca['tipo_ingrediente'] == 'Agrupado') {?>
                                                         <a href="<?php echo BASE_URL;?>inventario/agrupados/<?php echo $merca['idT'].'/'.$merca['idP'].'/'.$merca['receta_id'];?>" style="cursor: hand; margin-left: 5px; font-size: 17px" class="test">
-                                                        <span data-toggle="tooltip" data-placement="top" title="Agregar mas ingredientes" class="fa fa-plus-circle"></span>
+                                                        <span data-toggle="tooltip" data-placement="top" title="Agregar mas ingredientes" class="fa fa-plus-circle" style="color: #666"></span>
                                                         </a>
                                                     <?php } ?>
 

@@ -191,14 +191,14 @@
                	Session::destroy('carrito');
                	$campos = $this->verificarFormulasYcamposVacios($_POST); #print_r($campos); exit();
                	if ($campos[5] == 1) {
-               		if ($_POST['familia'] != 135 and $_POST['tipo_ingrediente']!=159) {
+               		if ($_POST['familia'] != 135 and $_POST['tipo_ingrediente']!=161 and $_POST['tipo_ingrediente']!=162) {
                		 	$conversion = Controller::formula($_POST['unidad_medida_c'],false,$_POST['contenidoC'],$contenidoN,$_POST['formulac']);
                		 	$motivok = 'Producto de compra, registrado en sistema';
                		 }else{
                		 	$conversion = 0.0000;
                		 	$motivok = 'Producto semi terminado, registrado en sistema';
                		 }
-               		 if (is_null($_POST['marca'])) {
+               		 if (empty($_POST['marca'])) {
                		  	$mark = 'Generico';
                		  }else{
                		  	$mark = $_POST['marca'];
@@ -216,11 +216,11 @@
                 	 
                 	$accion = 'Creado'; //var_dump($conversion); exit();
 			    	 
-			   		echo $query = "INSERT INTO `mercancia_has_unidad_negocio`(`mercancia_id`, `unidad_negocio_id`, `existencia`, `stock_min`, `stock_max`, `status`, `descripcion`) VALUES (".$idP.",".$_POST['idT'].",".$conversion.",".$stmin.",".$stmax.",".$campos[7].",'".$detalle."')"; 
+			   		$query = "INSERT INTO `mercancia_has_unidad_negocio`(`mercancia_id`, `unidad_negocio_id`, `existencia`, `stock_min`, `stock_max`, `status`, `descripcion`) VALUES (".$idP.",".$_POST['idT'].",".$conversion.",".$stmin.",".$stmax.",".$campos[7].",'".$detalle."')"; 
                		$this->_main->insertar($query);
                 	
                 }else{
-                	if (is_null($_POST['marca'])) {
+                	if (empty($_POST['marca'])) {
                		  	$mark = 'Generico';
                		  }else{
                		  	$mark = $_POST['marca'];
@@ -243,7 +243,7 @@
 					$this->insertProveedor($idP);
 					$this->log($idP,$_POST['idT'],$accion);
 					$this->kardex($conversion,123,131,$idP,$_POST['idT'],$_POST['unidad_medida_s'],$motivok);
-					if ($_POST['tipo_ingrediente'] == 159) {
+					if ($_POST['tipo_ingrediente'] == 161) {
 						$query = "INSERT INTO `cocai`.`receta` (`nombre`, `costo`, `rendimiento`, `unidad_medida_id`) VALUES ('".$_POST['nombre']."', NULL, '0.0000', '0')";
 						$idR=$this->_main->insertar($query);
 						$query ="UPDATE `mercancia` SET `receta_id`=$idR WHERE mercancia.id = $idP";
@@ -255,11 +255,33 @@
 						$this->_view->redirect('inventario/agrupados/'.$_POST['idT'].'/'.$idP.'/'.$fam);
 
 					}else{
+						if ($_POST['tipo_ingrediente'] == 162) {
+							$costot=0;
+							$existente = 0;
+							$cont = count($_SESSION['carrito2']);
+							for ($h=0; $h < $cont; $h++) { 
+								$costot = $costot+$_SESSION['carrito2'][$h]['precio'];
+								$costopromedio = $costot/($cont);
+								$existente = $existente+$_SESSION['carrito2'][$h]['existencia'];
+							
+							}
+							$query = "UPDATE `mercancia` SET `precio_unitario`='".$costopromedio."' WHERE mercancia.id = $idP";
+							$this->_main->modificar($query);
+							$query="UPDATE `mercancia_has_unidad_negocio` SET `existencia`='".$existente."' WHERE unidad_negocio_id = ".$_POST['idT']." and mercancia_id = $idP";
+							$this->_main->modificar($query);
+						}
 						$this->_view->redirect('inventario/evaluar/'.$_POST['idT']);
 					}
 			}else{ 
 				Session::destroy('carrito');
+				Session::destroy('carrito2');
+				$this->_view->setCss(array('datatable/css/bootstrap4.min'));
+			    $this->_view->setjs(array('datatable/js/jquerydatatable.min'));
+			    $this->_view->setJs(array('datatable/js/datatable.b4.min'));
+			    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
+			    $this->_view->setJs(array('datatable/js/tabla'));
 				$this->_view->setJs(array('js/inventario'));
+				$this->_view->setJs(array('js/proasociados'));
 				$this->_view->idT = $idT;
 				$tienda = $this->datostienda($idT);
 				$this->_view->g = $tienda;
@@ -287,20 +309,118 @@
 			$this->_view->render('agrupados','inventario','','');
 		}
 
-		public function loadingredientes($fam,$idm){
-		$query = "SELECT DISTINCT(mercancia.id) as idi, mercancia.codigo as codigi, unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, mercancia.precio_unitario as precioU  FROM `mercancia`
+		public function loadingredientes($fam,$idm=false,$idt=false){
+			if ($idm != 'false') {
+				$where = 'familia_id = '.$fam.' and mercancia.id not in('.$idm.')';
+			}else{
+				$where = 'familia_id = '.$fam.' and unidad_negocio.id = '.$idt.'';
+			}
+			$query = "SELECT DISTINCT(mercancia.id) as idi, mercancia.codigo as codigi, unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, mercancia.precio_unitario as precioU, formula_p, formula_s, format(precio_unitario,4,'de_DE') as costo  FROM `mercancia`
 			left join unidad_medida as umc on umc.id = mercancia.unidad_medida_compra_id
             inner join unidad_medida as ump on ump.id = mercancia.unidad_medida_consumo_id
             inner join unidad_medida as ums on ums.id = mercancia.unidad_medida_sistema_id
             inner join mercancia_has_unidad_negocio as mudn on mudn.mercancia_id = mercancia.id
             inner join unidad_negocio on unidad_negocio.id = mudn.unidad_negocio_id
-            where familia_id = $fam and mercancia.id not in($idm)";
+            where $where";
             $data = $this->_main->select($query);
 
     		$response = array("data"=>$data);
     		//print_r($response);
     		echo json_encode($response);
 
+		}
+		public function asociados($id,$tipo,$idt){
+			//Session::destroy('carrito2');
+			$query = "SELECT mercancia.id, nombre, marca,codigo, precio_unitario, um1.id as idums, um1.abreviatura as ums, um2.id as idump, um2.abreviatura as ump, mhudn.existencia, format(existencia,4,'de_DE') as stock, format(precio_unitario,4,'de_DE') as costo FROM mercancia
+			inner join unidad_medida as um1 on um1.id = mercancia.unidad_medida_sistema_id
+			inner join unidad_medida as um2 on um2.id = mercancia.unidad_medida_consumo_id
+			inner join mercancia_has_unidad_negocio as mhudn on mhudn.mercancia_id = mercancia.id
+			where mercancia.id = $id and mhudn.unidad_negocio_id = $idt";
+				$datos = $this->_main->select($query);
+
+			if (isset($_SESSION['carrito2'])) {
+				$arreglo = $_SESSION['carrito2'];
+				//print_r($arreglo); echo "<br>";
+				$encontro=false;
+        		$numero=0;
+        		for($i=0;$i<count($arreglo);$i++){
+		          if($arreglo[$i]['id']==$id){
+		            $encontro=true;
+		            $numero=$i;
+		          }
+		        }
+		        	if($encontro==true){
+			          switch ($tipo) {
+			            case '1':
+			                $arreglo[$numero]['id']= $id;
+			                $arreglo[$numero]['precio']=$datos[0]['precio_unitario'];
+			                $arreglo[$numero]['costo']=$datos[0]['costo'];
+			                $arreglo[$numero]['ump'] = $datos[0]['ump'];
+			                $arreglo[$numero]['ums'] = $datos[0]['ums'];
+			                $arreglo[$numero]['nombre'] = $datos[0]['nombre'];
+			                $arreglo[$numero]['marca'] = $datos[0]['marca'];
+			                $arreglo[$numero]['codigo'] = $datos[0]['codigo'];
+			                $arreglo[$numero]['existencia'] = $datos[0]['existencia'];
+			                $arreglo[$numero]['stock'] = $datos[0]['stock'];
+			                $_SESSION['carrito2']=$arreglo;
+			              
+			              
+			            break;
+			            
+			            default:
+			            	unset($_SESSION['carrito2'][$numero]);
+			                $arreglo = array_values($_SESSION['carrito2']);
+			                $_SESSION['carrito2']=$arreglo;
+			            break;
+			          }
+			          
+			        }else{
+			        	if ($tipo == 1) {
+				        	$arreglo = $_SESSION['carrito2'];
+				        	$datosNuevos=array('id'=>$id,
+			                    'precio'=>$datos[0]['precio_unitario'],
+			                    'costo'=>$datos[0]['costo'],
+			                    'ump'=>$datos[0]['ump'],
+			                    'ums'=>$datos[0]['ums'],
+			                    'nombre'=>$datos[0]['nombre'],
+			                    'marca'=>$datos[0]['marca'],
+			                    'codigo'=>$datos[0]['codigo'],
+			                    'existencia'=>$datos[0]['existencia'],
+			                    'stock'=>$datos[0]['stock']);
+			                  array_push($arreglo, $datosNuevos);
+				          	$_SESSION['carrito2']=$arreglo;
+			        	}
+			        	
+			        }
+			}else{
+				$arreglo[]=array('id'=>$id,
+                    'precio'=>$datos[0]['precio_unitario'],
+                    'costo'=>$datos[0]['costo'],
+                    'ump'=>$datos[0]['ump'],
+			        'ums'=>$datos[0]['ums'],
+                    'nombre'=>$datos[0]['nombre'],
+                    'marca'=>$datos[0]['marca'],
+                    'codigo'=>$datos[0]['codigo'],
+                    'existencia'=>$datos[0]['existencia'],
+                    'stock'=>$datos[0]['stock']);
+				$_SESSION['carrito2'] = $arreglo;
+			}
+			
+			echo json_encode($_SESSION['carrito2']);
+				
+		}
+
+		public function datosasoc(){
+			$data = $_SESSION['carrito2'];
+			$response = array("data"=>$data);
+    		//print_r($response);
+    		echo json_encode($response);
+		}
+
+		public function vaciarsesion(){
+			Session::destroy('carrito2');
+			$data = true;
+			echo json_encode($data);
 		}
 
 

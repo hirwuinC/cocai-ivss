@@ -24,11 +24,15 @@ $(document).ready(function() {
         $('.simples').fadeOut(500);
         $('.agrupado').fadeIn(600);
         $('.agrupado').prop('hidden', false);
+        $('#botonG').prop('disabled', false);
       }else if (tipo == 'Asociado') {
-        alert("asociados");
+        $('.simples').fadeOut(500);
+        $('.agrupado').fadeIn(600);
+        $('.agrupado').prop('hidden', false);
       }else{
         $('.simples').fadeIn(500);
         $('.agrupado').fadeOut('fast');
+        $('#botonG').prop('disabled', false);
       }
     });
 
@@ -80,6 +84,8 @@ $(document).ready(function() {
     load('unidad_medida','unidad_medida_c',false);
     load('unidad_medida','unidad_medida_pr',false);
     load('unidad_medida','unidad_medida_s',false);
+    load('unidad_medida','unidad_mp',false);
+    load('unidad_medida','unidad_ms',false);
     load('referencia','motivo',false,false);
     load('referencia','sub_familia',false,false);
     

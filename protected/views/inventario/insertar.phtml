@@ -29,6 +29,9 @@
       margin-bottom: -1%;
       float: left;
     }
+    .even{
+      height: 31px;
+    }
   </style>
 <center>
     <div id="gifcargando">
@@ -37,6 +40,7 @@
 </center>
 
 <div id="body" hidden>
+  <input type="hidden" id="tienda" value="<?php echo $this->idT; ?>">
 	<div id="page-wrapper">
         <div id="page-wrapper">
             <div style="margin-top: 2%;" class="">
@@ -61,14 +65,75 @@
                                     <img style="margin-left:0%;" src="<?php echo PUBLIC_URL;?>img\Corporacion multifranquicia.png" class="img-responsive" alt="modelo">
                                 </div>
                             </div>
+                            <!-- MODAL DEL LA FUNCION AGREGAR DE LOS PRODUCTOS -->
+                <div class="modal fade" id="modaling" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+                  <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                      <div class="modal-title" ><h3>Asociar productos</h3></div>
+                          <button type="button" class="close cerrar" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      </div>
+                        <div class="modal-body" style="padding-bottom: 0px">
+                          <form action="" method="post" accept-charset="utf-8" id="form-asociar">
+                          <div class="dataTable_wrapper " >
+                              <div class="col-sm-12 table-responsive">
+                                  <table id="tablafiltraje" class="display table table-sm table-striped table-bordered table-hover" >
+                                    <thead class="theadH">
+                                        <tr>
+                                            <th>Codigo</th>
+                                            <th>Ingrediente</th>
+                                            <th>Costo</th>
+                                            <th>Asociar</th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody id="cuerpo_i">
+                                    </tbody>
+                                    
+                                </table>     
+                              </div>     
+                          </div>
+                        </div>
+                        </form>
+                        <div class="modal-footer" style="padding-top: 1px">
+                          <button type="button" class="btn btn-sm btn-outline-secondary cerrar" data-dismiss="modal" id="bcancelar" title="Se eliminara la asociacion de tolos los productos asignados hasta ahora">Cancelar</button>
+                          <button type="button" class="btn btn-sm btn-outline-primary" id="bcontinuar" title="asignar productos seleccionados">Continuar</button>
+                        </div>
+                    </div>
+                  </div> 
+                </div>
 
                 	 <form action="<?php echo BASE_URL;?>inventario/insert" method="post" accept-charset="utf-8">
                             <input type="text" id="idT" name="idT" hidden value="<?php echo $this->idT;?>">
                                 <input type="text" name="unidadS" hidden id="unidadS">
 
-                                <div class="card" style="box-shadow: 1px;  background: #eee">
+                                <div class="card" style="box-shadow: 1px;  background: #eee;">
                                     <fieldset>
                                         <center><legend><label>Datos del producto de inventario</label></legend> </center>
+                            <div class="card ml-2 mr-1" id="recetasysubs" hidden style="border: solid 1px #909090; border-radius: 4px; width: 98%">
+                            <div class="card-header" style="padding: 5px; height: 25%;">
+                              <center><h3 class="page-header" style="font-family: Times New Roman, Times, serif;">Productos asociados</h3> </center>
+                            </div>
+                              <div class="dataTable_wrapper" >
+                                 <div class="col-sm-12 table-responsive ml-1 mr-3" style=" padding-top: 2px">
+                                  <!-- <h5 style="background: #ddd; text-align: center; margin-bottom: 5px;" id="titulo2"><b>Productos asociados</b></h5> -->
+                                    <table id="tablarecetario" class="display table table-sm table-striped table-bordered table-hover" >
+
+                                        <thead class="theadH">
+
+                                            <tr>
+                                                <th><center>Codigo</center></th>
+                                                <th><center>Ingrediente</center></th>
+                                                <th><center>Cantidad</center></th>
+                                                <th><center>U/M</center></th>
+                                                <th><center>Costo</center></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cuerpo_r"></tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                            </div><br>
                                 <div class="form-group row d-flex justify-content-start ml-2 mr-2 ">
                                         <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
                                             <label class="labels" style="float: left;">Clasificacion</label>
@@ -111,10 +176,24 @@
                                         <input type="text" class="form-control form-control-sm" name="nombre" id="nombre" required>
 
                                     </div>
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples asoc asociated" hidden>
+                                        <label class="labels" style="float: left;">Unidad Consumo</label>
+                                        <select  class="form-control form-control-sm ump" id="unidad_mp" >
+                                        <option value="" selected disabled>Seleccione...</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples asoc asociated" hidden>
+                                        <label class="labels" style="float: left;">Unidad Sistema</label>
+                                        <select class="form-control form-control-sm" id="unidad_ms" >
+                                        <option value="" selected disabled>Seleccione...</option>
+                                        </select>
+                                    </div>
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 agrupado" hidden>
                                         <label class="labels" style="float: left;">Descripcion</label>
                                         <textarea class="form-control form-control-sm" rows="3" name="descripcion2"></textarea>
                                     </div>
+
                                     
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
                                         <label class="labels" style="float: left;">Marca</label>
@@ -195,15 +274,15 @@
 
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
                                         <label class="labels" style="float: left;">Unidad Consumo</label>
-                                        <select name="unidad_medida_p" class="form-control form-control-sm ump" id="unidad_medida_pr">
-                                        <option value="Seleccione">Seleccione...</option>
+                                        <select name="unidad_medida_p" class="form-control form-control-sm ump" id="unidad_medida_pr" required>
+                                        <option value="Seleccione" selected disabled>Seleccione...</option>
                                         </select>
                                     </div>
                                     
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
                                         <label class="labels" style="float: left;">Unidad Sistema</label>
-                                        <select name="unidad_medida_s" class="form-control form-control-sm" id="unidad_medida_s" required>
-                                        <option value="Seleccione">Seleccione...</option>
+                                        <select name="unidad_medida_s" class="form-control form-control-sm umsis" id="unidad_medida_s" required>
+                                        <option value="Seleccione" selected disabled>Seleccione...</option>
                                         </select>
                                     </div>
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
@@ -213,7 +292,7 @@
                                 </div>
                             
                                 
-                                    <fieldset class="simples">
+                                    <fieldset class="simples asoc">
                                     <center><legend><label>Formulas de conversion<a style="cursor: hand;" class="secreto" onclick="infoFormula()"><img class="img ml-1 mb-1" src="<?php echo PUBLIC_URL; ?>img/info.icon.png" data-toggle="tooltip" data-placement="top" title="Click para informacion sobre esta formula"></a></label></legend></center>
                                         
                                     <div class="row ">
@@ -237,6 +316,7 @@
                                         </div>
                                     </div>
                                     </fieldset>
+                            
                                     <div class="row offset-1 simples">
                                       <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 checkbox">
                                           <label class="custom-control custom-checkbox">
@@ -338,7 +418,8 @@
                     </div>
                             <div class="row  pt-3 mt-3">
                                 <div class="col d-flex justify-content-center">
-                                    <input type="submit" class="btn btn-sm btn-outline-primary" value="Guardar" id="botonG">
+                                    <input type="button" class="btn btn-sm btn-outline-primary mr-3" value="Asociar productos" data-toggle="tooltip" data-placement="top" title="agregar elementos asociados a este producto" id="asoci" hidden>
+                                    <input type="submit" class="btn btn-sm btn-outline-primary" value="Guardar" id="botonG" disabled>
                                 </div>
                             </div>
                             
@@ -370,6 +451,8 @@
                                                 </div><!-- /.modal-content -->
                                             </div><!-- /.modal-dialog -->
                                         </div><!-- /.modal -->
+
+              
 
                     <!-- MODAL DE AGREGAR SUB_FAMILIAS NUEVAS-->
                     <div class="modal fade " id="modalsubfamilia" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
