@@ -11,13 +11,13 @@
 
 <div id="body" hidden>
 <div id="page-wrapper">
-            <div style="margin-top: 2%;" class="">
+            <div class="">
 
                 <div class="row justify-content-center">
                     <div class="col-lg-12">
                     <div class="card cardH">
 
-                            <div class="card-header">
+                            <div class="card-header" hidden>
                               <center><h4 ><o id="titulocard">Consulta de inventario</o> <?php $ti=strtolower(str_replace('(PTY)', '', $this->mercancia[0]['tienda'])); echo "[".ucwords($ti)."]";  ?></h4></center>
                             </div>
                           
@@ -27,7 +27,7 @@
                                      <h4 class="page-header" style="font-family: Times New Roman, Times, serif; text-align: center">Unidad de negocio <?php echo $this->mercancia[0]['tienda'];?></h4> 
                                 </div>-->
                             
-                                <div class="col-12 d-flex justify-content-center">
+                                <div class="col-12 d-flex justify-content-end">
                                     <img  style="margin-left:0%;" src="<?php echo PUBLIC_URL;?>img/<?php echo $this->mercancia[0]['tienda']; ?>.png" class="img-fluid" alt="modelo">
                                 </div>
                             </div>
@@ -41,13 +41,13 @@
                                                 <th >Codigo</th>
                                                 <th >Nombre</th> 
                                                 <th >Marca</th>
+                                                <th >Familia</th>
                                                 <th >Cont. neto</th>
                                                 <th >Costo</th>
                                                 <th >Existencia</th>
                                                 <th >Stock min</th>
                                                 <th >Stock max</th>
                                                 <th >Estatus</th>
-                                                <th >Familia</th>
                                                 <th >Acciones</th>
                                             </tr>
                                         </thead>
@@ -58,29 +58,37 @@
                                                     }else{
                                                         $status = 'Activo';
                                                     } ?>
-                                            <tr> 
-                                                <td ><?php echo $i?></td>   
-                                                <td style="text-align:left"><?php echo $merca['codigo'];?></td>
-                                                <td style="text-align:left"><?php echo $merca['producto'];?></td>
-                                                <td style="text-align:left"><?php echo $merca['marca'];?></td>
-                                                <td style="text-align:left"><?php echo $merca['contenido_neto'];?></td>
-                                                <td style="text-align:left"><?php echo number_format($merca['precio_unitario'],4,",",".")." Bs";?></td>
-                                                <td style="text-align:right;"><?php echo $merca['stock'].$merca['abreviaturaS'];?><a style="cursor: pointer; cursor: hand;" onclick="infoConversion('<?php echo $merca['idP'];?>','<?php echo $merca['idT'];?>')"><i data-toggle="tooltip" data-placement="top" title="Ver informacion detallada de la existencia" class="fa fa-info-circle"></i></a></td>
-                                                <td style="text-align:right;"><?php echo $merca['stockm'];?></td>
-                                                <td style="text-align:right;"><?php echo $merca['stockm2'];?></td>
-                                                <td style="text-align:left"><?php echo $status;?></td>
-                                                <td style="text-align:left"><?php echo $merca['familia'];?></td>
+                                            <?php if ($merca['tipo_ingrediente'] == 'Agrupado') {?>
+                                                <tr style="background: #D4E5F4">
+                                            <?php }else if ($merca['tipo_ingrediente'] == 'Asociado') {?>
+                                                <tr style="background: #e1eefb">
+                                            <?php }else{?>
+                                                <tr>
+                                            <?php } ?>
+                                             
+                                                <td  class="font11"><?php echo $i?></td>   
+                                                <td class="font12" style="text-align:left"><?php echo $merca['codigo'];?></td>
+                                                <td class="font12" style="text-align:left"><?php echo $merca['producto'];?></td>
+                                                <td class="font12" style="text-align:left"><?php echo $merca['marca'];?></td>
+                                                <td class="font12" style="text-align:left"><?php echo $merca['familia'];?></td>
+                                                <td class="font12" style="text-align:right"><?php echo $merca['contenido_neto'].$merca['abreviaturaS'];?></td>
+                                                <td class="font12" style="text-align:right"><?php echo number_format($merca['precio_unitario'],4,",",".")." Bs";?></td>
+                                                <td class="font12" style="text-align:right;"><?php echo $merca['stock'].$merca['abreviaturaS'].' ';?><a style="cursor: pointer; cursor: hand;" onclick="infoConversion('<?php echo $merca['idP'];?>','<?php echo $merca['idT'];?>')"><i data-toggle="tooltip" data-placement="top" title="Ver informacion detallada de la existencia" class="fa fa-info-circle"></i></a></td>
+                                                <td class="font12" style="text-align:right;"><?php echo $merca['stockm'];?></td>
+                                                <td class="font12" style="text-align:right;"><?php echo $merca['stockm2'];?></td>
+                                                <td class="font12" style="text-align:center"><?php echo $status;?></td>
+                                                
                                                 <th>
-                                                    <center><a style="cursor: hand; font-size: 17px" class="test" data-toggle="modal" data-target="#prodUpdate" onclick="modalUpdate('<?php echo $merca['idP'];?>','<?php echo $merca['idT'];?>')">
+                                                    <center><a style="cursor: hand; font-size: 14px" class="test" data-toggle="modal" data-target="#prodUpdate" onclick="modalUpdate('<?php echo $merca['idP'];?>','<?php echo $merca['idT'];?>')">
                                                         <span data-toggle="tooltip" data-placement="top" title="Editar producto" class="fa fa-edit"></span>
-                                                    </a><a style="cursor: hand; font-size: 17px; margin-left: 5px" onclick="confirmacionDelete('<?php echo $merca['idP'];?>','<?php echo $merca['idT'];?>')">
+                                                    </a><a style="cursor: hand; font-size: 14px; margin-left: 5px" onclick="confirmacionDelete('<?php echo $merca['idP'];?>','<?php echo $merca['idT'];?>')">
                                                         <span data-toggle="tooltip" data-placement="top" title="Eliminar producto" class="fa fa-trash"></span>
                                                     </a>
-                                                    <a style="cursor: hand; margin-left: 5px; font-size: 17px" class="test" data-toggle="modal" data-target="#modalreposicion" onclick="compradirecta('<?php echo $merca['idP'];?>','<?php echo $merca['idT'];?>')">
+                                                    <a style="cursor: hand; margin-left: 5px; font-size: 14px" class="test" data-toggle="modal" data-target="#modalreposicion" onclick="compradirecta('<?php echo $merca['idP'];?>','<?php echo $merca['idT'];?>')">
                                                         <span data-toggle="tooltip" data-placement="top" title="Reposicion de mercancia por compra directa" class="fa fa-money"></span>
                                                     </a>
                                                     <?php if ($merca['tipo_ingrediente'] == 'Agrupado') {?>
-                                                        <a href="<?php echo BASE_URL;?>inventario/agrupados/<?php echo $merca['idT'].'/'.$merca['idP'].'/'.$merca['receta_id'];?>" style="cursor: hand; margin-left: 5px; font-size: 17px" class="test">
+                                                        <a href="<?php echo BASE_URL;?>inventario/agrupados/<?php echo $merca['idT'].'/'.$merca['idP'].'/'.$merca['receta_id'];?>" style="cursor: hand; margin-left: 5px; font-size: 14px" class="test">
                                                         <span data-toggle="tooltip" data-placement="top" title="Agregar mas ingredientes" class="fa fa-plus-circle" style="color: #666"></span>
                                                         </a>
                                                     <?php } ?>
@@ -111,11 +119,7 @@
                                     </div>
                                     
                                         <br>
-                                   
-                                 
-                      
-
-                                       
+        
 
                 <div class="modal fade" id="prodUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                     <div class="modal-dialog modal-lg" role="document">
@@ -133,6 +137,17 @@
 
                                 <div class="form-group row ">
                                     <div class="col-sm-3">
+                                        <label class="control-label">Clasificacion</label>
+                                        <select name="familia_id" id="familias" class="form-control form-control-sm familia" required> 
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label class="labels" style="float: left;">Sub-Clasificacion</label>
+                                        <select name="subfamilia" id="sub_familia" class="form-control form-control-sm" required> 
+
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
                                         <label class="control-label" style="float: left;">Codigo</label>
                                         <div class="col-1 d-flex offset-10" id="glyphicon" data-toggle="tooltip" data-placement="right" title="Este codigo esta asignado a otro producto">
                                         </div>
@@ -143,37 +158,35 @@
                                         <label class="control-label">Codigo anterior</label>
                                         <input type="text" class="form-control form-control-sm" name="codigo_tcr" id="c_tcr">
                                     </div>
-                                    <div class="col-sm-3 ">
-                                        <label class="control-label">status</label>
-                                        <select name="status" id="status" class="form-control form-control-sm" required> 
-                                        </select>
-                                    </div>
+                                    
+                                    
                                 </div>
                                 <div class="form-group row ">
+                                    <div class="col-sm-3">
+                                        <label class="labels" style="float: left;">Tipo de inventario</label>
+                                        <select name="tipo_inventario" id="tipo_inventario" class="form-control form-control-sm" required> 
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label class="labels" style="float: left;">Tipo de producto</label>
+                                        <input type="hidden" id="tipoing_id" name="tipo_ingrediente">
+                                        <input type="text" id="tipo_ingrediente" class="form-control form-control-sm" readonly>
+                                    </div>
                                     <div class="col-sm-3">
                                         <label class="control-label" style="float: left;">Nombre</label>
                                         <div class="col-1 d-flex offset-10" id="glyphi" data-toggle="tooltip" data-placement="right" title="ya existe un producto con el mismo nombre y marca">
                                         </div>
                                         <input type="text" class="form-control form-control-sm" name="nombre" id="nombre" required>
                                     </div>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-3 simples">
                                         <label class="control-label" style="float: left;">Marca</label>
                                         <div class="col-1 d-flex offset-10" id="glyph" data-toggle="tooltip" data-placement="right" title="ya existe un producto con el mismo nombre y marca">
                                         </div>
                                         <input type="text" class="form-control form-control-sm" name="marca" id="marca">
                                     </div>
-                                    <div class="col-sm-3 col-sm-">
-                                        <label class="control-label">Clasificacion</label>
-                                        <select name="familia_id" id="familias" class="form-control form-control-sm" required> 
-                                        </select>
-                                    </div>
                                 </div>
-                                <div class="form-group row ">
-                                    <div class="col-sm-3">
-                                        <label class="control-label">Precio unitario</label>
-                                        <input type="text" class="form-control form-control-sm precios" name="precio_unitario" id="pU" required placeholder="0,00">
-                                    </div>
-                                    
+
+                                <div class="form-group row simples">                                    
                                     <div class="col-sm-3 ">
                                         <label class="control-label">Stock minimo <o class="abrevia"></o> </label>
                                         <input type="text" class="form-control form-control-sm monto" name="stockmin" id="stockmin">
@@ -186,38 +199,64 @@
                                         <label class="control-label">Existencia <o class="abrevia"></o></label>
                                         <input type="text" class="form-control form-control-sm monto" name="existencia" id="existencia">
                                     </div>
-                                </div>
-                                <div class="form-group row ">
-                                    <div class="col-sm-3">
-                                        <label class="control-label">Unidad de compra</label>
-                                        <select name="unidad_medida_co" class="form-control form-control-sm umc" id="unidad_medida_co" required>
-                                        </select>
-                                    </div>   
-                                    <div class="col-sm-3">
-                                        <label class="control-label">Unidad de presentacion</label>
-                                        <select name="unidad_medida_pr" id="unidad_medida_pr" class="form-control form-control-sm unidad_medida_p" required>
-                                        </select>
-                                    </div>   
-                                    <div class="col-sm-3">
-                                        <label class="control-label">Unidad de sistema</label>
-                                        <select name="unidad_medida_si" id="unidad_medida_si" class="form-control form-control-sm" required>
-                                        </select>
-                                    </div> 
-                                    <div class="col-sm-3 ">
-                                        <label class="control-label">Contenido neto</label>
-                                        <input type="text" class="form-control form-control-sm contneto monto" name="contenidoN" id="contenidoN" autocomplete="off">
-                                    </div>                             
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-sm-3 ">
-                                        <label class="control-label"><o id="abrevU"></o></label>
-                                        <input type="text" class="form-control form-control-sm cantix" name="cantidad" id="cantidad">
-                                    </div> 
                                     <div class="col-sm-3">
                                         <label class="labels" style="float: left;">Peso escurrido</label>
                                         <input type="text" class="form-control form-control-sm monto" name="pesoEs" id="pesoEs">
                                     </div>
                                 </div>
+                                <div class="form-group row ">
+                                    <div class="col-sm-3 productoscompra simples">
+                                        <label class="control-label">Precio unitario</label>
+                                        <input type="text" class="form-control form-control-sm precios" name="precio_unitario" id="pU" required placeholder="0,00">
+                                    </div>
+                                    <div class="col-sm-3 productoscompra simples">
+                                        <label class="control-label">Unidad de compra</label>
+                                        <select name="unidad_medida_co" class="form-control form-control-sm umc" id="unidad_medida_co" required>
+                                        </select>
+                                    </div>   
+                                    <div class="col-sm-3 simples">
+                                        <label class="control-label">Unidad de presentacion</label>
+                                        <select name="unidad_medida_pr" id="unidad_medida_pr" class="form-control form-control-sm unidad_medida_p ump1" required>
+                                        </select>
+                                    </div>   
+                                    <div class="col-sm-3 simples">
+                                        <label class="control-label">Unidad de sistema</label>
+                                        <select name="unidad_medida_si" id="unidad_medida_si" class="form-control form-control-sm ums" required>
+                                        </select>
+                                    </div>                                                              
+                                    <div class="col-sm-3 productoscompra simples">
+                                        <label class="control-label">Contenido neto</label>
+                                        <input type="text" class="form-control form-control-sm contneto monto" name="contenidoN" id="contenidoN" autocomplete="off">
+                                    </div> 
+                                    <div class="col-sm-3" hidden id="canti">
+                                        <label class="control-label">Uds por <o id="abrevU"></o></label>
+                                        <input type="text" class="form-control form-control-sm cantix" name="cantidad" id="cantidad">
+                                    </div>
+                                    <div class="col-sm-3 asoc asociated" hidden>
+                                        <label class="labels" style="float: left;">Unidad Consumo</label>
+                                        <select  class="form-control form-control-sm ump " id="unidad_mp1" >
+                                        <option value="" selected disabled>Seleccione...</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-sm-3 asoc asociated" hidden>
+                                        <label class="labels" style="float: left;">Unidad Sistema</label>
+                                        <select class="form-control form-control-sm ums" id="unidad_ms1" >
+                                        <option value="" selected disabled>Seleccione...</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label class="control-label">status</label>
+                                        <select name="status" id="status" class="form-control form-control-sm" required> 
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label class="control-label" >Descripcion</label>
+                                        <textarea class="form-control form-control-sm" rows="3" name="descripcion2" id="description"></textarea>
+                                    </div> 
+                                </div>
+                                
+
 
                                 <label class="control-label">Formulas de conversion</label>
                                         
@@ -225,7 +264,7 @@
                                         <div class="col-10 offset-1">
                                             
                                                 <div class="row align-items-center d-flex justify-content-center ">
-                                                    <div class="col-xs-4 col-sm-4 col-md-3 mt-3">
+                                                    <div class="col-xs-4 col-sm-4 col-md-3 mt-3 productoscompra simples">
                                                         <label class="labels" style="float: left;">U/M compra <a class="secreto" onclick="infoFormula()"><i data-toggle="tooltip" data-placement="top" title="Ver informacion" class="fa fa-info-circle" style="cursor: hand; cursor: pointer;"></i></a></label>
                                                         <input type="text" class="form-control form-control-sm formulac" name="formulac" id="formulac">
                                                     </div>
@@ -246,11 +285,81 @@
                                 </div>
                             
                             <div class="modal-footer">
+                                <input type="button" class="btn btn-sm btn-outline-primary mr-3" value="Asociar productos" title="agregar elementos asociados a este producto" id="asoci" hidden>
                                 <input type="submit" class="btn btn-sm btn-outline-primary" value="Guardar" id="botonG">
                             </div>
                             </form>
                         </div>
                     </div>
+                </div>
+
+                <!-- MODAL DE AGREGAR SUB_FAMILIAS NUEVAS-->
+                    <div class="modal fade " id="modalsubfamilia" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                        <div class="modal-dialog modal-sm" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <div id="tc"><h6>Agregar nueva Sub-Clasificacion</h6></div>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+
+
+                                </div>
+                                <div class="modal-body" >
+
+                                   <div id="cuerpo"></div>
+                                   <div class="form-group">
+                                    <div class="col-sm-12">
+                                      <label class="labels">Nombre de Sub-Clasificacion</label>
+                                      <input type="text" id="nuevasub" class="form-control form-control-sm">
+                                    </div>
+                                   </div>
+                                    
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal" id="mcancelar">Cancelar</button>
+                                  <button type="button" class="btn btn-sm btn-outline-primary" id="mcontinuar">Continuar</button>
+                                </div>   
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
+
+                                                <!-- MODAL DEL LA FUNCION AGREGAR DE LOS PRODUCTOS -->
+                <div class="modal fade" id="modaling" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+                  <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <div class="modal-title" ><h3>Asociar productos</h3></div>
+                          <button type="button" class="close cerrar" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      </div>
+                        <div class="modal-body" style="padding-bottom: 0px">
+                          <form action="" method="post" accept-charset="utf-8" id="form-asociar">
+                          <div class="dataTable_wrapper " >
+                              <div class="col-sm-12 table-responsive">
+                                  <table id="tablafiltraje" class="display table table-sm table-striped table-bordered table-hover" >
+                                    <thead class="theadH">
+                                        <tr>
+                                            <th>Codigo</th>
+                                            <th>Ingrediente</th>
+                                            <th>Costo</th>
+                                            <th>Asociar</th>
+                                        </tr>
+                                    </thead>
+                                    
+                                    <tbody id="cuerpo_i">
+                                    </tbody>
+                                    
+                                </table>     
+                              </div>     
+                          </div>
+                        </div>
+                        </form>
+                        <div class="modal-footer" style="padding-top: 1px">
+                          <button type="button" class="btn btn-sm btn-outline-secondary cerrar" data-dismiss="modal" id="bcancelar" title="Se eliminara la asociacion de tolos los productos asignados hasta ahora">Cancelar</button>
+                          <button type="button" class="btn btn-sm btn-outline-primary" id="bcontinuar" title="asignar productos seleccionados">Continuar</button>
+                        </div>
+                    </div>
+                  </div> 
                 </div>
                                         <!--Modal para compras directas-->
                                         <div class="modal" tabindex="-1" role="dialog" id="modalreposicion">
@@ -296,8 +405,9 @@
                                                         <label class="control-label" style="float: left;"><o id="up"></o><o class="uc"></o></label>
                                                         <input type="text" class="form-control form-control-sm cantix" name="cantix" id="cantix">
                                                     </div>
+
                                                     <div class="col-sm-8">
-                                                        <label class="control-label" style="float: left;">Descripcion de compra</label>
+                                                        <label class="control-label" style="float: left;">Descripcion</label>
                                                         <textarea class="form-control form-control-sm" rows="2" name="descripcion"></textarea>
                                                     </div>                                                 
                                                 </div>
@@ -327,7 +437,7 @@
                                                     </div>
                                                     <div class="modal-body" >
 
-                                                       <div id="cuerpo"></div><br><br>
+                                                       <div id="cuerpoi"></div><br><br>
                                                         <center>    
                                                             <div id="espera" hidden>
                                                                 <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">

@@ -3,14 +3,23 @@ $(document).ready(function() {
 		$('#modaling').modal({backdrop: 'static', keyboard: false});
 	});
 
-	$('#unidad_mp').change(function(event) {
-		var umpr = $('#unidad_mp').val();
+	$('.ump').change(function(event) {
+		var umpr = $('.ump').val();
 		$('#unidad_medida_pr').val(umpr);
+        $.ajax({
+            url: BASE_URL+'/inventario/setunidadT/'+umpr,
+            type: 'POST',
+            dataType: 'json'
+          })
+        .done(function(data) {
+            document.getElementById("formulap").value=data[0]['abreviatura']+' * ';
+        });
 	});
 
-	$('#unidad_ms').change(function(event) {
-		var umsi = $('#unidad_ms').val();
-		$('#unidad_medida_s').val(umsi);
+	$('.ums').change(function(event) {
+		var umsi = $('.ums').val();
+        $('#unidad_medida_s').val(umsi);
+		$('#unidad_medida_si').val(umsi);
 		$.ajax({
             url: BASE_URL+'/inventario/setunidadT/'+umsi,
             type: 'POST',

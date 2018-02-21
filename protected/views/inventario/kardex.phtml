@@ -15,7 +15,7 @@
 </center>
 <div id="body" hidden>
 <div id="page-wrapper">
-            <div style="margin-top: 2%;" class="container-fluid">
+            <div class="">
 
                 <div class="row">
                     <div class="col-12 ">
@@ -23,7 +23,7 @@
 
                         <div class="card cardH">
 
-                            <div class="card-header">
+                            <div class="card-header" hidden>
                               <center><h3 ><o id="titulocard">Movimientos de Kardex</o> <?php $ti=strtolower($this->model[0]['udn']); echo "[".ucwords($ti)."]"; ?></h3></center>
                             </div>
                           
@@ -37,7 +37,7 @@
                         } ?>
                         <?php if ($this->model[0]['modelo'] != null): ?>
                             <div>
-                              <img width="10%" height="10%" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-responsive" alt="">
+                              <img width="12%" height="10%" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-responsive" alt="">
                             </div>
                           <?php else: ?>
                             <div>
@@ -51,19 +51,25 @@
                         <fieldset>
                             
                           
-                            <div id="" class="form-group row">
-                                <div class="col-sm-3 col-sm-offset-1">
+                            <div id="" class="form-group row ml-3">
+                                <div class="col-sm-2 ">
                                     <label class="labels"  for="">Fecha de incio:</label>
                                       <input class="form-control form-control-sm" name="fecha_ini" id="fecha_ini" type="date">
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <label class="labels"  for="">Fecha limite:</label>
                                       <input class="form-control form-control-sm test" name="fecha_fin" id="fecha_fin" type="date" disabled data-toggle="tooltip" data-placement="bottom" title="el valor debe ser posterior o igual a la fecha de inicio">
                                 </div>
+                                <div class="col-sm-2 ">
+                                    <label class="labels" for="">Producto:</label>
+                                      <select  id="products" name="productos"  class="form-control form-control-sm" disabled>
+                                        <option selected disabled value="seleccione">Seleccione..</option>
+                                      </select>
+                                </div>
                             </div>
 
-                             <div id="" class="form-group row">
-                                <div class="col-sm-3 col-sm-offset-1">
+                             <div id="" class="form-group row ml-3">
+                                <div class="col-sm-2 ">
                                     <label class="labels" for="">Tipo de mov.:</label>
                                       <select  id="tipoMov" name="tipoMov"  class="form-control form-control-sm" disabled>
                                         <option selected disabled value="seleccione">Seleccione..</option>
@@ -71,7 +77,7 @@
                                         <option value="132">Salidas</option>
                                       </select>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                       <label class="labels" for="">Motivo:</label>
                                       <select id="motivo" name="motivo" class="form-control form-control-sm" disabled>
                                         <option selected disabled value="seleccione">Seleccione..</option>
@@ -81,17 +87,15 @@
                                     
                               </div>
                                     <input type="hidden" name="mercancia_id" id="mercid" >
-                                    <input type="hidden" name="tiendae" id="tiendae" value="<?php echo $this->idu;?>">
+                                    <input type="hidden" name="idt" id="idt" value="<?php echo $this->model[0]['idU'];?>">
                                     <input type="hidden" name="status_id" id="status_id" value="126">
                             
                         </fieldset>
                         <div class="container">
                               <div class="row d-flex justify-content-center">
                                 <div>
-                                  <div class="col" id="botonf">
-                                    <input  type="button" class="btn btn-sm btn-outline-primary"  name="" value="Consultar" disabled>
-                                  </div>
-                                  <div class="col" id="botonv">  
+                                  <div class="col">
+                                    <input  type="button" class="btn btn-sm btn-outline-primary"  id="consult" value="Consultar" disabled>
                                   </div>
                                 </div>
                               </div>
@@ -116,16 +120,17 @@
                         <div class="dataTable_wrapper " id="tablaoculta" hidden>
                              <div class="col-sm-12 table-responsive">
                                 <table id="tablakardex" class="table table-sm table-striped table-bordered table-hover" cellspacing="0" width="100%" >
-                                  <?php if ($this->model[0]['idU'] != 59): ?>
+                                  <?php if (!is_null($this->model[0]['empresa_id'])): ?>
                                     <thead class="theadH">
                                       <tr>
                                           <th>Producto</th>
                                           <th>Grupo</th>
                                           <th>Tipo</th>
                                           <th>Cantidad</th>
+                                          <th>Existencia
                                           <th>Motivo</th>
-                                          <th>Descripcion</th>
-                                          <th>Hora</th>
+                                          <!-- <th>Descripcion</th> -->
+                                          <th>Fecha</th>
                                           <th>Usuario</th>
                                       </tr>
                                   </thead>
@@ -137,9 +142,10 @@
                                           <th>Grupo</th>
                                           <th>Tipo</th>
                                           <th>Cantidad</th>
+                                          <th>Existencia
                                           <th>Motivo</th>
-                                          <th>Descripcion</th>
-                                          <th>Hora</th>
+                                          <!-- <th>Descripcion</th> -->
+                                          <th>Fecha</th>
                                           <th>Usuario</th>
                                       </tr>
                                   </thead>

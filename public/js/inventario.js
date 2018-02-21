@@ -29,26 +29,32 @@ $(document).ready(function() {
         $('.simples').fadeOut(500);
         $('.agrupado').fadeIn(600);
         $('.agrupado').prop('hidden', false);
+        $('#botonG').prop('disabled', true);
       }else{
         $('.simples').fadeIn(500);
         $('.agrupado').fadeOut('fast');
         $('#botonG').prop('disabled', false);
+        $('#botonG').prop('disabled', false);
       }
     });
 
-    $('#familia').change(function(event) {
-      $('.simples').fadeIn(500);
+    $('.familia').change(function(event) {
+      //$('.simples').fadeIn(500);
       load('referencia','tipo_ingrediente',false,false);
-      var family = $('#familia').val();
-      if (family != 135) {
+      var family = $('.familia').val();
+      var tipo = $('#tipo_ingrediente').val();
+
+
+        if (family != 135 && tipo != 'Agrupado' && tipo != 'Asociado') {
           $('.productoscompra').fadeIn('fast');
           $('.productoscompra').prop('hidden', false);
-      }else{
+        }else{
           $('#canti').fadeOut('fast');
-        $('#canti').prop('hidden', true);
-        $('.productoscompra').fadeOut('fast');
-        $('.productoscompra').prop('hidden', true);
-      }
+          $('#canti').prop('hidden', true);
+          $('.productoscompra').fadeOut('fast');
+          $('.productoscompra').prop('hidden', true);
+        }
+      
       codigoPropuesto(family);
     });
 
@@ -88,6 +94,7 @@ $(document).ready(function() {
     load('unidad_medida','unidad_ms',false);
     load('referencia','motivo',false,false);
     load('referencia','sub_familia',false,false);
+    load('referencia','tipo_inventario',false,false);
     
 
     $('.umc').change(function(event) {
@@ -118,6 +125,8 @@ $(document).ready(function() {
         //alert(mcom);
         $('#uc').empty();
         $('#uc').text(mcom);
+        $('#abrevU').empty();
+        $('#abrevU').text(mcom);
       }else{
         $('#canti').fadeOut('fast');        
       }
@@ -157,9 +166,9 @@ $(document).ready(function() {
       
     });
 
-      $('.ump').change(function(event) {
+      $('.ump1').change(function(event) {
 
-        var unidad_p = $('.ump').val();
+        var unidad_p = $('.ump1').val();
         //var textoup = $('.ump option:selected').text();
         //$('#up').empty();
         //$('#up').text(textoup+' por ');
@@ -639,10 +648,10 @@ function formulaCompra(valor){
 
 function validarCodigo(code){
     $.ajax({
-            url: BASE_URL+'/inventario/validarCod/'+code,
-            type: 'POST',
-            dataType: 'json',
-          })
+      url: BASE_URL+'/inventario/validarCod/'+code,
+      type: 'POST',
+      dataType: 'json',
+    })
 
     .done(function(data) {
       //alert(data);
@@ -702,8 +711,12 @@ function modalUpdate(idP,idT){
   $('#unidad_medida_si').empty(); 
   carga('unidad_medida','unidad_medida_co',false,false,idP,idT);
   carga('unidad_medida','unidad_medida_pr',false,false,idP,idT);
+  carga('unidad_medida','unidad_mp1',false,false,idP,idT);
+  carga('unidad_medida','unidad_ms1',false,false,idP,idT);
   carga('unidad_medida','unidad_medida_si',false,false,idP,idT); 
   carga('referencia','familias',false,false,idP,idT);
+  carga('referencia','sub_familia',false,false,idP,idT);
+  carga('referencia','tipo_inventario',false,false,idP,idT);
   //alert(idP);alert(idT);
       $.ajax({
             url: BASE_URL+'/inventario/modalUpdate/'+idP+'/'+idT,
@@ -712,6 +725,9 @@ function modalUpdate(idP,idT){
           })
           .done(function(data) {
             //alert(data[0][6]);
+            var fam = data[0]['idf'];
+            var tipo = data[0]['tipo_ingrediente'];
+
             $('#enunciadoU').empty();
             $('#enunciadoU').append('<h4 class="modal-title">Esta modificando el producto '+data[0][3]+' marca '+data[0][4]+'</h4>');
               $('#codi').val(data[0]['codigo']);
@@ -724,11 +740,14 @@ function modalUpdate(idP,idT){
               $('#contenidoN').val(data[0]['contenido_neto']);
               $('#existencia').val(data[0]['existencia']);
               $('#cantidad').val(data[0]['cantidad_presentacion']);
+              $('#tipo_ingrediente').val(data[0]['tipo_ingrediente']);
+              $('#tipoing_id').val(data[0]['tipo_mercancia_id']);
+              $('#description').val(data[0]['descripcion']);
               $('#idP').val(data[0]['idP']);
               $('.abrevia').empty();
               $('.abrevia').append('('+data[0]['abreviaturaS']+')');
               $('#abrevU').empty();
-              $('#abrevU').append(data[0]['abreviaturaP']+' por '+data[0]['unidadC']);
+              $('#abrevU').append(data[0]['unidadC']);
               if (data[0]['formula_c'] == null) {
                 $('#formulac').value=data[0][23]+' *';
               }else{
@@ -744,6 +763,44 @@ function modalUpdate(idP,idT){
               }else{
                 $('#formulas').val(data[0]['formula_s']);
               }
+              if (tipo == 'Agrupado') {
+                $('#unidad_medida_pr').val(13);
+                $('#unidad_medida_s').val(13);
+                $('#formulap').val('');
+                $('#formulap').val('Un * ');
+                $('#formulas').val('');
+                $('#formulas').val('Un * ');
+                $('.simples').hide();
+                $('.agrupado').show();
+                $('.asociated').hide();
+                $('.agrupado').prop('hidden', false);
+                $('#botonG').prop('disabled', false);
+              }else if (tipo == 'Asociado') {
+                $('.simples').hide();
+                $('.agrupado').show();
+                $('.asociated').show();
+                $('.agrupado').prop('hidden', false);
+                $('.asociated').prop('hidden', false);
+                $('#asoci').prop('hidden', false);
+                $('#botonG').prop('disabled', false);
+              }else{
+                $('#asoci').prop('hidden', true);
+                $('.asociated').hide();
+                $('.simples').show();
+                $('.simples').prop('hidden', false);
+                $('.agrupado').hide();
+                $('#botonG').prop('disabled', false);
+                $('#botonG').prop('disabled', false);
+                if (data[0]['idf'] != 135) {
+                  $('.productoscompra').fadeIn('fast');
+                  $('.productoscompra').prop('hidden', false);
+                }else{
+                  $('#canti').fadeOut('fast');
+                  $('#canti').prop('hidden', true);
+                  $('.productoscompra').fadeOut('fast');
+                  $('.productoscompra').prop('hidden', true);
+                }
+              }
               /*if (data[0]['cantidad_presentacion'] != null) {
                   $('#canti').show();
                   $('#cantCo').empty();
@@ -752,6 +809,7 @@ function modalUpdate(idP,idT){
               }*/
               var opciones =['0','1'];
               var opcionesPI =['Activo','Inactivo'];
+              $('#status').empty();
                 for (var y = 0; y < opciones.length; y++) {
                     if (data[0][26] == opciones[y]) {
                       //alert(ocultar);
@@ -763,6 +821,33 @@ function modalUpdate(idP,idT){
                                     );
                     }                   
                   }
+            $('#tablafiltraje').DataTable({
+            "ajax": BASE_URL+'/inventario/loadingredientes/'+fam+'/false'+'/'+idT,
+
+            "lengthChange": false,
+            "columns": [
+                { "data": "codigi", className: "tdleft"},
+                { "data": "ingrediente", className: "tdleft"},
+                { "data": "costo", className: "tdright"},
+                { "data": null , className: "tdcenter",
+          render : function(data, type, row) {
+            //var ingr = row['ingrediente'].replace(/ /gi, "@"); 
+               return '<label class="custom-control custom-checkbox" >'+
+                                          '<input type="checkbox" class="custom-control-input" name="mercancia[]" id="id'+row['idi']+'" value="'+row['idi']+'" onclick="add('+row['idi']+','+idT+')">'+
+                                          '<span class="custom-control-indicator check" ></span>'+
+                                        '</label>'
+          }    
+       }                 
+            ],
+            destroy: true,
+            responsive: true
+        });
+      $('#_10').on( 'click', function () {
+          table.page.len( 10 ).draw();
+      } );
+    $('#tablafiltraje').css("width","100%");
+    //vering(999999,ingrediente,idreceta)
+        
               
           })
 
@@ -803,8 +888,8 @@ function codigoPropuesto(familia){
 
 function confirmacionDelete(idp,idt){
   //alert(idp);
-$('#alerta').modal('show');
-$('#cuerpo').empty();
+
+$('#cuerpoi').empty();
 $.ajax({
       url: BASE_URL+'/inventario/modalUpdate/'+idp+'/'+idt,
       type: 'POST',
@@ -812,13 +897,14 @@ $.ajax({
   })
   .done(function(data) {
     //alert(data[0][1]);
-      $('#cuerpo').empty();
-      $('#cuerpo').append(
+      $('#cuerpoi').empty();
+      $('#cuerpoi').append(
         '<div class="alert alert-danger alert-dismissable" style="text-align:left">'+
         'Usted esta por eliminar el producto "'+data[0]['producto']+'" marca "'+data[0]['marca']+'". Realmente desea continuar?<br>Recuerde que eliminar dicho producto puede afectar las recetas en el que este forma parte y de la unidades de negocio que se encuentra asignado.<br>'+
       '<center><button style="margin-right: 3px" class="btn btn-sm btn-outline-success" onclick="eliminarPro('+idp+','+idt+')"><span class="fa fa-check"></span> Si</button>'+
       '<button class="btn btn-sm btn-outline-danger" onclick="cancelar()"><span class="fa fa-remove"></span> No</button></center>'+
       '</div>');
+      $('#alerta').modal('show');
 })
 }
 
@@ -972,10 +1058,10 @@ function infoConversion(idP, idT){
   })
   .done(function(data) {
     $('#alerta').modal('show');
-    $('#cuerpo').empty();
+    $('#cuerpoi').empty();
     $('#t').empty();
     $('#t').append('¡Conversion!');
-    $('#cuerpo').append(
+    $('#cuerpoi').append(
       '<div class="alert alert-info alert-dismissable" style="text-align:left">'+
        '<p>El producto tiene una existencia de: <br>'+data[0]['conversion']+'</p>'+
        '</div>'
@@ -1087,19 +1173,32 @@ function carga(tabla,item,valor,model,idP,idT){
             }else{
               select.append('<option value="'+data[i]['id']+'">'+data[i][1]+'</option>');
             }
-          }else if(item == 'unidad_medida_pr'){
+            idmcom = data2[0]['idUMC'];
+            if (idmcom == 8 || idmcom == 9 || idmcom == 10 || idmcom == 11 || idmcom == 16 || idmcom == 19 || idmcom == 23 ) {
+              $('#canti').fadeIn('slow');
+              $('#canti').prop('hidden', false);
+            }else{
+              $('#canti').fadeOut('fast');        
+            }
+          }else if(item == 'unidad_medida_pr' || item == 'unidad_mp1'){
             if (data[i]['id'] == data2[0]['idUMP']) {
               select.append('<option selected value="'+data[i]['id']+'">'+data[i][1]+'</option>');
             }else{
               select.append('<option value="'+data[i]['id']+'">'+data[i][1]+'</option>');
             }
-          }else if (item == 'unidad_medida_si') {
+          }else if(item == 'tipo_inventario'){
+            if (data[i]['id'] == data2[0]['tipo_inventario_id']) {
+              select.append('<option selected value="'+data[i]['id']+'">'+data[i][1]+'</option>');
+            }else{
+              select.append('<option value="'+data[i]['id']+'">'+data[i][1]+'</option>');
+            }
+          }else if (item == 'unidad_medida_si' || item == 'unidad_ms1') {
             if (data[i]['id'] == data2[0]['idUMS']) {
               select.append('<option selected value="'+data[i]['id']+'">'+data[i][1]+'</option>');
             }else{
               select.append('<option value="'+data[i]['id']+'">'+data[i][1]+'</option>');
             }
-          }else if (item == 'familias') {
+          }else if (item == 'familias' || item == 'sub_familia') {
             if (data[i]['id'] == data2[0]['idf']) {
               select.append('<option selected value="'+data[i]['id']+'">'+data[i][1]+'</option>');
             }else{

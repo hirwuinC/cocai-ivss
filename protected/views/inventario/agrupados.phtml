@@ -35,17 +35,7 @@
   .test + .tooltip.right > .tooltip-arrow {
       border-right: 5px solid #337ab7;
   }
-  .tdleft{
-    text-align: left;
-  }
-  .tdcenter{
-    text-align: center;
-  }
-  .tdright{
-    text-align: right;
-  }
-
-  /*autocomplete style for modal*/
+ /*autocomplete style for modal*/
 .ui-menu .ui-menu-item a {
   font-size: 12px;
 }
@@ -269,8 +259,9 @@
                               
                               <div class="container">
                               <div class="row justify-content-center">
-                                  <div class="col-1">
-                                      <button class="btn btn-sm btn-outline-primary filtro" value="1" id="btnagregar" data-toggle="modal" data-target="#modaling">Agregar ingrediente</button>
+                                  <div class="col-3">
+                                      <button class="btn btn-sm btn-outline-primary filtro" value="1" id="btnagregar" data-toggle="modal" data-target="#modaling">Agregar productos</button>
+                                      <a href="<?php echo BASE_URL; ?>inventario/evaluar/<?php echo $this->tienda[0][0]; ?>" class="btn btn-sm btn-outline-primary filtro">Finalizar</a>
                                   </div>                                  
                                 </div>
                               </div>

@@ -260,7 +260,7 @@ FROM `ingrediente_has_receta` as ixr
             inner join unidad_negocio on unidad_negocio.id = mudn.unidad_negocio_id
             inner join modelo_has_submodelo as mhsm on mhsm.id = unidad_negocio.modelo_has_submodelo_id
             inner join modelo on mhsm.modelo_id = modelo.id
-            where modelo.id = $idm and familia_id = 157";
+            where modelo.id = $idm and familia_id = 135";
             $data = $this->_main->select($query);
             for ($i=0; $i < count($data); $i++) { 
     			if ($data[$i]['idr'] != null) {

@@ -18,6 +18,12 @@
   .notif:hover{
     background-color: #eee;
   } 
+  .breadcrumb-holder{
+    background: linear-gradient(to top left, rgba(255,255,255,.1), rgba(100,180,255,.2));
+  }
+  .breadcrumb{
+    background:transparent;
+  }
 </style>
         <script type="text/javascript">
             jQuery(document).ready(function($) {
@@ -76,26 +82,23 @@
                                               <a href="#inv'.$j.'" data-toggle="collapse" aria-expanded="false" style="margin-left:5px; ">Inventario
                                               <i class="fa fa-list"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
                                               <ul class="collapse list-unstyled" id="inv'.$j.'">
-                                                <li ">
+                                                <li>
                                                   <a href="'.BASE_URL.'inventario/evaluar/'.$id[$j].'" class="subM" style="margin-left:12px; "></i>Consulta de inventario</a>
                                                 </li>
-                                                <li ">
+                                                <li>
                                                   <a href="'.BASE_URL.'inventario/remisionM/'.$id[$j].'" class="subM" style="margin-left:12px; "></i>Remision de mercancia</a>
                                                 </li>
-                                                <li ">
+                                                <li>
                                                   <a href="'.BASE_URL.'inventario/reposicionM/'.$id[$j].'" class="subM" style="margin-left:12px; "></i>Reposicion de mercancia</a>
                                                 </li>
-                                                <li ">
+                                                <li>
                                                   <a href="'.BASE_URL.'inventario/indexk/'.$id[$j].'" class="subM" style="margin-left:12px; "></i>Movimientos de kardex</a>
                                                 </li>
-                                                <li ">
-                                                  <a href="'.BASE_URL.'inventario/inicio/'.$id[$j].'" class="subM" style="margin-left:12px; "></i>Merma</a>
+                                                <li>
+                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$j].'"*/ class="subM" style="margin-left:12px; "></i>Merma</a>
                                                 </li>
-                                                <li ">
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$j].'"*/ class="subM" style="margin-left:12px; "></i>Inventario inicial</a>
-                                                </li>
-                                                <li ">
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$j].'"*/ class="subM" style="margin-left:12px; "></i>Inventario final</a>
+                                                <li>
+                                                  <a href="'.BASE_URL.'inventario/cargarinventario/'.$id[$j].'" class="subM" style="margin-left:12px; "></i>Carga de inventario</a>
                                                 </li>
                                               </ul>  
                                           </li>
@@ -115,16 +118,16 @@
                                             <a href="#admint'.$j.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Administracion
                                               <i class="fa fa-briefcase"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
                                               <ul class="collapse list-unstyled" id="admint'.$j.'">
-                                                <li ">
+                                                <li>
                                                   <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; "></i>Proveedor</a>
                                                 </li>
-                                                <li ">
+                                                <li>
                                                   <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; "></i>Carga factura de compra</a>
                                                 </li>
-                                                <li ">
+                                                <li>
                                                   <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; "></i>Ranking de venta</a>
                                                 </li>
-                                                <li ">
+                                                <li>
                                                   <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; "></i>Reportes</a>
                                                 </li>
                                               </ul>
@@ -147,29 +150,26 @@
                                               <a href="#tiendae'.$p.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Inventario
                                               <i class="fa fa-list"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
                                               <ul class="collapse list-unstyled" id="tiendae'.$p.'">
-                                              <li ">
+                                              <li>
                                                   <a href="'.BASE_URL.'inventario/insert/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; "></i>Crear producto de inventario</a>
                                                 </li>
-                                                <li ">
+                                                <li>
                                                   <a style="margin-left:12px; " href="'.BASE_URL.'inventario/evaluar/'.$menu[$p]['idUd'].'" class="subM"></i>Consulta de inventario</a>
                                                 </li>
-                                                <li ">
+                                                <li>
                                                   <a href="'.BASE_URL.'inventario/reposicionM/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; "></i>Reposicion de mercancia</a>
                                                 </li>
-                                                <li ">
+                                                <li>
                                                   <a style="margin-left:12px; " href="'.BASE_URL.'inventario/asignacionProducto/'.$menu[$p]['idUd'].'" class="subM"></i>Asignacion de productos</a>
                                                 </li>
-                                                <!--<li ">
+                                                <!--<li>
                                                   <a style="margin-left:12px; " href="'.BASE_URL.'inventario/remisionM/'.$menu[$p]['idUd'].'" class="subM"></i>Remision de mercancia</a>
                                                 </li>-->
-                                                <li ">
+                                                <li>
                                                   <a style="margin-left:12px; " href="'.BASE_URL.'inventario/indexk/'.$menu[$p]['idUd'].'" class="subM"></i>Movimientos de kardex</a>
                                                 </li>
-                                                <li ">
+                                                <li>
                                                   <a style="margin-left:12px; " /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM"></i>Merma</a>
-                                                </li>
-                                                <li ">
-                                                  <a style="margin-left:12px; " /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM"></i>Inventario final</a>
                                                 </li>
                                               </ul>  
                                           </li>

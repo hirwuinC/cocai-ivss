@@ -93,7 +93,7 @@
 		public static function getBoxAlert($title, $content, $type) {
 			$messeger = '
 				<div class="alert alert-'.$type.' ">
-					<a class="close" data-dismiss="alert" href="ui_elements.html#"><i class="fa fa-close"></i></a>
+					<a class="close" data-dismiss="alert" href="#"><i class="fa fa-close"></i></a>
 						<h4> <i class="icon-remove-sign"></i>
 							'.$title.'
                         </h4>

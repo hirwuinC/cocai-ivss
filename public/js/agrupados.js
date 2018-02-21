@@ -326,7 +326,7 @@ function agregaring(ingrediente,iding,receta){
 		 	$('#botones').empty();
 		 	$('#modaldelete').modal("show");
 		 	$('#cuerpodelete').empty();
-		 	$('#cuerpodelete').append('<p>Usted está por eliminar el ingrediente '+data[0]['nombre']+' '+data[0]['marca']+' de esta receta. ¿Desea continuar?</p>');
+		 	$('#cuerpodelete').append('<p>Usted está por eliminar el ingrediente '+data[0]['nombre']+' '+data[0]['marca']+' de este agrupado. ¿Desea continuar?</p>');
 		 	$('#botones').append('<button class="btn btn-sm btn-default" value="Cancelar" id="cancelardelete">Cancelar</button><span style="margin-right: 1%; margin-left: 1%; "></span><button class="btn btn-sm btn-primary" value="Continuar" onclick="eliminado('+producto+','+iding+','+idreceta+','+ingrediente+')" id="borra">Continuar</button>  ');
 		 	$('#cancelardelete').click(function(event) {
 				$('#modaldelete').modal("hide");

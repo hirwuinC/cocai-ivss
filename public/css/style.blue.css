@@ -11,6 +11,23 @@ Bootstrapious Boilerplate Template
 *     GENERAL STYLE
 * ==========================================================
 */
+
+  .tdleft{
+    text-align: left;
+  }
+  .tdcenter{
+    text-align: center;
+  }
+  .tdright{
+    text-align: right;
+  }
+  .font11{
+    font-size: 11px;
+  }
+  .font12{
+    font-size: 12px;
+  }
+
 a {
   display: inline-block;
   text-decoration: none;
@@ -156,6 +173,10 @@ h2 {
 
 .display {
   font-weight: 400 !important;
+}
+
+th{
+  font-size: 13px;
 }
 
 input.form-control-custom {

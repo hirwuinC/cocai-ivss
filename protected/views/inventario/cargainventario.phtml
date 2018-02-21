@@ -1,7 +1,7 @@
 <style type="text/css" media="screen">
     .control-label{
         margin-bottom: 0px;
-    }
+    }     
 </style>
 <center>
     <div id="gifcargando">
@@ -11,103 +11,174 @@
 
 <div id="body" hidden>
 <div id="page-wrapper">
-            <div  class="">
+            <div class="">
 
                 <div class="row">
                     <div class="col-lg-12">
                     <div class="card cardH">
+                      <?php $hoy = date('Y-m-d') ?>
+                      <form id="history" class="form-horizontal" role="form"  action="<?php echo BASE_URL; ?>inventario/tomaInventario/"  method="post">
+                      <input type="hidden" id="hoy" value="<?php echo $hoy; ?>">
+                      <input type="hidden" name="tipe" id="tipe" value="">                      
+                      <input type="hidden" name="unidad_n" id="unidad_n" value="">                      
 
                             <div class="card-header" hidden>
-                              <center><h4 ><o id="titulocard">Consulta de inventario</o> <?php $ti=strtolower(str_replace('(PTY)', '', $this->g[0]['tienda'])); echo "[".ucwords($ti)."] Sub-modelo ".$this->g[0]['subM'];  ?></h4></center>
+                              <center><h4 ><o id="titulocard">Carga de inventario</o> <?php $ti=strtolower(str_replace('(PTY)', '', $this->mercancia[0]['tienda'])); echo "[".ucwords($ti)."] Sub-modelo ".$this->mercancia[0]['subM'];  ?></h4></center>
                             </div>
                           
                           <div class="card-block">
                             <div class="row d-flex flex-wrap">
                                 <div class="col-6">
-                                    <h4 class="page-header" style="font-family: Times New Roman, Times, serif; text-align: center">Unidad de negocio <?php echo str_replace('(PTY)', '', $this->g[0]['tienda']); echo '<br> Sub-modelo '.$this->g[0]['subM'];  ?></h4>
+                                    <h4 class="page-header" style="font-family: Times New Roman, Times, serif; text-align: center">Unidad de negocio <?php echo str_replace('(PTY)', '', $this->mercancia[0]['tienda']); echo '<br> Sub-modelo '.$this->mercancia[0]['subM'];  ?></h4>
                                 </div>
                             
                                 <div class="col-6 d-flex justify-content-end">
-                                    <img  style="margin-left:0%;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-fluid" alt="modelo">
+                                    <img  style="margin-left:0%;" src="<?php $model=strtolower($this->mercancia[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-fluid" alt="modelo">
                                 </div>
                             </div>
+                
 
+                  <div class="card-block">
+                    <div id="" class="form-group row ml-3">
+                      <div class="col-xs-12">
+                          <label class="radio-inline ml-3" for=""><input type="radio" name="optradio" class="radiostipo" id="inicial"> Inventario inicial</label>
+                          <label class="radio-inline ml-3" for=""><input type="radio" name="optradio" class="radiostipo" id="final"> Cierre de mes</label>
+                          <label class="radio-inline ml-3" for=""><input type="radio" name="optradio" class="radiostipo" id="otro"> Otro</label>
+                      </div>
+                    </div>
+                    <div id="divcompleto" class="form-group row ml-3" hidden>
+                      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2" id="tt" hidden>
+                          <label class="labels" for="">Tipo de inventario</label><span class="fa fa-remove" style="color: red; float: right;" data-toggle="tooltip" data-placement="top" title="La carga de inventario mensual debe ser realizada el ultimo dia de cada mes" id="error" hidden></span>
+                            <select class="form-control form-control-sm tipo_inv" name="tipo_inventario" id="tipo_inventario">
+                            </select>
+                      </div>
+                      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+                          <label class="labels"  for="">Fecha <o id="fini"></o></label>
+                            <input class="form-control form-control-sm" name="fecha_ini" id="fecha_ini" type="date">
+                      </div>
+                      <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2" id="ffin" hidden>
+                          <label class="labels"  for="">Fecha final</label>
+                            <input class="form-control form-control-sm test" name="fecha_fin" id="fecha_fin" type="date" data-toggle="tooltip" data-placement="bottom" title="el valor debe ser posterior o igual a la fecha de inicio">
+                      </div>
+                    </div>
+                    <div class="container">
+                      <div class="row d-flex justify-content-center">
 
+                          <div class="col-sm-1">
+                            <input  type="button" class="btn btn-sm btn-outline-primary"  id="continuar" value="Continuar">
                             
+                          </div>
+                                <div id="export" class="col-sm-1" style="margin-top: -5px" hidden>
+                                    <input id="exportarExcel" data-toggle="tooltip" data-placement="top" type="image" style="cursor: hand; cursor: pointer; margin-left: 5px;" title="Exportar a excel formato de toma de inventario" type="image" width="35px" height="35px" class="img" src="<?php echo PUBLIC_URL; ?>img/excel.png">
+                                </div>
+<!--                           <div class="col">
+                            <input  type="button" class="btn btn-sm btn-outline-primary"  id="excel" value="Imprimir">
+                          </div> -->
+
+                      </div>
+                    </div>
+                  </div>  
+                  </form>       
+                            <center><div id="check" hidden><img width="45px" height="45px" src="http://localhost/COCAI/public/img/check1.gif" alt="exito"/></div></center>
+                            <div class="alert alert-success" id="actualizado" hidden>
+                                <center><h4>El inventario de fecha: <o id="np"></o> ha sido Cargado con exito y la existencia de los productos ah sido actualizada</h4><br>
+                                <h6>En breve sera redireccionado a la consulta de inventario</h6></center>
+                            </div>
+                            <div class="alert alert-danger" id="faltaxcargar" hidden>
+                                <a class="close" href="#" id="cerraralert"><i class="fa fa-close"></i></a>
+                                <center><h4>Existe al menos un producto sin existencia real cargada.</h4><br>
+                                <h6>Por favor verifique e intente nuevamente</h6></center>
+                            </div>
+
+                            <div class="modal fade " id="alerta2" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                                    <div class="modal-dialog modal-sm" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <div id="t2">Error!</div>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body" >
+
+                                               <div id="cuerpo2"></div>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Aceptar</button>
+                                            </div>
+                                        </div><!-- /.modal-content -->
+                                    </div><!-- /.modal-dialog -->
+                                </div><!-- /.modal -->
+
+
+                            <div id="tablita" hidden>
                             <?php $i = 1; ?> 
                             <div class="dataTable_wrapper">
                              <div class="col-sm-12 table-responsive">
-                                <?php if ($this->g[0]['producto'] === 'vacio'):?>
-                                <table class="table table-sm table-striped table-bordered table-hover" cellspacing="0" width="100%" id="tablaGru">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>                                                    
-                                                <th >Codigo</th>
-                                                <th>Nombre</th> 
-                                                <th >Marca</th>
-                                                <th >Can. Invent</th>
-                                                <th >Ud. Medida</th>
-                                                <th >Familia</th>
-                                                <th >Estatus</th>
-                                                <th >Modificar</th>
-                                                <th >Eliminar</th>
-                                            </tr>
-                                        </thead>
-                                </table> 
-                                    <?php else: ?>
-                                       <table class="table table-sm table-striped table-bordered table-hover" id="tablaGru">
+                                       <table class="table table-sm table-striped table-bordered table-hover" id="tablamercancia">
                                         <thead class="theadH">
                                             <tr>
                                                 <th>#</th>                                                    
                                                 <th >Codigo</th>
-                                                <th>Nombre</th> 
-                                                <th >Marca</th>
+                                                <th >Producto</th>
                                                 <th >Familia</th>
-                                                <th >Existencia</th>
-                                                <th >Estatus</th>
-                                                <th >Acciones</th>
+                                                <th >Exist. teorica</th>
+                                                <th >Exist. real</th>
+                                                <th >Diferencia</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($this->g as $g): ?>
-                                              <?php if ($g['status'] == 1) {
-                                                        $status = 'Inactivo';
-                                                    }else{
-                                                        $status = 'Activo';
-                                                    } ?>
-                                            <tr> 
-                                                <td class="font11" style="text-align:center;"><?php echo $i?></td>
-                                                <td class="font12"><?php echo $g['codigo'];?></td>
-                                                <td class="font12" style="text-align:left"><?php echo $g['producto'];?></td>
-                                                <td class="font12" ><?php echo $g['marca'];?></td>
-                                                <td class="font12" ><?php echo $g['familia'];?></td>  
-                                                <td class="font12" style="text-align:right;"><?php echo $g['stock'].$g['abreviaturaS'].' ';?>
-                                                    <a style="cursor: pointer; cursor: hand;" onclick="infoConversion('<?php echo $g['idP'];?>','<?php echo $g['idT'];?>')"><i data-toggle="tooltip" data-placement="top" title="Ver informacion detallada de la existencia" class="fa fa-info-circle"></i>
-                                                    </a>
-                                                </td>
-                                                <td class="font12" style="text-align:center;"><?php echo $status;?></td>
-
-                                                <th>
-                                                    <center>
-                                                        <a style="cursor: hand; font-size: 14px" class="test" data-toggle="modal" data-target="#prodUpdate" onclick="modalUpdate('<?php echo $g['idP'];?>','<?php echo $g['idT'];?>')">
-                                                            <span  class="fa fa-edit" data-toggle="tooltip" data-placement="top" title="Editar Producto"></span>
-                                                        </a>
-                                                        <!-- <a style="cursor: hand; margin-left: 10px; font-size: 17px" class="test" data-toggle="modal" data-target="#modalreposicion" onclick="compradirecta('<?php echo $g['idP'];?>','<?php echo $g['idT'];?>')">
-                                                            <span data-toggle="tooltip" data-placement="top" title="Reposicion de mercancia por compra directa" class="fa fa-money"></span>
-                                                        </a> -->
-                                                    </center>
-                                                </th>
-
-                                            </tr>
-                                            <?php $i++; ?>
-
-                                            <?php endforeach ?>
                                         </tbody>
                                     </table> 
-                                  <?php endif; ?>
+
                                     <br>
                                                 
+                                     <!-- The Modal -->
+                                      <div class="modal fade" id="modalreal">
+                                        <div class="modal-dialog modal-sm">
+                                          <div class="modal-content">
+                                          
+                                            <!-- Modal Header -->
+                                            <div class="modal-header">
+                                              <h5 class="modal-title" id="mtitle"></h5>
+                                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            </div>
                                             
+                                            <!-- Modal body -->
+                                            <div class="modal-body">
+                                                <div id="" class="form-group row ml-1 mr-1">
+                                                    <div class="col-xs-12" id="compra" hidden>
+                                                      <label class="labels"  for="">Cantidad de <o id="cant1"></o></label>
+                                                        <input type="text" class="form-control form-control-sm monto" name="cantidad1" id="cantidad1" placeholder="ej: 1.000,0000">
+                                                    </div>
+                                                    <div class="col-xs-12" id="consumo" hidden>
+                                                      <label class="labels"  for="">Cantidad de <o id="cant2"></o></label>
+                                                        <input type="text" class="form-control form-control-sm monto" name="cantidad2" id="cantidad2" placeholder="ej: 1.000,0000">
+                                                    </div>
+                                                    <div class="col-xs-12">
+                                                      <label class="labels"  for="">Cantidad de <o id="cant3"></o></label>
+                                                        <input type="text" class="form-control form-control-sm monto" name="cantidad3" id="cantidad3" placeholder="ej: 1.000,0000">
+                                                    </div>
+                                                    <div class="col-xs-12 mt-3">
+                                                        <textarea class="form-control form-control-sm" rows="3" cols="200" name="comentario" id="comentario" placeholder="Observaciones.."></textarea>
+                                                    </div>
+                                                    <input type="hidden" id="idus">
+                                                    <input type="hidden" id="idup">
+                                                    <input type="hidden" id="iduc">
+                                                    <input type="hidden" id="idpro">
+                                                    <input type="hidden" id="idinve">
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Modal footer -->
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
+                                              <button type="button" class="btn btn-sm btn-outline-primary" id="guardarm">Guardar</button>
+                                            </div>
+                                            
+                                          </div>
+                                        </div>
+                                      </div>       
                                     
                                     <!-- <div class="container">
                                         <div class="row ">
@@ -134,9 +205,9 @@
                             <div class="modal-body">
                                 <!-- <input type="text" name="modelo" id="m" hidden value="<?php echo $this->pro[0]['idmodelo'];?>">
                                 <input type="text" name="sub_modelo" id="sm" hidden value="<?php echo $this->pro[0]['sub_modelo_id'];?>"> -->
-                                <input type="text" name="idT" id="idT" hidden value="<?php echo $this->g[0]['idT'];?>">
+                                <input type="text" name="idT" id="idT" hidden value="<?php echo $this->mercancia[0]['idT'];?>">
                                 <input type="text" name="idP" id="idP" hidden >
-                                <input type="text" name="tipo" id="type" hidden>
+                                <input type="text" name="tipo" id="type">
 
                                 <div class="form-group row ">
                                     <div class="col-sm-3">
@@ -278,8 +349,8 @@
                                                   </div>
                                                   <div class="modal-body">
                                                       <form action="<?php  echo BASE_URL;?>grupo/insert" method="post" accept-charset="utf-8">
-                                                          <input type="text" name="modelo" hidden value="<?php echo $this->g[0]['idmodelo']; ?>" >
-                                                          <input type="text" name="submodelo" hidden value="<?php echo $this->g[0]['submodelo_id']; ?>" >
+                                                          <input type="text" name="modelo" hidden value="<?php echo $this->mercancia[0]['idmodelo']; ?>" >
+                                                          <input type="text" name="submodelo" hidden value="<?php echo $this->mercancia[0]['submodelo_id']; ?>" >
                                                           <div class="col-sm-12">
                                                             <div class="col-sm-2">
                                                               <label class="control-label" style="float: left;">Orden</label>
@@ -340,35 +411,44 @@
                                       </div><!-- /.modal -->
                                       <!-- FIN DE LA MODAL DEL LA FUNCION MODIFICAR DE LOS SUB-MODELOS -->
                                        
-                                        <!-- MODAL DE CONFIRMACION PARA ELIMINAR-->
-                                        <div class="modal fade " id="alerta" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-                                            <div class="modal-dialog modal-sm" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <div id="t"></div>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body" >
+                                <!-- MODAL DE CONFIRMACION PARA ELIMINAR-->
+                                <div class="modal fade " id="alerta" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                                    <div class="modal-dialog modal-md" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <div id="t"></div>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body" >
 
-                                                       <div id="cuerpo"></div><br><br>
-                                                        <center>    
-                                                            <div id="espera" hidden>
-                                                                <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
-                                                            </div>
-                                                            <div id="exito" hidden>
-                                                                <img width="140px" height="140px" class="img" src="<?php echo PUBLIC_URL; ?>img/check1.gif">
-                                                            </div>
-                                                        </center>
-                                                    </div>   
-                                                </div><!-- /.modal-content -->
-                                            </div><!-- /.modal-dialog -->
-                                        </div><!-- /.modal -->
-                                        <!-- FIN DE LA MODAL DE CONFIRMACION -->
+                                               <div id="cuerpo"></div>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
+                                              <button type="button" class="btn btn-sm btn-outline-primary" id="guardaralerta">Continuar</button>
+                                            </div>
+                                        </div><!-- /.modal-content -->
+                                    </div><!-- /.modal-dialog -->
+                                </div><!-- /.modal -->
+                                <!-- FIN DE LA MODAL DE CONFIRMACION -->
+                                
+                                
+
 
                                 </div>
                             </div>
+                            <div class="container">
+                              <div class="row d-flex justify-content-center">
+                                <div>
+                                  <div class="col">
+                                    <input  type="button" class="btn btn-sm btn-outline-primary"  id="finalizar" value="Finalizar">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
                         </div>
                         </div>
                     </div>

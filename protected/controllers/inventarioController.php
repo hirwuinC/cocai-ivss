@@ -38,7 +38,7 @@
 		}
 
 		function datostienda($tienda){
-			$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.marca, mc.descripcion, format(mc.existencia,4,'de_DE') as stock, mc.existencia, mercancia.contenido_neto, format(mc.stock_min,4,'de_DE') as stockm, mc.stock_min, format(mc.stock_max,4,'de_DE') as stockm2, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.referencia as 'familia', submodelo.nombre as 'subM', model.nombre as modelo, model.id as idm 
+			$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.marca, mc.descripcion, format(mc.existencia,4,'de_DE') as stock, mc.existencia, mercancia.contenido_neto, format(mc.stock_min,4,'de_DE') as stockm, mc.stock_min, format(mc.stock_max,4,'de_DE') as stockm2, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.referencia as 'familia', submodelo.nombre as 'subM', model.nombre as modelo, model.id as idm, mercancia.tipo_inventario_id 
 			FROM `unidad_negocio` 
 			inner join mercancia_has_unidad_negocio as mc on mc.unidad_negocio_id = unidad_negocio.id 
 			inner join mercancia on mercancia.id = mc.mercancia_id 
@@ -66,6 +66,7 @@
             Session::time();
 			$valores = $this->datostienda($tienda); #print_r($valores);
 			$cantidad= count($valores);
+			//print_r($valores);exit();
 			if ($cantidad > 0) {
 				$this->_view->g = $valores;	
 				$this->_view->render('stockT', 'grupo', '','');
@@ -83,6 +84,7 @@
 		function stockE($id){
 			$this->_view->setJs(array('js/jquery-1.12.4.min'));
     		$this->_view->setJs(array('js/inventario'));
+    		$this->_view->setJs(array('js/proasociados'));
     		$this->_view->setCss(array('datatable/css/bootstrap4.min'));
 		    $this->_view->setjs(array('datatable/js/jquerydatatable.min'));
 		    $this->_view->setJs(array('datatable/js/datatable.b4.min'));
@@ -205,12 +207,12 @@
                		  }
                		  if (isset($_POST['unidad_medida_c'])) {
                		  	$umc_id = $_POST['unidad_medida_c'];
-               		  	$query = "INSERT INTO `mercancia`(`codigo`, `codigo_anterior`, `nombre`, `marca`, `precio_unitario`, `contenido_neto`, `cantidad_presentacion`, `formula_c`, `formula_p`, `formula_s`, `familia_id`, `sub_familia_id`, `unidad_medida_compra_id`, `unidad_medida_consumo_id`, `unidad_medida_sistema_id`, `peso_escurrido`, `descripcion`, `exento_impuesto`,tipo_mercancia_id) 
-					    	values ('".$_POST['codigo']."','".$campos[2]."','".$_POST['nombre']."','".$_POST['marca']."',".$precioU.",".$contenidoN.",".$_POST['contenidoC'].",'".$_POST['formulac']."','".$campos[0]."','".$campos[1]."','".$_POST['familia']."',".$subf.",".$_POST['unidad_medida_c'].",".$_POST['unidad_medida_p'].",".$_POST['unidad_medida_s'].",".$peso_esc.",'".$campos[8]."',".$campos[6].",'".$_POST['tipo_ingrediente']."')";
+               		  	$query = "INSERT INTO `mercancia`(`codigo`, `codigo_anterior`, `nombre`, `marca`, `precio_unitario`, `contenido_neto`, `cantidad_presentacion`, `formula_c`, `formula_p`, `formula_s`, `familia_id`, `sub_familia_id`, `unidad_medida_compra_id`, `unidad_medida_consumo_id`, `unidad_medida_sistema_id`, `peso_escurrido`, `descripcion`, `exento_impuesto`,tipo_mercancia_id,tipo_inventario_id) 
+					    	values ('".$_POST['codigo']."','".$campos[2]."','".$_POST['nombre']."','".$_POST['marca']."',".$precioU.",".$contenidoN.",".$_POST['contenidoC'].",'".$_POST['formulac']."','".$campos[0]."','".$campos[1]."','".$_POST['familia']."',".$subf.",".$_POST['unidad_medida_c'].",".$_POST['unidad_medida_p'].",".$_POST['unidad_medida_s'].",".$peso_esc.",'".$campos[8]."',".$campos[6].",'".$_POST['tipo_ingrediente']."','".$_POST['tipo_inventario']."')";
 							$idP=$this->_main->insertar($query);
                		  }else{
-               		  	$query = "INSERT INTO `mercancia`(`codigo`, `codigo_anterior`, `nombre`, `marca`,  `formula_p`, `formula_s`, `familia_id`, `sub_familia_id`, `unidad_medida_consumo_id`, `unidad_medida_sistema_id`, `peso_escurrido`, `descripcion`,tipo_mercancia_id) 
-					    	values ('".$_POST['codigo']."','".$campos[2]."','".$_POST['nombre']."','".$mark."','".$campos[0]."','".$campos[1]."','".$_POST['familia']."',".$subf.",".$_POST['unidad_medida_p'].",".$_POST['unidad_medida_s'].",".$peso_esc.",'".$detalle."','".$_POST['tipo_ingrediente']."')";
+               		  	$query = "INSERT INTO `mercancia`(`codigo`, `codigo_anterior`, `nombre`, `marca`,  `formula_p`, `formula_s`, `familia_id`, `sub_familia_id`, `unidad_medida_consumo_id`, `unidad_medida_sistema_id`, `peso_escurrido`, `descripcion`,tipo_mercancia_id,tipo_inventario_id) 
+					    	values ('".$_POST['codigo']."','".$campos[2]."','".$_POST['nombre']."','".$mark."','".$campos[0]."','".$campos[1]."','".$_POST['familia']."',".$subf.",".$_POST['unidad_medida_p'].",".$_POST['unidad_medida_s'].",".$peso_esc.",'".$detalle."','".$_POST['tipo_ingrediente']."','".$_POST['tipo_inventario']."')";
 							$idP=$this->_main->insertar($query);
                		  }
                 	 
@@ -233,7 +235,7 @@
                		 	$motivok = 'Producto semi terminado, registrado en sistema';
                		 }
 	                $accion = 'Creado'; //var_dump($conversion); exit();
-				    $query = "INSERT INTO `mercancia`(`codigo`, `codigo_anterior`, `nombre`, `marca`, `precio_unitario`, `contenido_neto`, `cantidad_presentacion`, `formula_c`, `formula_p`, `formula_s`, `familia_id`, `unidad_medida_compra_id`, `unidad_medida_consumo_id`, `unidad_medida_sistema_id`,tipo_mercancia_id) values ('".$_POST['codigo']."','".$_POST['codigo_anterior']."','".$_POST['nombre']."','".$_POST['marca']."','".$precioU."',".$contenidoN.",".$campos[5].",'".$_POST['formulac']."','".$campos[0]."','".$campos[1]."',".$_POST['familia'].",".$_POST['unidad_medida_c'].",".$_POST['unidad_medida_p'].",".$_POST['unidad_medida_s'].",'".$_POST['tipo_ingrediente']."')";
+				    $query = "INSERT INTO `mercancia`(`codigo`, `codigo_anterior`, `nombre`, `marca`, `precio_unitario`, `contenido_neto`, `cantidad_presentacion`, `formula_c`, `formula_p`, `formula_s`, `familia_id`, `unidad_medida_compra_id`, `unidad_medida_consumo_id`, `unidad_medida_sistema_id`,tipo_mercancia_id,tipo_inventario_id) values ('".$_POST['codigo']."','".$_POST['codigo_anterior']."','".$_POST['nombre']."','".$_POST['marca']."','".$precioU."',".$contenidoN.",".$campos[5].",'".$_POST['formulac']."','".$campos[0]."','".$campos[1]."',".$_POST['familia'].",".$_POST['unidad_medida_c'].",".$_POST['unidad_medida_p'].",".$_POST['unidad_medida_s'].",'".$_POST['tipo_ingrediente']."','".$_POST['tipo_inventario']."')";
 					$idP=$this->_main->insertar($query); 
 				    $query = "INSERT INTO `mercancia_has_unidad_negocio`(`mercancia_id`, `unidad_negocio_id`, `stock_min`, `stock_max`, `existencia`, `descripcion`, `status`) VALUES (".$idP.",".$_POST['idT'].",".$stmin.",".$stmax.",".$conversion.",'".$detalle."',".$campos[7].")";
 					$this->_main->insertar($query);
@@ -241,10 +243,10 @@
 				}
 				
 					$this->insertProveedor($idP);
-					$this->log($idP,$_POST['idT'],$accion);
-					$this->kardex($conversion,123,131,$idP,$_POST['idT'],$_POST['unidad_medida_s'],$motivok);
+					$this->_main->log($idP,$_POST['idT'],$accion);
+					$this->_main->kardex($conversion,123,131,$idP,$_POST['idT'],$_POST['unidad_medida_s'],$motivok);
 					if ($_POST['tipo_ingrediente'] == 161) {
-						$query = "INSERT INTO `cocai`.`receta` (`nombre`, `costo`, `rendimiento`, `unidad_medida_id`) VALUES ('".$_POST['nombre']."', NULL, '0.0000', '0')";
+						$query = "INSERT INTO `receta` (`nombre`, `costo`, `rendimiento`, `unidad_medida_id`) VALUES ('".$_POST['nombre']."', NULL, '0.0000', '0')";
 						$idR=$this->_main->insertar($query);
 						$query ="UPDATE `mercancia` SET `receta_id`=$idR WHERE mercancia.id = $idP";
 						$this->_main->modificar($query);
@@ -252,6 +254,7 @@
 						$query = "INSERT INTO `modelo_has_receta`(`modelo_id`, `receta_id`) VALUES ('".$datost[0]['modelo']."','".$idr."')";
     					$idrm = $this->_main->insertar($query);*/
 						$fam = $_POST['familia'];
+						$this->_view->tienda = $_POST['idT'];
 						$this->_view->redirect('inventario/agrupados/'.$_POST['idT'].'/'.$idP.'/'.$fam);
 
 					}else{
@@ -263,7 +266,8 @@
 								$costot = $costot+$_SESSION['carrito2'][$h]['precio'];
 								$costopromedio = $costot/($cont);
 								$existente = $existente+$_SESSION['carrito2'][$h]['existencia'];
-							
+								$query = "UPDATE `mercancia` SET `asociado_id`='".$idP."' WHERE mercancia.id = '".$_SESSION['carrito2'][$h]['id']."'";
+								$this->_main->modificar($query);
 							}
 							$query = "UPDATE `mercancia` SET `precio_unitario`='".$costopromedio."' WHERE mercancia.id = $idP";
 							$this->_main->modificar($query);
@@ -424,17 +428,7 @@
 		}
 
 
-		function log($idP,$idT,$accion){
-    		#echo $idP.' '.$idT.' '.$accion;
-	        $referencia='Producto';
-	        $fecha = date ('Y-m-d');
-	        $hora = date ('h:i:s');
-	        $user =Session::modelo('idUsuario'); #print_r($user); exit();
-	        $query = "SELECT nombre FROM `mercancia` WHERE id = $idP";
-	        $producto = $this->_main->select($query); #print_r($producto); echo "<br>"; exit();
-	        $query = "INSERT INTO `log`(`fecha`, `hora`, `referencia`, `nombre`, `accion`, `usuario` , `unidad_negocio_id`) VALUES ('".$fecha."','".$hora."','".$referencia."','".$producto[0]['nombre']."','".$accion."','".$user[0]['name'].' '.$user[0]['apellido']."' , $idT)"; 
-	        $this->_main->insertar($query);
-    	}
+		
 
 		function insertProveedor($idP){
 			if (isset($_SESSION['carrito'])) {
@@ -459,16 +453,17 @@
 
 		function modalUpdate($idP,$idT){
 			#ESTA FUNCION ME PERMITE CARGAR LA INFO DEL PRODUCTO A EDITAR Y LA CONVERSION DE LA UNIDAD MINIMA A LA DE COMPRA Y PRESENTACION.
-			$query = "SELECT mercancia.id as 'idP', mercancia.codigo, mercancia.codigo_anterior, mercancia.nombre as 'producto', mercancia.marca, mercancia.contenido_neto, mercancia.formula_c, mercancia.formula_p, mercancia.formula_s, mercancia.cantidad_presentacion,  mc.existencia, mc.stock_min, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.id as 'idf', ref.referencia as 'familia', mc.status FROM `mercancia` 
+			$query = "SELECT mercancia.id as 'idP', mercancia.codigo, mercancia.codigo_anterior, mercancia.nombre as 'producto', mercancia.marca, mercancia.contenido_neto, mercancia.formula_c, mercancia.formula_p, mercancia.formula_s, mercancia.cantidad_presentacion,  mc.existencia, mc.stock_min, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.id as 'idf', ref.referencia as 'familia', mc.status, asociado_id, tipo_inventario_id, tipo_mercancia_id, ref2.referencia as tipo_ingrediente, mercancia.descripcion FROM `mercancia` 
 						inner join mercancia_has_unidad_negocio as mc on mc.mercancia_id = mercancia.id 
 						inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_sistema_id
 						inner join unidad_medida as unidad_presentacion on unidad_presentacion.id = mercancia.unidad_medida_consumo_id 
 						left join unidad_medida as unidad_compra on unidad_compra.id = mercancia.unidad_medida_compra_id 
-						inner join referencia as ref on ref.id = mercancia.familia_id 
+						inner join referencia as ref on ref.id = mercancia.familia_id
+						inner join referencia as ref2 on ref2.id = mercancia.tipo_mercancia_id
 						WHERE mercancia.id = $idP and mc.unidad_negocio_id = $idT order by ref.referencia ASC"; 
 			$data = $this->_main->select($query);
 			
-				$producto = Controller::conversion($data);
+			$producto = Controller::conversion($data);
 			
 			
 			echo json_encode($producto);
@@ -533,13 +528,32 @@
 				}
                 
                 $this->entradaOsalida($_POST['idP'],$_POST['idT'],$existencia, $_POST['unidad_medida_si']);
-                
-                $query = "UPDATE `mercancia` SET `codigo`='".$_POST['codigo']."',`codigo_anterior`='".$_POST['codigo_tcr']."',`nombre`='".$_POST['nombre']."',`marca`='".$_POST['marca']."',`precio_unitario`='".$precioU."',`contenido_neto`='".$contenidoN."',`cantidad_presentacion`='".$_POST['cantidad']."',`formula_c`='".$_POST['formulac']."',`formula_p`='".$_POST['formulap']."',`formula_s`='".$_POST['formulas']."',`familia_id`=".$_POST['familia_id'].",`unidad_medida_compra_id`=".$_POST['unidad_medida_co'].",`unidad_medida_consumo_id`=".$_POST['unidad_medida_pr'].",`unidad_medida_sistema_id`=".$_POST['unidad_medida_si'].",peso_escurrido = '".$peso_esc."' WHERE `id`= ".$_POST['idP']."";
+                if (!isset($_POST['subfamilia'])) {
+                	$subf = 'NULL';
+                }else{
+                	$subf = $_POST['subfamilia'];
+                }
+                if ($_POST['tipo_ingrediente'] == 161 or $_POST['tipo_ingrediente'] == 162 or $_POST['familia_id'] == 135) {
+                	$query = "UPDATE `mercancia` SET `codigo`='".$_POST['codigo']."',`codigo_anterior`='".$_POST['codigo_tcr']."',`nombre`='".$_POST['nombre']."',`marca`='".$_POST['marca']."',`formula_p`='".$_POST['formulap']."',`formula_s`='".$_POST['formulas']."',`familia_id`=".$_POST['familia_id'].",`sub_familia_id`=".$subf.",`unidad_medida_consumo_id`=".$_POST['unidad_medida_pr'].",`unidad_medida_sistema_id`=".$_POST['unidad_medida_si'].",tipo_inventario_id = '".$_POST['tipo_inventario']."',descripcion = '".$_POST['descripcion2']."' WHERE `id`= ".$_POST['idP']."";
                 $this->_main->modificar($query);
+                /*quitar campos de compra*/
+                }else {
+                $query = "UPDATE `mercancia` SET `codigo`='".$_POST['codigo']."',`codigo_anterior`='".$_POST['codigo_tcr']."',`nombre`='".$_POST['nombre']."',`marca`='".$_POST['marca']."',`precio_unitario`='".$precioU."',`contenido_neto`='".$contenidoN."',`cantidad_presentacion`='".$_POST['cantidad']."',`formula_c`='".$_POST['formulac']."',`formula_p`='".$_POST['formulap']."',`formula_s`='".$_POST['formulas']."',`familia_id`=".$_POST['familia_id'].",`sub_familia_id`=".$subf.",`unidad_medida_compra_id`=".$_POST['unidad_medida_co'].",`unidad_medida_consumo_id`=".$_POST['unidad_medida_pr'].",`unidad_medida_sistema_id`=".$_POST['unidad_medida_si'].",peso_escurrido = '".$peso_esc."', tipo_inventario_id = '".$_POST['tipo_inventario']."',descripcion = '".$_POST['descripcion2']."' WHERE `id`= ".$_POST['idP']."";
+                $this->_main->modificar($query);
+                }
+
+            if ($_POST['tipo_ingrediente'] == 162) {
+					$cont = count($_SESSION['carrito2']);
+                for ($h=0; $h < $cont; $h++) { 
+					$query = "UPDATE `mercancia` SET `asociado_id`=".$_POST['idP']." WHERE mercancia.id = '".$_SESSION['carrito2'][$h]['id']."'";
+					$this->_main->modificar($query);
+				}
+			}
+                
                 $query = "UPDATE `mercancia_has_unidad_negocio` SET `existencia`='".$existencia."',`stock_min`='".$stmin."',`stock_max`='".$stmax."',`status`=".$_POST['status']." WHERE `mercancia_id`= ".$_POST['idP']." and unidad_negocio_id = ".$_POST['idT']."";
                 $this->_main->modificar($query);
                 $accion='Modificado'; 
-                $this->log($_POST['idP'],$_POST['idT'],$accion);
+                $this->_main->log($_POST['idP'],$_POST['idT'],$accion);
                 $this->_view->redirect('inventario/evaluar/'.$_POST['idT']);
 
             }else{
@@ -557,10 +571,10 @@
         			$descripcion= $description;
         		}else{
         			$motivo = 133;
-        			$descripcion='Error cargando los datos del producto';
+        			$descripcion='registo de producto en sistema';
         		}
         		$tipoM = 132;
-        		$this->kardex($existencia,$motivo,$tipoM,$idP,$idT,$unidad,$descripcion);
+        		$this->_main->kardex($existencia,$motivo,$tipoM,$idP,$idT,$unidad,$descripcion);
         	}elseif ($existencia > $dato) {
         		if ($motivo != false and $descripcion != false) {
         			$motivo = $motive;
@@ -570,7 +584,7 @@
         			$descripcion='Compra';
         		}
         		$tipoM = 131;
-        		$this->kardex($existencia,$motivo,$tipoM,$idP,$idT,$unidad,$descripcion);
+        		$this->_main->kardex($existencia,$motivo,$tipoM,$idP,$idT,$unidad,$descripcion);
         	}
         }
 
@@ -629,7 +643,7 @@
             if ($lista > 0){
                 $query ="UPDATE ingrediente_has_receta set ingrediente_id = NULL where ingrediente_id = $idP";
                 $this->_main->modificar($query);
-                $this->log($idP,$idT,$accion);
+                $this->_main->log($idP,$idT,$accion);
                 $query ="DELETE FROM `mercancia_has_unidad_negocio` WHERE mercancia_id = $idP";
                 $resulta=$this->_main->eliminar($query);
                 
@@ -644,7 +658,7 @@
 	                echo json_encode($js);
 	            }
             }else{
-            	$this->log($idP,$idT,$accion);
+            	$this->_main->log($idP,$idT,$accion);
             	$query = "DELETE FROM `mercancia_has_unidad_negocio` WHERE mercancia_id = $idP";
                 $resultado=$this->_main->eliminar($query);
                 
@@ -834,15 +848,7 @@ FROM notificacion_has_remision
 
     	}
 
-    	function kardex($cantidad,$motivo,$tipoM,$idP,$idT,$unidad,$descripcion){
-	    	$fecha = date ('Y-m-d');
-	        $hora = date ('h:i:s');
-	        $user =Session::modelo('idUsuario'); #echo $idUser; exit();
-	        $query = "SELECT nombre FROM `mercancia` WHERE id = $idP";
-	        $producto = $this->_main->select($query); //print_r($pro); echo "<br>";
-	        $query = "INSERT INTO `kardex`(`fecha`, `hora`, `cantidad`, `descripcion`, `tipo_movimiento_id`, `mercancia_id`, `unidad_negocio_id`, `usuario_id`, `unidad_medida_id`, `motivo_id`) VALUES ('".$fecha."','".$hora."',".$cantidad.",'".$descripcion."','".$tipoM."',".$idP.",".$idT.",".$user[0]['id'].",$unidad,'".$motivo."')";
-    		$producto = $this->_main->insertar($query);
-    	}
+    	
 
     	function remisionM($id,$success = false){
     		$this->_view->setJs(array('js/jquery-1.12.4.min'));
@@ -950,7 +956,7 @@ FROM notificacion_has_remision
 
 	    		$this->entradaOsalida($_POST['idP'],$_POST['idT'],$incremento, $_POST['unidad_medida_si'],$_POST['motivo'],$_POST['descripcion']); 
     			$accion='Compra directa'; 
-                $this->log($_POST['idP'],$_POST['idT'],$accion);
+                $this->_main->log($_POST['idP'],$_POST['idT'],$accion);
                 $this->_view->redirect('inventario/evaluar/'.$_POST['idT']);
 
             }else{
@@ -1194,7 +1200,7 @@ FROM notificacion_has_remision
 		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
 		    $this->_view->setJs(array('datatable/js/tabla'));
 		    
-    		$query = "SELECT unidad_negocio.id as idU, unidad_negocio.nombre as udn, modelo.nombre as modelo From unidad_negocio
+    		$query = "SELECT unidad_negocio.id as idU, unidad_negocio.nombre as udn, modelo.nombre as modelo, empresa_id From unidad_negocio
     		left join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
       		left join modelo on modelo.id = modelo_has_submodelo.modelo_id where unidad_negocio.id = $id";
     		$mo = $this->_main->select($query);
@@ -1202,55 +1208,43 @@ FROM notificacion_has_remision
     		$this->_view->render('kardex', 'inventario', '',''); 	
     	}
 
-    	function consultarkardex($fechaini,$fechafin,$tipom,$motivo,$idU){
+    	function consultarkardex($fechaini,$fechafin,$tipom,$motivo,$idU,$prod){
     		//echo $idU."<br><br>";
-    		if ($idU != 59) {
+    		$query = "SELECT empresa_id From unidad_negocio where unidad_negocio.id = $idU";
+    		$empresa = $this->_main->select($query);
+    		//print_r($empresa);
+    		if (!is_null($empresa[0][0])) {
     			 $cadena = "and kardex.unidad_negocio_id = ".$idU;
     		}else{
-    			 $cadena = 'and kardex.unidad_negocio_id is not null';
+    			 $cadena = "and unidad_negocio.empresa_id = ".$idU." or unidad_negocio.id = ".$idU."";
     		}
-    		if ($tipom == 'false' and $motivo == 'false') {
-    		$query="SELECT fecha, DATE_FORMAT(hora, '%r') as hora, CONCAT(cantidad, ' ', unidad_medida.abreviatura) as cantidad, kardex.descripcion, tipo_movimiento_id as idtm, mercancia_id as idmer, usuario_id as idUs, unidad_medida_id as idum, motivo_id as idmot, referencia.referencia as tipomov, CONCAT(mercancia.nombre, ' ', mercancia.marca) As mercancia, CONCAT(usuario.nombre, ' ', usuario.apellido) As Nombre, unidad_medida.unidad,  ref.referencia as motivo, ref1.referencia as familia, unidad_negocio.id as idt, unidad_negocio.nombre as tienda
-    			FROM `kardex` 
-    			inner join referencia on referencia.id = tipo_movimiento_id 
-    			inner join mercancia on mercancia.id = kardex.mercancia_id 
-    			inner join usuario on usuario.id = kardex.usuario_id 
-    			inner join unidad_medida on unidad_medida.id = kardex.unidad_medida_id 
-    			inner join referencia as ref on ref.id = kardex.motivo_id 
-    			inner join referencia as ref1 on ref1.id = mercancia.familia_id
-                inner join unidad_negocio on kardex.unidad_negocio_id = unidad_negocio.id
-    			WHERE fecha BETWEEN '".$fechaini."' and '".$fechafin."' $cadena ";
-    		$data = $this->_main->select($query);
 
-    		}else if ($motivo == 'false' and $tipom != 'false') {
-    			$query="SELECT fecha, DATE_FORMAT(hora, '%r') as hora, CONCAT(cantidad, ' ', unidad_medida.abreviatura) as cantidad, kardex.descripcion, tipo_movimiento_id as idtm, mercancia_id as idmer, usuario_id as idUs, unidad_medida_id as idum, motivo_id as idmot, referencia.referencia as tipomov, CONCAT(mercancia.nombre, ' ', mercancia.marca) As mercancia, CONCAT(usuario.nombre, ' ', usuario.apellido) As Nombre, unidad_medida.unidad,  ref.referencia as motivo, ref1.referencia as familia, unidad_negocio.id as idt, unidad_negocio.nombre as tienda
-    			FROM `kardex` 
-    			inner join referencia on referencia.id = tipo_movimiento_id 
-    			inner join mercancia on mercancia.id = kardex.mercancia_id 
-    			inner join usuario on usuario.id = kardex.usuario_id 
-    			inner join unidad_medida on unidad_medida.id = kardex.unidad_medida_id 
-    			inner join referencia as ref on ref.id = kardex.motivo_id 
-    			inner join referencia as ref1 on ref1.id = mercancia.familia_id
-                inner join unidad_negocio on kardex.unidad_negocio_id = unidad_negocio.id
-    			WHERE fecha BETWEEN '".$fechaini."' and '".$fechafin."' and tipo_movimiento_id = $tipom $cadena";
-    		$data = $this->_main->select($query);
-    		
-
-    		}else if ($tipom != 'false' and $motivo != 'false') {
-    			$query="SELECT fecha, DATE_FORMAT(hora, '%r') as hora, CONCAT(cantidad, ' ', unidad_medida.abreviatura) as cantidad, mercancia.descripcion, tipo_movimiento_id as idtm, mercancia_id as idmer, usuario_id as idUs, unidad_medida_id as idum, motivo_id as idmot, referencia.referencia as tipomov, CONCAT(mercancia.nombre, ' ', mercancia.marca) As mercancia, CONCAT(usuario.nombre, ' ', usuario.apellido) As Nombre, unidad_medida.unidad,  ref.referencia as motivo, ref1.referencia as familia, unidad_negocio.id as idt, unidad_negocio.nombre as tienda
-    			FROM `kardex` 
-    			inner join referencia on referencia.id = tipo_movimiento_id 
-    			inner join mercancia on mercancia.id = kardex.mercancia_id 
-    			inner join usuario on usuario.id = kardex.usuario_id 
-    			inner join unidad_medida on unidad_medida.id = kardex.unidad_medida_id 
-    			inner join referencia as ref on ref.id = kardex.motivo_id 
-    			inner join referencia as ref1 on ref1.id = mercancia.familia_id
-                inner join unidad_negocio on kardex.unidad_negocio_id = unidad_negocio.id
-    			WHERE fecha BETWEEN '".$fechaini."' and '".$fechafin."' and tipo_movimiento_id = $tipom and motivo_id = $motivo $cadena";
-    		$data = $this->_main->select($query);
+    		if ($prod != 'false' and $tipom == 'false' and $motivo == 'false') {
+    			$condicion = "and kardex.mercancia_id = $prod";
+    		}else if ($prod != 'false' and $motivo == 'false' and $tipom != 'false') {
+    			$condicion = "and kardex.mercancia_id = $prod and tipo_movimiento_id = $tipom";
+    		}else if ($prod != 'false' and $tipom != 'false' and $motivo != 'false') {
+    			$condicion = "and kardex.mercancia_id = $prod and tipo_movimiento_id = $tipom and motivo_id = $motivo";
+    		}else if ($prod == 'false' and $motivo == 'false' and $tipom != 'false') {
+    			$condicion = "and tipo_movimiento_id = $tipom";
+    		}else if ($prod == 'false' and $tipom != 'false' and $motivo != 'false') {
+    			$condicion = "and tipo_movimiento_id = $tipom and motivo_id = $motivo";
+    		}else{
+    			$condicion = "";
     		}
 
     		
+    		$query="SELECT DISTINCT fecha, DATE_FORMAT(hora, '%r') as hora, format(kardex.cantidad,4,'de_DE') as cantidad, kardex.descripcion, tipo_movimiento_id as idtm, kardex.mercancia_id as idmer, usuario_id as idUs, unidad_medida_id as idum, motivo_id as idmot, referencia.referencia as tipomov, CONCAT(mercancia.nombre, ' ', mercancia.marca) As mercancia, CONCAT(usuario.nombre, ' ', usuario.apellido) As Nombre, unidad_medida.unidad, ref.referencia as motivo, ref1.referencia as familia, unidad_negocio.id as idt, lower(unidad_negocio.nombre) as tienda, format(kardex.existencia,4,'de_DE') as stock, unidad_medida.abreviatura 
+					FROM `kardex` 
+					inner join referencia on referencia.id = tipo_movimiento_id 
+					inner join mercancia on mercancia.id = kardex.mercancia_id 
+					inner join usuario on usuario.id = kardex.usuario_id 
+					inner join unidad_medida on unidad_medida.id = kardex.unidad_medida_id 
+					inner join referencia as ref on ref.id = kardex.motivo_id 
+					inner join referencia as ref1 on ref1.id = mercancia.familia_id 
+					inner join unidad_negocio on kardex.unidad_negocio_id = unidad_negocio.id
+    			WHERE fecha BETWEEN '".$fechaini."' and '".$fechafin."' $cadena $condicion";
+    		$data = $this->_main->select($query);    		
     		$response = array("data"=>$data);
     		//print_r($response);
     		echo json_encode($response);
@@ -1665,6 +1659,251 @@ FROM notificacion_has_remision
 		$borrado = $this->_main->eliminar($query);  		
 		echo json_encode($borrado);
     }
+
+    function cargarinventario($id){
+    	$this->_view->setJs(array('js/jquery-1.12.4.min'));
+		$this->_view->setJs(array('js/inventario'));
+		$this->_view->setJs(array('js/cargainventario'));
+		$this->_view->setCss(array('datatable/css/bootstrap4.min'));
+	    $this->_view->setjs(array('datatable/js/jquerydatatable.min'));
+	    $this->_view->setJs(array('datatable/js/datatable.b4.min'));
+	    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
+	    $this->_view->setJs(array('datatable/js/tabla'));
+    	$datos = $this->datostienda($id);
+    	$this->_view->mercancia = $datos;
+    	$this->_view->render('cargainventario', 'inventario', '','');
+    }
+
+	public function validarfechas($tipo,$fecha){
+        /*$ obtener ultimo dia del mes de la fecha que le pase como parametro*/
+        switch ($tipo) {
+            case '164':
+                $fechaminima = $fecha;
+                $fechamaxima = $fecha;
+                break;
+
+            case '165':
+                $fechaminima = $fecha;
+                $fechamaxima = strtotime ( '+9 day' , strtotime ( $fecha ) ) ;
+                $fechamaxima = date ( 'Y-m-d' , $fechamaxima );
+                break;
+            
+            default:
+            	$fi = new DateTime($fecha);
+				$fi->modify('first day of this month');
+            	$ff = new DateTime($fecha);
+				$ff->modify('last day of this month');
+				//echo $fi->format('Y-m-d');
+                $fechaminima = $fi->format('Y-m-d');
+                $fechamaxima = $ff->format('Y-m-d');
+            break;
+        }
+        $valores = array('fechai' => $fechaminima, 'fechaf' =>$fechamaxima);
+
+        echo json_encode($valores);
+    }
+
+    public function validarCarga($idtipo,$fecha1,$fecha2,$idt){
+    	$query = "SELECT * From inventario where fecha_inicial = '".$fecha1."' and fecha_final = '".$fecha2."' and tipo_inventario = $idtipo and unidad_negocio_id = $idt";
+    	$data = $this->_main->select($query);
+    	echo json_encode($data);
+    }
+
+ 	public function insertIventario($idtipo,$fecha1,$fecha2,$idt){
+ 		$datost = $this->datostienda($idt);
+ 		for ($i=0; $i <count($datost) ; $i++) {
+ 			if ($datost[$i]['tipo_inventario_id'] == $idtipo) {
+ 				$query = "INSERT INTO `inventario`(`mercancia_id`, `unidad_negocio_id`, `existencia_teorica`, `existencia_real`, `diferencia`, `unidad_medida_id`, `fecha_inicial`, `fecha_final`, `tipo_inventario`, `comentario`, `procesado`) VALUES ('".$datost[$i]['idP']."',$idt,'".$datost[$i]['existencia']."',NULL,'-".$datost[$i]['existencia']."','".$datost[$i]['idUMS']."','".$fecha1."','".$fecha2."','".$idtipo."',NULL,0)";
+ 				$idinv = $this->_main->insertar($query);
+ 			}else if ($idtipo == 171 or $idtipo == 172) {
+ 				$query = "INSERT INTO `inventario`(`mercancia_id`, `unidad_negocio_id`, `existencia_teorica`, `existencia_real`, `diferencia`, `unidad_medida_id`, `fecha_inicial`, `fecha_final`, `tipo_inventario`, `comentario`, `procesado`) VALUES ('".$datost[$i]['idP']."',$idt,'".$datost[$i]['existencia']."',NULL,'-".$datost[$i]['existencia']."','".$datost[$i]['idUMS']."','".$fecha1."','".$fecha2."','".$idtipo."',NULL,0)";
+ 				$idinv = $this->_main->insertar($query);
+ 			}
+ 			
+ 		}
+ 		echo json_encode($datost);
+ 	}
+
+    public function mostrarDatos($idtipo,$fecha1,$fecha2,$idt){
+    	$query = "SELECT inventario.id as idinv, mercancia.id as idm, inventario.unidad_negocio_id, existencia_teorica, format(existencia_teorica,4,'de_DE') as stockt, existencia_real, format(existencia_real,4,'de_DE') as stockr, diferencia, format(diferencia,4,'de_DE') as dif, unidad_medida_id as idum, fecha_inicial, fecha_final, inventario.tipo_inventario, comentario, procesado, mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) as mercancia, mercancia.contenido_neto, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.referencia as 'familia'
+	    	FROM inventario
+	    	inner join mercancia on mercancia.id = inventario.mercancia_id 
+			inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_sistema_id
+			inner join unidad_medida as unidad_presentacion on unidad_presentacion.id = mercancia.unidad_medida_consumo_id 
+			left join unidad_medida as unidad_compra on unidad_compra.id = mercancia.unidad_medida_compra_id 
+			inner join referencia as ref on ref.id = mercancia.familia_id 
+	    	where fecha_inicial = '".$fecha1."' and fecha_final = '".$fecha2."' and tipo_inventario = $idtipo and unidad_negocio_id = $idt";
+    	$data = $this->_main->select($query);
+		$response = array("data"=>$data);
+    	//print_r($response);
+    	echo json_encode($response);
+    }
+
+    public function conversor($c1,$c2,$c3,$iduc,$idup,$idus,$idm){
+    	$conversion = $this->_main->conversor($c1,$c2,$c3,$iduc,$idup,$idus,$idm);
+    	echo json_encode($conversion);
+    }
+
+    public function actualizacion($existente,$fechain,$fechafi,$tipo,$idt,$idus,$comentario,$idm,$idinv){
+    	$comment1 = str_replace("@"," ",$comentario);
+    	$comment = str_replace("******",'NULL',$comment1);
+    	$existencia = str_replace("*",0.0000,$existente);
+    	$query = "SELECT existencia_teorica from inventario where inventario.id = $idinv";
+    	$existente = $this->_main->select($query);
+    	$diferencia = $existencia - $existente[0][0];
+    	$query = "UPDATE `inventario` SET `existencia_real`='".$existencia."',`diferencia`='".$diferencia."',`comentario`='".$comment."' where inventario.id = $idinv";
+    	$this->_main->modificar($query);
+    	echo json_encode($diferencia);
+    }
+
+    public function validartodoscargados($f1,$f2,$tipo,$idt){
+    	$query = "SELECT * FROM `inventario` WHERE fecha_inicial = '".$f1."' and fecha_final = '".$f2."' and tipo_inventario = $tipo and unidad_negocio_id = $idt";
+    	$data = $this->_main->select($query);
+    	echo json_encode($data);
+    	
+    }
+
+    public function finCargaInv($f1,$f2,$tipo,$idt){
+    	$query = "UPDATE `inventario` SET `procesado`=1 WHERE fecha_inicial = '".$f1."' and fecha_final = '".$f2."' and tipo_inventario = $tipo and unidad_negocio_id = $idt";
+    	$this->_main->modificar($query);
+    	if ($tipo == 172) {
+    		$fecha1 = strtotime ( '+1 day' , strtotime ( $f2 ) ) ;
+            $fecha1 = date ( 'Y-m-d' , $fecha1 );
+            $fi = new DateTime($fecha1);
+			$fi->modify('first day of this month');
+        	$ff = new DateTime($fecha1);
+			$ff->modify('last day of this month');
+            $fechaminima = $fi->format('Y-m-d');
+            $fechamaxima = $ff->format('Y-m-d');
+    		$query = "SELECT * FROM inventario WHERE fecha_inicial = '".$f1."' and fecha_final = '".$f2."' and tipo_inventario = $tipo and unidad_negocio_id = $idt";
+	    	$datos = $this->_main->select($query);
+	    	for ($i=0; $i <count($datos); $i++) { 
+	    		$accion = "Actualizado";
+	    		$detalles = false;
+	    		$this->_main->log($datos[$i]['mercancia_id'],$idt,$accion);
+				$this->_main->kardex($datos[$i]['existencia_real'],174,131,$datos[$i]['mercancia_id'],$idt,$datos[$i]['unidad_medida_id'],$detalles);
+				$this->_main->kardex($datos[$i]['existencia_real'],173,131,$datos[$i]['mercancia_id'],$idt,$datos[$i]['unidad_medida_id'],$detalles,$fechaminima);
+	    		$query = "UPDATE `mercancia_has_unidad_negocio` SET `existencia`='".$datos[$i]['existencia_real']."' WHERE mercancia_id = '".$datos[$i]['mercancia_id']."' and unidad_negocio_id = $idt";
+	    		$this->_main->modificar($query);
+	    	}
+	    	$inicial = $this->insertII($fechaminima,$fechamaxima,$idt,$datos);
+    	}
+    	if ($tipo == 171) {
+            $fi = new DateTime($f1);
+			$fi->modify('first day of this month');
+        	$ff = new DateTime($f1);
+			$ff->modify('last day of this month');
+            $fechaminima = $fi->format('Y-m-d');
+            $fechamaxima = $ff->format('Y-m-d');
+    		$query = "SELECT * FROM inventario WHERE fecha_inicial = '".$f1."' and fecha_final = '".$f2."' and tipo_inventario = $tipo and unidad_negocio_id = $idt";
+	    	$datos = $this->_main->select($query);
+    		for ($i=0; $i <count($datos); $i++) { 
+	    		$accion = "Actualizado";
+	    		$detalles = false;
+	    		$this->_main->log($datos[$i]['mercancia_id'],$idt,$accion);
+				$k = $this->_main->kardex($datos[$i]['existencia_real'],173,131,$datos[$i]['mercancia_id'],$idt,$datos[$i]['unidad_medida_id'],$detalles,$fechaminima);
+	    	}
+    	}
+    	
+    	echo json_encode($idt);
+    }
+
+    public function insertII($fecha1,$fecha2,$idt,$datost){
+ 		for ($i=0; $i <count($datost) ; $i++) {
+ 				$query = "INSERT INTO `inventario`(`mercancia_id`, `unidad_negocio_id`, `existencia_teorica`, `existencia_real`, `diferencia`, `unidad_medida_id`, `fecha_inicial`, `fecha_final`, `tipo_inventario`, `comentario`, `procesado`) VALUES ('".$datost[$i]['id']."',$idt,'".$datost[$i]['existencia_real']."','".$datost[$i]['existencia_real']."',0.0000,'".$datost[$i]['unidad_medida_id']."','".$fecha1."','".$fecha2."',171,'".$datost[$i]['comentario']."',1)";
+ 				$idinv = $this->_main->insertar($query);
+ 			} 	
+ 		return $datost;
+ 	}
+
+ 	public function tomaInventario(){
+		//Session::accessRole(array('Super usuario','Tecnico','Administrador'));
+		$fecha1 = $_POST['fecha_ini'];
+		$fecha2 = $_POST['fecha_fin'];
+		$idtipo = $_POST['tipe'];
+		$idt = $_POST['unidad_n'];
+		$date1 = date_create($fecha1);
+		$date2 = date_create($fecha2);
+		$reporte=$this->export($idtipo,$fecha1,$fecha2,$idt);
+		header("Content-Type: application/vnd.ms-excel");
+		header("Expires: 0");
+		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+		header("content-disposition: attachment;filename=Toma_inventario_".$reporte[0]['tipoInv']."_".date('d-m-Y_g-i').".xls");
+		
+		//print_r($reporte);
+
+    	date_default_timezone_set('America/asuncion');
+    	echo '<table style="background: #C3E8F8; border: solid 2px">
+				<tbody>
+					<tr>
+						<td colspan="7" rowspan="2" style=" vertical-algin: center"><center><h2><b>Formato para la toma de inventario '.$reporte[0]['tipoInv'].'</b></h2></center></td>
+					</tr>
+				</tbody>
+			</table>';
+    	$dia = date ( 'd/m/Y');
+    	$hour = date ( 'ga');
+    	echo '<table style="background: #C3E8F8; border: solid 2px">
+				<tbody>
+					<tr>
+						<td colspan="7"><b>Generado: '.$dia.' - '.$hour.'</b></td>
+					</tr>
+					<tr>
+						<td colspan="7"><b>Rango Seleccionado: desde el ' .date_format($date1,"d/m/Y").' hasta el '.date_format($date2,"d/m/Y").'</b></td>
+					</tr>
+					<tr>
+						<td colspan="7"><b>Tipo de inventario: '.$reporte[0]['tipoInv'].'</b></td>
+					</tr>
+				</tbody>
+			</table>';
+	            echo'<table style="border: solid 2px">
+	            <tr>
+			        <th style="font-size:12px; text-align: center; border: solid 1px">Codigo</th>
+			        <th style="font-size:12px; text-align: center; border: solid 1px">Producto</th>
+			        <th style="font-size:12px; text-align: center; border: solid 1px">Familia</th>
+			        <th style="font-size:12px; text-align: center; border: solid 1px">Existencia teorica</th>
+			        <th colspan="2" style="font-size:12px; text-align: center; border: solid 1px">Existencia real</th>
+			        <th style="font-size:12px; text-align: center; border: solid 1px">Unidad de medida</th>
+			    </tr>
+	            <tbody>';
+	            
+	    for ($j=0; $j < count($reporte); $j++){
+	    	           echo'<tr>
+	                        <td style="text-align:left; border: solid thin">';
+	                        echo $reporte[$j]['codigo'].'</td>';
+	                        echo'<td style="text-align:center; border: solid thin">';
+	                        echo $reporte[$j]['mercancia'].'</td>';
+	                        echo '<td style="text-align:center; border: solid thin">';
+	                        echo $reporte[$j]['familia'].'</td>';
+	                        echo'<td style="text-align:center; border: solid thin">';
+	                        echo $reporte[$j]['existencia_teorica'].' '.$reporte[$j]['abreviaturaS'].'</td>';
+	                        echo'<td colspan="2" style="text-align:left; border: solid thin"></td>';
+	                        echo'<td style="text-align:left; border: solid thin">';
+	                        echo $reporte[$j]['abreviaturaS'].'</td>';    
+	             
+	    }   
+	        echo'</tbody>
+	        </table>';
+	        
+	        echo'<br></h4>';
+	        
+
+		
+	}
+
+ 	public function export($idtipo,$fecha1,$fecha2,$idt){
+    	$query = "SELECT inventario.id as idinv, mercancia.id as idm, inventario.unidad_negocio_id, existencia_teorica, format(existencia_teorica,4,'de_DE') as stockt, existencia_real, format(existencia_real,4,'de_DE') as stockr, diferencia, format(diferencia,4,'de_DE') as dif, unidad_medida_id as idum, fecha_inicial, fecha_final, inventario.tipo_inventario, comentario, procesado, mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) as mercancia, mercancia.contenido_neto, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.referencia as 'familia', ref2.referencia as tipoInv
+	    	FROM inventario
+	    	inner join mercancia on mercancia.id = inventario.mercancia_id 
+			inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_sistema_id
+			inner join unidad_medida as unidad_presentacion on unidad_presentacion.id = mercancia.unidad_medida_consumo_id 
+			left join unidad_medida as unidad_compra on unidad_compra.id = mercancia.unidad_medida_compra_id 
+			inner join referencia as ref on ref.id = mercancia.familia_id
+			inner join referencia as ref2 on ref2.id = tipo_inventario
+	    	where fecha_inicial = '".$fecha1."' and fecha_final = '".$fecha2."' and tipo_inventario = $idtipo and unidad_negocio_id = $idt order by codigo asc";
+    	$data = $this->_main->select($query);
+		return $data;
+    }
+
 
 
 }?>

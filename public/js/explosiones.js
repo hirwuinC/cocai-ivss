@@ -1,5 +1,5 @@
 $(document).ready(function() {
-
+    load('referencia','tipo_inventario',false)
     // Order by the grouping
     
   //alert("ok");
@@ -30,13 +30,27 @@ $(document).ready(function() {
         explotionrank(fechaini,fechafin,idt);  
      });
      $('#consultaingredientes').click(function(event) {
+        $('#tabsexplotion').slideDown(400);
+        $('#tabsexplotion').prop('hidden', false);
+        $('#consolid').trigger('click');
+     }); 
+
+     $('#tipo_inventario').change(function(event) {
+        $('#ojo').prop('disabled', false);
+     });      
+
+     $('#ojo').click(function(event) {
         $('#load').show();
         var fechaini = $('#fecha_ini').val();
         var fechafin = $('#fecha_fin').val();
         var idt = $('#idudn').val();
+        var tipo = $('#tipo_inventario').val();
+        $('#porpro').attr('data-toggle', 'tab');
+        $('#porpro').attr('href', '#porproductos');
+        $('#porpro').css('cursor', 'pointer');
         //alert(fechaini); alert(fechafin); alert(idt); 
-        explotion(fechaini,fechafin,idt);  
-     });       
+        explotion(fechaini,fechafin,idt,tipo);
+     });
 
     $('#expconsulta').trigger('click');
 
@@ -50,12 +64,12 @@ $(document).ready(function() {
 
     $('#consolid').click(function(event) {
         
-        setTimeout(function() {$('#tablaoculta2').fadeIn(700);$('#tablaoculta').hide();$('#tablaoculta2').prop('hidden', false);}, 100);
+        setTimeout(function() {$('#conso').fadeIn(700);$('#tablaoculta').hide();$('#conso').prop('hidden', false);}, 100);
     });
 
     $('#porpro').click(function(event) {
         
-        setTimeout(function() {$('#tablaoculta').fadeIn(700);$('#tablaoculta2').hide();$('#tablaoculta').prop('hidden', false);}, 100);
+        setTimeout(function() {$('#tablaoculta').fadeIn(700);$('#conso').hide();$('#tablaoculta').prop('hidden', false);}, 100);
     });
 
 });
@@ -91,17 +105,19 @@ $(document).ready(function() {
     $('#tablarank').css("width","100%");
  } 
 
- function explotion(fechaini,fechafin,idt){
-  $('#tabsexplotion').slideDown(400);
-  $('#tabsexplotion').prop('hidden', false);
+ function explotion(fechaini,fechafin,idt,tipo){
+  var f1 = formato(fechaini);
   //alert(fechaini); alert(fechafin); alert(idt); 
   $('#consolid').trigger('click');
   $('#tablaoculta').hide();
   $('#tablaoculta2').hide();
+  var texto = $('#tipo_inventario option:selected').text();
   
   $('#load').fadeOut(600);
   $('#consultaingredientes').hide('fast');
-  setTimeout(function() {$('#tablaoculta2').fadeIn(700);$('#tablaoculta2').prop('hidden', false);}, 600);
+  setTimeout(function() {$('#tablaoculta2').fadeIn(700);$('#tablaoculta2').prop('hidden', false);$('html,body').animate({
+            scrollTop: $("#consolidado").offset().top
+        }, 1555);}, 600);
   
 
     var table = $('#tablaexplosion').DataTable({
@@ -161,8 +177,14 @@ $(document).ready(function() {
         } );
     } ).draw();
 
-    var t2 = $('#tablaexplosion2').DataTable({
-            "ajax": BASE_URL+'/explosion/consultaconsolidada/'+fechaini+'/'+fechafin+'/'+idt,
+    $.ajax({
+        url: BASE_URL+'/explosion/consultaconsolidada/'+fechaini+'/'+fechafin+'/'+idt+'/'+tipo,
+        type: 'POST',
+        dataType: 'json',
+    })
+    .done(function(data) {
+        var t2 = $('#tablaexplosion2').DataTable({
+            "ajax": BASE_URL+'/explosion/consultaconsolidada/'+fechaini+'/'+fechafin+'/'+idt+'/'+tipo,
             "columns": [
                 { "data": null, className: "tdcenter" },
                 { "data": "coding" },
@@ -177,14 +199,23 @@ $(document).ready(function() {
                         return ''+data+' '+row['abreviatura']
                     }
                 },
-                { "data": null, className: "tdright",
+                { "data": 'existencia_real', className: "tdright",
                     render : function(data, type, row) { 
-                        return ''
+                        return ''+data+' '+row['abreviatura']
                     }
                 },
-                { "data": null, className: "tdright",
+                { "data": 'diferencia', className: "tdright",
                     render : function(data, type, row) { 
-                        return ''
+                        if(row['dif']<0){
+                      signo = "-",
+                      nuevoValor    = "",
+                      nuevaCadena = data.replace(signo, nuevoValor);
+                      return '<o style="color:red" title="faltante de '+nuevaCadena+' '+row['abreviatura']+'">'+data+' '+row['abreviatura']+'</o>'
+                    }else if (row['dif']>0) {
+                      return '<o style="color:green" title="Sobrante de '+data+' '+row['abreviatura']+'">'+data+' '+row['abreviatura']+'</o>'
+                    }else{
+                      return '<o title="No hay diferencias entre sistema y la existencia real">'+data+' '+row['abreviatura']+'</o>'
+                    }
                     }
                 },
                 { "data": "costo", className: "tdright" },
@@ -200,6 +231,14 @@ $(document).ready(function() {
             cell.innerHTML = i+1;
         } );
     } ).draw();
+    })
+    .fail(function() {
+        $('#cuerpo2').empty();
+        $('#cuerpo2').append('<h4 style="color: red">Su consulta no arrojo ningun resultado, asegurese de haber cargado el inventario "'+texto+'" correspondiente al '+f1+'</h4>');
+        setTimeout(function() {$('#tablaoculta2').fadeOut(700);$('#tablaoculta2').prop('hidden', true);}, 600);
+        $('#alerta2').modal('show');
+    });
+    
  }
 
  $(document).ready(function() {
@@ -285,7 +324,7 @@ $(document).ready(function() {
                                 //alert(fecha);
                                 var validarankinghoy = '';
                             }
-                            $('#cuerpor').append('<a href="'+BASE_URL+'/explosion/insertarexplosion/'+fecha+'/'+codigo+'/'+idt+'" title="">Ranking de '+fecha+"</a><br>");
+                            $('#cuerpor').append('<a href="'+BASE_URL+'explosion/insertarexplosion/'+fecha+'/'+codigo+'/'+idt+'" title="">Ranking de '+fecha+"</a><br>");
                             c++;
                            //alert(fecha);
                             if (c>1) {

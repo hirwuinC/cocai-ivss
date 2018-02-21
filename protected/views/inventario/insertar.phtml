@@ -43,7 +43,7 @@
   <input type="hidden" id="tienda" value="<?php echo $this->idT; ?>">
 	<div id="page-wrapper">
         <div id="page-wrapper">
-            <div style="margin-top: 2%;" class="">
+            <div class="">
 
                 <div class="row">
                     <div class="col-12 ">
@@ -51,26 +51,26 @@
 
                         <div class="card cardH" >
 
-                            <div class="card-header" style="padding: 5px; height: 25%">
+                            <div class="card-header" style="padding: 5px; height: 25%" hidden="">
                               <center><h3 class="page-header" style="font-family: Times New Roman, Times, serif;"><o id="titulocard">Agregar productos de inventario<o/></h3> </center>
                             </div>
                           
-                          <div class="card-block">
+                          <div class="">
                             <div class="row d-flex flex-wrap">
                                 <!--<div class="col-6">
                                      <h4 class="page-header" style="font-family: Times New Roman, Times, serif; text-align: center">Unidad de negocio <?php echo $this->mercancia[0]['tienda'];?></h4> 
                                 </div>-->
                             
                                 <div class="col-12 d-flex justify-content-center">
-                                    <img style="margin-left:0%;" src="<?php echo PUBLIC_URL;?>img\Corporacion multifranquicia.png" class="img-responsive" alt="modelo">
+                                    <img style="margin-left:0%;"  src="<?php echo PUBLIC_URL;?>img\Corporacion multifranquicia.png" class="img-responsive" alt="modelo">
                                 </div>
                             </div>
-                            <!-- MODAL DEL LA FUNCION AGREGAR DE LOS PRODUCTOS -->
+                            <!-- MODAL DEL LA FUNCION ASIGNAR LOS PRODUCTOS -->
                 <div class="modal fade" id="modaling" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
                   <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
-                      <div class="modal-title" ><h3>Asociar productos</h3></div>
+                        <div class="modal-title" ><h3>Asociar productos</h3></div>
                           <button type="button" class="close cerrar" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                       </div>
                         <div class="modal-body" style="padding-bottom: 0px">
@@ -107,15 +107,15 @@
                             <input type="text" id="idT" name="idT" hidden value="<?php echo $this->idT;?>">
                                 <input type="text" name="unidadS" hidden id="unidadS">
 
-                                <div class="card" style="box-shadow: 1px;  background: #eee;">
+                                <div class="card" style="box-shadow: 1px;  background: linear-gradient(to top left, rgba(255,255,255,.1), rgba(100,180,255,.2));">
                                     <fieldset>
-                                        <center><legend><label>Datos del producto de inventario</label></legend> </center>
+                                        <legend style="text-align: center"><label>Datos del producto de inventario</label></legend>
                             <div class="card ml-2 mr-1" id="recetasysubs" hidden style="border: solid 1px #909090; border-radius: 4px; width: 98%">
                             <div class="card-header" style="padding: 5px; height: 25%;">
                               <center><h3 class="page-header" style="font-family: Times New Roman, Times, serif;">Productos asociados</h3> </center>
                             </div>
                               <div class="dataTable_wrapper" >
-                                 <div class="col-sm-12 table-responsive ml-1 mr-3" style=" padding-top: 2px">
+                                 <div class="col-sm-12 table-responsive ml-1 " style=" padding-top: 2px">
                                   <!-- <h5 style="background: #ddd; text-align: center; margin-bottom: 5px;" id="titulo2"><b>Productos asociados</b></h5> -->
                                     <table id="tablarecetario" class="display table table-sm table-striped table-bordered table-hover" >
 
@@ -134,11 +134,10 @@
                                   </div>
                                 </div>
                             </div><br>
-                                <div class="form-group row d-flex justify-content-start ml-2 mr-2 ">
+                                <div class="form-group row d-flex justify-content-start ml-3  ">
                                         <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
                                             <label class="labels" style="float: left;">Clasificacion</label>
-                                            <select name="familia" id="familia" class="form-control form-control-sm" required> 
-
+                                            <select name="familia" id="familia" class="form-control form-control-sm familia" required> 
                                             </select>
                                         </div>
                                         <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
@@ -168,7 +167,7 @@
                                 </div>
                                 
 
-                                <div class="form-group row d-flex justify-content-start ml-2 mr-2">
+                                <div class="form-group row d-flex justify-content-start ml-3 ">
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
                                         <label class="labels" style="float: left;">Nombre</label>
                                         <div class="col-1 d-flex offset-10" id="glyphi" data-toggle="tooltip" data-placement="right" title="ya existe un producto con el mismo nombre y marca">
@@ -185,15 +184,10 @@
                                     
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples asoc asociated" hidden>
                                         <label class="labels" style="float: left;">Unidad Sistema</label>
-                                        <select class="form-control form-control-sm" id="unidad_ms" >
+                                        <select class="form-control form-control-sm ums" id="unidad_ms" >
                                         <option value="" selected disabled>Seleccione...</option>
                                         </select>
                                     </div>
-                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 agrupado" hidden>
-                                        <label class="labels" style="float: left;">Descripcion</label>
-                                        <textarea class="form-control form-control-sm" rows="3" name="descripcion2"></textarea>
-                                    </div>
-
                                     
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
                                         <label class="labels" style="float: left;">Marca</label>
@@ -202,19 +196,21 @@
                                         <input type="text" class="form-control form-control-sm" name="marca" id="marca" >
                                     </div>
 
-                                    <!-- <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
-                                        <label class="labels" style="float: left;">tipo de producto</label>
-                                        <select name="tipopr" id="tipopr" class="form-control form-control-sm" required>
-                                          <option value="0" disabled selected="">Seleccione..</option>
-                                          <option value="136">Semi terminado</option>
-                                          <option value="137">Producto de compra</option>
+                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
+                                        <label class="labels" style="float: left;">Tipo de inventario</label>
+                                        <select name="tipo_inventario" id="tipo_inventario" class="form-control form-control-sm" required>
                                         </select>
-                                    </div> -->
+                                      </div>
+
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 agrupado" hidden>
+                                        <label class="labels" style="float: left;">Descripcion</label>
+                                        <textarea class="form-control form-control-sm" rows="3" name="descripcion2"></textarea>
+                                    </div>
                                     
                                 </div>
                                 
                                 <div class="simples">
-                                  <div class="form-group row d-flex justify-content-start ml-2 mr-2 ">
+                                  <div class="form-group row d-flex justify-content-start ml-3  ">
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
                                         <label class="labels" style="float: left;">Stock min</label>
                                         <input type="text" class="form-control form-control-sm monto" name="stockmin" id="stockmin" placeholder="0,0000">
@@ -237,7 +233,7 @@
                                   
                                 
 
-                                <div class="form-group row d-flex justify-content-start ml-2 mr-2">
+                                <div class="form-group row d-flex justify-content-start ml-3 ">
                                     
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
                                         <label class="labels" style="float: left;">Contenido neto</label>
@@ -257,7 +253,7 @@
                               </div>
 
 
-                                <div class="form-group row d-flex justify-content-start ml-2 mr-2 simples">
+                                <div class="form-group row d-flex justify-content-start ml-3  simples">
 
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 productoscompra simples" hidden>
                                         <label class="labels" style="float: left;">Unidad de compra</label>
@@ -274,7 +270,7 @@
 
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
                                         <label class="labels" style="float: left;">Unidad Consumo</label>
-                                        <select name="unidad_medida_p" class="form-control form-control-sm ump" id="unidad_medida_pr" required>
+                                        <select name="unidad_medida_p" class="form-control form-control-sm ump1" id="unidad_medida_pr" required>
                                         <option value="Seleccione" selected disabled>Seleccione...</option>
                                         </select>
                                     </div>
@@ -293,11 +289,11 @@
                             
                                 
                                     <fieldset class="simples asoc">
-                                    <center><legend><label>Formulas de conversion<a style="cursor: hand;" class="secreto" onclick="infoFormula()"><img class="img ml-1 mb-1" src="<?php echo PUBLIC_URL; ?>img/info.icon.png" data-toggle="tooltip" data-placement="top" title="Click para informacion sobre esta formula"></a></label></legend></center>
+                                    <legend style="text-align: center"><label>Formulas de conversion<a style="cursor: hand;" class="secreto" onclick="infoFormula()"><img class="img ml-1 mb-1" src="<?php echo PUBLIC_URL; ?>img/info.icon.png" data-toggle="tooltip" data-placement="top" title="Click para informacion sobre esta formula"></a></label></legend>
                                         
                                     <div class="row ">
                                         <div class="col-10 offset-1">
-                                            <div style="background: #eee; border-top: 1px outset  #DDDDDD; border-left: 1px outset  #DDDDDD" class="card pb-3 mb-3">
+                                            <div style="border-top: 1px solid  #DDDDDD; border-left: 1px outset  #DDDDDD;" class="card pb-3 mb-3">
                                                 <div class="row align-items-center d-flex justify-content-center ">
                                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 mt-3 productoscompra simples" hidden>
                                                         <label class="labels" style="float: left;">U/M compra </label>
@@ -348,7 +344,7 @@
                     <div class="row productoscompra simples" hidden>
                         <div class="col-12 ">
                         
-                            <div class="card mb-3 " style="background: #eee;">
+                            <div class="card mb-3 " style="background: #FFFFFF;">
                             <center><legend style="margin-bottom: -5%">Proveedor</legend></center>
                                  
 
@@ -418,7 +414,7 @@
                     </div>
                             <div class="row  pt-3 mt-3">
                                 <div class="col d-flex justify-content-center">
-                                    <input type="button" class="btn btn-sm btn-outline-primary mr-3" value="Asociar productos" data-toggle="tooltip" data-placement="top" title="agregar elementos asociados a este producto" id="asoci" hidden>
+                                    <input type="button" class="btn btn-sm btn-outline-primary " value="Asociar productos" data-toggle="tooltip" data-placement="top" title="agregar elementos asociados a este producto" id="asoci" hidden>
                                     <input type="submit" class="btn btn-sm btn-outline-primary" value="Guardar" id="botonG" disabled>
                                 </div>
                             </div>

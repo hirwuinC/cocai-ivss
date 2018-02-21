@@ -369,16 +369,17 @@
     		echo json_encode($response);
 		}
 
-		public function consultaconsolidada($fechaini,$fechafin,$idt){
+		public function consultaconsolidada($fechaini,$fechafin,$idt,$tipo){
 			
 			$query = "SELECT explosion_id, ixe.cantidad as cantidad, format(SUM(ixe.cantidad),4,'de_DE') as quantity, unidad_medida_sistema_id, mercancia.codigo as coding, CONCAT(mercancia.nombre,' ',mercancia.marca) as ingrediente,
-			 format(mercancia.precio_unitario,4,'de_DE') as costo, format(SUM(mercancia.precio_unitario*ixe.cantidad),4,'de_DE') as costot, contenido_neto, fecha_ranking, unidad_medida.abreviatura, unidad_medida.unidad,format(existencia,4,'de_DE') as existencia 
+			 format(mercancia.precio_unitario,4,'de_DE') as costo, format(SUM(mercancia.precio_unitario*ixe.cantidad),4,'de_DE') as costot, contenido_neto, fecha_ranking, unidad_medida.abreviatura, unidad_medida.unidad,format(existencia_teorica,4,'de_DE') as existencia, format(existencia_real,4,'de_DE') as existencia_real, existencia_real as reales, format(diferencia,4,'de_DE') as diferencia, diferencia as dif
 			 FROM ingredientes_has_explosion as ixe 
 			 inner join mercancia on mercancia.id = ixe.ingrediente_id
+			 left join inventario on inventario.mercancia_id = mercancia.id
 			 inner join mercancia_has_unidad_negocio as mhun on mercancia.id = mhun.mercancia_id
 			 inner join unidad_medida on mercancia.unidad_medida_sistema_id = unidad_medida.id 
 			 inner join explosion on explosion.id = explosion_id 
-			where fecha_ranking BETWEEN '".$fechaini."' and '".$fechafin."' and explosion.unidad_negocio_id = $idt GROUP BY mercancia.codigo";
+			where fecha_ranking BETWEEN '".$fechaini."' and '".$fechafin."' and explosion.unidad_negocio_id = $idt and inventario.fecha_inicial = '".$fechaini."' and inventario.unidad_negocio_id = $idt and mercancia.tipo_inventario_id = $tipo and inventario.tipo_inventario = $tipo GROUP BY mercancia.codigo";
 			$data = $this->_main->select($query);
 			$query = "SELECT explosion_id, ixe.cantidad as cantidad, format(ixe.cantidad,4,'de_DE') as quantity, unidad_medida_id, producto.codigo as coding, producto.nombre as ingrediente, format(producto.costo,4,'de_DE') as costo, format(SUM(producto.costo*ixe.cantidad),4,'de_DE') as costot, fecha_ranking, unidad_medida.abreviatura, unidad_medida.unidad, producto.nombre, format(stock_venta,4,'de_DE') as existencia  
 			FROM explosion 
@@ -388,8 +389,17 @@
 			inner join unidad_medida on ixe.unidad_medida_id = unidad_medida.id
 			where fecha_ranking BETWEEN '".$fechaini."' and '".$fechafin."' and explosion.unidad_negocio_id = $idt";
 			$datos = $this->_main->select($query);
-			$arreglo = array_merge($data,$datos);
-			$response = array("data"=>$arreglo);
+			if ((!is_null($datos[0][0])) and (!is_null($data[0][0]))) {
+				$arreglo = array_merge($data,$datos);
+				$response = array("data"=>$arreglo);
+			}
+			if (is_null($datos[0][0])) {
+				$response = array("data"=>$data);
+			}
+			if (is_null($data[0][0])){
+				$response = array("data"=>$datos);
+			}
+			
     		//print_r($response);
     		echo json_encode($response);
 		}
