@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="us">
+<head>
+  <meta charset="utf-8">
+  <title>Produccion</title>
+  <link href="<?php echo PUBLIC_URL; ?>css/jquery-ui.css" rel="stylesheet">
+
+
+  
+</head>
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+<div id="body" hidden>
+                            
+<div id="page-wrapper">
+            <div class="">
+
+                <div class="row">
+                    <div class="col-lg-12 ">
+                        
+
+                        <div  class="card cardH">
+                        <div class="card-header" hidden>
+                            <center><h3><o id="titulocard">Generar Produccion</o> <?php $ti=strtolower(str_replace('(PTY)', '', $this->model[0]['udn'])); echo "[".ucwords($ti)."]"; ?></h3></center>
+                        </div>
+                        
+                        <div class="card-block" style="padding-bottom: 0px; ">                        
+						<center>
+						    <div id="load" hidden>
+						        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+						    </div>
+						</center>
+						<ul class="nav nav-tabs ml-3" role="tablist">
+						  	<li class="active nav-item">
+						  		<a data-toggle="tab" href="#semis" class="nav-link" id="semit">Semi terminados</a>
+						  	</li>
+                            <li class="nav-item">
+                            	<a class="nav-link" id="rec" style="cursor: not-allowed;"><o data-toggle="tooltip" data-placement="right" title="Debe seleccionar un producto para poder consultar su receta" id="tooltiprec">Receta</o></a>
+                            </li>
+						</ul>
+
+						
+						<div class="tab-content" >
+							<div class="row form-group">
+								<div class="col-sm-12" style="margin-bottom: -1%">
+									<?php if ($this->model[0]['modelo'] != null): ?>
+			                            <div>
+			                              	<img class="hidden-sm-down" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png">
+			                              	<img width="25%" height="8%" class="hidden-sm-up" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png">
+			                            </div>
+	                        		<?php endif ?>
+                        
+                          			<input type="hidden" id="modelos" value="<?php echo $this->model[0]['idm']; ?>">
+			                        <?php if (isset($this->_error)) {
+			                            echo $this->_error;
+			                        } ?>
+			                        <?php if ($this->model[0]['modelo'] == null): ?>
+			                            <div>
+			                              <img class="hidden-sm-down" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->model[0]['udn']; ?>.png">
+			                              <img width="25%" height="8%" class="hidden-sm-up" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->model[0]['udn']; ?>.png">
+			                            </div>
+			                        <?php endif ?>
+								</div>
+								<div class="col-sm-12" style="margin-bottom: -2%">
+									<div class="row form-group d-flex justify-content-center">
+										<div class="col-xs-12 col-sm-12 col-md-10 col-lg-6">
+											<h4 class="text-white" style="background: #337ab7; border-radius: 4px; text-align: center" id="selectedpro"></h4>
+										</div>
+									</div>
+								</div>
+							</div>
+						
+                            <div id="semis" class="tab-pane fade in active " role="tabpanel">
+                            	<div class="alert alert-success" id="produccionOK" hidden>
+                                    <h4 id="datosproduccion"></h4>
+                                </div>
+                                <div class="alert alert-danger" id="produccionerror" hidden>
+                                    <h4 id="datosproduccion2"></h4>
+                                </div>
+                            	<form action="<?php echo BASE_URL;?>produccion/crearproduccion" method="post" accept-charset="utf-8" id="form-crear">
+                            		<div class="col-sm-12">
+                            			<input type="hidden" name="idtienda" id="idtienda" value="<?php echo $this->model[0]['idU']?>">
+                        				<input type="hidden" name="idempr" id="idempr" value="<?php echo $this->model[0]['empresa_id']?>">
+                            			<input type="hidden" id="idrece" name="idreceta">
+                            			<input type="hidden" id="rendimiento" name="rendimiento">
+                            		<div class="row form-group d-flex justify-content-center">
+	                            		<div class="col-xs-12 col-sm-12 col-md-10 col-lg-6">
+	                            			<label class="LB">Seleccione el producto semi terminado</label>
+	                            			<select name="semiterminados" id="semiterminados" class="form-control form-control-sm" multiple="" size="6" required>
+	                            			</select>
+	                            		</div>
+	                            	</div>
+	                            		<div class="row form-horizontal d-flex justify-content-center" >
+	                            				<label class="LB ocultos" hidden>Tandas a producir:</label>
+			                            		<div class="col-xs-12 col-sm-1 ocultos" hidden>
+			                            			<input type="number" class="form-control form-control-sm" name="tandas" id="tandas" min="1" max="100" value="1" required="" data-toggle="tooltip" data-placement="right" title="Ingrese un valor entre 1 y 100">
+		                            			</div>
+	                            		</div>
+                            		</div>
+                            		<div class="col-sm-12 mt-3 ocultos"  hidden>
+	                            		<div class="row form-group d-flex justify-content-center">
+		                            		<div class="col-xs-12 col-sm-12 col-md-10 col-lg-6">
+		                            			<div class="card-header text-white" style="background: #337ab7; padding: 4px; height: 30px">
+						                            <center><h4 style="vertical-align: center">Informacion del rendimiento</h4></center>
+						                        </div>
+							                    <div class="card" style="border: solid 1px #337ab7">
+			                            			<div class="row form-group d-flex justify-content-center">
+			                            				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-5">
+			                            					<label class="LB">Rendimiento ideal</label>
+			                            					<div class="input-group">
+			                            						<input type="text" class="form-control form-control-sm" name="rideal" id="rideal" readonly="" data-toggle="tooltip" data-placement="top" title="Rendimiento ideal segun la receta">
+					                            				<span class="input-group-addon btn-sm abrev"></span>
+			                            					</div>
+			                            				</div>
+			                            				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-5">
+				                            				<label class="LB">Rendimiento resultante</label>
+				                            				<div class="input-group">
+				                            					<input type="text" class="form-control form-control-sm" name="rreal" id="rreal" placeholder="Ej: 1.000,0000" data-toggle="tooltip" data-placement="top" title="Ingrese la cantidad resultante de la produccion en tienda" required>
+				                            					<span class="input-group-addon btn-sm abrev"></span>
+				                            				</div>
+				                            			</div>
+				                            		</div>
+			                            		</div>
+		                            		</div>
+		                            	</div>
+		                            </div>
+                            		
+                            		
+                            		<div class="row d-flex justify-content-center mt-3">
+                        				<button type="submit" class="btn btn-sm btn-outline-primary ocultos" hidden>Crear produccion</button>
+                        			</div>
+                        		</form>
+                            </div>
+
+                            <div id="recetassemi" class="tab-pane fade in" role="tabpanel" hidden>
+                            	
+		                          <div class="dataTable_wrapper ">
+		                            <h5 style="background: #ddd; text-align: center; margin-bottom: 5px; width: 88%; margin-left: 6%" id="titulo2"></h5>
+		                             <div class="col-sm-12 table-responsive">    
+		                              <div class="container">
+		                                <table id="tablarecetario" class="display table table-sm table-striped table-bordered table-hover" >
+		                                  <thead class="theadH">
+		                                      <tr>
+		                                          <th><center>Codigo</center></th>
+		                                          <th><center>Ingrediente</center></th>
+		                                          <th><center>Cantidad</center></th>
+		                                          <th><center>U/M</center></th>
+		                                          <th><center>Costo</center></th>
+		                                      </tr>
+		                                  </thead>
+		                                  <tbody id="cuerpo_r"></tbody>
+		                                  
+		                              </table>
+		                              <div class="container">
+		                                <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
+		                                  <div class="col-12" id="costot">
+		                                    
+		                                  </div>
+		                                </div>
+		                              </div>
+		                            </div>
+		                          </div>     
+		                        </div>
+
+                            </div>
+                            	
+                            </div>
+                        </div>
+
+
+
+                       
+                            
+                        </div>
+                        <center><div id="mensaje" hidden><img width="45px" height="45px" src="http://localhost/COCAI/public/img/check1.gif" alt="exito"/></div></center>
+                             
+                        
+                              
+                
+                </div>
+              </div>
+        </div>
+</div>
+</div>
+                            
+</body>
+
+</div>
+
+
+
+<!-- Autocomplete -->
+
+</html>

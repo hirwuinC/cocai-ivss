@@ -468,9 +468,10 @@ jQuery(document).ready(function($) {
 	 		var ingrediente = $('#iding').val();
 	 		var idreceta = $('#idrece').val();
 	 		var idm = $('#modelos').val();
+	 		var idt = $('#idtienda').val();
 	 		//alert(idt);
 	 		$('#tablafiltraje').DataTable({
-            "ajax": BASE_URL+'/receta/loadingredientes/'+idm,
+            "ajax": BASE_URL+'/receta/loadingredientes/'+idt,
             "lengthChange": false,
             "columns": [
                 { "data": "codigi", className: "tdleft"},
@@ -698,9 +699,8 @@ jQuery(document).ready(function($) {
  		
  		$('#cuerpo').empty();
  		$('#cuerpo').append('<h4>Desea crear una receta para '+nombrep+' '+marca+'?</h4>');
- 		$('#rendimiento').keyup(function(event) {
- 			validarSiNumero(this.value);
- 		});
+ 		$('#rendimiento').number(true, 4, ',', '.');
+ 			
  		load('unidad_medida','umr',false,99);
 
  		$('#ayuda2').click(function(event) {
@@ -708,10 +708,29 @@ jQuery(document).ready(function($) {
  			$('#help2').prop('hidden', false);
  		});
 
- 		$('#rendimiento').change(function(event) {
+ 		$('#umr').change(function(event) {
+ 			var rendimiento = $('#rendimiento').val();
+ 			if (rendimiento.length ==0 || rendimiento ==0){
+	      	$('#agregarec').prop('disabled', true);
+		    }else{
+		    	$('#agregarec').prop('disabled', false);
+		    }
+ 		});
+
+ 		$('#rendimiento').keyup(function(event) {
+ 			var rendimiento = $('#rendimiento').val();
+ 			var umr = $('#umr').val();
+ 			if (rendimiento.length ==0 || rendimiento ==0 || !umr){
+		      	$('#agregarec').prop('disabled', true);
+		    }else{
+		    	$('#agregarec').prop('disabled', false);
+		    }
+ 		});
+
+ 		/*$('#rendimiento').change(function(event) {
  			var cant = $('#rendimiento').val();
  		validarSiNumero(cant);
- 		});
+ 		});*/
  		$('#modalrec').modal('show');
  		$('#bots').empty();
  		$('#bots').append('<button class="btn btn-sm btn-default" id="cancelarinsert">Cancelar</button><span style="margin-right: 1%; margin-left: 1%; "></span><button class="btn btn-sm btn-primary"  onclick="crear('+idpr+','+modelo+','+iding+')" id="agregarec" disabled>Agregar</button>  ');

@@ -282,10 +282,12 @@
 					inner join modelo as submodelo on submodelo.id = modelo_has_submodelo.sub_modelo_id
 					WHERE unidad_negocio.id = $idt ORDER BY mc.status = 1";
 					$udn = $this->_main->select($query);	
-
+					
 					//print_r($info); exit();
 					$query="SELECT unidad_medida_sistema_id From mercancia where mercancia.id = '".$receta['iding']."'";
 					$umsid = $this->_main->select($query);
+					$detalles = "Ranking de venta procesado";
+					$this->_main->kardex($receta['cantidad'],177,132,$receta['iding'],$idt,$umsid[0][0],$detalles,$fecha);
 					//print_r($umsid[0]);
 					$query = "INSERT INTO `ingredientes_has_explosion`(`explosion_id`, `ingrediente_id`, `cantidad`, `unidad_medida_id`) 
 					VALUES ($explo, '".$receta['iding']."', '".$receta['cantidad']."', '".$umsid[0][0]."')";

@@ -106,16 +106,6 @@
             echo json_encode($data);
         }
 
-		public function nombreing($ingrediente){
-			$query = "SELECT mercancia.id as idm, mercancia.nombre as producto, marca, receta.id as idre from mercancia
-left join ingrediente_has_receta on ingrediente_id = mercancia.id
-			left join receta on ingrediente_has_receta.receta_id = receta.id 
-			where mercancia.id = $ingrediente";
-    		$this->_main->select($query);
-            $data = true;
-    		echo json_encode($data);
-		}
-
 		public function consultarpro($modelo){
 			$query = "SELECT DISTINCT(producto.id) as idpro, producto.codigo as codip, producto.nombre as producto, costo, format(costo,4,'de_DE') as costom, porcentaje_costo, format(porcentaje_costo,2,'de_DE') as porcentajec, format(precioVta_A,4,'de_DE') as pvpam, precioVta_A as pvpa, format(precioVta_A,4,'de_DE') as pvp, precioVta_B as pvpb, receta_id as idr FROM `producto`
 inner join producto_has_unidad_negocio on producto_has_unidad_negocio.producto_id = producto.id
@@ -231,16 +221,14 @@ FROM `ingrediente_has_receta` as ixr
 
 		
 
-		public function loadingredientes($idm){
+		public function loadingredientes($idt){
 		$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, mercancia.precio_unitario as precioU  FROM `mercancia`
-			left join unidad_medida as umc on umc.id = mercancia.unidad_medida_compra_id
+            left join unidad_medida as umc on umc.id = mercancia.unidad_medida_compra_id
             inner join unidad_medida as ump on ump.id = mercancia.unidad_medida_consumo_id
             inner join unidad_medida as ums on ums.id = mercancia.unidad_medida_sistema_id
             inner join mercancia_has_unidad_negocio as mudn on mudn.mercancia_id = mercancia.id
             inner join unidad_negocio on unidad_negocio.id = mudn.unidad_negocio_id
-            inner join modelo_has_submodelo as mhsm on mhsm.id = unidad_negocio.modelo_has_submodelo_id
-            inner join modelo on mhsm.modelo_id = modelo.id
-            where modelo.id = $idm";
+            where mudn.unidad_negocio_id = $idt";
             $data = $this->_main->select($query);
 
     		$response = array("data"=>$data);

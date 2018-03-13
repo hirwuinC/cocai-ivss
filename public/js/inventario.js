@@ -286,6 +286,7 @@ $(document).ready(function() {
                 { "data": null, className: "tdcenter"},
                 { "data": "codigo" , className: "tdleft"},
                 { "data": "mercancia" , className: "tdleft"},
+                { "data": "clasificacion" , className: "tdleft"},
                 { "data": "idpro" , className: "tdcenter",  
                   render : function(data, type, row) { 
                         return '<label class="custom-control custom-checkbox" >'+
@@ -346,6 +347,7 @@ $(document).ready(function() {
                 { "data": null, className: "tdcenter"},
                 { "data": "codigo" , className: "tdleft"},
                 { "data": "producto" , className: "tdleft"},
+                { "data": "clasificacion" , className: "tdleft"},
                 { "data": "idpro" , className: "tdcenter",  
                   render : function(data, type, row) { 
                         return '<label class="custom-control custom-checkbox" >'+

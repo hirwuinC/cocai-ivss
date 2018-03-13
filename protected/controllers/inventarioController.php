@@ -1233,8 +1233,7 @@ FROM notificacion_has_remision
     			$condicion = "";
     		}
 
-    		
-    		$query="SELECT DISTINCT fecha, DATE_FORMAT(hora, '%r') as hora, format(kardex.cantidad,4,'de_DE') as cantidad, kardex.descripcion, tipo_movimiento_id as idtm, kardex.mercancia_id as idmer, usuario_id as idUs, unidad_medida_id as idum, motivo_id as idmot, referencia.referencia as tipomov, CONCAT(mercancia.nombre, ' ', mercancia.marca) As mercancia, CONCAT(usuario.nombre, ' ', usuario.apellido) As Nombre, unidad_medida.unidad, ref.referencia as motivo, ref1.referencia as familia, unidad_negocio.id as idt, lower(unidad_negocio.nombre) as tienda, format(kardex.existencia,4,'de_DE') as stock, unidad_medida.abreviatura 
+    		$query="SELECT SUM(CASE tipo_movimiento_id WHEN 131 THEN kardex.cantidad END) as entradas, SUM(CASE tipo_movimiento_id WHEN 132 THEN kardex.cantidad END) as salidas 
 					FROM `kardex` 
 					inner join referencia on referencia.id = tipo_movimiento_id 
 					inner join mercancia on mercancia.id = kardex.mercancia_id 
@@ -1244,7 +1243,24 @@ FROM notificacion_has_remision
 					inner join referencia as ref1 on ref1.id = mercancia.familia_id 
 					inner join unidad_negocio on kardex.unidad_negocio_id = unidad_negocio.id
     			WHERE fecha BETWEEN '".$fechaini."' and '".$fechafin."' $cadena $condicion";
-    		$data = $this->_main->select($query);    		
+    		$sumatorias = $this->_main->select($query);
+    		
+    		$query="SELECT DISTINCT fecha, DATE_FORMAT(hora, '%r') as hora, format(kardex.cantidad,4,'de_DE') as cantidad, kardex.descripcion, tipo_movimiento_id as idtm, kardex.mercancia_id as idmer, usuario_id as idUs, unidad_medida_id as idum, motivo_id as idmot, referencia.referencia as tipomov, mercancia.codigo, CONCAT(mercancia.nombre, ' ', mercancia.marca) As mercancia, CONCAT(usuario.nombre, ' ', usuario.apellido) As Nombre, unidad_medida.unidad, ref.referencia as motivo, ref1.referencia as familia, unidad_negocio.id as idt, lower(unidad_negocio.nombre) as tienda, kardex.existencia, format(kardex.existencia,4,'de_DE') as stock, unidad_medida.abreviatura
+					FROM `kardex` 
+					inner join referencia on referencia.id = tipo_movimiento_id 
+					inner join mercancia on mercancia.id = kardex.mercancia_id 
+					inner join usuario on usuario.id = kardex.usuario_id 
+					inner join unidad_medida on unidad_medida.id = kardex.unidad_medida_id 
+					inner join referencia as ref on ref.id = kardex.motivo_id 
+					inner join referencia as ref1 on ref1.id = mercancia.familia_id 
+					inner join unidad_negocio on kardex.unidad_negocio_id = unidad_negocio.id
+    			WHERE fecha BETWEEN '".$fechaini."' and '".$fechafin."' $cadena $condicion";
+    		$data = $this->_main->select($query);
+    		if (count($data)!=0) {
+    		 	$data[0]['entradas'] = $sumatorias[0]['entradas'];
+    			$data[0]['salidas'] = $sumatorias[0]['salidas'];
+    		 } 
+    				
     		$response = array("data"=>$data);
     		//print_r($response);
     		echo json_encode($response);
@@ -1252,7 +1268,7 @@ FROM notificacion_has_remision
 
     	function carroCompra($id, $operador=false, $idt, $cant,$cantx,$idprov,$unidadc,$um){
 
-    $query="SELECT mercancia.id as 'idP', mercancia.codigo, mercancia.codigo_anterior, mercancia.nombre as 'producto', mercancia.marca, mercancia.contenido_neto, mercancia.formula_c, mercancia.formula_p, mercancia.formula_s, mercancia.cantidad_presentacion,  mc.existencia, mc.stock_min, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.id as 'idf', ref.referencia as 'familia', mc.status FROM `mercancia` 
+    	$query="SELECT mercancia.id as 'idP', mercancia.codigo, mercancia.codigo_anterior, mercancia.nombre as 'producto', mercancia.marca, mercancia.contenido_neto, mercancia.formula_c, mercancia.formula_p, mercancia.formula_s, mercancia.cantidad_presentacion,  mc.existencia, mc.stock_min, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.id as 'idf', ref.referencia as 'familia', mc.status FROM `mercancia` 
 						inner join mercancia_has_unidad_negocio as mc on mc.mercancia_id = mercancia.id 
 						inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_sistema_id
 						inner join unidad_medida as unidad_presentacion on unidad_presentacion.id = mercancia.unidad_medida_consumo_id 
@@ -1550,8 +1566,9 @@ FROM notificacion_has_remision
 
     public function ingredientes($id1,$id2){
     	/*funcion para cargar los ingredientes que corresponden a la empresa pero unicamente los que no tiene la tienda seleccionada y viceversa*/
-    	$query = "SELECT mercancia.id as idpro, codigo, nombre as producto, marca, CONCAT(nombre,' ',marca) as mercancia FROM `mercancia`
+    	$query = "SELECT mercancia.id as idpro, codigo, nombre as producto, marca, CONCAT(nombre,' ',marca) as mercancia, referencia.referencia as clasificacion FROM `mercancia`
 		inner join mercancia_has_unidad_negocio on mercancia_id = mercancia.id
+		inner join referencia on referencia.id = familia_id
 		where unidad_negocio_id = $id2 and mercancia.id not in(SELECT id 
 		FROM mercancia 
 		inner join mercancia_has_unidad_negocio on mercancia_id = mercancia.id 
@@ -1564,8 +1581,9 @@ FROM notificacion_has_remision
 
     public function ingredientest($idt){
     	/*funcion para cargar los ingredientes que corresponden a la empresa pero unicamente los que no tiene la tienda seleccionada y viceversa*/
-    	$query = "SELECT mercancia.id as idpro, codigo, nombre as producto, marca FROM `mercancia`
+    	$query = "SELECT mercancia.id as idpro, codigo, nombre as producto, marca, referencia.referencia as clasificacion FROM `mercancia`
 		inner join mercancia_has_unidad_negocio on mercancia_id = mercancia.id
+		inner join referencia on referencia.id = familia_id
 		where unidad_negocio_id = $idt";
 		$data = $this->_main->select($query);
     	//print_r($data);exit();
@@ -1574,8 +1592,9 @@ FROM notificacion_has_remision
 
     public function pventa($id1,$id2){
     	/*funcion para cargar los ingredientes que corresponden a la empresa pero unicamente los que no tiene la tienda seleccionada y viceversa*/
-    	$query = "SELECT producto.id as idpro, codigo, nombre as producto FROM `producto`
+    	$query = "SELECT producto.id as idpro, producto.codigo, producto.nombre as producto, grupo.nombre as clasificacion FROM `producto`
 		inner join producto_has_unidad_negocio on producto_id = producto.id
+		inner join grupo on grupo_id = grupo.id
 		where unidad_negocio_id = $id2 and producto.id not in(SELECT id 
 		FROM producto 
 		inner join producto_has_unidad_negocio on producto_id = producto.id 
@@ -1588,8 +1607,9 @@ FROM notificacion_has_remision
 
     public function pventat($idt){
     	/*funcion para cargar los ingredientes que corresponden a la empresa pero unicamente los que no tiene la tienda seleccionada y viceversa*/
-    	$query = "SELECT producto.id as idpro, codigo, nombre as producto FROM `producto`
+    	$query = "SELECT producto.id as idpro, producto.codigo, producto.nombre as producto, grupo.nombre as clasificacion FROM `producto`
 		inner join producto_has_unidad_negocio on producto_id = producto.id
+		inner join grupo on grupo_id = grupo.id
 		where unidad_negocio_id = $idt";
 		$data = $this->_main->select($query);
     	//print_r($data);exit();
@@ -1763,6 +1783,12 @@ FROM notificacion_has_remision
     	
     }
 
+    public function validarInventarioInicial($tienda){
+    	$query = "SELECT * FROM `inventario` WHERE tipo_inventario = 171 and unidad_negocio_id = $tienda";
+    	$data = $this->_main->select($query);
+    	echo json_encode($data);
+    }
+
     public function finCargaInv($f1,$f2,$tipo,$idt){
     	$query = "UPDATE `inventario` SET `procesado`=1 WHERE fecha_inicial = '".$f1."' and fecha_final = '".$f2."' and tipo_inventario = $tipo and unidad_negocio_id = $idt";
     	$this->_main->modificar($query);
@@ -1817,14 +1843,21 @@ FROM notificacion_has_remision
  	}
 
  	public function tomaInventario(){
+ 		//var_dump($_POST); exit();
 		//Session::accessRole(array('Super usuario','Tecnico','Administrador'));
 		$fecha1 = $_POST['fecha_ini'];
 		$fecha2 = $_POST['fecha_fin'];
 		$idtipo = $_POST['tipe'];
 		$idt = $_POST['unidad_n'];
+		if (isset($_POST['checkcero'])) {
+			$filtro = true;
+		}else{
+			$filtro = false;
+		}
+		
 		$date1 = date_create($fecha1);
 		$date2 = date_create($fecha2);
-		$reporte=$this->export($idtipo,$fecha1,$fecha2,$idt);
+		$reporte=$this->export($idtipo,$fecha1,$fecha2,$idt,$filtro);
 		header("Content-Type: application/vnd.ms-excel");
 		header("Expires: 0");
 		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
@@ -1867,6 +1900,11 @@ FROM notificacion_has_remision
 	            <tbody>';
 	            
 	    for ($j=0; $j < count($reporte); $j++){
+	    	if (is_null($reporte[$j]['stockr'])) {
+	    		$str = '';
+	    	}else{
+	    		$str = $reporte[$j]['stockr'].' '.$reporte[$j]['abreviaturaS'];
+	    	}
 	    	           echo'<tr>
 	                        <td style="text-align:left; border: solid thin">';
 	                        echo $reporte[$j]['codigo'].'</td>';
@@ -1876,7 +1914,11 @@ FROM notificacion_has_remision
 	                        echo $reporte[$j]['familia'].'</td>';
 	                        echo'<td style="text-align:center; border: solid thin">';
 	                        echo $reporte[$j]['existencia_teorica'].' '.$reporte[$j]['abreviaturaS'].'</td>';
-	                        echo'<td colspan="2" style="text-align:left; border: solid thin"></td>';
+	                        if ($filtro == true) {
+	                        	echo'<td colspan="2" style="text-align:left; border: solid thin"></td>';
+	                        }else{
+	                        	echo '<td colspan="2" style="text-align:left; border: solid thin">'.$str.'</td>';
+	                        }
 	                        echo'<td style="text-align:left; border: solid thin">';
 	                        echo $reporte[$j]['abreviaturaS'].'</td>';    
 	             
@@ -1890,7 +1932,12 @@ FROM notificacion_has_remision
 		
 	}
 
- 	public function export($idtipo,$fecha1,$fecha2,$idt){
+ 	public function export($idtipo,$fecha1,$fecha2,$idt,$filtro=false){
+ 		if ($filtro !=false) {
+ 			$condic = 'and existencia_real is null';
+ 		}else{
+ 			$condic = '';
+ 		}
     	$query = "SELECT inventario.id as idinv, mercancia.id as idm, inventario.unidad_negocio_id, existencia_teorica, format(existencia_teorica,4,'de_DE') as stockt, existencia_real, format(existencia_real,4,'de_DE') as stockr, diferencia, format(diferencia,4,'de_DE') as dif, unidad_medida_id as idum, fecha_inicial, fecha_final, inventario.tipo_inventario, comentario, procesado, mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) as mercancia, mercancia.contenido_neto, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.referencia as 'familia', ref2.referencia as tipoInv
 	    	FROM inventario
 	    	inner join mercancia on mercancia.id = inventario.mercancia_id 
@@ -1899,7 +1946,7 @@ FROM notificacion_has_remision
 			left join unidad_medida as unidad_compra on unidad_compra.id = mercancia.unidad_medida_compra_id 
 			inner join referencia as ref on ref.id = mercancia.familia_id
 			inner join referencia as ref2 on ref2.id = tipo_inventario
-	    	where fecha_inicial = '".$fecha1."' and fecha_final = '".$fecha2."' and tipo_inventario = $idtipo and unidad_negocio_id = $idt order by codigo asc";
+	    	where fecha_inicial = '".$fecha1."' and fecha_final = '".$fecha2."' and tipo_inventario = $idtipo and unidad_negocio_id = $idt $condic order by codigo asc";
     	$data = $this->_main->select($query);
 		return $data;
     }

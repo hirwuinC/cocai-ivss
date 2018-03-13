@@ -1,12 +1,30 @@
 $(document).ready(function() {
+  var idtienda = $('#idT').val();
+  $.ajax({
+    url: BASE_URL+'/inventario/validarInventarioInicial/'+idtienda,
+        type: 'POST',
+        dataType: 'json'
+      })
+      .done(function(data) {
+        if (data.length==0) {
+          $('#labelini').prop('hidden', false);
+          $('.otros').prop('hidden', true);
+        }else{
+          $('#labelini').prop('hidden', true);
+          $('.otros').prop('hidden', false);
+        }
+      });
+  
   $('.radiostipo').click(function(event) {
     if ($('#otro').is(':checked')) {
       $('#tt').show();
       $('#tt').prop('hidden', false);
       $('#divcompleto').prop('hidden', false);
+      $('#botn').prop('hidden', false);
     }else{
       $('#continuar').prop('disabled', false);
       $('#divcompleto').prop('hidden', false);
+      $('#botn').prop('hidden', false);
       $('#tt').hide();
     }
   });
@@ -151,7 +169,7 @@ $(document).ready(function() {
     $('#tipe').val(tipo);
     $('#unidad_n').val('');
     $('#unidad_n').val(idt);
-    $('#export').prop('hidden', false);
+    $('.export').prop('hidden', false);
     if ($('#inicial').is(':checked')) {
       var tipo = 171;
       var text = 'Inicial';
