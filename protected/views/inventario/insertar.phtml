@@ -28,10 +28,10 @@
   .labels{
       margin-bottom: -1%;
       float: left;
-    }
-    .even{
-      height: 31px;
-    }
+  }
+  .even{
+    height: 31px;
+  }
   </style>
 <center>
     <div id="gifcargando">
@@ -44,23 +44,17 @@
 	<div id="page-wrapper">
         <div id="page-wrapper">
             <div class="">
-
                 <div class="row">
                     <div class="col-12 ">
-                        
-
                         <div class="card cardH" >
-
                             <div class="card-header" style="padding: 5px; height: 25%" hidden="">
                               <center><h3 class="page-header" style="font-family: Times New Roman, Times, serif;"><o id="titulocard">Agregar productos de inventario<o/></h3> </center>
                             </div>
-                          
                           <div class="">
                             <div class="row d-flex flex-wrap">
                                 <!--<div class="col-6">
                                      <h4 class="page-header" style="font-family: Times New Roman, Times, serif; text-align: center">Unidad de negocio <?php echo $this->mercancia[0]['tienda'];?></h4> 
                                 </div>-->
-                            
                                 <div class="col-12 d-flex justify-content-center">
                                     <img style="margin-left:0%;"  src="<?php echo PUBLIC_URL;?>img\Corporacion multifranquicia.png" class="img-responsive" alt="modelo">
                                 </div>
@@ -103,7 +97,7 @@
                   </div> 
                 </div>
 
-                	 <form action="<?php echo BASE_URL;?>inventario/insert" method="post" accept-charset="utf-8">
+                	 <form action="<?php echo BASE_URL;?>inventario/insert" method="post" accept-charset="utf-8" role="form">
                             <input type="text" id="idT" name="idT" hidden value="<?php echo $this->idT;?>">
                                 <input type="text" name="unidadS" hidden id="unidadS">
 
@@ -141,8 +135,8 @@
                                             </select>
                                         </div>
                                         <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
-                                            <label class="labels" style="float: left;">Sub-Clasificacion</label>
-                                            <select name="subfamilia" id="sub_familia" class="form-control form-control-sm" required> 
+                                            <label class="labels" style="float: left;">Sub clasificacion</label>
+                                            <select name="subfamilia" id="sub_familia" class="form-control form-control-sm"> 
 
                                             </select>
                                         </div>
@@ -176,14 +170,14 @@
 
                                     </div>
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples asoc asociated" hidden>
-                                        <label class="labels" style="float: left;">Unidad Consumo</label>
+                                        <label class="labels" style="float: left;">Unidad de consumo</label>
                                         <select  class="form-control form-control-sm ump" id="unidad_mp" >
                                         <option value="" selected disabled>Seleccione...</option>
                                         </select>
                                     </div>
                                     
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples asoc asociated" hidden>
-                                        <label class="labels" style="float: left;">Unidad Sistema</label>
+                                        <label class="labels" style="float: left;">Unidad de sistema</label>
                                         <select class="form-control form-control-sm ums" id="unidad_ms" >
                                         <option value="" selected disabled>Seleccione...</option>
                                         </select>
@@ -257,7 +251,7 @@
 
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 productoscompra simples" hidden>
                                         <label class="labels" style="float: left;">Unidad de compra</label>
-                                        <select name="unidad_medida_c" class="form-control form-control-sm umc" id="unidad_medida_c" >
+                                        <select name="unidad_medida_c" class="form-control form-control-sm umc" id="unidad_medida_c" required>
                                         </select>
                                     </div>
 
@@ -269,14 +263,14 @@
                                     <div id="cant" class="" hidden><div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 " id="cantC"></div></div> 
 
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
-                                        <label class="labels" style="float: left;">Unidad Consumo</label>
+                                        <label class="labels" style="float: left;">Unidad de Consumo</label>
                                         <select name="unidad_medida_p" class="form-control form-control-sm ump1" id="unidad_medida_pr" required>
                                         <option value="Seleccione" selected disabled>Seleccione...</option>
                                         </select>
                                     </div>
                                     
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
-                                        <label class="labels" style="float: left;">Unidad Sistema</label>
+                                        <label class="labels" style="float: left;">Unidad de Sistema</label>
                                         <select name="unidad_medida_s" class="form-control form-control-sm umsis" id="unidad_medida_s" required>
                                         <option value="Seleccione" selected disabled>Seleccione...</option>
                                         </select>
@@ -420,6 +414,7 @@
                             </div>
                             
                 </div>
+                </form>
                 <!-- MODAL DE ALERTA-->
                                         <div class="modal fade " id="alerta" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
                                             <div class="modal-dialog modal-sm" role="document">
@@ -502,7 +497,7 @@
                                     });
                                 </script>
                        
-                     </form>
+                     
                      </div>
                      </div>
 

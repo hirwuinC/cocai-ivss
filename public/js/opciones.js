@@ -34,7 +34,7 @@ function load(tabla,item,valor,model){
 	.done(function(data) {
 		//alert(data[0][0]);
 		select.empty();
-		select.append('<option selected disabled>Seleccione..</option>');
+		select.append('<option selected disabled value="">Seleccione..</option>');
 	for (var i = 0; i < data.length; i++) {
 
 		select.append('<option value="'+data[i]['id']+'">'+data[i][1]+'</option>');
@@ -66,7 +66,7 @@ function load2(tabla,item,valor,otro){
 	.done(function(data) {
 		//alert(data[0][0]);
 		select.empty();
-		select.append('<option selected disabled>Seleccione..</option>');
+		select.append('<option selected disabled value="">Seleccione..</option>');
 	for (var i = 0; i < data.length; i++) {
 
 		select.append('<option value="'+data[i]['id']+'">'+data[i][1]+'</option>');

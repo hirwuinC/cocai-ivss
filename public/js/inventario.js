@@ -11,7 +11,11 @@ $(document).ready(function() {
       $('.proasignados').empty();
       $('.proasignados').append('Productos de venta asignados');
     });*/
-
+    var nueva = $('#newp').val();
+    if (nueva) {
+      $('#nuevop').prop('hidden', false);
+      setTimeout(function() {$('#nuevop').fadeOut('slow');}, 5000);
+    }
     $('#tipo_ingrediente').change(function(event) {
       var tipo = $('#tipo_ingrediente option:selected').text();
       if (tipo == 'Agrupado') {
@@ -25,16 +29,18 @@ $(document).ready(function() {
         $('.agrupado').fadeIn(600);
         $('.agrupado').prop('hidden', false);
         $('#botonG').prop('disabled', false);
+        $('#unidad_medida_c').removeAttr('required');
       }else if (tipo == 'Asociado') {
         $('.simples').fadeOut(500);
         $('.agrupado').fadeIn(600);
         $('.agrupado').prop('hidden', false);
         $('#botonG').prop('disabled', true);
+        $('#unidad_medida_c').removeAttr('required');
       }else{
         $('.simples').fadeIn(500);
         $('.agrupado').fadeOut('fast');
         $('#botonG').prop('disabled', false);
-        $('#botonG').prop('disabled', false);
+        $('#unidad_medida_c').attr('required', 'required');
       }
     });
 

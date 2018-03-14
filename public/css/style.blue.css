@@ -36,6 +36,46 @@ Bootstrapious Boilerplate Template
       float: left;
   }
 
+  .tdleyenda{
+    background: rgba(255,255,255,1);
+    background: -moz-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(245,245,245,1) 50%, rgba(236,238,239,1) 100%);
+    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(255,255,255,1)), color-stop(50%, rgba(245,245,245,1)), color-stop(100%, rgba(236,238,239,1)));
+    background: -webkit-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(245,245,245,1) 50%, rgba(236,238,239,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(245,245,245,1) 50%, rgba(236,238,239,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(245,245,245,1) 50%, rgba(236,238,239,1) 100%);
+    background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(245,245,245,1) 50%, rgba(236,238,239,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#eceeef', GradientType=1 );
+  }
+
+  .cont-btn{
+    position: absolute;
+    margin-left: 20%;
+    z-index: 99;
+  }
+
+  @media (max-width: 575px) {
+    .cont-btn{
+      position: relative;
+      z-index: 99;
+    }
+  }
+
+  @media (min-width: 576px) and (max-width: 768px) {
+    .cont-btn{
+      position: absolute;
+      margin-left: 30%;
+      z-index: 99;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1430px) {
+    .cont-btn{
+      position: absolute;
+      margin-left: 25%;
+      z-index: 99;
+    }
+  }
+
   .test + .tooltip > .tooltip-inner {
       background-color: #337ab7; 
       color: #FFFFFF; 

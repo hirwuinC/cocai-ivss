@@ -2,6 +2,7 @@
     .control-label{
         margin-bottom: 0px;
     }
+    
 </style>
 <center>
     <div id="gifcargando">
@@ -16,7 +17,12 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-12">
                     <div class="card cardH">
-
+                        <?php if (isset($_SESSION['idmercancia'])): ?>
+                            <input type="text" id="newp" hidden value="<?php echo $_SESSION['idmercancia']; ?>">
+                        <?php else: ?>
+                            <input type="text" id="newp" hidden>
+                        <?php endif ?>
+                    
                             <div class="card-header" hidden>
                               <center><h4 ><o id="titulocard">Consulta de inventario</o> <?php $ti=strtolower(str_replace('(PTY)', '', $this->mercancia[0]['tienda'])); echo "[".ucwords($ti)."]";  ?></h4></center>
                             </div>
@@ -26,16 +32,59 @@
                                 <!--<div class="col-6">
                                      <h4 class="page-header" style="font-family: Times New Roman, Times, serif; text-align: center">Unidad de negocio <?php echo $this->mercancia[0]['tienda'];?></h4> 
                                 </div>-->
-                            
-                                <div class="col-12 d-flex justify-content-end">
+                                
+                                <div class="col-6 d-flex justify-content-start">
+                                    <div class="container ml-3">
+                                        <div class="col-sm-6 col-lg-4">
+                                            <table class="table table-sm table-bordered">
+                                                <thead class="theadH">
+                                                    <tr>
+                                                        <td colspan="2" class="font11"><center>Tipos de productos</center></td>
+                                                    </tr>
+                                                </thead>
+                                                <?php if (isset($_SESSION['idmercancia'])): ?>
+                                                <tr id="trnuevo">
+                                                    <td style="background: #dff0d8; color: #dff0d8;"></td>
+                                                    <td class="font11">Nuevo</td>
+                                                </tr>
+                                                <?php endif ?>
+                                                <tr>
+                                                    <td style="background: #D4E5F4; color: #D4E5F4;"></td>
+                                                    <td class="font11">Agrupados</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="background: #e1eefb; color: #e1eefb;"></td>
+                                                    <td class="font11">Asociados</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="tdleyenda"></td>
+                                                    <td class="font11">Simples</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 d-flex justify-content-end">
                                     <img  style="margin-left:0%;" src="<?php echo PUBLIC_URL;?>img/<?php echo $this->mercancia[0]['tienda']; ?>.png" class="img-fluid" alt="modelo">
                                 </div>
+                            </div>
+                            <div class="alert alert-success col-sm-12" style="position: absolute; z-index: 100;" id="nuevop" hidden>
+                                <center><h4>el producto se registro de forma exitosa</h4></center>
                             </div>
                             <?php $i = 1; ?>  
                             <div class="dataTable_wrapper ">
                              <div class=" table-responsive">
                                 <table class="table table-sm table-striped table-bordered table-hover" id="tablaSM">
                                         <thead class="theadH">
+                                            <?php if (isset($_SESSION['idmercancia'])): ?>
+                            <div class="container cont-btn">
+                                <div class="row d-flex mb-3">
+                                    <div class="col-sm-2">
+                                        <a href="<?php echo BASE_URL;?>inventario/evaluar/<?php echo $this->mercancia[0]['idT']; ?>" class="btn btn-sm btn-outline-primary">Ver todos los productos</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endif ?>
                                             <tr>
                                                 <th>#</th>                                                    
                                                 <th >Codigo</th>
@@ -62,6 +111,8 @@
                                                 <tr style="background: #D4E5F4">
                                             <?php }else if ($merca['tipo_ingrediente'] == 'Asociado') {?>
                                                 <tr style="background: #e1eefb">
+                                            <?php }else if (isset($_SESSION['idmercancia']) and $merca['idP'] == $_SESSION['idmercancia']) {?>
+                                                <tr style="background: #dff0d8">
                                             <?php }else{?>
                                                 <tr>
                                             <?php } ?>
@@ -104,6 +155,7 @@
                                             <?php endforeach ?>
                                         </tbody>
                                     </table>
+
                                     <div class="container " >
                                         <div class="row ">
                                         <div class="col d-flex justify-content-center my-3">

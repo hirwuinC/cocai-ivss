@@ -52,9 +52,9 @@
 		}
 
 		public function nombreing($ingrediente){
-			$query = "SELECT mercancia.id as idm, mercancia.nombre as producto, marca, receta.id as idre, costo, format(rendimiento,4,'de_DE') as reideal, rendimiento, receta.unidad_medida_id, unidad, abreviatura from mercancia
-            inner join ingrediente_has_receta on ingrediente_id = mercancia.id
-			inner join receta on ingrediente_has_receta.receta_id = receta.id 
+			$query = "SELECT DISTINCT mercancia.id as idm, mercancia.nombre as producto, marca, receta.id as idre, costo, format(rendimiento,4,'de_DE') as reideal, rendimiento, receta.unidad_medida_id, unidad, abreviatura from mercancia
+			inner join receta on mercancia.receta_id = receta.id 
+            left join ingrediente_has_receta on ingrediente_has_receta.receta_id = receta.id
 			inner join unidad_medida on unidad_medida.id = receta.unidad_medida_id
 			where mercancia.id = $ingrediente";
     		$data = $this->_main->select($query);
