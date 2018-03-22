@@ -36,6 +36,7 @@ Bootstrapious Boilerplate Template
       float: left;
   }
 
+
   .pdl{
     padding-left: 0px;
   }
@@ -62,9 +63,11 @@ Bootstrapious Boilerplate Template
       position: relative;
       z-index: 99;
     }
+
     .pdl{
       padding-left: 15px;
     }
+
   }
 
   @media (min-width: 576px) and (max-width: 768px) {
