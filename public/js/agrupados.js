@@ -300,7 +300,7 @@ function agregaring(ingrediente,iding,receta){
           //var ingr = row['ingrediente'].replace(/ /gi, "@");  
           		return '<span  onclick="editaring('+producto+','+ingrediente+','+row['idi']+','+idrec+')" class="fa fa-edit test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="editar '+row['ingrediente']+'"></span>'+
               '<span style="margin-right: 8px; margin-left: 8px; "></span>'+
-              '<span  onclick="eliminaring('+producto+','+row['idi']+','+row['idreceta']+','+ingrediente+')" class="fa fa-trash test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="eliminar '+row['ingrediente']+' de esta receta"></span>'
+              '<span  onclick="eliminaring('+producto+','+row['idi']+','+row['idreceta']+','+ingrediente+')" class="fa fa-remove test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="eliminar '+row['ingrediente']+' de esta receta"></span>'
           	
           	         
           }     

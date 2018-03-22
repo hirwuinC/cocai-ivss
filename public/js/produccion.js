@@ -23,6 +23,15 @@ $(document).ready(function() {
 	 		var reideal = data[0]['reideal'];
 	 		var rendimiento = data[0]['rendimiento'];
 	 		var abreviatura = data[0]['abreviatura'];
+	 		var tandas = $('#tandas').val();
+	 		$('#infrece').empty();
+	 		$('#infrece').append(reideal+' '+abreviatura+' de '+texto);
+	 		$('.excel').removeAttr('data-original-title');
+	 		$('.excel').attr('data-original-title', 'Exportar receta para '+tandas+' '+texto);
+	 		$('#idrecetas').val('');
+	 		$('#idrecetas').val(idreceta);
+	 		$('#idrecetas').val('');
+	 		$('#idrecetas').val(idreceta);
 	 		$('.abrev').empty();
 	 		$('.abrev').append(abreviatura);
 	 		$('#rideal').val('');
@@ -56,12 +65,17 @@ $(document).ready(function() {
 
 	$('#tandas').change(function(event) {
 		var tandas = $('#tandas').val();
+		var texto = $('#semiterminados option:selected').text();
+		$('#tanda').val('');
+		$('#tanda').val(tandas);
 		var rendimiento = $('#rendimiento').val();
 		var ri = tandas*rendimiento;
 		$('#rideal').val('');
 	 	$('#rideal').val(ri);
 	 	$('#rideal').number(true, 4, ',', '.');
 	 	$('#rreal').focus();
+	 	$('.excel').removeAttr('data-original-title');
+	 	$('.excel').attr('data-original-title', 'Exportar receta para '+tandas+' '+texto);
 	});
 
 	$('#form-crear').submit(function(event) {
@@ -80,19 +94,37 @@ $(document).ready(function() {
 	 		if (datos != 'false') {
 	 			$('#datosproduccion').empty();
 	 			$('#datosproduccion').append('<center>Produccion de '+rendimiento+' '+abreviatura+' de '+texto+' Cargada con exito en sistema</center>');
-	 			$('#produccionOK').fadeIn();
+	 			$('#produccionOK').slideDown();
 	 			$('#produccionOK').prop('hidden', false);
-	 			setTimeout(function() {$('#produccionOK').fadeOut(500);}, 6000);
+	 			setTimeout(function() {$('#produccionOK').slideUp(500);}, 6000);
 	 		}
 	 	})
 	 	.fail(function(datos){
 	 		$('#datosproduccion2').empty();
  			$('#datosproduccion2').append('<center>Ocurrió un error al intentar cargar la produccion de '+rendimiento+' '+abreviatura+' de '+texto+'<br>'+
  				'<h5>Por favor intente realizar el proceso nuevamente.</h5></center>');
- 			$('#produccionerror').fadeIn();
+ 			$('#produccionerror').slideDown();
  			$('#produccionerror').prop('hidden', false);
- 			setTimeout(function() {$('#produccionerror').fadeOut(500);}, 6000);
+ 			setTimeout(function() {$('#produccionerror').slideUp(500);}, 6000);
 	 	});
 	});
+
+		$('.excel').click(function(event) {
+			$('#btnform2').trigger('click');
+		});
+
+		$('#form-print').submit(function(event) {
+			//event.preventDefault();
+			$('.exporting').slideDown();
+			$('.exporting').prop('hidden', false);
+			$('html,body').animate({
+            scrollTop: $(".exporting").offset().top
+        }, 1500);
+	  		setTimeout(function(){
+	       $('.exporting').fadeOut();
+	      }, 4000);
+		});
+	  	
+	
 
 });

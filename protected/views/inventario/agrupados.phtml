@@ -261,7 +261,12 @@
                               <div class="row justify-content-center">
                                   <div class="col-3">
                                       <button class="btn btn-sm btn-outline-primary filtro" value="1" id="btnagregar" data-toggle="modal" data-target="#modaling">Agregar productos</button>
-                                      <a href="<?php echo BASE_URL; ?>inventario/evaluar/<?php echo $this->tienda[0][0]; ?>" class="btn btn-sm btn-outline-primary filtro">Finalizar</a>
+                                      <?php if (isset($_SESSION['asignar'])) { ?>
+                                        <a href="<?php echo BASE_URL; ?>inventario/asignacionProducto/<?php echo $this->tienda[0][0]; ?>" class="btn btn-sm btn-outline-primary filtro">Finalizar</a>
+                                      <?php }else{ ?>
+                                        <a href="<?php echo BASE_URL; ?>inventario/stockE/<?php echo $this->tienda[0][0]; ?>" class="btn btn-sm btn-outline-primary filtro">Finalizar</a>
+                                      <?php } ?>
+                                      
                                   </div>                                  
                                 </div>
                               </div>

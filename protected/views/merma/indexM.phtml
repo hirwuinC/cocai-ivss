@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="us">
+<head>
+  <meta charset="utf-8">
+  <title>Produccion</title>
+  <link href="<?php echo PUBLIC_URL; ?>css/jquery-ui.css" rel="stylesheet">
+  <style>
+	  .breadcrumb-holder{
+	    background: linear-gradient(to top left, rgba(255,255,255,.1), rgba(100,180,255,.2));
+	  }
+	  .breadcrumb{
+	    background:transparent;
+	  }
+  </style>
+<?php if (isset($this->model[0]['udn'])) {
+        ?><div class="breadcrumb-holder">
+        <div class="container-fluid">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item"><?php $ti=strtolower($this->model[0]['udn']); echo strtoupper($ti);?></li>
+            <li class="breadcrumb-item active" id="area"></li>
+          </ul>
+        </div>
+      </div>
+      <?php  } ?>
+
+  
+</head>
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+<div id="body" hidden>
+                            
+<div id="page-wrapper">
+            <div class="">
+
+                <div class="row">
+                    <div class="col-lg-12 ">
+                        
+
+                        <div  class="card cardH">
+                        <div class="card-header" hidden>
+                            <center><h3><o id="titulocard">Mermas</o> <?php $ti=strtolower(str_replace('(PTY)', '', $this->model[0]['udn'])); echo "[".ucwords($ti)."]"; ?></h3></center>
+                        </div>
+                        <?php if ($this->model[0]['modelo'] != null): ?>
+			                            <div>
+			                              	<img class="hidden-sm-down" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png">
+			                              	<img width="25%" height="8%" class="hidden-sm-up" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png">
+			                            </div>
+	                        		<?php endif ?>
+	                        		<?php if ($this->model[0]['modelo'] == null): ?>
+			                            <div>
+			                              <img class="hidden-sm-down" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->model[0]['udn']; ?>.png">
+			                              <img width="25%" height="8%" class="hidden-sm-up" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->model[0]['udn']; ?>.png">
+			                            </div>
+			                        <?php endif ?>
+                        <div class="card-block" style="padding-bottom: 0px; ">                        
+						<center>
+						    <div id="load" hidden>
+						        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+						    </div>
+						</center>
+						
+
+                        
+                          			<input type="hidden" id="modelos" value="<?php echo $this->model[0]['idm']; ?>">
+			                        <?php if (isset($this->_error)) {
+			                            echo $this->_error;
+			                        } ?>
+			                        
+						
+                            	<div class="col-sm-12">
+                            		<div class="alert alert-success" id="mermasOK" hidden>
+	                                    <center><h4> Las mermas fueron procesadas de manera exitosa</h4></center>
+	                                </div>
+                            	</div>
+                            	<div class="col-sm-12">
+                            		<div class="alert alert-danger" id="mermaserror" hidden>
+	                                    <center><h4> Ocurrio un error al intentar procesar las mermas</h4><br>
+	                                    <h5>Por favor intente nuevamente</h5></center>
+	                                </div>
+                            	</div>
+                                
+                            	<!-- <form action="<?php echo BASE_URL;?>produccion/crearproduccion" method="post" accept-charset="utf-8" id="form-crear"> -->
+                            		<div class="col-sm-12">
+                            			<input type="hidden" name="idtienda" id="idtienda" value="<?php echo $this->model[0]['idU']?>">
+                        				<input type="hidden" name="idempr" id="idempr" value="<?php echo $this->model[0]['empresa_id']?>">
+                            			<input type="hidden" id="idrece" name="idreceta">
+                            			<input type="hidden" id="rendimiento" name="rendimiento">
+                            		<div class="row form-group d-flex justify-content-start">
+	                            		<div class="col-xs-12 col-sm-6 col-md-4 col-lg-2">
+	                            			<h4 style="background: #337ab7; border-radius: 5px 5px 0px 0px; text-align: center; margin-bottom: 0px" class="text-white">Clasificacion</h4>
+	                            			<select name="familia_id" id="padre_id" class="form-control form-control-sm"  size="22" style="overflow-y: hidden; border-radius: 0px 0px 5px 5px;">
+	                            			</select>
+	                            		</div>
+	                            		<div class="col-xs-12 col-sm-6 col-md-8 col-lg-10" id="tablaoculta">
+	                            			<h4 style="background: #337ab7; border-radius: 5px 5px 0px 0px; text-align: center;" class="text-white">Clasificacion seleccionada: <o id="family"></o></h4>
+	                            			<div class="dataTable_wrapper ">
+					                            <h5 style="background: #ddd; text-align: center; margin-bottom: 5px; width: 88%; margin-left: 6%" id="titulo2"></h5>
+					                             <div class="col-sm-12 table-responsive">    
+					                              <div class="container">
+					                              	
+                            		<div class="alert alert-info" id="alertpvta" style="position: absolute; z-index: 99; top: 25%;" hidden>
+	                                    <center><h4>Se ha seleccionado un producto de venta, tenga en cuenta que al mermar un producto de venta, seran descontados los ingredientes que corresponden a su receta.</h4><br>
+	                                    <button type="button" class="btn btn-sm btn-secondary" id="cancelarM">Cancelar</button>
+										<button type="button" class="btn btn-sm btn-outline-primary" id="abrirM">Continuar</button>
+										</center>
+	                                </div>
+                            	
+					                                <table id="prods" class="display table table-sm table-striped table-bordered table-hover" >
+					                                  <thead class="theadH">
+					                                      <tr>
+					                                          <th><center>#</center></th>
+					                                          <th><center>Codigo</center></th>
+					                                          <th><center>Producto</center></th>
+					                                          <th><center>marca</center></th>
+					                                          <th><center>U/M</center></th>
+					                                          <th><center>Accion</center></th>
+					                                      </tr>
+					                                  </thead>
+					                                  <tbody id="cuerpo_r"></tbody>
+					                                  
+					                              </table>
+					                              <div class="container">
+					                                <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
+					                                  <div class="col-12" id="costot">
+					                                    
+					                                  </div>
+					                                </div>
+					                              </div>
+					                            </div>
+					                          </div>     
+					                        </div>
+	                            		</div>
+	                            	</div>
+	                            		
+
+	                            		 <!-- The Modal -->
+										  <div class="modal fade" id="modalmermas">
+										    <div class="modal-dialog modal-md">
+										      <div class="modal-content">
+										        <!-- Modal Header -->
+										        <div class="modal-header">
+										          <h4 class="modal-title">Producto a mermar: <o id="titleM"></o></h4>
+										          <button type="button" class="close" data-dismiss="modal">&times;</button>
+										        </div>
+										        <!-- Modal body -->
+										        <div class="modal-body">
+										        	<div class="row form-group">
+										        		<div class="col-xs-12 col-sm-7" style="padding-right: 0px">
+										        			<label>Especifique la Cantidad a mermar:</label>
+										        		</div>
+												        <div class="col-xs-12 col-sm-4 pdl" >
+												        	<div class="input-group">
+												        		<input type="text" class="form-control form-control-sm" name="cantidadM" id="cantidadM" value="1" >
+												        		<span class="btn-sm input-group-addon" id="unim"></span>
+												        	</div>
+												          	
+												        </div>
+										        	</div>
+										        	<div class="row form-group">
+										        		<div class="col-sm-12">
+												          	<label class="labels">Indique el motivo de la merma:</label>
+												          	<select name="motivoM" id="motivo" class="form-control form-control-sm"  size="10" style="overflow-y: auto; border-radius: 0px 0px 5px 5px;">
+			                            					</select>
+												        </div>
+										        	</div>
+										        	<input type="hidden" id="idpro">
+										        	<input type="hidden" id="tipopro">
+										        	<div class="row">
+							                            <h6 style="color: black" id="leyenda" class="ml-3"><img class="img mb-2" src="<?php echo PUBLIC_URL; ?>img/info.icon.png"> El sistema le permite agregar una nueva opcion a la lista de motivos, al seleccionar la opcion: [ AGREGAR NUEVO MOTIVO ]</h6>
+							                          </div>
+										        </div>
+										        <!-- Modal footer -->
+										        <div class="modal-footer">
+										          <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
+										          <button type="button" class="btn btn-sm btn-outline-primary" id="mermar">Continuar</button>
+										        </div>
+										      </div>
+										    </div>
+										  </div>
+
+
+										  <!-- The Modal -->
+										  <div class="modal fade" id="modalnuevoM">
+										    <div class="modal-dialog modal-sm">
+										      <div class="modal-content">
+										        <!-- Modal Header -->
+										        <div class="modal-header">
+										          <h4 class="modal-title">Agregar motivo</h4>
+										          <button type="button" class="close" data-dismiss="modal">&times;</button>
+										        </div>
+										        <!-- Modal body -->
+										        <div class="modal-body">
+										        	<div class="row form-group">
+										        		<div class="col-sm-12">
+												          	<label class="labels">Motivo:</label>
+												          	<input type="text" class="form-control form-control-sm" name="motive" id="motive" placeholder="Breve descripcion ">
+												        </div>
+										        	</div>
+										        </div>
+										        <!-- Modal footer -->
+										        <div class="modal-footer">
+										          <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
+										          <button type="button" class="btn btn-sm btn-primary" id="mcontinuar">Continuar</button>
+										        </div>
+										      </div>
+										    </div>
+										  </div>
+
+										  <!-- The Modal -->
+										  <div class="modal fade" id="modalcancel">
+										    <div class="modal-dialog modal-sm">
+										      <div class="modal-content">
+										        <!-- Modal Header -->
+										        <div class="modal-header">
+										          <h4 class="modal-title">Cancelar proceso de mermas</h4>
+										          <button type="button" class="close" data-dismiss="modal">&times;</button>
+										        </div>
+										        <!-- Modal body -->
+										        <div class="modal-body">
+										        	<div class="alert alert-danger">
+												        <h4>Esta seguro de cancelar el proceso de merma de los productos seleccionados?</h4>
+												    </div>
+										        </div>
+										        <!-- Modal footer -->
+										        <div class="modal-footer">
+										          <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">No</button>
+										          <button type="button" class="btn btn-sm btn-outline-danger" id="cancel">Si</button>
+										        </div>
+										      </div>
+										    </div>
+										  </div>
+
+
+										  <!-- The Modal -->
+										  <div class="modal fade" id="modalcancela2">
+										    <div class="modal-dialog modal-sm">
+										      <div class="modal-content">
+										        <!-- Modal Header -->
+										        <div class="modal-header">
+										          <h4 class="modal-title">Cancelar proceso de mermas</h4>
+										          <button type="button" class="close" data-dismiss="modal">&times;</button>
+										        </div>
+										        <!-- Modal body -->
+										        <div class="modal-body">
+										        	<div class="alert alert-danger">
+												        <h4>Desea omitir el proceso de mermas para este producto?</h4>
+												    </div>
+										        </div>
+										        <!-- Modal footer -->
+										        <div class="modal-footer">
+										          
+										        </div>
+										      </div>
+										    </div>
+										  </div>
+
+
+										  <div class="row">
+										  	<div class="col-sm-12" id="recetasysubs" hidden>
+					                              <h3 class=" text-white" style="background: #337ab7; border-radius: 5px 5px 0px 0px; text-align: center;">Productos a mermar</h3>
+					                              <div class="dataTable_wrapper" >
+					                                 <div class="col-sm-12 table-responsive ml-1 " style=" padding-top: 2px">
+					                                  <!-- <h5 style="background: #ddd; text-align: center; margin-bottom: 5px;" id="titulo2"><b>Productos asociados</b></h5> -->
+					                                    <table id="tablamermar" class="display table table-sm table-striped table-bordered table-hover" >
+
+					                                        <thead class="theadH">
+
+					                                            <tr>
+					                                                <th><center>#</center></th>
+					                                                <th><center>Codigo</center></th>
+					                                                <th><center>Producto</center></th>
+					                                                <th><center>Marca</center></th>
+					                                                <th><center>Cantidad</center></th>
+					                                                <th><center>U/M</center></th>
+					                                                <th><center>Motivo</center></th>
+					                                                <th><center>Accion</center></th>
+					                                            </tr>
+					                                        </thead>
+					                                        <tbody id="cuerpo_r2"></tbody>
+					                                    </table>
+					                                  </div>
+					                                </div>
+					                            </div>
+										  </div>
+
+										  <div class="row d-flex justify-content-center" >
+										  	<div class="col-sm-3" id="botones" hidden>
+										  		<button class="btn btn-sm btn-outline-danger" id="cancelarproceso" >Cancelar</button>
+										  		<button class="btn btn-sm btn-outline-primary" id="procesar">Procesar mermas</button>
+										  	</div>
+										  	
+										  </div>
+
+                            		</div>
+                            	
+                            		
+                            		
+                            		
+                            		<div class="row form-group d-flex justify-content-center mt-3">
+
+				                            <div class="alert alert-success exporting" style="position: absolute; z-index: 99;" hidden>
+				                              	<h4>Receta exportada con exito</h4>
+				                            </div>
+				                        
+			                			<img width="35px" height="35px" class="ocultos excel" src="<?php echo PUBLIC_URL;?>img\excel.png" id="excel" hidden style="cursor: hand; cursor: pointer;" data-toggle="tooltip" data-placement="left" title="exportar receta para">
+                            			<button type="submit" class="btn btn-sm btn-outline-primary ocultos" hidden>Crear produccion</button>
+                        			</div>
+
+							<!-- </form> -->
+							<form action="<?php echo BASE_URL;?>produccion/printMermas" method="post" accept-charset="utf-8" id="form-print" hidden>
+                    			<input type="hidden" name="tanda" id="tanda" value="1">
+                    			<input type="hidden" name="tienda" id="tiendan" value="<?php echo $model ?>">
+                    			<input type="hidden" name="idrece" id="idrecetas">
+                				<button type="submit" class="btn btn-sm btn-outline-primary" id="btnform2" hidden></button>
+                			</form>                           	
+                            
+                        </div>
+
+
+
+                       
+                            
+                        </div>
+                        <center><div id="mensaje" hidden><img width="45px" height="45px" src="http://localhost/COCAI/public/img/check1.gif" alt="exito"/></div></center>
+                             
+                        
+                              
+                
+                </div>
+              </div>
+        </div>
+</div>
+</div>
+                            
+</body>
+
+</div>
+
+
+
+<!-- Autocomplete -->
+
+</html>

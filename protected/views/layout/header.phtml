@@ -32,6 +32,8 @@
             });
         </script>
 
+
+
     <?php #$menu= Session::modelo('idUsuario'); print_r($menu); ?>
 <nav style="font-size: 11px" class="side-navbar">
       <div class="side-navbar-wrapper">
@@ -95,24 +97,24 @@
                                                   <a href="'.BASE_URL.'inventario/indexk/'.$id[$j].'" class="subM" style="margin-left:12px; "></i>Movimientos de kardex</a>
                                                 </li>
                                                 <li>
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$j].'"*/ class="subM" style="margin-left:12px; "></i>Merma</a>
-                                                </li>
-                                                <li>
                                                   <a href="'.BASE_URL.'inventario/cargarinventario/'.$id[$j].'" class="subM" style="margin-left:12px; "></i>Carga de inventario</a>
                                                 </li>
                                               </ul>  
                                           </li>
                                           <li>
                                             <a href="'.BASE_URL.'receta/indexr/'.$id[$j].'" style="margin-left:5px; ">Receta
-                                              <i class="fa fa-cutlery"></i></span></a>   
+                                              <i class="fa fa-cutlery"></i></a>   
                                           </li>
                                           <li>
                                             <a href="'.BASE_URL.'produccion/tandas/'.$id[$j].'" style="margin-left:5px; ">Generar producción
-                                              <i class="fa fa-cogs"></i></span></a>   
+                                              <i class="fa fa-cogs"></i></a>   
                                           </li>
                                           <li>
+                                                <a id="'.BASE_URL.'merma/inicio/'.$id[$j].'" class="subM" style="margin-left:5px; cursor:hand; cursor:pointer;" onclick="abrir_emergente(this.id)">Mermas <span><img style="width: 10px; height:11px; margin-top:-40%" src="'.PUBLIC_URL.'img/icono-papelera.png'.'" alt=""></span></a>
+                                                </li>
+                                          <li>
                                             <a href="'.BASE_URL.'explosion/index/'.$id[$j].'" style="margin-left:5px; ">Ranking / Explosión de ingredientes
-                                              <i class="fa fa-bomb"></i></span></a>   
+                                              <i class="fa fa-bomb"></i></a>   
                                           </li>
                                            <li>
                                             <a href="#admint'.$j.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Administracion
@@ -154,13 +156,13 @@
                                                   <a href="'.BASE_URL.'inventario/insert/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; "></i>Crear producto de inventario</a>
                                                 </li>
                                                 <li>
+                                                  <a style="margin-left:12px; " href="'.BASE_URL.'inventario/asignacionProducto/'.$menu[$p]['idUd'].'" class="subM"></i>Asignacion de productos</a>
+                                                </li>
+                                                <li>
                                                   <a style="margin-left:12px; " href="'.BASE_URL.'inventario/evaluar/'.$menu[$p]['idUd'].'" class="subM"></i>Consulta de inventario</a>
                                                 </li>
                                                 <li>
                                                   <a href="'.BASE_URL.'inventario/reposicionM/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; "></i>Reposicion de mercancia</a>
-                                                </li>
-                                                <li>
-                                                  <a style="margin-left:12px; " href="'.BASE_URL.'inventario/asignacionProducto/'.$menu[$p]['idUd'].'" class="subM"></i>Asignacion de productos</a>
                                                 </li>
                                                 <!--<li>
                                                   <a style="margin-left:12px; " href="'.BASE_URL.'inventario/remisionM/'.$menu[$p]['idUd'].'" class="subM"></i>Remision de mercancia</a>
@@ -168,19 +170,19 @@
                                                 <li>
                                                   <a style="margin-left:12px; " href="'.BASE_URL.'inventario/indexk/'.$menu[$p]['idUd'].'" class="subM"></i>Movimientos de kardex</a>
                                                 </li>
-                                                <li>
-                                                  <a style="margin-left:12px; " /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM"></i>Merma</a>
-                                                </li>
                                               </ul>  
                                           </li>
                                           <li>
                                             <a href="'.BASE_URL.'receta/indexr/'.$menu[$p]['idUd'].'" style="margin-left:5px; ">Receta
-                                              <i class="fa fa-cutlery"></i></span></a>   
+                                              <i class="fa fa-cutlery"></i></a>   
+                                          </li>
+                                          <li>
+                                            <a style="margin-left:5px; " href="'.BASE_URL.'merma/inicio/'.$menu[$p]['idUd'].'" class="subM">Mermas <i class="fa fa-trash"></i></a>
                                           </li>
                                           
                                           <li>
                                             <a href="'.BASE_URL.'explosion/index/'.$menu[$p]['idUd'].'" style="margin-left:5px; ">Ranking / Explosión de ingredientes
-                                              <i class="fa fa-bomb"></i></span></a>   
+                                              <i class="fa fa-bomb"></i></a>   
                                           </li>
                                            <li>
                                             <a href="#adm'.$p.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Administracion

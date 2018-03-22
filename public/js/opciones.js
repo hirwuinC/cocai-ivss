@@ -34,7 +34,7 @@ function load(tabla,item,valor,model){
 	.done(function(data) {
 		//alert(data[0][0]);
 		select.empty();
-		select.append('<option selected disabled>Seleccione..</option>');
+		select.append('<option selected disabled value="">Seleccione..</option>');
 	for (var i = 0; i < data.length; i++) {
 
 		select.append('<option value="'+data[i]['id']+'">'+data[i][1]+'</option>');
@@ -66,7 +66,7 @@ function load2(tabla,item,valor,otro){
 	.done(function(data) {
 		//alert(data[0][0]);
 		select.empty();
-		select.append('<option selected disabled>Seleccione..</option>');
+		select.append('<option selected disabled value="">Seleccione..</option>');
 	for (var i = 0; i < data.length; i++) {
 
 		select.append('<option value="'+data[i]['id']+'">'+data[i][1]+'</option>');
@@ -151,4 +151,8 @@ var formatNumber = {
 
   function formato(texto){
     return texto.replace(/^(\d{4})-(\d{2})-(\d{2})$/g,'$3/$2/$1');
+  }
+
+  function abrir_emergente(url) {
+  	fullscreen = window.open(url, "fullscreen", 'top=0,left=0,width='+(screen.availWidth)+',height ='+(screen.availHeight)+',fullscreen=yes,toolbar=0 ,location=0,directories=0,status=0,menubar=0,resizable=0,scrolling=0,scrollbars=0');
   }

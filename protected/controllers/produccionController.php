@@ -52,9 +52,9 @@
 		}
 
 		public function nombreing($ingrediente){
-			$query = "SELECT mercancia.id as idm, mercancia.nombre as producto, marca, receta.id as idre, costo, format(rendimiento,4,'de_DE') as reideal, rendimiento, receta.unidad_medida_id, unidad, abreviatura from mercancia
-            inner join ingrediente_has_receta on ingrediente_id = mercancia.id
-			inner join receta on ingrediente_has_receta.receta_id = receta.id 
+			$query = "SELECT DISTINCT mercancia.id as idm, mercancia.nombre as producto, marca, receta.id as idre, costo, format(rendimiento,4,'de_DE') as reideal, rendimiento, receta.unidad_medida_id, unidad, abreviatura from mercancia
+			inner join receta on mercancia.receta_id = receta.id 
+            left join ingrediente_has_receta on ingrediente_has_receta.receta_id = receta.id
 			inner join unidad_medida on unidad_medida.id = receta.unidad_medida_id
 			where mercancia.id = $ingrediente";
     		$data = $this->_main->select($query);
@@ -133,6 +133,75 @@
 			}
 			
 
+			
+		}
+
+		public function printReceta(){
+			$idreceta = $_POST['idrece'];
+			$tandas = $_POST['tanda'];
+			$tienda = $_POST['tienda'];
+			$query = "SELECT nombre as receta FROM receta where id = $idreceta";
+			$rece = $this->_main->select($query);
+			$reporte=$this->datosReceta($idreceta,$tandas);
+			header("Content-Type: application/vnd.ms-excel");
+			header("Expires: 0");
+			header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+			header("content-disposition: attachment;filename=Receta_".$tandas."_".$rece[0][0]."_".date('d-m-Y').".xls");
+			date_default_timezone_set('America/asuncion');
+	    	echo '<table style="background: #337ab7; color: white; border: solid 2px #337ab7;">
+					<tbody>
+						<tr>
+							<td colspan="4" rowspan="2" style=" vertical-algin: center"><center><h2><b><u>Receta para '.$tandas.' '.$rece[0][0].'</u></b></h2></center></td>
+						</tr>
+					</tbody>
+				</table>';
+	    	$dia = date ( 'd/m/Y');
+	    	$hour = date ( 'ga');
+	    	echo '<table style="background: #337ab7; color: white; border: solid 2px #337ab7; border-top: solid 1px black;">
+					<tbody>
+						<tr>
+							<td rowspan="4"><b>Generado: '.$dia.' - '.$hour.'</b></td>
+							<td colspan="3" rowspan="4"><center><img src="'.PUBLIC_URL.'img/'.$tienda.'.png"></center></td>
+						</tr>
+					</tbody>
+				</table>';
+			echo'<table style="border: solid 2px #337ab7">
+	            <tr>
+			        <th style="font-size:12px; text-align: center; border: solid 1px #337ab7">Codigo</th>
+			        <th colspan="2" style="font-size:12px; text-align: center; border: solid 1px #337ab7">Producto</th>
+			        <th style="font-size:12px; text-align: center; border: solid 1px #337ab7">Cantidad</th>
+			    </tr>
+	            <tbody>';
+
+	        for ($j=0; $j < count($reporte); $j++){
+		    	           echo'<tr>
+		                        <td style="text-align:left; border: solid thin #337ab7">';
+		                        echo $reporte[$j]['codigo'].'</td>';
+		                        echo'<td colspan="2" style="text-align:left; border: solid thin #337ab7">';
+		                        echo $reporte[$j]['producto'].'</td>'; 
+		                        echo'<td style="text-align:center; border: solid thin #337ab7">';
+		                        echo $reporte[$j]['cantidad'].' '.$reporte[$j]['unidad_medida'].'</td>';
+		             
+		    } 
+
+	        echo'</tbody>
+	        </table><br>';
+	        
+		}
+
+		public function datosReceta($idreceta,$tandas){
+			$query = "SELECT mercancia.id as idm, mercancia.codigo, mercancia.nombre, mercancia.marca, ihr.receta_id, ihr.cantidad, ihr.unidad_medida_id, abreviatura FROM ingrediente_has_receta as ihr
+			inner join mercancia on ihr.ingrediente_id = mercancia.id
+			inner join unidad_medida on ihr.unidad_medida_id = unidad_medida.id
+			where ihr.receta_id = $idreceta";
+			$ingredientes = $this->_main->select($query);
+			for ($i=0; $i <count($ingredientes) ; $i++) {
+				$datos[] = array('codigo' => $ingredientes[$i]['codigo'],
+								'producto' => $ingredientes[$i]['nombre'].' '.$ingredientes[$i]['marca'],
+								'cantidad' => $ingredientes[$i]['cantidad']*$tandas,
+								'unidad_medida' => $ingredientes[$i]['abreviatura']);
+			}
+			return $datos;
 			
 		}
 

@@ -83,12 +83,22 @@
 					break;
 							
 					default:
+					if ($view == 'indexM') {
+						include_once ROOT . 'protected' . DS . 'views' . DS . 'layout' . DS . 'statements.phtml';
+						//include_once ROOT . 'protected' . DS . 'views' . DS . 'layout' . DS . 'header.phtml';
+						//include_once ROOT . 'protected' . DS . 'views' . DS . 'layout' . DS . 'imagalery.phtml';
+						//include_once ROOT . 'protected' . DS . 'views' . DS . 'layout' . DS . 'sidebar.phtml';
+						include_once $view_route;
+						include_once ROOT . 'protected' . DS . 'views' . DS . 'layout' . DS . 'footer.phtml';
+					}else{
 						include_once ROOT . 'protected' . DS . 'views' . DS . 'layout' . DS . 'statements.phtml';
 						include_once ROOT . 'protected' . DS . 'views' . DS . 'layout' . DS . 'header.phtml';
 						//include_once ROOT . 'protected' . DS . 'views' . DS . 'layout' . DS . 'imagalery.phtml';
 						//include_once ROOT . 'protected' . DS . 'views' . DS . 'layout' . DS . 'sidebar.phtml';
 						include_once $view_route;
 						include_once ROOT . 'protected' . DS . 'views' . DS . 'layout' . DS . 'footer.phtml';
+					}
+						
 					break;
 				}
 				

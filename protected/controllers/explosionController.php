@@ -131,7 +131,7 @@
             if (!isset($receid[$j][0]['receta_id'])) {
             	$this->resultadoexplosion($info[$j],$explo[$j],$fecha,$codigot,$idt);
             }else{
-            	$rec = $this->ingredientesexplosion($info[$j]['codigo'],$idt,$info[$j]['cantidad']);
+            	$rec = $this->_main->ingredientesexplosion($info[$j]['codigo'],$idt,$info[$j]['cantidad']);
             	//echo $info[$j]['codigo']."<br>";
         		//print_r($rec)."<br>";
 	            for ($m=0; $m <count($rec) ; $m++) { //echo "*".$m."<br><br>";
@@ -164,50 +164,7 @@
                 //print_r($rec);
 		
 
-		function ingredientesexplosion($info,$idt,$cantidad){
-			//echo($info)."<br>";
-			//echo($idt)."<br>";
-			//echo($cantidad)."<br>";
-				for ($i=0; $i <count($info) ; $i++) { 
-					$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, mercancia.contenido_neto, mhudn.existencia, ixr.cantidad, ixr.unidad_medida_id, unidad_medida.abreviatura, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, producto.id as idprod, producto.nombre as producto, format(mercancia.precio_unitario,2,'de_DE') as costo, mercancia.precio_unitario as precioU, receta.id as idreceta, mercancia.receta_id as recetaing, receta.nombre as receta, unidad_sistema.id as 'idUMS',unidad_sistema.unidad as 'unidadS', unidad_sistema.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', formula_c, formula_p, formula_s, cantidad_presentacion
-	        	FROM `ingrediente_has_receta` as ixr
-				inner join receta on receta.id = ixr.receta_id
-				inner join unidad_medida on unidad_medida.id = ixr.unidad_medida_id
-				inner join mercancia on mercancia.id = ixr.ingrediente_id
-				left join receta as sub on sub.id = mercancia.receta_id 
-				inner join mercancia_has_unidad_negocio as mhudn on mhudn.mercancia_id = mercancia.id
-	            inner join unidad_negocio on mhudn.unidad_negocio_id = unidad_negocio.id
-				inner join producto on receta.id = producto.receta_id
-				inner join unidad_medida as unidad_sistema on unidad_sistema.id = mercancia.unidad_medida_sistema_id
-				inner join unidad_medida as unidad_presentacion on unidad_presentacion.id = mercancia.unidad_medida_consumo_id 
-				left join unidad_medida as unidad_compra on unidad_compra.id = mercancia.unidad_medida_compra_id
-				WHERE producto.codigo = '".$info."' and unidad_negocio.id = $idt ";
-	    		$ingredientes = $this->_main->select($query);
-	    		//echo "ingredientes:"; print_r($ingredientes); echo "<br>";
-		    		for ($j=0; $j <=count($ingredientes) ; $j++) {
-						if (isset($ingredientes[$j]['idi'])) {
-							$cant = $cantidad*$ingredientes[$j]['cantidad'];
-							//echo $ingredientes[$j]['idi'];
-							$nuevo[] = array('iding'=>$ingredientes[$j]['idi'],
-		                               	 'codigoing' =>$ingredientes[$j]['codigi'],
-		                                 'cantidad'=>$cant,
-		                                 'abreviatura'=>$ingredientes[$j]['abreviatura'],
-		                                 'ingredientes'=>$ingredientes[$j]['ingrediente'],
-		                                 'unidad_medida_id'=>$ingredientes[$j]['unidad_medida_id'],
-		                                 'costo'=>$ingredientes[$j]['costo'],
-		                                 'idreceta'=>$ingredientes[$j]['idreceta'],
-		                                 'recetaing'=>$ingredientes[$j]['recetaing'],
-		                                 'contenido_neto'=>$ingredientes[$j]['contenido_neto'],
-		                                 'formula_c'=>$ingredientes[$j]['formula_c'],
-		                             	 'idpadre'=>$ingredientes[$j]['idprod'],
-		                                 'padre'=>$ingredientes[$j]['producto']);
-						}					 					
-					}
-				}
-				//print_r($nuevo);
-
-			return $nuevo;
-		}
+		
 
 		function subrecetas($idreceta,$explo,$cantidad,$fecha,$codigot,$idt){
 			//echo "id=";print_r($idreceta); echo "<br><br>";
