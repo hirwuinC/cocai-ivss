@@ -95,7 +95,7 @@
 			$query = "UPDATE mercancia_has_unidad_negocio set existencia = $updateexist where unidad_negocio_id = $idtienda and mercancia_id = $idmercancia";
 			$actualizado = $this->_main->modificar($query);
 			$accion = 'Modificado';
-			$motivok = 'Produccion de '.$tandas.' de '.$existente[0]['nombre'].' '.$existente[0]['marca'];
+			$motivok = 'Produccion de '.$tandas.' '.$existente[0]['nombre'].' '.$existente[0]['marca'];
 			if (isset($actualizado)) {
 				$this->_main->log($idmercancia,$idtienda,$accion);
 				$this->_main->kardex($updateexist,178,131,$idmercancia,$idtienda,$existente[0]['umsid'],$motivok);
@@ -116,12 +116,11 @@
 					$existente2 = $this->_main->select($query);
 					$cantxreceta = $ingredientes[$i]['cantidad']*$tandas;
 					$update2 = $existente2[0]['existencia']-$cantxreceta;
+					$this->_main->log($ingredientes[$i]['ingrediente_id'],$idtienda,$accion);
+					$this->_main->kardex($update2,179,132,$ingredientes[$i]['ingrediente_id'],$idtienda,$existente2[0]['umsid'],$motivok);
 					$query = "UPDATE mercancia_has_unidad_negocio set existencia = $update2 where unidad_negocio_id = $idtienda and mercancia_id = '".$ingredientes[$i]['ingrediente_id']."'";
 					$actualizado2 = $this->_main->modificar($query);
-					if (isset($actualizado2)) {
-						$this->_main->log($ingredientes[$i]['ingrediente_id'],$idtienda,$accion);
-						$this->_main->kardex($update2,179,132,$ingredientes[$i]['ingrediente_id'],$idtienda,$existente2[0]['umsid'],$motivok);
-					}
+					
 
 				}
 			}
