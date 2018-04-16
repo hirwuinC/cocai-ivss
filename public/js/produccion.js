@@ -2,6 +2,7 @@ $(document).ready(function() {
 	var tienda = $('#idtienda').val();
 	load('mercancia','semiterminados',tienda);
 	$('#semit').trigger('click'),
+	consultaproducciones();
 
 	$('#semiterminados').change(function(event) {
 		var texto = $('#semiterminados option:selected').text();
@@ -43,21 +44,35 @@ $(document).ready(function() {
 	 		$('#rreal').number(true, 4, ',', '.');
 	 		$('.ocultos').fadeIn();
 			$('.ocultos').prop('hidden', false);
+			validaciontandas();
 			vering(producto,idmer,idreceta);
+			consultaproducciones(0,idmer);
 		});
 		
 	});
 	$('#semit').click(function(event) {
 		$('#recetassemi').hide();
-		$('#semis').show();
-		$('#semis').prop('hidden', false);
+		$('#consults').hide();
+		$('#form-crear').show();
+		$('#form-crear').prop('hidden', false);
+		$('#selectedpro').show();
+	});
+	$('#consultas').click(function(event) {
+		$('#recetassemi').hide();
+		$('#form-crear').hide();
+		$('#form-crear').prop('hidden', false);
+		$('#consults').show();
+		$('#consults').prop('hidden', false);
+		
 	});
 	$('#rec').click(function(event) {
 		var href = $(this).attr('href');
 		if (href) {
-			$('#semis').hide();
+			$('#form-crear').hide();
+			$('#consults').hide();
 			$('#titulo2').empty();
 			$('#recetassemi').show();
+			$('#selectedpro').show();
 			$('#recetassemi').prop('hidden', false);
 		}
 		
@@ -76,6 +91,7 @@ $(document).ready(function() {
 	 	$('#rreal').focus();
 	 	$('.excel').removeAttr('data-original-title');
 	 	$('.excel').attr('data-original-title', 'Exportar receta para '+tandas+' '+texto);
+	 	validaciontandas();
 	});
 
 	$('#form-crear').submit(function(event) {
@@ -125,6 +141,165 @@ $(document).ready(function() {
 	      }, 4000);
 		});
 	  	
-	
+		$('#btn-filtro').click(function(event) {
+			$('#load').fadeIn();
+			$('#load').prop('hidden', false);
+			$('#tablaoculta2').fadeOut();
+			consultaproducciones();
+		});
 
 });
+
+	function validaciontandas(){
+		var idt = $('#idtienda').val();
+		var tandas = $('#tandas').val();
+		var idpro = $('#semiterminados').val();
+		var idr = $('#idrecetas').val();
+		$.ajax({
+            url: BASE_URL+'/produccion/validarproduccion/'+idt+'/'+tandas+'/'+idpro+'/'+idr,
+            type: 'POST',
+            dataType: 'json'
+        })
+      	.done(function(data) {
+      		if (data != 1) {
+      			//data = 1: cantidad a mermar no valida por que es mayor a la existencia 
+      			$('#validado').empty();
+      			$('#validado').append(data[0]['nombre']+' '+data[0]['marca']);
+      			$('#btngenerar').prop('disabled', true);
+      			$('#alert-stmin').slideDown();
+      			$('#alert-stmin').prop('hidden', false);
+      		}else{
+      			$('#alert-stmin').slideUp();
+      			$('#btngenerar').prop('disabled', false);
+      		}
+		});
+	}
+
+	function consultaproducciones(reversado=false,idmer=false){
+		if (reversado == 1) {
+			var rev = 1; 
+		}else{
+			var rev = 0;
+		}
+  	$('#load').fadeOut(400);
+  	setTimeout(function() {$('#tablaoculta2').fadeIn(500);$('#tablaoculta2').prop("hidden",false);}, 800);
+		var idt = $('#idtienda').val();
+		if (idmer != false) {
+			var ing = idmer;
+			$('#selectedpro').show();
+			$('#colbtn').fadeIn();
+		}else{
+			var ing = 999999;
+			$('#selectedpro').fadeOut();
+			$('#colbtn').fadeOut();
+		}
+		var t2 =$('#producidos').DataTable({
+            "ajax": BASE_URL+'/produccion/consultas/'+idt+'/'+ing+'/'+rev,
+            "columns": [
+            	{ "data": null, className: "tdcenter"},
+                { "data": "codigi" , className: "tdleft"},
+                { "data": "mercancia" , className: "tdleft"},
+                { "data": "marca" , className: "tdleft"},
+                { "data": "cantidad" , className: "tdright"},
+            	{ "data": "rendimiento_ideal" , className: "tdright",
+                	render : function(data, type, row) { 
+			          	return ''+data+' '+row['abums']
+		       		}
+            	},
+                { "data": "resultante" , className: "tdright",
+                	render : function(data, type, row) { 
+			          	return ''+data+' '+row['abums']
+		       		}
+            	},
+            	{ "data": "fecha" , className: "tdleft"}, 
+                { "data": "idproduccion" , className: "tdcenter",   
+	          	render : function(data, type, row) { 
+		              	return '<span  onclick="reversarproduccion('+idt+','+data+','+row['idi']+','+row['idreceta']+')" class="fa fa-remove test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="Deshacer la produccion de '+row['ingrediente']+'"></span>'+
+		              	'<input type="hidden" id="ing'+row['idi']+'" value="'+row['ingrediente']+'"/>'
+		         	
+	       		} 
+   				}
+   				  
+            ],
+            "columnDefs": [ {
+            "searchable": false,
+            "orderable": false,
+            "targets": 0
+                } ],
+                "order": [[ 1, 'asc' ]],
+            destroy: true,
+            responsive: true,
+
+        });
+    $('#producidos').css("width","100%");
+    t2.on( 'order.dt search.dt', function () {
+        t2.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+        } );
+    } ).draw();
+		
+	}
+
+	function reversarproduccion(idt,idproduccion,idm,idr){
+		$('#idp').val('');
+		$('#idp').val(idproduccion);
+		$('#idm').val('');
+		$('#idm').val(idm);
+		$('#idr').val('');
+		$('#idr').val(idr);
+		var text = $('#ing'+idm).val();
+		$('.rev').empty();
+		$('.rev').append(text);
+		$('#modalreversarp').modal('show');
+	}
+
+	$(document).ready(function() {
+		$('#reversar').click(function(event) {
+		var idt = $('#idtienda').val();
+		var idproduccion = $('#idp').val();
+		var idm = $('#idm').val();
+		var mot = $('#motivoreverso').val();
+      	var motivo = mot.replace(/ /g, "@");
+      	var idr = $('#idr').val();
+		$.ajax({
+			url: BASE_URL+'/produccion/reversarproduccion/'+idt+'/'+idproduccion+'/'+idm+'/'+idr+'/'+motivo,
+	        type: 'POST',
+	        dataType: 'json'
+		})
+	    .done(function(data) {
+	    	$('#modalreversarp').modal('hide');
+ 			$('#reversada').slideDown();
+ 			$('#reversada').prop('hidden', false);
+ 			setTimeout(function() {$('#reversada').slideUp(500);consultaproducciones();}, 6000);
+	    })
+	    .fail(function(data){
+	    	$('#modalreversarp').modal('hide');
+ 			$('#errorreversar').slideDown();
+ 			$('#errorreversar').prop('hidden', false);
+ 			setTimeout(function() {$('#errorreversar').slideUp(500);}, 6000);
+	 	});
+	});
+
+		$('#btn-rev').click(function(event) {
+			var valor = $('#btn-rev').val();
+			if (valor == 1) {
+				$('#btn-rev').val('');
+				$('#btn-rev').val(2);
+				$('#btn-rev').text('Consultar producciones');
+				$('#btn-rev').removeClass('btn-outline-danger');
+				$('#btn-rev').addClass('btn-outline-primary');
+				consultaproducciones(1);
+			}else{
+				$('#btn-rev').val('');
+				$('#btn-rev').val(1);
+				$('#btn-rev').text('Consultar reversos');
+				$('#btn-rev').addClass('btn-outline-danger');
+				$('#btn-rev').removeClass('btn-outline-primary');
+				consultaproducciones();
+			}
+		});
+
+		$('#close-alert').click(function(event) {
+			$('#alert-stmin').slideUp();
+		});
+	});

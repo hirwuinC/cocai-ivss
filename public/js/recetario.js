@@ -58,7 +58,7 @@ jQuery(document).ready(function($) {
 	        dataType: 'json'
 	 	})
 	 	.done(function(datos) {
-	 		var costor = datos[0][0];
+	 		var costor = datos[0]['costototal'];
 	 		//alert(costor);
 	 		$.ajax({
 		 		url: BASE_URL+'/receta/updatepvp/'+precio+'/'+producto+'/'+receid+'/'+costor,
@@ -80,14 +80,14 @@ jQuery(document).ready(function($) {
 	 	});
 	}
 
-    function verproductos(modelo){
+    function verproductos(modelo,producto=false,ingrediente=false,idrec=false){
   	//alert(modelo); 
   	var empresa = $('#idempr').val();
   $('#tablaoculta').hide();
   $('#load').fadeOut(600);
   setTimeout(function() {$('#tablaoculta').fadeIn(500);$('#tablaoculta').prop("hidden",false);}, 400);
   
-    	var moneda = "Bs";
+    	var moneda = $('#monedatienda').val();
 		var t2 =$('#tablaproduct').DataTable({
             "ajax": BASE_URL+'/receta/consultarpro/'+modelo,
             "columns": [
@@ -180,6 +180,9 @@ jQuery(document).ready(function($) {
         } );
     } ).draw();
 
+    if (producto != false && ingrediente != false && idrec != false) {
+  		vering(producto,ingrediente,idrec);
+  	}
 
  }
 
@@ -188,7 +191,7 @@ jQuery(document).ready(function($) {
  	$('#idproduct').val(producto);
  	$('#iding').val("");
  	$('#iding').val(ingrediente);
- 	var moneda = "Bs";
+ 	var moneda = $('#monedatienda').val();
  	var empresa = $('#idempr').val();
  	//alert(producto);alert(ingrediente);alert(idrec);
  	$.ajax({
@@ -243,17 +246,18 @@ jQuery(document).ready(function($) {
 	 	})
 	 	.done(function(datos) {
 	 		$('#costot').empty();
-	 		var ttl = datos[0][1];
+	 		//alert(datos[0]['pvp']);
+	 		var ttl = datos[0]['costot'];
 	 		if (ttl == null) {
 	 			var totalcosto = false;
 	 			var total = false;
 	 		}else{
 	 			var totalcosto = ttl;
 	 			var total = datos[0][0];
-	 			if (datos[0][4]) {
+	 			if (datos[0]['pvp']) {
 		 			var multi = total*100;
 		 			$('#parapvp').prop('hidden', false);
-		 			var pvp = datos[0][4];
+		 			var pvp = datos[0]['pvp'];
 		 			var porcentajec = multi/pvp;
 		 			$('#costot').append('<b>Total costo: '+totalcosto+' Bs / % de costo: ['+porcentajec.toLocaleString('es-ES', { maximumFractionDigits: 2 })+']</b>');
 		 		}else{
@@ -294,7 +298,7 @@ jQuery(document).ready(function($) {
             	},
                 { "data": "cantidad" },
                 { "data": "abreviatura" },
-                { "data": "costo" , className: "tdright",
+                { "data": "costoporcion" , className: "tdright",
                 	render : function(data, type, row) { 
 			          	return ''+data+' '+moneda
 		       		} 
@@ -304,7 +308,8 @@ jQuery(document).ready(function($) {
           //var ingr = row['ingrediente'].replace(/ /gi, "@");  
           		return '<span  onclick="editaring('+producto+','+ingrediente+','+row['idi']+','+idrec+')" class="fa fa-edit test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="editar '+row['ingrediente']+'"></span>'+
               '<span style="margin-right: 8px; margin-left: 8px; "></span>'+
-              '<span  onclick="eliminaring('+producto+','+row['idi']+','+row['idreceta']+','+ingrediente+')" class="fa fa-remove test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="eliminar '+row['ingrediente']+' de esta receta"></span>'
+              '<span  onclick="eliminaring('+producto+','+row['idi']+','+row['idreceta']+','+ingrediente+')" class="fa fa-remove test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="eliminar '+row['ingrediente']+' de esta receta"></span>'+
+              '<input type="hidden" id="produ'+row['idi']+'" value="'+row['cantidad']+'"/>'
           	
           	         
           }     
@@ -330,7 +335,7 @@ jQuery(document).ready(function($) {
             	},
                 { "data": "cantidad" },
                 { "data": "abreviatura" },
-                { "data": "costo" , className: "tdright",
+                { "data": "costoporcion" , className: "tdright",
                 	render : function(data, type, row) { 
 			          	return ''+data+' '+moneda
 		       		} 
@@ -430,14 +435,14 @@ jQuery(document).ready(function($) {
 		        dataType: 'json'
 		 	})
 		 	.done(function(datos) {
-		 		var ttl = datos[0][0];
+		 		var ttl = datos[0]['costototal'];
 		 		if (ttl == null) {
 		 			var totalcosto = false;
 		 			var porcentajec = false;
 		 		}else{
 		 			var totalcosto = ttl;
 		 			var multi = totalcosto*100;
-					var pvp = datos[0][4];
+					var pvp = datos[0]['pvp'];
 		 			var porcentajec = multi/pvp;
 		 		}
 		 		
@@ -510,6 +515,7 @@ jQuery(document).ready(function($) {
 	 	$('#cuerpoagregar').empty();
 	 	$('#canti').val('');
 	 	//alert(producto); alert(ingrediente); alert(receta);
+	 	$('#canti').number(true, 4, ',', '.');
 	 	$('#mcant').modal('show');
 	 	$('#unidadmed').empty();
 	 	$('#unidadmedf').empty();
@@ -536,8 +542,11 @@ jQuery(document).ready(function($) {
 	 }
 
 	 function editaring(producto,ingrediente,iding,receta){
+	 	var cant = $('#produ'+iding).val();
 	 	$('#cuerpoagregar').empty();
 	 	$('#canti').val('');
+	 	$('#canti').number(true, 4, ',', '.');
+	 	$('#canti').val(cant);
 	 	//alert(producto); alert(ingrediente); alert(receta);
 	 	$('#mcant').modal('show');
 	 	$('#unidadmed').empty();
@@ -550,7 +559,7 @@ jQuery(document).ready(function($) {
 		.done(function(data) {
 			$('#unidadmed').empty();
 			$('#tmcant').empty();
-			$('#tmcant').append('Editar ingrediente');
+			$('#tmcant').append('Editar cantidad de '+data[0]['nombre']+' '+data[0]['marca']+'');
 			$('#bot').empty();
 				$('#unidadmedf').val(data[0]['US']);
 				$('#unidadmed').val(data[0]['idUS']);
@@ -584,14 +593,14 @@ jQuery(document).ready(function($) {
 	        dataType: 'json'
 	 	})
 	 	.done(function(datos) {
-	 		var ttl = datos[0][0];
+	 		var ttl = datos[0]['costototal'];
 	 		if (ttl == null) {
 	 			var totalcosto = false;
 	 		}else{
 	 			var totalcosto = ttl;
 	 		}
 	 		var multi = totalcosto*100;
-			var pvp = datos[0][4];
+			var pvp = datos[0]['pvp'];
 	 		var porcentajec = multi/pvp;
 	 		//alert(totalcosto);
 	 			$.ajax({
@@ -648,14 +657,14 @@ jQuery(document).ready(function($) {
 	        dataType: 'json'
 	 	})
 	 	.done(function(datos) {
-	 		var ttl = datos[0][0];
+	 		var ttl = datos[0]['costototal'];
 	 		if (ttl == null) {
 	 			var totalcosto = false;
 	 		}else{
 	 			var totalcosto = ttl;
 	 		}
 	 		var multi = totalcosto*100;
-			var pvp = datos[0][4];
+			var pvp = datos[0]['pvp'];
 	 		var porcentajec = multi/pvp;
 	 		//alert(totalcosto);
 	 			$.ajax({
@@ -764,8 +773,10 @@ jQuery(document).ready(function($) {
             dataType: 'json'
  		})
  		.done(function(data) {
+ 			
+ 			var idrec = data;
  			$('#modalrec').modal('hide');
- 			verproductos(modelo);
+ 			verproductos(modelo,idproducto,iding,idrec);
  		});
 	 }
 

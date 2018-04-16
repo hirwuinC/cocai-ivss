@@ -57,7 +57,7 @@
                                                 <td style="text-align:left"><?php echo $rank['descripcion'];?></td>
                                                 <td style="text-align:left"><?php echo $rank['grupo'];?></td>
                                                 <td style="text-align:center"><?php echo $rank['cantidad'];?></td>
-                                                <td style="text-align:right;"><?php echo number_format($rank['monto'],2,",",".")." Bs";?></td>
+                                                <td style="text-align:right;"><?php echo number_format($rank['monto'],2,",",".").$_SESSION('monedatienda');?></td>
                                                 <td style="text-align:right;"><?php echo $rank['porcentajeVentas']."%";?></td>
                                                 <td style="text-align:right;"><?php echo $rank['costo'];?></td>
                                                 <td style="text-align:right;"><?php echo $rank['costoTotal'];?></td>

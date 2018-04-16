@@ -139,23 +139,42 @@ WHERE modelo_has_submodelo.modelo_id = $modelo";
 		public function consultasp($idp,$idreceta){
 			if ($idp != 999999) {
 				//echo "if<br>"; 
-				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, format(ixr.cantidad,4,'de_DE') as cantidad, abreviatura, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, producto.id as idprod, producto.nombre as producto, format(mercancia.precio_unitario,4,'de_DE') as costo, mercancia.precio_unitario as precioU, receta.id as idreceta, mercancia.receta_id, receta.nombre as receta  FROM `ingrediente_has_receta` as ixr
+				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, format(ixr.cantidad,4,'de_DE') as cantidad, ixr.cantidad as quantity, abreviatura, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, producto.id as idprod, producto.nombre as producto, format(mercancia.precio_unitario,4,'de_DE') as costo, mercancia.precio_unitario as precioU, receta.id as idreceta, mercancia.receta_id, receta.nombre as receta, contenido_neto  FROM `ingrediente_has_receta` as ixr
 			inner join receta on receta.id = ixr.receta_id
 			inner join unidad_medida on unidad_medida.id = ixr.unidad_medida_id
 			inner join mercancia on mercancia.id = ixr.ingrediente_id
 			inner join producto on receta.id = producto.receta_id
 			WHERE producto.id = $idp";
     		$data = $this->_main->select($query);
+
 			}else{
 				//echo "else<br>"; 
-				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, format(ixr.cantidad,4,'de_DE') as cantidad, abreviatura, mercancia.nombre as producto, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, format(mercancia.precio_unitario,4,'de_DE') as costo, mercancia.precio_unitario as precioU, ixr.receta_id as idreceta, mercancia.receta_id, receta.nombre as receta  
+				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, format(ixr.cantidad,4,'de_DE') as cantidad, ixr.cantidad as quantity, abreviatura, mercancia.nombre as producto, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, format(mercancia.precio_unitario,4,'de_DE') as costo, mercancia.precio_unitario as precioU, ixr.receta_id as idreceta, mercancia.receta_id, receta.nombre as receta, contenido_neto  
 					FROM `mercancia`
 					inner join ingrediente_has_receta as ixr on mercancia.id = ixr.ingrediente_id
 					inner join receta on receta.id = ixr.receta_id
                     inner join unidad_medida on unidad_medida.id = ixr.unidad_medida_id
 					WHERE ixr.receta_id = $idreceta";
 		    		$data = $this->_main->select($query);
+                    
+            //echo $a.' / '.$b.' / '.$c.'/'.$bxc.'/'.$x."<br>";
 			}
+
+            for ($i=0; $i < count($data) ; $i++) { 
+                $a = $data[$i]['contenido_neto'];
+                $b = $data[$i]['precioU'];
+                $c = $data[$i]['quantity'];
+                $bxc = $b*$c;
+                if ($data[$i]['contenido_neto'] != 0) {
+                    $x = $bxc/$a;
+                }else{
+                    $x = $bxc/1;
+                }
+                
+                $data[$i]['costoporcion'] = number_format($x,4,",",".");
+                $data[$i]['costop'] = $x;
+            }
+                   
 			
     		/*for ($i=0; $i < count($data); $i++) { 
     			$total[] = $data[$i]['cantidad'] * $data[$i]['precioU'];
@@ -168,8 +187,8 @@ WHERE modelo_has_submodelo.modelo_id = $modelo";
 
         public function costototal($idp,$idreceta){
             if ($idp != 999999) {
-                $query = "SELECT SUM(mercancia.precio_unitario) as costototal, format(SUM(mercancia.precio_unitario),4,'de_DE') as costot, receta.id as idreceta, receta.nombre as receta, precioVta_A as pvp  
-FROM `ingrediente_has_receta` as ixr
+                $query = "SELECT receta.id as idreceta, receta.nombre as receta, precio_unitario as precioU, precioVta_A as pvp, contenido_neto, ixr.cantidad as quantity  
+            FROM `ingrediente_has_receta` as ixr
             inner join receta on receta.id = ixr.receta_id
             inner join unidad_medida on unidad_medida.id = ixr.unidad_medida_id
             inner join mercancia on mercancia.id = ixr.ingrediente_id
@@ -177,7 +196,7 @@ FROM `ingrediente_has_receta` as ixr
             WHERE producto.id = $idp";
             $data = $this->_main->select($query);
             }else{
-                $query = "SELECT SUM(mercancia.precio_unitario) as costototal, format(SUM(mercancia.precio_unitario),4,'de_DE') as costot, receta.id as idreceta, receta.nombre as receta 
+                $query = "SELECT receta.id as idreceta, receta.nombre as receta, precio_unitario as precioU, contenido_neto, ixr.cantidad as quantity  
                     FROM `mercancia`
                     inner join ingrediente_has_receta as ixr on mercancia.id = ixr.ingrediente_id
                     inner join receta on receta.id = ixr.receta_id
@@ -185,6 +204,22 @@ FROM `ingrediente_has_receta` as ixr
                     $data = $this->_main->select($query);
 
             }
+            $costototal = 0;
+            for ($i=0; $i < count($data) ; $i++) { 
+                $a = $data[$i]['contenido_neto'];
+                $b = $data[$i]['precioU'];
+                $c = $data[$i]['quantity'];
+                $bxc = $b*$c;
+                if ($data[$i]['contenido_neto'] != 0) {
+                    $x[$i] = $bxc/$a;
+                }else{
+                    $x[$i] = $bxc/1;
+                }
+                $costototal = $x[$i]+$costototal;
+                
+            }
+            $data[0]['costot'] = number_format($costototal,4,",",".");
+            $data[0]['costototal'] = $costototal;
             echo json_encode($data);
 
         }

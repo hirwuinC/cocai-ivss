@@ -19,7 +19,7 @@ $(document).ready(function() {
         dataType: 'json',
     })
     .done(function(data) {
-        var moneda = $('#monedas').val();
+        var moneda = $('#monedatienda').val();
     	//alert(data[1][0]+' Bs'); alert(data[1][1]+' Bs'); alert(data[1][2]+' Bs'); 
     	if (data == true) {
 			$('#cancelar').prop('disabled',true);
@@ -240,7 +240,7 @@ function tablaPedido(data){
         }, 1000);
     $('#carrito-i').prop('hidden', false);
     $('#carrito-i').slideDown('slow');
-    var moneda = $('#monedas').val();
+    var moneda = $('#monedatienda').val();
     
     //$('#closem2').trigger('click');
     //alert(data[1]);

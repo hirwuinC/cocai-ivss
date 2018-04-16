@@ -26,6 +26,8 @@ $(document).ready(function() {
             dataType: 'json'
           })
         .done(function(data) {
+            $('#avsistema').empty();
+            $('#avsistema').append(data[0]['abreviatura']);
             document.getElementById("formulas").value=data[0]['abreviatura']+' * ';
         });
 	});

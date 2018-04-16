@@ -1,0 +1,33 @@
+Sobre las remisiones y reposiciones:
+Las remisiones y reposiciones de mercancia son lo mismo.
+se deberian llamar requisiciones y transferencias a los procesos de solicitud de mercancia y de recepcion de mercancia solicitada
+debe haber una vista con las solicitudes por aprobar que sea parte del mismo modulo de transferencias
+en ese modulo de transferencias la tienda ingresaria en el inventario la cantidad que le hayan enviado
+en el modulo de transferencias la tienda q envia ve las q tiene pendiente por enviar y es alli donde especifica por cada producto la cantidad que va a enviar
+al procesar el envio de la transferencia se descuenta del inventario de la tienda q envia las cantidades especificadas
+al hacer click en la campanita q direccione a las solicitudes o transferencias para procesarlas o recibirlas segun sea el caso
+
+
+Datos para las facturas de compra:
+proveedor
+N° de factura
+fecha_carga
+fecha_factura
+productos
+cantidades
+impuesto / exento de impuesto
+unidad_negocio
+
+
+
+proasociados
+inventariocontroller
+inventariojs
+stocke
+insertar
+mainmodel
+indexM
+mermacontroller
+mermajs
+index produccion
+header

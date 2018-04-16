@@ -214,7 +214,7 @@ function agregaring(ingrediente,iding,receta){
  	$('#idproduct').val(producto);
  	$('#iding').val("");
  	$('#iding').val(ingrediente);
- 	var moneda = "Bs";
+ 	var moneda = $('#monedatienda').val();
  	//alert(producto);alert(ingrediente);alert(idrec);
  	$.ajax({
  		url: BASE_URL+'/receta/nombrepro/'+producto+'/'+ingrediente,

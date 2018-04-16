@@ -7,6 +7,23 @@ $(document).ready(function() {
     });
     $(".monto").number(true, 4, ',', '.');
     $(".precios").number(true, 4, ',', '.');
+
+    $('.subM').click(function(event) {
+    	var idt = $(this).attr('name');
+	    $.ajax({
+			url: BASE_URL+'main/tienda/'+idt,
+			dataType: 'json',
+			type: 'POST',
+		})
+		.done(function(data) {
+	    	if (data == '$') {
+	    		console.log("$");
+	    	}else{
+	    		console.log("Bs");
+	    	}
+	    });
+	});
+
 });
 
 function opciones (idsM,idm){

@@ -100,6 +100,14 @@
                 	 <form action="<?php echo BASE_URL;?>inventario/insert" method="post" accept-charset="utf-8" role="form">
                             <input type="text" id="idT" name="idT" hidden value="<?php echo $this->idT;?>">
                                 <input type="text" name="unidadS" hidden id="unidadS">
+                                <?php if (isset($this->radio)): ?>
+                                  <input type="text" id="nuevoproducto" hidden value="<?php echo $this->radio; ?>">
+                                <?php else: ?>
+                                  <input type="text" id="nuevoproducto" hidden>
+                                <?php endif ?>
+                                <div class="alert alert-success col-sm-12" style="position: absolute; z-index: 100; top: 5%; " id="nuevosprods" hidden>
+                                    <center><h4 style=" font-weight: 600">El producto se registro de forma exitosa</h4></center>
+                                </div>
 
                                 <div class="card" style="box-shadow: 1px;  background: linear-gradient(to top left, rgba(255,255,255,.1), rgba(100,180,255,.2));">
                                     <fieldset>
@@ -223,28 +231,7 @@
                                 </div>
                                  
 
-                              <div class="productoscompra simples" hidden>
-                                  
-                                
-
-                                <div class="form-group row d-flex justify-content-start ml-3 ">
-                                    
-                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
-                                        <label class="labels" style="float: left;">Contenido neto</label>
-                                        <input type="text" class="form-control form-control-sm contneto monto" name="contenidoN" id="contenidoN" autocomplete="off" placeholder="0,0000">
-                                    </div>
-                                    <input type="text" id="CNtemporal" hidden>
-                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
-                                        <label class="labels" style="float: left;">Precio unitario</label>
-                                        <input type="text" class="form-control form-control-sm precios" name="precio_unitario" id="pU" placeholder="0,0000" >
-                                    </div>
-                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
-                                        <label class="labels" style="float: left;">Cantidad comprada</label>
-                                        <input type="text" class="form-control form-control-sm" name="contenidoC" id="contenidoC" placeholder="0,0000">
-                                    </div>
-                                </div>
-                                
-                              </div>
+                              
 
 
                                 <div class="form-group row d-flex justify-content-start ml-3  simples">
@@ -274,12 +261,41 @@
                                         <select name="unidad_medida_s" class="form-control form-control-sm umsis" id="unidad_medida_s" required>
                                         <option value="Seleccione" selected disabled>Seleccione...</option>
                                         </select>
+                                    </div>                             
+                                </div>
+
+                              <div class="productoscompra simples" hidden>
+                                  
+                                
+
+                                <div class="form-group row d-flex justify-content-start ml-3 ">
+                                    
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
+                                        <label class="labels" style="float: left;">Contenido neto </label><span style="float: right; cursor: pointer; cursor: hand;" class="fa fa-question-circle" id="infocontneto"></span>
+                                        <div class="input-group">
+                                          <input type="text" class="form-control form-control-sm contneto monto" name="contenidoN" id="contenidoN" autocomplete="off" placeholder="0,0000">
+                                          <span class="btn btn-sm input-group-addon bg-info" id="avsistema" title="unidad de medida">U/M</span>
+                                        </div>
+                                    </div>
+                                    <input type="text" id="CNtemporal" hidden>
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
+                                        <label class="labels" style="float: left;">Precio unitario</label><span style="float: right; cursor: pointer; cursor: hand;" class="fa fa-question-circle" id="infopreciou"></span>
+                                        <div class="input-group">
+                                          <input type="text" class="form-control form-control-sm precios" name="precio_unitario" id="pU" placeholder="0,0000" >
+                                          <span class="btn btn-sm input-group-addon bg-info" id="avconsumo" title="unidad de medida">U/M</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
+                                        <label class="labels" style="float: left;">Cantidad comprada</label>
+                                        <input type="text" class="form-control form-control-sm" name="contenidoC" id="contenidoC" placeholder="0,0000">
                                     </div>
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
                                         <label class="labels" style="float: left;">Descripcion</label>
                                         <textarea class="form-control form-control-sm" rows="3" name="descripcion"></textarea>
                                     </div>
                                 </div>
+                                
+                              </div>
                             
                                 
                                     <fieldset class="simples asoc">
@@ -406,11 +422,19 @@
                             
                         </div>
                     </div>  
+
                             <div class="row d-flex justify-content-center">
-                                  <label class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" name="asignacion" value="1">
+                                  <label class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="asignacion" value="1">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description" style="line-height: 1.8;">Ir a la asignacion de productos al finalizar</span>
+                                  </label>
+                                </div>
+                                <div class="row d-flex justify-content-center">
+                                  <label class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="asignacion" value="2">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description" style="line-height: 1.8;">No redireccionar a otro modulo</span>
                                   </label>
                                 </div>
 
@@ -437,7 +461,7 @@
                                                     </div>
                                                     <div class="modal-body" >
 
-                                                       <div id="cuerpo"></div><br><br>
+                                                       <div id="cuerpo" class="cuerpo"></div>
                                                         <center>    
                                                             <div id="espera" hidden>
                                                                 <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
@@ -446,6 +470,9 @@
                                                                 <img width="140px" height="140px" class="img" src="<?php echo PUBLIC_URL; ?>img/check1.gif">
                                                             </div>
                                                         </center>
+                                                    </div>
+                                                    <div class="modal-footer" id="mfooter">
+                                                      
                                                     </div>   
                                                 </div><!-- /.modal-content -->
                                             </div><!-- /.modal-dialog -->

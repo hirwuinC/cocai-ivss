@@ -39,23 +39,6 @@
             }
 		}
 
-		function datostienda($tienda){
-			$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.marca, mc.descripcion, format(mc.existencia,4,'de_DE') as stock, mc.existencia, mercancia.contenido_neto, format(mc.stock_min,4,'de_DE') as stockm, mc.stock_min, format(mc.stock_max,4,'de_DE') as stockm2, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.referencia as 'familia', submodelo.nombre as 'subM', model.nombre as modelo, model.id as idm, mercancia.tipo_inventario_id 
-			FROM `unidad_negocio` 
-			inner join mercancia_has_unidad_negocio as mc on mc.unidad_negocio_id = unidad_negocio.id 
-			inner join mercancia on mercancia.id = mc.mercancia_id 
-			inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_sistema_id
-			inner join unidad_medida as unidad_presentacion on unidad_presentacion.id = mercancia.unidad_medida_consumo_id 
-			left join unidad_medida as unidad_compra on unidad_compra.id = mercancia.unidad_medida_compra_id 
-			inner join referencia as ref on ref.id = mercancia.familia_id 
-			left join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id 
-			left join modelo as model on model.id = modelo_has_submodelo.modelo_id
-			left join modelo as submodelo on submodelo.id = modelo_has_submodelo.sub_modelo_id
-			WHERE unidad_negocio.id = $tienda ORDER BY mc.status = 1"; 
-
-			$valores = $this->_main->select($query); #print_r($valores);
-			return $valores;
-		}
 
 		function stockT($tienda){
 			$this->_view->setJs(array('js/jquery-1.12.4.min'));
@@ -66,7 +49,7 @@
 		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
 		    $this->_view->setJs(array('datatable/js/tabla'));
             Session::time();
-			$valores = $this->datostienda($tienda); #print_r($valores);
+			$valores = $this->_main->datostienda($tienda); #print_r($valores);
 			$cantidad= count($valores);
 			//print_r($valores);exit();
 			if ($cantidad > 0) {
@@ -124,12 +107,16 @@
 			echo json_encode($data);
 		}
 
-		function insert($idT=false){
+		function insert($idT=false,$radio=false){
+			if ($radio == 1) {
+				$this->_view->radio = $radio;
+			}
+			
 			/*Esta funcion aun falta pulirla, no esta funcionando al 100%*/
 			if ($_SERVER['REQUEST_METHOD']=='POST') {	
 				Session::destroy('idmercancia');
 				Session::destroy('clasificacion');
-				Session::destroy('asignar');	
+				//Session::destroy('asignar');	
                	#print_r($_POST); echo "<br>"; exit();
                	$mystring = $_POST['precio_unitario'];
                 $minvalor = $_POST['stockmin'];
@@ -293,7 +280,7 @@
 						$idR=$this->_main->insertar($query);
 						$query ="UPDATE `mercancia` SET `receta_id`=$idR WHERE mercancia.id = $idP";
 						$this->_main->modificar($query);
-						/*$datost = $this->datostienda($idT);
+						/*$datost = $this->_main->datostienda($idT);
 						$query = "INSERT INTO `modelo_has_receta`(`modelo_id`, `receta_id`) VALUES ('".$datost[0]['modelo']."','".$idr."')";
     					$idrm = $this->_main->insertar($query);*/
 						$fam = $_POST['familia'];
@@ -320,7 +307,14 @@
 						$_SESSION['idmercancia'] = $idP;
 						$_SESSION['clasificacion'] = $_POST['familia'];
 						if (isset($_POST['asignacion'])) {
-							$this->_view->redirect('inventario/asignacionProducto/'.$_POST['idT']);
+							if ($_POST['asignacion'] == 1) {
+								$this->_view->redirect('inventario/asignacionProducto/'.$_POST['idT']);
+							}else{
+								
+								
+								$this->_view->redirect('inventario/insert/'.$_POST['idT'].'/1');
+							}
+							
 						}else{
 							$this->_view->redirect('inventario/stockE/'.$_POST['idT']);
 						}
@@ -340,7 +334,7 @@
 				$this->_view->setJs(array('js/inventario'));
 				$this->_view->setJs(array('js/proasociados'));
 				$this->_view->idT = $idT;
-				$tienda = $this->datostienda($idT);
+				$tienda = $this->_main->datostienda($idT);
 				$this->_view->g = $tienda;
 				$this->_view->render('insertar','inventario','','');
 			}
@@ -360,7 +354,7 @@
     		$query = "SELECT unidad_negocio.id as idU, unidad_negocio.nombre as udn, modelo.nombre as modelo, modelo.id as idm, empresa_id From unidad_negocio
     		left join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
       		left join modelo on modelo.id = modelo_has_submodelo.modelo_id where unidad_negocio.id = $idT";
-			$this->_view->tienda = $this->datostienda($idT);
+			$this->_view->tienda = $this->_main->datostienda($idT);
 			$this->_view->mercancia = $datosing;
 			$this->_view->familia = $fam;
 			$this->_view->render('agrupados','inventario','','');
@@ -988,7 +982,7 @@ FROM notificacion_has_remision
 
     	function facturasdecompra($tienda){
     		$this->_view->setJs(array('js/facturas'));
-			$valores = $this->datostienda($tienda);
+			$valores = $this->_main->datostienda($tienda);
 			$this->_view->g = $valores;
     		$this->_view->render('factura', 'inventario', '',''); 
     	}
@@ -1615,7 +1609,8 @@ FROM notificacion_has_remision
     	}
 
     public function ingredientes($id1,$id2){
-    	/*funcion para cargar los ingredientes que corresponden a la empresa pero unicamente los que no tiene la tienda seleccionada y viceversa*/
+
+    	/*funcion para cargar los ingredientes que corresponden a la empresa pero unicamente los que no tiene la tienda seleccionada y viceversa - $id1 = tienda, $id2 = empresa*/
     	$query = "SELECT mercancia.id as idpro, codigo, nombre as producto, marca, CONCAT(nombre,' ',marca) as mercancia, referencia.referencia as clasificacion FROM `mercancia`
 		inner join mercancia_has_unidad_negocio on mercancia_id = mercancia.id
 		inner join referencia on referencia.id = familia_id
@@ -1630,19 +1625,21 @@ FROM notificacion_has_remision
     }
 
     public function ingredientest($idt){
-    	/*funcion para cargar los ingredientes que corresponden a la empresa pero unicamente los que no tiene la tienda seleccionada y viceversa*/
-    	$query = "SELECT mercancia.id as idpro, codigo, nombre as producto, marca, referencia.referencia as clasificacion FROM `mercancia`
+    	/*funcion para cargar los ingredientes que tiene la tienda seleccionada*/
+    	$query = "SELECT mercancia.id as idpro, codigo, nombre as product, marca, CONCAT(mercancia.nombre,' ',mercancia.marca) as mercancia, referencia.referencia as clasificacion FROM `mercancia`
 		inner join mercancia_has_unidad_negocio on mercancia_id = mercancia.id
 		inner join referencia on referencia.id = familia_id
 		where unidad_negocio_id = $idt ORDER by mercancia.id desc";
 		$data = $this->_main->select($query);
     	//print_r($data);exit();
-    	echo json_encode($data);
+    	$response = array("data"=>$data);
+    	//print_r($response);
+    	echo json_encode($response);
     }
 
     public function pventa($id1,$id2){
-    	/*funcion para cargar los ingredientes que corresponden a la empresa pero unicamente los que no tiene la tienda seleccionada y viceversa*/
-    	$query = "SELECT producto.id as idpro, producto.codigo, producto.nombre as producto, grupo.nombre as clasificacion FROM `producto`
+    	/*funcion para cargar los productos que corresponden a la empresa pero unicamente los que no tiene la tienda seleccionada y viceversa*/
+    	$query = "SELECT producto.id as idpro, producto.codigo, producto.nombre as product, grupo.nombre as clasificacion FROM `producto`
 		inner join producto_has_unidad_negocio on producto_id = producto.id
 		inner join grupo on grupo_id = grupo.id
 		where unidad_negocio_id = $id2 and producto.id not in(SELECT id 
@@ -1656,14 +1653,16 @@ FROM notificacion_has_remision
     }
 
     public function pventat($idt){
-    	/*funcion para cargar los ingredientes que corresponden a la empresa pero unicamente los que no tiene la tienda seleccionada y viceversa*/
-    	$query = "SELECT producto.id as idpro, producto.codigo, producto.nombre as producto, grupo.nombre as clasificacion FROM `producto`
+    	/*funcion para cargar los productos que tiene la tienda seleccionada*/
+    	$query = "SELECT producto.id as idpro, producto.codigo, producto.nombre as product, grupo.nombre as clasificacion FROM `producto`
 		inner join producto_has_unidad_negocio on producto_id = producto.id
 		inner join grupo on grupo_id = grupo.id
 		where unidad_negocio_id = $idt";
 		$data = $this->_main->select($query);
     	//print_r($data);exit();
-    	echo json_encode($data);
+    	$response = array("data"=>$data);
+    	//print_r($response);
+    	echo json_encode($response);
     }
 
     public function pros($idp){
@@ -1677,6 +1676,15 @@ FROM notificacion_has_remision
     	$query = "SELECT nombre as producto from producto 
     	inner join producto_has_unidad_negocio on producto_id = producto.id
     	where  producto_id = '".$idpro."' and unidad_negocio_id = '".$idt."'";
+    	$data = $this->_main->select($query);
+    	//print_r($data);exit();
+    	echo json_encode($data);
+    }
+
+    public function nombrepro2($idpro,$idm){
+    	$query = "SELECT nombre as producto from producto 
+    	inner join producto_has_modelo on producto_id = producto.id
+    	where  producto_id = '".$idpro."' and modelo_id = '".$idm."'";
     	$data = $this->_main->select($query);
     	//print_r($data);exit();
     	echo json_encode($data);
@@ -1718,15 +1726,52 @@ FROM notificacion_has_remision
     	echo json_encode($mhu);
     }
 
-    public function borrarasignacion($idpro,$idt){
-		$query = "DELETE FROM mercancia_has_unidad_negocio where mercancia_id = '".$idpro."' and unidad_negocio_id = '".$idt."'";
-		$borrado = $this->_main->eliminar($query);  		
+    public function borrarasignacion($idpro,$id,$tipo){
+    	if ($tipo == 1) {
+			$query = "SELECT unidad_negocio.id as idt, unidad_negocio.nombre from unidad_negocio 
+		    		inner join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
+		    		inner join modelo on modelo.id = modelo_has_submodelo.modelo_id
+		    		where modelo_id = '".$id."'";
+		    $tiendas = $this->_main->select($query);
+		    for ($i=0; $i <count($tiendas) ; $i++) { 
+    			$query = "SELECT * FROM mercancia_has_unidad_negocio where mercancia_id = '".$idpro."' and unidad_negocio_id = '".$tiendas[$i]['idt']."'";
+    			$asignado[$i] = $this->_main->select($query);
+	    		if (!empty($asignado[$i])) {
+	    			$query = "DELETE FROM `mercancia_has_unidad_negocio` where mercancia_id = '".$idpro."' and unidad_negocio_id = '".$tiendas[$i]['idt']."'"; 
+		            $mhu = $this->_main->insertar($query);
+	    		}
+		    }
+		    $query = "DELETE FROM mercancia_has_modelo where mercancia_id = '".$idpro."' and modelo_id = '".$id."'";
+			$borrado = $this->_main->eliminar($query);
+    	}else{
+    		$query = "DELETE FROM mercancia_has_unidad_negocio where mercancia_id = '".$idpro."' and unidad_negocio_id = '".$id."'";
+			$borrado = $this->_main->eliminar($query); 
+    	}
+		 		
 		echo json_encode($borrado);
     }
 
-    public function borrarasignacionp($idpro,$idt){
-		$query = "DELETE FROM producto_has_unidad_negocio where producto_id = '".$idpro."' and unidad_negocio_id = '".$idt."'";
-		$borrado = $this->_main->eliminar($query);  		
+    public function borrarasignacionp($idpro,$id,$tipo){
+    	if ($tipo == 1) {
+    		$query = "SELECT unidad_negocio.id as idt, unidad_negocio.nombre from unidad_negocio 
+		    		inner join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
+		    		inner join modelo on modelo.id = modelo_has_submodelo.modelo_id
+		    		where modelo_id = '".$id."'";
+		    $tiendas = $this->_main->select($query);
+		    for ($i=0; $i <count($tiendas) ; $i++) { 
+    			$query = "SELECT * FROM producto_has_unidad_negocio where producto_id = '".$idpro."' and unidad_negocio_id = '".$tiendas[$i]['idt']."'";
+    			$asignado[$i] = $this->_main->select($query);
+	    		if (!empty($asignado[$i])) {
+	    			$query = "DELETE FROM `producto_has_unidad_negocio` where producto_id = '".$idpro."' and unidad_negocio_id = '".$tiendas[$i]['idt']."'"; 
+		            $mhu = $this->_main->insertar($query);
+	    		}
+		    }
+		    $query = "DELETE FROM producto_has_modelo where producto_id = '".$idpro."' and modelo_id = '".$id."'";
+			$borrado = $this->_main->eliminar($query);
+    	}else{
+			$query = "DELETE FROM producto_has_unidad_negocio where producto_id = '".$idpro."' and unidad_negocio_id = '".$id."'";
+			$borrado = $this->_main->eliminar($query);  
+		}		
 		echo json_encode($borrado);
     }
 
@@ -1739,7 +1784,7 @@ FROM notificacion_has_remision
 	    $this->_view->setJs(array('datatable/js/datatable.b4.min'));
 	    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
 	    $this->_view->setJs(array('datatable/js/tabla'));
-    	$datos = $this->datostienda($id);
+    	$datos = $this->_main->datostienda($id);
     	$this->_view->mercancia = $datos;
     	$this->_view->render('cargainventario', 'inventario', '','');
     }
@@ -1780,7 +1825,7 @@ FROM notificacion_has_remision
     }
 
  	public function insertIventario($idtipo,$fecha1,$fecha2,$idt){
- 		$datost = $this->datostienda($idt);
+ 		$datost = $this->_main->datostienda($idt);
  		for ($i=0; $i <count($datost) ; $i++) {
  			if ($datost[$i]['tipo_inventario_id'] == $idtipo) {
  				$query = "INSERT INTO `inventario`(`mercancia_id`, `unidad_negocio_id`, `existencia_teorica`, `existencia_real`, `diferencia`, `unidad_medida_id`, `fecha_inicial`, `fecha_final`, `tipo_inventario`, `comentario`, `procesado`) VALUES ('".$datost[$i]['idP']."',$idt,'".$datost[$i]['existencia']."',NULL,'-".$datost[$i]['existencia']."','".$datost[$i]['idUMS']."','".$fecha1."','".$fecha2."','".$idtipo."',NULL,0)";
@@ -2000,6 +2045,160 @@ FROM notificacion_has_remision
     	$data = $this->_main->select($query);
 		return $data;
     }
+
+    public function consultamodelo($idmodelo){
+    	$query = "SELECT mercancia.id as idpro, mercancia.codigo, mercancia.nombre as producto, mercancia.marca, CONCAT(mercancia.nombre,' ', mercancia.marca) as mercancia, mercancia_has_modelo.modelo_id as idmod, ref.referencia as clasificacion
+    	FROM mercancia_has_modelo
+    	inner join mercancia on mercancia.id = mercancia_id
+    	inner join referencia as ref on ref.id = familia_id
+    	where modelo_id = $idmodelo";
+    	$data = $this->_main->select($query);
+    	$response = array("data"=>$data);
+    	//print_r($response);
+    	echo json_encode($response);
+    }
+
+    public function consultamodelopv($idmodelo){
+    	/*funcion para cargar los productos de venta que corresponden al modelo seleccionado*/
+    	$query = "SELECT producto.id as idpro, producto.codigo, producto.nombre as product, grupo.nombre as clasificacion FROM `producto`
+		inner join producto_has_modelo on producto_id = producto.id
+		inner join grupo on grupo_id = grupo.id
+		where modelo_id = $idmodelo";
+		$data = $this->_main->select($query);
+    	//print_r($data);exit();
+    	$response = array("data"=>$data);
+    	//print_r($response);
+    	echo json_encode($response);
+    }
+
+    public function notinmodel($id1, $id2){
+    	/*funcion para cargar los ingredientes que corresponden a la empresa pero unicamente los que no tiene el modelo seleccionado y viceversa - $id1 = modelo, $id2 = empresa*/
+    	$query = "SELECT DISTINCT mercancia.id as idpro, codigo, nombre as producto, marca, CONCAT(nombre,' ',marca) as mercancia, referencia.referencia as clasificacion FROM `mercancia`
+		inner join mercancia_has_unidad_negocio on mercancia_id = mercancia.id
+		inner join referencia on referencia.id = familia_id
+		where unidad_negocio_id = $id2 and mercancia.id not in(SELECT mercancia_id 
+		FROM mercancia_has_modelo 
+		where modelo_id = $id1)";
+		$data = $this->_main->select($query);
+		$response = array("data"=>$data);
+    	//print_r($response);
+    	echo json_encode($response);
+    }
+
+    public function notinmodelpv($id1,$id2){
+    	/*funcion para cargar los ingredientes que corresponden a la empresa pero unicamente los que no tiene la tienda seleccionada y viceversa*/
+    	$query = "SELECT producto.id as idpro, producto.codigo, producto.nombre as product, grupo.nombre as clasificacion FROM `producto`
+    	inner join grupo on grupo_id = grupo.id
+		inner join producto_has_unidad_negocio on producto_id = producto.id
+		where unidad_negocio_id = $id2 and producto.id not in(SELECT producto_id 
+		FROM producto_has_modelo 
+		where modelo_id = $id1)";
+		$data = $this->_main->select($query);
+		$response = array("data"=>$data);
+    	//print_r($response);
+    	echo json_encode($response);
+    }
+
+    public function asignacionxmodelo(){
+    	if ($_SERVER['REQUEST_METHOD']=='POST') {
+    		//Controller::varDump($_POST);exit();
+    		foreach($_POST['mercancia'] as $selected){
+		    		
+		    		$idmodel = $_POST['idmodel'];
+		    		$query = "SELECT * from mercancia_has_modelo where mercancia_id = '".$selected."' and modelo_id = '".$idmodel."'";
+		    		$enmodelos = $this->_main->select($query);
+		    		if (empty($enmodelos)) {
+		    			$query = "INSERT INTO `mercancia_has_modelo`(`mercancia_id`, `modelo_id`) VALUES  
+		            ('".$selected."','".$idmodel."')";
+		            $mhm = $this->_main->insertar($query);
+		    		}
+		    		$query = "SELECT unidad_negocio.id as idt, unidad_negocio.nombre from unidad_negocio 
+		    		inner join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
+		    		inner join modelo on modelo.id = modelo_has_submodelo.modelo_id
+		    		where modelo_id = '".$idmodel."'";
+		    		$tiendas = $this->_main->select($query);
+		    		
+		    		for ($i=0; $i <count($tiendas) ; $i++) { 
+		    			$query = "SELECT * FROM mercancia_has_unidad_negocio where mercancia_id = '".$selected."' and unidad_negocio_id = '".$tiendas[$i]['idt']."'";
+		    			$asignado[$i] = $this->_main->select($query);
+			    		if (empty($asignado[$i])) {
+			    			$query = "INSERT INTO `mercancia_has_unidad_negocio`(`mercancia_id`, `unidad_negocio_id`, `status`) VALUES  
+				            ('".$selected."','".$tiendas[$i]['idt']."',0)"; 
+				            $mhu = $this->_main->insertar($query);
+			    		}
+		    		} 
+		    }
+    	}
+    	echo json_encode($idmodel);
+    }
+
+    public function asignacionxmodelopv(){
+    	if ($_SERVER['REQUEST_METHOD']=='POST') {
+    		//Controller::varDump($_POST);exit();
+    		foreach($_POST['producto'] as $selected){
+
+		    		
+		    		$idmodel = $_POST['idmodel'];
+		    		$query = "SELECT * from producto_has_modelo where producto_id = '".$selected."' and modelo_id = '".$idmodel."'";
+		    		$enmodelos = $this->_main->select($query);
+		    		if (empty($enmodelos)) {
+		    			$query = "INSERT INTO `producto_has_modelo`(`producto_id`, `modelo_id`) VALUES  
+		            ('".$selected."','".$idmodel."')";
+		            $phm = $this->_main->insertar($query);
+		    		}
+		    		$query = "SELECT unidad_negocio.id as idt, unidad_negocio.nombre from unidad_negocio 
+		    		inner join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
+		    		inner join modelo on modelo.id = modelo_has_submodelo.modelo_id
+		    		where modelo_id = '".$idmodel."'";
+		    		$tiendas = $this->_main->select($query);
+		    		for ($i=0; $i <count($tiendas) ; $i++) { 
+			    		$query = "SELECT * FROM producto_has_unidad_negocio where producto_id = '".$selected."' and unidad_negocio_id = '".$tiendas[$i]['idt']."'";
+			    		$asignado[$i] = $this->_main->select($query); 
+			    		if (empty($asignado[$i])) {
+				            $query = "INSERT INTO `producto_has_unidad_negocio`(`producto_id`, `unidad_negocio_id`) VALUES  
+				            ('".$selected."','".$tiendas[$i]['idt']."')"; 
+				            $mhu = $this->_main->insertar($query);  
+			            }
+		            } 		
+		           
+		    }
+    	}
+    	echo json_encode($mhu);
+    }
+
+    public function modalmodelo($idP,$idm){
+			#ESTA FUNCION ME PERMITE CARGAR LA INFO DEL PRODUCTO A EDITAR Y LA CONVERSION DE LA UNIDAD MINIMA A LA DE COMPRA Y PRESENTACION.
+			$query = "SELECT mercancia.id as 'idP', mercancia.codigo, mercancia.codigo_anterior, mercancia.nombre as 'producto', mercancia.marca, mercancia.contenido_neto, mercancia.formula_c, mercancia.formula_p, mercancia.formula_s, mercancia.cantidad_presentacion, mc.modelo_id, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.id as 'idf', ref.referencia as 'familia', asociado_id, tipo_inventario_id, tipo_mercancia_id, ref2.referencia as tipo_ingrediente, mercancia.descripcion FROM `mercancia`
+				inner join mercancia_has_modelo as mc on mc.mercancia_id = mercancia.id 
+				inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_sistema_id
+				inner join unidad_medida as unidad_presentacion on unidad_presentacion.id = mercancia.unidad_medida_consumo_id 
+				left join unidad_medida as unidad_compra on unidad_compra.id = mercancia.unidad_medida_compra_id 
+				inner join referencia as ref on ref.id = mercancia.familia_id
+				inner join referencia as ref2 on ref2.id = mercancia.tipo_mercancia_id
+				WHERE mercancia.id = $idP and mc.modelo_id = $idm order by ref.referencia ASC"; 
+			$data = $this->_main->select($query);
+			
+			
+			echo json_encode($data);
+		}
+
+	public function validarexistencias($idpro,$idm){
+		$query = "SELECT unidad_negocio.id as idt, unidad_negocio.nombre FROM `unidad_negocio` 
+		inner join modelo_has_submodelo on modelo_has_submodelo.id = modelo_has_submodelo_id
+		inner join modelo on modelo_has_submodelo.modelo_id = modelo.id
+		where modelo_id = $idm";
+		$tiendas = $this->_main->select($query);
+		for ($i=0; $i <count($tiendas) ; $i++) { 
+			$query = "SELECT * FROM mercancia_has_unidad_negocio where mercancia_id = '".$idpro."' and unidad_negocio_id = '".$tiendas[$i]['idt']."'";
+			$asignado[$i] = $this->_main->select($query);
+			//print_r($asignado[$i]);
+    		if ($asignado[$i][0]['existencia']>0) {
+	            $data = $asignado[$i];
+	            echo json_encode($data);exit();
+    		}
+		}
+		echo json_encode(1);
+	}
 
 
 

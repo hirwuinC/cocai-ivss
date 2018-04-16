@@ -51,7 +51,7 @@ jQuery(document).ready(function($) {
             destroy: true,
             responsive: true
         });
-
+	$('#tablaremi_filter').css('float', 'right');
     $('#tablaremi').css("width","100%");
 
     $('#tablarepo').DataTable({
@@ -69,7 +69,8 @@ jQuery(document).ready(function($) {
             destroy: true,
             responsive: true
         });
-
+    
+    $('#tablarepo_filter').css('float', 'right');
     $('#tablarepo').css("width","100%");
 
 

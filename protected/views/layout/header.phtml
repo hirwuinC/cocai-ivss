@@ -85,52 +85,62 @@
                                               <i class="fa fa-list"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
                                               <ul class="collapse list-unstyled" id="inv'.$j.'">
                                                 <li>
-                                                  <a href="'.BASE_URL.'inventario/evaluar/'.$id[$j].'" class="subM" style="margin-left:12px; "></i>Consulta de inventario</a>
+                                                  <a href="'.BASE_URL.'inventario/evaluar/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Productos de inventario</a>
                                                 </li>
                                                 <li>
-                                                  <a href="'.BASE_URL.'inventario/remisionM/'.$id[$j].'" class="subM" style="margin-left:12px; "></i>Remision de mercancia</a>
+                                                  <a href="'.BASE_URL.'inventario/cargarinventario/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Carga de inventario</a>
                                                 </li>
                                                 <li>
-                                                  <a href="'.BASE_URL.'inventario/reposicionM/'.$id[$j].'" class="subM" style="margin-left:12px; "></i>Reposicion de mercancia</a>
-                                                </li>
-                                                <li>
-                                                  <a href="'.BASE_URL.'inventario/indexk/'.$id[$j].'" class="subM" style="margin-left:12px; "></i>Movimientos de kardex</a>
-                                                </li>
-                                                <li>
-                                                  <a href="'.BASE_URL.'inventario/cargarinventario/'.$id[$j].'" class="subM" style="margin-left:12px; "></i>Carga de inventario</a>
+                                                  <a href="'.BASE_URL.'inventario/indexk/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Movimientos de kardex</a>
                                                 </li>
                                               </ul>  
                                           </li>
+                                          
                                           <li>
-                                            <a href="'.BASE_URL.'receta/indexr/'.$id[$j].'" style="margin-left:5px; ">Receta
-                                              <i class="fa fa-cutlery"></i></a>   
-                                          </li>
-                                          <li>
-                                            <a href="'.BASE_URL.'produccion/tandas/'.$id[$j].'" style="margin-left:5px; ">Generar producción
+                                            <a href="'.BASE_URL.'produccion/tandas/'.$id[$j].'" style="margin-left:5px; ">Producción
                                               <i class="fa fa-cogs"></i></a>   
                                           </li>
                                           <li>
-                                                <a id="'.BASE_URL.'merma/inicio/'.$id[$j].'" class="subM" style="margin-left:5px; cursor:hand; cursor:pointer;" onclick="abrir_emergente(this.id)">Mermas <span><img style="width: 10px; height:11px; margin-top:-40%" src="'.PUBLIC_URL.'img/icono-papelera.png'.'" alt=""></span></a>
+                                                <a id="'.BASE_URL.'merma/inicio/'.$id[$j].'" class="subM" style="margin-left:5px; cursor:hand; cursor:pointer;" onclick="abrir_emergente(this.id)" name="'.$id[$j].'">Mermas <span><img style="width: 10px; height:11px; margin-top:-40%" src="'.PUBLIC_URL.'img/icono-papelera.png'.'" alt=""></span></a>
                                                 </li>
                                           <li>
-                                            <a href="'.BASE_URL.'explosion/index/'.$id[$j].'" style="margin-left:5px; ">Ranking / Explosión de ingredientes
+                                            <a href="'.BASE_URL.'explosion/index/'.$id[$j].'" style="margin-left:5px; " name="'.$id[$j].'">Ranking / Explosión de ingredientes
                                               <i class="fa fa-bomb"></i></a>   
+                                          </li>
+                                          <li>
+                                            <a href="'.BASE_URL.'receta/indexr/'.$id[$j].'" class="subM" style="margin-left:5px; " name="'.$id[$j].'">Receta
+                                              <i class="fa fa-cutlery"></i></a>   
+                                          </li>
+                                          <li>
+                                            <a href="#compras'.$j.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Compras
+                                              <i class="fa fa-shopping-bag"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
+                                              <ul class="collapse list-unstyled" id="compras'.$j.'">
+                                                <li>
+                                                  <a href="'.BASE_URL.'compra/index/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Ingresar / Editar compras</a>
+                                                </li>
+                                                <li>
+                                                  <a href="'.BASE_URL.'inventario/remisionM/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Remision de mercancia</a>
+                                                </li>
+                                                <li>
+                                                  <a href="'.BASE_URL.'inventario/reposicionM/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Reposicion de mercancia</a>
+                                                </li>
+                                              </ul>
                                           </li>
                                            <li>
                                             <a href="#admint'.$j.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Administracion
                                               <i class="fa fa-briefcase"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
                                               <ul class="collapse list-unstyled" id="admint'.$j.'">
                                                 <li>
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; "></i>Proveedor</a>
+                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Proveedor</a>
                                                 </li>
                                                 <li>
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; "></i>Carga factura de compra</a>
+                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Carga factura de compra</a>
                                                 </li>
                                                 <li>
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; "></i>Ranking de venta</a>
+                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Ranking de venta</a>
                                                 </li>
                                                 <li>
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; "></i>Reportes</a>
+                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Reportes</a>
                                                 </li>
                                               </ul>
                                           </li>';
@@ -152,53 +162,59 @@
                                               <a href="#tiendae'.$p.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Inventario
                                               <i class="fa fa-list"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
                                               <ul class="collapse list-unstyled" id="tiendae'.$p.'">
-                                              <li>
-                                                  <a href="'.BASE_URL.'inventario/insert/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; "></i>Crear producto de inventario</a>
+                                                <li>
+                                                  <a style="margin-left:12px; " href="'.BASE_URL.'inventario/evaluar/'.$menu[$p]['idUd'].'" class="subM" name="'.$menu[$p]['idUd'].'"></i>Productos de inventario</a>
                                                 </li>
                                                 <li>
-                                                  <a style="margin-left:12px; " href="'.BASE_URL.'inventario/asignacionProducto/'.$menu[$p]['idUd'].'" class="subM"></i>Asignacion de productos</a>
+                                                  <a href="'.BASE_URL.'inventario/insert/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Crear producto de inventario</a>
                                                 </li>
                                                 <li>
-                                                  <a style="margin-left:12px; " href="'.BASE_URL.'inventario/evaluar/'.$menu[$p]['idUd'].'" class="subM"></i>Consulta de inventario</a>
+                                                  <a style="margin-left:12px; " href="'.BASE_URL.'inventario/asignacionProducto/'.$menu[$p]['idUd'].'" class="subM" name="'.$menu[$p]['idUd'].'"></i>Asignacion de productos</a>
                                                 </li>
                                                 <li>
-                                                  <a href="'.BASE_URL.'inventario/reposicionM/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; "></i>Reposicion de mercancia</a>
-                                                </li>
-                                                <!--<li>
-                                                  <a style="margin-left:12px; " href="'.BASE_URL.'inventario/remisionM/'.$menu[$p]['idUd'].'" class="subM"></i>Remision de mercancia</a>
-                                                </li>-->
-                                                <li>
-                                                  <a style="margin-left:12px; " href="'.BASE_URL.'inventario/indexk/'.$menu[$p]['idUd'].'" class="subM"></i>Movimientos de kardex</a>
+                                                  <a style="margin-left:12px; " href="'.BASE_URL.'inventario/indexk/'.$menu[$p]['idUd'].'" class="subM" name="'.$menu[$p]['idUd'].'"></i>Movimientos de kardex</a>
                                                 </li>
                                               </ul>  
                                           </li>
                                           <li>
-                                            <a href="'.BASE_URL.'receta/indexr/'.$menu[$p]['idUd'].'" style="margin-left:5px; ">Receta
+                                            <a href="'.BASE_URL.'receta/indexr/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:5px; " name="'.$menu[$p]['idUd'].'">Receta
                                               <i class="fa fa-cutlery"></i></a>   
                                           </li>
                                           <li>
-                                            <a style="margin-left:5px; " href="'.BASE_URL.'merma/inicio/'.$menu[$p]['idUd'].'" class="subM">Mermas <i class="fa fa-trash"></i></a>
+                                            <a style="margin-left:5px; " href="'.BASE_URL.'merma/inicio/'.$menu[$p]['idUd'].'" class="subM" name="'.$menu[$p]['idUd'].'">Mermas <i class="fa fa-trash"></i></a>
                                           </li>
                                           
                                           <li>
-                                            <a href="'.BASE_URL.'explosion/index/'.$menu[$p]['idUd'].'" style="margin-left:5px; ">Ranking / Explosión de ingredientes
+                                            <a href="'.BASE_URL.'explosion/index/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:5px; " name="'.$menu[$p]['idUd'].'">Ranking / Explosión de ingredientes
                                               <i class="fa fa-bomb"></i></a>   
+                                          </li>
+                                          <li>
+                                            <a href="#comprasCP'.$p.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Compras
+                                              <i class="fa fa-shopping-bag"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
+                                              <ul class="collapse list-unstyled" id="comprasCP'.$p.'">
+                                                <li>
+                                                  <a href="'.BASE_URL.'compra/index/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Ingresar / Editar compras</a>
+                                                </li>
+                                                <li>
+                                                  <a href="'.BASE_URL.'inventario/reposicionM/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Reposicion de mercancia</a>
+                                                </li>
+                                              </ul>
                                           </li>
                                            <li>
                                             <a href="#adm'.$p.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Administracion
                                               <i class="fa fa-briefcase"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
                                               <ul class="collapse list-unstyled" id="adm'.$p.'">
                                                 <li style="margin-left:12px; ">
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM"></i>Proveedor</a>
+                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM" name="'.$menu[$p]['idUd'].'"></i>Proveedor</a>
                                                 </li>
                                                 <li style="margin-left:12px; ">
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM"></i>Carga factura de compra</a>
+                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM" name="'.$menu[$p]['idUd'].'"></i>Carga factura de compra</a>
                                                 </li>
                                                 <li style="margin-left:12px; ">
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM"></i>Ranking de venta</a>
+                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM" name="'.$menu[$p]['idUd'].'"></i>Ranking de venta</a>
                                                 </li>
                                                 <li style="margin-left:12px; ">
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM"></i>Reportes</a>
+                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM" name="'.$menu[$p]['idUd'].'"></i>Reportes</a>
                                                 </li>
                                               </ul>
                                           </li>';

@@ -24,26 +24,29 @@
 
                         <div  class="card cardH">
                         <div class="card-header" hidden>
-                            <center><h3><o id="titulocard">Generar Produccion</o> <?php $ti=strtolower(str_replace('(PTY)', '', $this->model[0]['udn'])); echo "[".ucwords($ti)."]"; ?></h3></center>
+                            <center><h3><o id="titulocard">Producción</o> <?php $ti=strtolower(str_replace('(PTY)', '', $this->model[0]['udn'])); echo "[".ucwords($ti)."]"; ?></h3></center>
                         </div>
                         
                         <div class="card-block" style="padding-bottom: 0px; ">                        
-						<center>
-						    <div id="load" hidden>
-						        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
-						    </div>
-						</center>
 						<ul class="nav nav-tabs ml-3" role="tablist">
 						  	<li class="active nav-item">
-						  		<a data-toggle="tab" href="#semis" class="nav-link" id="semit">Semi terminados</a>
+						  		<a data-toggle="tab" href="#semis" class="nav-link" id="semit">Generar producción</a>
 						  	</li>
                             <li class="nav-item">
-                            	<a class="nav-link" id="rec" style="cursor: not-allowed;"><o data-toggle="tooltip" data-placement="right" title="Debe seleccionar un producto para poder consultar su receta" id="tooltiprec">Receta</o></a>
+                            	<a class="nav-link" id="rec" style="cursor: not-allowed;"><o data-toggle="tooltip" data-placement="right" title="Debe seleccionar un producto para poder consultar su receta" id="tooltiprec">Recetario</o></a>
+                            </li>
+                            <li class="nav-item">
+                            	<a data-toggle="tab" href="#consults" class="nav-link" id="consultas">Consultas</a>
                             </li>
 						</ul>
 
 						
 						<div class="tab-content" >
+							<center>
+							    <div id="load" hidden>
+							        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+							    </div>
+							</center>
 							<div class="row form-group">
 								<div class="col-sm-12" style="margin-bottom: -1%">
 									<?php if ($this->model[0]['modelo'] != null): ?>
@@ -94,6 +97,11 @@
                         				<input type="hidden" name="idempr" id="idempr" value="<?php echo $this->model[0]['empresa_id']?>">
                             			<input type="hidden" id="idrece" name="idreceta">
                             			<input type="hidden" id="rendimiento" name="rendimiento">
+                            			<div class="alert alert-danger" id="alert-stmin" hidden>
+							        		<a class="close" id="close-alert"><i class="fa fa-close"></i></a>
+							        		<h4>El producto <o id="validado"></o>, incluido en la receta que intenta producir, no esta en existencia o su existencia es insuficiente.</h4>
+							        		<h5>Por favor verifique su inventario y la cantidad a producir e intente nuevamente.</h5>
+							        	</div>
                             		<div class="row form-group d-flex justify-content-center">
 	                            		<div class="col-xs-12 col-sm-12 col-md-10 col-lg-6">
 	                            			<label class="LB">Seleccione un producto semi terminado</label>
@@ -140,14 +148,13 @@
 		                            </div>
                             		<br>
                             		
-                            		<div class="row form-group d-flex justify-content-center mt-3">
-
+                            		<div class="row form-group d-flex justify-content-center">
 				                            <div class="alert alert-success exporting" style="position: absolute; z-index: 99;" hidden>
 				                              	<h4>Receta exportada con exito</h4>
 				                            </div>
 				                        
 			                			<img width="35px" height="35px" class="ocultos excel" src="<?php echo PUBLIC_URL;?>img\excel.png" id="excel" hidden style="cursor: hand; cursor: pointer;" data-toggle="tooltip" data-placement="left" title="exportar receta para">
-                            			<button type="submit" class="btn btn-sm btn-outline-primary ocultos" hidden>Crear produccion</button>
+                            			<button type="submit" class="btn btn-sm btn-outline-primary ocultos" id="btngenerar" hidden>Generar producción</button>
                         			</div>
                             </div>
 							</form>
@@ -195,6 +202,91 @@
 	                            	<img width="35px" height="35px" class="ocultos excel" src="<?php echo PUBLIC_URL;?>img\excel.png" id="excel2" hidden style="cursor: hand; cursor: pointer;" data-toggle="tooltip" data-placement="top" title="exportar receta para">
                             	</div>
 
+                            </div>
+
+                            <div id="consults" class="tab-pane fade in active " role="tabpanel">
+	                            <div class="col-sm-12">
+	                        		<div class="alert alert-success" id="reversada" hidden>
+	                                    <center><h4> La producción ha sido reversada de forma exitosa</h4></center>
+	                                </div>
+	                        	</div>
+	                        	<div class="col-sm-12">
+	                        		<div class="alert alert-danger" id="errorreversar" hidden>
+	                                    <center><h4> Ocurrio un error al intentar reversar la producción</h4><br>
+	                                    <h5>Por favor intente nuevamente</h5></center>
+	                                </div>
+	                        	</div>                             
+                            	<div class="col-xs-12" id="tablaoculta2">
+                            		<div class="row form-group d-flex justify-content-center" >
+	                            		<div class="col-xs-1" id="colbtnrev">
+											<button class="btn btn-sm btn-outline-danger" id="btn-rev" value="1">Consultar reversos</button>
+										</div>
+									
+	                            		<div class="col-xs-1 ml-3" id="colbtn">
+											<button class="btn btn-sm btn-outline-primary" id="btn-filtro">Quitar filtro de producto seleccionado</button>
+										</div>
+									</div>
+	                            			<div class="dataTable_wrapper ">
+
+					                             <div class="col-sm-12 table-responsive">    
+					                              <div class="container">                            	
+					                                <table id="producidos" class="display table table-sm table-striped table-bordered table-hover" >
+					                                  <thead class="theadH">
+					                                      <tr>
+					                                          <th><center>#</center></th>
+					                                          <th><center>Codigo</center></th>
+					                                          <th><center>Producto</center></th>
+					                                          <th><center>marca</center></th>
+					                                          <th><center>tandas</center></th>
+					                                          <th><center>R/ideal</center></th>
+					                                          <th><center>R/real</center></th>
+					                                          <th><center>fecha</center></th>
+					                                          <th><center>acciones</center></th>
+					                                      </tr>
+					                                  </thead>
+					                                  <tbody id="cuerpo_r"></tbody>
+					                                  
+					                              </table>
+					                              <div class="container">
+					                                <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
+					                                  <div class="col-12" id="costot">
+					                                    
+					                                  </div>
+					                                </div>
+					                              </div>
+					                            </div>
+					                          </div>     
+					                        </div>
+	                            		</div>
+
+	                            		<!-- The Modal -->
+										  <div class="modal fade" id="modalreversarp">
+										    <div class="modal-dialog modal-sm">
+										      <div class="modal-content">
+										        <!-- Modal Header -->
+										        <div class="modal-header">
+										          <h4 class="modal-title" >Reversar producción</h4>
+										          <button type="button" class="close" data-dismiss="modal">&times;</button>
+										        </div>
+										        <!-- Modal body -->
+										        <div class="modal-body">
+										        	<input type="hidden" id="idp">
+										        	<input type="hidden" id="idm">
+										        	<input type="hidden" id="idr">
+										        	<div class="alert alert-danger">
+												        <h4>Esta seguro de reversar el proceso de producción de <o class="rev"></o>?</h4><br>
+												        <h5>Ingrese el motivo del reverso y presione continuar</h5>
+												        <input type="text" class="form-control form-control-sm" id="motivoreverso" placeholder="Breve descripcion del motivo">
+												    </div>
+										        </div>
+										        <!-- Modal footer -->
+										        <div class="modal-footer">
+										          <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
+										          <button type="button" class="btn btn-sm btn-outline-danger" id="reversar">Continuar</button>
+										        </div>
+										      </div>
+										    </div>
+										  </div>
                             </div>
                             	
                             </div>

@@ -1,6 +1,18 @@
 $(document).ready(function() {
 	load('referencia','padre_id',13);
+	
+	setTimeout(function(){
+		$("#padre_id option[value='888888']").remove();
+		$('#padre_id').append('<option value="888888">Productos de venta</option>');
+	},1000);
+
+	setTimeout(function(){
+		var cont = $('#padre_id > option').length+1;
+		$('#padre_id').attr('size', cont);
+	},1000);
+	
 	var idt = $('#idtienda').val();
+	$('#proc').trigger('click');
 	DT(1);
 
 	$('#padre_id').change(function(event) {
@@ -27,7 +39,11 @@ $(document).ready(function() {
 		if (motive == '[ AGREGAR NUEVO MOTIVO ]') {
 			$('#modalnuevoM').modal('show');
 		}
-		$('#mermar').prop('disabled', false);
+		validacion();
+	});
+
+	$('#cantidadM').keyup(function(event) {
+		validacion();
 	});
 
 	$('#mcontinuar').click(function(event) {
@@ -91,11 +107,100 @@ $(document).ready(function() {
 		$('#modalcancel').modal('show');
 	});
 
+	$('#consultas').click(function(event) {
+		var idt = $('#idtienda').val();
+		var reversado = 2;
+		$.ajax({
+			url: BASE_URL+'/merma/consultas/'+idt+'/'+reversado,
+            type: 'POST',
+            dataType: 'json'
+		})
+        .done(function(data) {
+        	consultarmerma(idt,reversado);
+        });
+	});
+
+	$('#btn-rev').click(function(event) {
+			var idt = $('#idtienda').val();
+			var valor = $('#btn-rev').val();
+			if (valor == 1) {
+				$('#btn-rev').val('');
+				$('#btn-rev').val(2);
+				$('#btn-rev').text('Consultar mermas');
+				$('#btn-rev').removeClass('btn-outline-danger');
+				$('#btn-rev').addClass('btn-outline-primary');
+				consultarmerma(idt,1);
+			}else{
+				$('#btn-rev').val('');
+				$('#btn-rev').val(1);
+				$('#btn-rev').text('Consultar reversos');
+				$('#btn-rev').addClass('btn-outline-danger');
+				$('#btn-rev').removeClass('btn-outline-primary');
+				consultarmerma(idt,2);
+			}		
+	});
+
 });
+
+	function consultarmerma(idt,reversado){
+  	$('#load').fadeOut(400);
+  	setTimeout(function() {$('#tablaoculta2').fadeIn(500);$('#tablaoculta2').prop("hidden",false);}, 800);
+		var t2 =$('#mermados').DataTable({
+            "ajax": BASE_URL+'/merma/consultas/'+idt+'/'+reversado,
+            "columns": [
+            	{ "data": null, className: "tdcenter"},
+                { "data": "codigi" , className: "tdleft"},
+                { "data": "mercancia" , className: "tdleft"},
+                { "data": "marca" , className: "tdleft"},
+                { "data": "tipom" , className: "tdleft"},
+                { "data": "motivo" , className: "tdleft"},
+                { "data": "descripcion" , className: "tdleft"},
+            	{ "data": "cant" , className: "tdright",
+                	render : function(data, type, row) { 
+			          	return ''+data+' '+row['abums']
+		       		}
+            	},
+                { "data": "stock" , className: "tdright",
+                	render : function(data, type, row) { 
+			          	return ''+data+' '+row['abums']
+		       		}
+            	},
+            	{ "data": "dia" , className: "tdcenter"}, 
+                { "data": "idk",   
+		          	render : function(data, type, row) { 
+			          	if (row['reversado'] != 1) {
+		          			return '<center><span  onclick="reversarmerma('+data+','+row['idm']+')" class="fa fa-remove test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="Deshacer la merma de '+row['ingrediente']+'"></span></center>'+
+			              	'<input type="hidden" id="ing'+row['idm']+'" value="'+row['ingrediente']+'"/>'
+		          		}else{
+		          			return '<h6>Reversado</h6>'
+		          		}
+		       		} 
+   				}
+   				  
+            ],
+            "columnDefs": [ {
+            "searchable": false,
+            "orderable": false,
+            "targets": 0
+                } ],
+                "order": [[ 1, 'asc' ]],
+            destroy: true,
+            responsive: true,
+
+        });
+    $('#mermados').css("width","100%");
+    t2.on( 'order.dt search.dt', function () {
+        t2.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+        } );
+    } ).draw();
+		
+	}
 
 	function DT(clasif){
 		$("#padre_id option[value='999999']").remove();
 		$('#padre_id').append('<option value="999999">Todas</option>');
+		
 		var idt = $('#idtienda').val();
 		if (clasif!=1) {
 			var url = BASE_URL+'/merma/productos/'+idt+'/'+clasif;
@@ -109,14 +214,32 @@ $(document).ready(function() {
 		            "columns": [
 		            	{ "data": null, className: "tdcenter"},
 		                { "data": "codigo" , className: "tdleft"},
-		                { "data": "producto" , className: "tdleft"},
+		                { "data": "producto" , className: "tdleft",
+		                	render : function(data, type, row) { 
+				          		if (row['tipo_producto']== 1) {//camviar idp por pvp para validar si es pv o pi
+				          			return ''+data+''
+				          		}else{
+				          			if (row['idre'] == null) {
+				          				return '<o style="color:red" title="no tiene receta">'+data+'</o>'+
+				          				'<input type="hidden" id="r'+row['idp']+row['tipo_producto']+'" value="0"/>'
+				          			}else{
+				          				return ''+data+''+
+				          				'<input type="hidden" id="r'+row['idp']+row['tipo_producto']+'" value="'+row['idre']+'"/>'
+				          			}
+				          		}
+				       		} 
+		            	},
 		                { "data": "marca" , className: "tdleft",
 		                	render : function(data, type, row) { 
 				          		if (row['tipo_producto']== 1) {//camviar idp por pvp para validar si es pv o pi
 				          			return ''+data+'<input type="hidden" id="p'+row['idp']+row['tipo_producto']+'" value="'+row['producto']+'"/>'+
 				          			'<input type="hidden" id="m'+row['idp']+row['tipo_producto']+'" value="'+row['marca']+'"/>'
 				          		}else{
-				          			return '<input type="hidden" id="p'+row['idp']+row['tipo_producto']+'" value="'+row['producto']+'"/>'
+				          			if (row['idre'] == null) {
+				          				return '<o style="color:red" title="no tiene receta"><input type="hidden" id="p'+row['idp']+row['tipo_producto']+'" value="'+row['producto']+'"/></o>'
+				          			}else{
+				          				return '<input type="hidden" id="p'+row['idp']+row['tipo_producto']+'" value="'+row['producto']+'"/>'
+				          			}
 				          		}
 				       		} 
 		            	},
@@ -257,6 +380,7 @@ function mermar(idp,tipoP,idum){
 	load('referencia','motivo',121);
 	var producto = $('#p'+idp+tipoP).val();
 	var marca = $('#m'+idp+tipoP).val();
+	var receta = $('#r'+idp+tipoP).val();
 	if (!marca) {
 		var mark = '';
 	}else{
@@ -277,9 +401,22 @@ function mermar(idp,tipoP,idum){
 	$('#titleM').empty();
 	$('#titleM').append(producto+' '+mark);
 	if (tipoP == 2) {
+		if (receta == 0) {
+			$('#alertpvta').removeClass('alert-info');
+			$('#alertpvta').addClass('alert-danger');
+			$('#h4alertpv').empty();
+			$('#h4alertpv').append('El producto seleccionado, no tiene ninguna receta asignada, el proceso de merma no puede continuar.');
+			$('#abrirM').prop('disabled', true);
+		}else{
+			$('#alertpvta').removeClass('alert-danger');
+			$('#alertpvta').addClass('alert-info');
+			$('#h4alertpv').empty();
+			$('#abrirM').prop('disabled', false);
+		}
 		$('#alertpvta').slideDown();
 		$('#alertpvta').prop('hidden', false);
 	}else{
+		$('#alert-stmin').hide();
 		$('#modalmermas').modal('show');
 	}
 	
@@ -303,6 +440,42 @@ function removedM(idpro,tipopro,idt,moti,tipo,cant){
      .done(function(data) {
      	DT2();
      });
+}
+
+function reversarmerma(idk,idm){
+	$('#idk').val('');
+	$('#idk').val(idk);
+	$('#idm').val('');
+	$('#idm').val(idm);
+	var text = $('#ing'+idm).val();
+	$('.rev').empty();
+	$('.rev').append(text);
+	$('#modalreversar').modal('show');
+}
+
+function validacion(){
+		var idt = $('#idtienda').val();
+		var cantidad = $('#cantidadM').val();
+		var idpro = $('#idpro').val();
+		var tipopro = $('#tipopro').val();
+		$.ajax({
+            url: BASE_URL+'/merma/validarmerma/'+idt+'/'+cantidad+'/'+idpro+'/'+tipopro,
+            type: 'POST',
+            dataType: 'json'
+        })
+      	.done(function(data) {
+      		if (data != 1) {
+      			$('#validado').empty();
+      			$('#validado').append(data[0]['nombre']+' '+data[0]['marca']);
+      			//data = 1: cantidad a mermar no valida por que es mayor a la existencia 
+      			$('#mermar').prop('disabled', true);
+      			$('#alert-stmin').slideDown();
+      			$('#alert-stmin').prop('hidden', false);
+      		}else{
+      			$('#alert-stmin').slideUp();
+      			$('#mermar').prop('disabled', false);
+      		}
+		});
 }
 
 $(document).ready(function() {
@@ -332,6 +505,36 @@ $(document).ready(function() {
 	});
 	$('#abrirM').click(function(event) {
 		$('#alertpvta').slideUp();
+		$('#alert-stmin').hide();
 		$('#modalmermas').modal('show');
+	});
+
+	$('#reversar').click(function(event) {
+		var idt = $('#idtienda').val();
+		var idk = $('#idk').val();
+		var idm = $('#idm').val();
+		var mot = $('#motivoreverso').val();
+      	var motivo = mot.replace(/ /g, "@");
+		$.ajax({
+			url: BASE_URL+'/merma/reversar/'+idt+'/'+idk+'/'+idm+'/'+motivo,
+	        type: 'POST',
+	        dataType: 'json'
+		})
+	    .done(function(data) {
+	    	$('#modalreversar').modal('hide');
+ 			$('#mermareversada').slideDown();
+ 			$('#mermareversada').prop('hidden', false);
+ 			setTimeout(function() {$('#mermareversada').slideUp(500);consultarmerma(idt,1)}, 6000);
+	    })
+	    .fail(function(datos){
+	    	$('#modalreversar').modal('hide');
+ 			$('#errorreversar').slideDown();
+ 			$('#errorreversar').prop('hidden', false);
+ 			setTimeout(function() {$('#errorreversar').slideUp(500);}, 6000);
+	 	});
+	});
+
+	$('#close-alert').click(function(event) {
+		$('#alert-stmin').slideUp();
 	});
 });

@@ -56,6 +56,9 @@
 			if ($clasif == false or $clasif == 999999) {
 				$filtropi = '';
 				$filtropv = '';
+			}else if($clasif == 888888){
+				$filtropi = "and familia_id = $clasif";
+				$filtropv = '';
 			}else{
 				$filtropi = "and familia_id = $clasif";
 				$filtropv = "and grupo.familia_id = $clasif";
@@ -198,8 +201,8 @@
 
 		public function procesarmermas($idT){
 			$datos = $_SESSION['carrito'];
-			$accion = 'Actualizado';
-			$motivo = 182;
+			$accion = 'Modificado';
+			$motivo = 180;
 			$tipoM = 132;
 			for ($i=0; $i < count($datos); $i++) { 
 				if ($datos[$i]['tipopro'] == 2) {
@@ -279,7 +282,7 @@
 		function mermaspv($datos,$idt,$descripcion,$producto){
 			$detalle = $descripcion.' ('.$producto.')';
 			$accion = "Actualizado";
-			$motivo = 182;
+			$motivo = 180;
 			$tipoM = 132;
 			$query = "SELECT existencia FROM mercancia_has_unidad_negocio where unidad_negocio_id = $idt and mercancia_id = '".$datos['iding']."'";
 			$stock = $this->_main->select($query);
@@ -291,6 +294,128 @@
 			
 
 			//echo json_encode($datos);
+		}
+
+		public function consultas($idt,$reversado){
+			if ($reversado == 2) {
+				$reversado = 0;
+				$motivo = 'and motivo_id = 180';
+			}else{
+				$reversado = 1;
+				$motivo = 'and motivo_id = 191';
+			}
+			$query = "SELECT kardex.id as idk, fecha, DATE_FORMAT(fecha, '%d-%m-%Y') as dia,  hora, cantidad, format(cantidad,4,'de_DE') as cant, existencia, format(existencia,4,'de_DE') as stock, kardex.descripcion, referencia.referencia as tipom, mercancia.id as idm, mercancia.nombre as mercancia, mercancia.marca, CONCAT(mercancia.nombre,' ',mercancia.marca) as ingrediente, mercancia.codigo as codigi, unidad_negocio_id, unidad_negocio.nombre, unidad_medida.abreviatura as abums, ref.referencia as motivo, reversado FROM `kardex` inner join mercancia on mercancia.id = mercancia_id inner join unidad_negocio on unidad_negocio.id = unidad_negocio_id inner JOIN unidad_medida on unidad_medida.id = unidad_medida_id INNER join referencia on referencia.id = tipo_movimiento_id inner join referencia as ref on ref.id = motivo_id where 
+			unidad_negocio_id = $idt and reversado = $reversado $motivo ORDER BY kardex.id DESC";
+			$datosm = $this->_main->select($query);
+			$response = array("data"=>$datosm);
+    		//print_r($response);
+    		echo json_encode($response);
+
+		}
+
+		public function reversar($idT,$idk,$idm,$motive){
+			$accion = 'Modificado';
+			$motivo = 191;
+			$tipoM = 131;
+			$descripcion = str_replace("@"," ",$motive);
+			$query = "SELECT existencia, unidad_medida.id as idum FROM mercancia_has_unidad_negocio 
+			INNER JOIN mercancia on mercancia.id = mercancia_id
+			INNER JOIN unidad_medida on unidad_medida.id = unidad_medida_sistema_id 
+			where unidad_negocio_id = $idT and mercancia_id = $idm";
+			$stock = $this->_main->select($query);
+			$query = "SELECT * from kardex where id = $idk";
+			$k = $this->_main->select($query);
+			$cant = $stock[0]['existencia']+$k[0]['cantidad'];
+			$this->_main->log($idm,$idT,$accion);
+			$this->_main->kardex($k[0]['cantidad'],$motivo,$tipoM,$idm,$idT,$stock[0]['idum'],$descripcion,false,1);
+			$query = "UPDATE mercancia_has_unidad_negocio set existencia=$cant where unidad_negocio_id = $idT and mercancia_id = $idm";
+			$actualizado = $this->_main->modificar($query);
+			$query = "UPDATE kardex set reversado=1 where kardex.id = $idk";
+			$actualizadok = $this->_main->modificar($query);
+
+			echo json_encode($actualizado);
+		}
+
+
+		public function validarmerma($idt,$cantidad,$idpro,$tipopro){
+			if ($tipopro == 2) {
+				$query = "SELECT codigo, receta_id, producto.nombre FROM producto where producto.id = $idpro";
+				$pro = $this->_main->select($query);
+				if (!is_null($pro[0]['receta_id'])) {
+					$ing = $this->_main->ingredientesexplosion($pro[0]['codigo'],$idt,$cantidad);
+					for ($j=0; $j <count($ing) ; $j++) { 
+						if (isset($ing[$j]['recetaing'])) {
+							$idrece = $ing[$j]['recetaing'];
+							$sub = $this->subr($idrece,$cantidad,$idt);
+						}else{
+							$this->validarpv($ing[$j],$idt);
+						}	
+					}
+				}
+				echo json_encode(1);
+			}else{
+				$query = "SELECT mercancia.nombre, mercancia.marca, mercancia.receta_id, existencia 
+				FROM mercancia_has_unidad_negocio 
+				inner join mercancia on mercancia.id = mercancia_id
+				where unidad_negocio_id = $idt and mercancia_id = $idpro";
+					$stock = $this->_main->select($query);
+					$cant = $stock[0]['existencia']-$cantidad;
+					if ($cant < 0) {
+						echo json_encode($stock);
+					}else{
+						echo json_encode(1);
+					}
+					
+			}
+		}
+
+		function subr($idreceta,$cantidad,$idt){
+			//echo "id=";print_r($idreceta); echo "<br><br>";
+			$query = "SELECT mercancia.id as idi, mercancia.receta_id, mercancia.codigo as codigi, mercancia.receta_id as recetaing, ixr.cantidad, abreviatura, mercancia.nombre as producto, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, format(mercancia.precio_unitario,2,'de_DE') as costo, mercancia.precio_unitario as precioU, mercancia.contenido_neto, mercancia.formula_c, ixr.receta_id as idreceta, receta.nombre as receta, ixr.unidad_medida_id
+					FROM `mercancia`
+					inner join ingrediente_has_receta as ixr on mercancia.id = ixr.ingrediente_id
+					inner join receta on receta.id = ixr.receta_id
+                    inner join unidad_medida on unidad_medida.id = ixr.unidad_medida_id
+                    WHERE ixr.receta_id = $idreceta";
+					$ingredientes = $this->_main->select($query);
+					//print_r($ingredientes);
+					for ($k=0; $k <count($ingredientes) ; $k++) {
+						if (isset($ingredientes[$k]['idi'])) {
+							$cant = $cantidad*$ingredientes[$k]['cantidad'];
+							$subreceta[] = array('iding'=>$ingredientes[$k]['idi'],
+		                               	 'codigoing' =>$ingredientes[$k]['codigi'],
+		                                 'cantidad'=>$cant,
+		                                 'abreviatura'=>$ingredientes[$k]['abreviatura'],
+		                                 'ingredientes'=>$ingredientes[$k]['ingrediente'],
+		                                 'unidad_medida_id'=>$ingredientes[$k]['unidad_medida_id'],
+		                                 'costo'=>$ingredientes[$k]['precioU'],
+		                                 'idreceta'=>$ingredientes[$k]['idreceta'],
+		                                 'recetaing'=>$ingredientes[$k]['recetaing'],
+		                             	 'contenido_neto'=>$ingredientes[$k]['contenido_neto'],
+		                             	 'formula_c'=>$ingredientes[$k]['formula_c']);
+							
+						}
+						if (isset($subreceta[$k]['recetaing'])) {
+							$idrc = $subreceta[$k]['recetaing'];
+							$subs = $this->subr($idrc,$cantidad,$idt);							
+						}else{
+							$this->validarpv($subreceta[$k],$idt);
+						}
+					 					
+					}
+					
+					return $subreceta;
+		}
+
+		function validarpv($datos,$idt){
+			$query = "SELECT mercancia.nombre, mercancia.marca, mercancia.receta_id, existencia FROM mercancia_has_unidad_negocio 
+			inner join mercancia on mercancia.id = mercancia_has_unidad_negocio.mercancia_id 
+			where unidad_negocio_id = $idt and mercancia_id = '".$datos['iding']."'";
+			$stock = $this->_main->select($query);
+			$cant = $stock[0]['existencia']-$datos['cantidad'];
+			if ($cant <0) {
+				echo json_encode($stock);exit();
+			}
 		}
 
 

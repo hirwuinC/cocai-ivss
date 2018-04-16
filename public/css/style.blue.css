@@ -171,7 +171,7 @@ table {
   top: 0;
   right: 0;
   transition: width 0.3s linear;
-  width: calc(100% - 200px);
+  width: calc(100% - 220px);
   background-color: #F4F7FA;
   min-height: 100vh;
   padding-bottom: 50px;

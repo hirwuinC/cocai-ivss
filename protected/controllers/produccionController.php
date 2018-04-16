@@ -126,7 +126,7 @@
 			}
 
 			if (isset($actualizado) and isset($ingredientes)) {
-				$query = "INSERT INTO `produccion`(`fecha`, `producto_id`, `cantidad`, `rendimiento_ideal`, `resultante`, `unidad_medida_id`, `unidad_negocio_id`) VALUES ('".$fecha."',$idmercancia,$tandas,$ideal,$real,'".$existente[0]['umsid']."',$idtienda)";
+				$query = "INSERT INTO `produccion`(`fecha`, `producto_id`, `cantidad`, `rendimiento_ideal`, `resultante`, `unidad_medida_id`, `unidad_negocio_id`, `reversado`) VALUES ('".$fecha."',$idmercancia,$tandas,$ideal,$real,'".$existente[0]['umsid']."',$idtienda,0)";
 				$idproduccion = $this->_main->insertar($query);
 				echo json_encode($idproduccion);
 			}
@@ -202,6 +202,103 @@
 			}
 			return $datos;
 			
+		}
+
+		public function consultas($idt,$idmercancia,$reverso=false){
+			if ($idmercancia != 999999) {
+				$where =  'unidad_negocio_id = '.$idt.' and producto_id = '.$idmercancia.'';
+			}else{
+				$where =  'unidad_negocio_id = '.$idt.'';
+			}
+			if ($reverso == 1) {
+				$where2 = 'and reversado = 1';
+			}else{
+				$where2 = 'and reversado = 0';
+			}
+			$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, mercancia.precio_unitario as precioU, format(precio_unitario,4,'de_DE') as costo, receta_id as idreceta, produccion.id as idproduccion, fecha, cantidad, rendimiento_ideal, resultante, reversado  FROM `produccion`
+			inner join mercancia on mercancia.id = produccion.producto_id
+            inner join unidad_medida as ums on ums.id = produccion.unidad_medida_id
+            where $where $where2 order by produccion.id desc";
+            $data = $this->_main->select($query);
+
+    		$response = array("data"=>$data);
+    		//print_r($response);
+    		echo json_encode($response);
+		}
+
+		public function reversarproduccion($idt,$idproduccion,$idm,$idr,$motivo){
+			#modificar esta funcion
+			$accion = 'Actualizado';
+			$motive = str_replace("@"," ",$motivo);
+			$query = "SELECT mercancia.nombre, mercancia.marca, mhun.existencia, unidad_medida_sistema_id as umsid 
+			FROM mercancia_has_unidad_negocio as mhun
+			inner join mercancia on mercancia.id = mhun.mercancia_id
+			where unidad_negocio_id = $idt and mercancia_id = $idm";
+			$existente = $this->_main->select($query);
+			$query = "SELECT * FROM produccion where id = $idproduccion";
+			$produccion = $this->_main->select($query);
+			$updateexist = $existente[0]['existencia'] - $produccion[0]['resultante'];
+			$query = "UPDATE mercancia_has_unidad_negocio set existencia = $updateexist where unidad_negocio_id = $idt and mercancia_id = $idm";
+			$actualizado = $this->_main->modificar($query);
+			$accion = 'Modificado';
+			$motivok = $motive.' - (Reverso de '.$produccion[0]['cantidad'].' '.$existente[0]['nombre'].' '.$existente[0]['marca'].')';
+			if (isset($actualizado)) {
+				$this->_main->log($idm,$idt,$accion);
+				$this->_main->kardex($updateexist,193,132,$idm,$idt,$existente[0]['umsid'],$motivok);
+
+				$query = "SELECT * FROM ingrediente_has_receta where receta_id = $idr";
+				$ingredientes = $this->_main->select($query);
+				
+			}
+
+			if (isset($ingredientes)) {
+				for ($i=0; $i <count($ingredientes) ; $i++) { 
+					# consultar la existencia por cada ingrediente, calcular cuanto se va a descontar multiplicando cantidad segun receta por las tandas y restandolo a la existencia
+					# actualizar ese valor en mhun y hacer registro en log y kardex
+					$query = "SELECT mercancia.nombre, mercancia.marca, mhun.existencia, unidad_medida_sistema_id as umsid 
+					FROM mercancia_has_unidad_negocio as mhun
+					inner join mercancia on mercancia.id = mhun.mercancia_id
+					where unidad_negocio_id = $idt and mercancia_id = '".$ingredientes[$i]['ingrediente_id']."'";
+					$existente2 = $this->_main->select($query);
+					$cantxreceta = $ingredientes[$i]['cantidad']*$produccion[0]['cantidad'];
+					$update2 = $existente2[0]['existencia']+$cantxreceta;
+					$this->_main->log($ingredientes[$i]['ingrediente_id'],$idt,$accion);
+					$this->_main->kardex($update2,192,131,$ingredientes[$i]['ingrediente_id'],$idt,$existente2[0]['umsid'],$motivok);
+					$query = "UPDATE mercancia_has_unidad_negocio set existencia = $update2 where unidad_negocio_id = $idt and mercancia_id = '".$ingredientes[$i]['ingrediente_id']."'";
+					$actualizado2 = $this->_main->modificar($query);
+
+				}
+			}
+			$query = "UPDATE produccion set reversado=1 where produccion.id = $idproduccion";
+			$actualizadopr = $this->_main->modificar($query);
+
+			echo json_encode($actualizadopr);
+
+		}
+
+		public function validarproduccion($idt,$tandas,$idpro,$idr){
+			$query = "SELECT * FROM ingrediente_has_receta where receta_id = $idr";
+			$ingredientes = $this->_main->select($query);
+
+			if (isset($ingredientes)) {
+				for ($i=0; $i <count($ingredientes) ; $i++) { 
+					# consultar la existencia por cada ingrediente, calcular cuanto se va a descontar multiplicando cantidad segun receta por las tandas y restandolo a la existencia
+					# actualizar ese valor en mhun y hacer registro en log y kardex
+					$query = "SELECT mercancia.nombre, mercancia.marca, mhun.existencia, unidad_medida_sistema_id as umsid 
+					FROM mercancia_has_unidad_negocio as mhun
+					inner join mercancia on mercancia.id = mhun.mercancia_id
+					where unidad_negocio_id = $idt and mercancia_id = '".$ingredientes[$i]['ingrediente_id']."'";
+					$existente2 = $this->_main->select($query);
+					$cantxreceta = $ingredientes[$i]['cantidad']*$tandas;
+					$update2 = $existente2[0]['existencia']-$cantxreceta;
+					if ($update2 < 0) {
+						echo json_encode($existente2);exit();
+					}
+					
+
+				}
+				echo json_encode(1);
+			}
 		}
 
 	}
