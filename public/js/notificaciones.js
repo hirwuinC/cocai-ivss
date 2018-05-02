@@ -1,5 +1,5 @@
 function verificarN(valor){
-  //alert("hola");
+  //alert(valor);
   $.ajax({
       url: BASE_URL+'/inventario/notificaciones/'+valor,
       type: 'POST',
@@ -40,6 +40,8 @@ function notifications(notif,data){
           case '126':
             st = 'Solicitud de remision';
             func = 'rmm';
+            campo = data[i]['remision_id'];
+            idu = data[i]['idunt'];
             break;
           
           case '127':
@@ -55,20 +57,22 @@ function notifications(notif,data){
           case '129':
             st = 'Reposicion de mercancia';
             func = 'rpm';
+            campo = data[i]['reposicion_id'];
+            idu = data[i]['idunt'];
           break;
         }
     v=c+ +i;
     if (data.length > 0) {
       if (data[i]['fecharemi']!=null) {
           $('#news').append('<li>'+
-                          '<a class="notif" href="'+BASE_URL+'inventario/'+func+'/'+data[i][3]+'/'+data[i][1]+'/'+data[i][8]+'/'+notif+'"">'+
+                          '<a class="notif" href="'+BASE_URL+'transferencia/'+func+'/'+data[i]['status_id']+'/'+campo+'/'+idu+'/'+notif+'"">'+
                               ''+st+' #'+data[i][1]+'  <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['fecharemi']+'</o>'+' <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['horaremi']+'</o>'+
                           '</a>'+
                         '</li>'
           );
       }else{
         $('#news').append('<li>'+
-                          '<a class="notif" href="'+BASE_URL+'inventario/'+func+'/'+data[i][3]+'/'+data[i][1]+'/'+data[i][8]+'/'+notif+'"">'+
+                          '<a class="notif" href="'+BASE_URL+'transferencia/'+func+'/'+data[i]['status_id']+'/'+campo+'/'+idu+'/'+notif+'"">'+
                               ''+st+' #'+data[i][0]+'  <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['fecharepo']+'</o>'+' <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['horarepo']+'</o>'+
                           '</a>'+
                         '</li>'

@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="us">
+<head>
+  <meta charset="utf-8">
+  <title>Transferencias</title>
+  <link href="<?php echo PUBLIC_URL; ?>css/jquery-ui.css" rel="stylesheet">
+
+
+  
+</head>
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+<div id="body" hidden>
+                            
+<div id="page-wrapper">
+            <div class="">
+
+                <div class="row">
+                    <div class="col-lg-12 ">
+                        
+
+                        <div  class="card cardH">
+                        <div class="card-header" hidden>
+                            <center><h3><o id="titulocard">Transferencias</o> <?php $ti=strtolower($this->g[0]['tienda']); echo "[".ucwords($ti)."] Sub-modelo ".$this->g[0]['subM'];  ?></h4></center>
+                        </div>
+                        
+                        <div class="card-block" style="padding-bottom: 0px; ">                        
+						<ul class="nav nav-pills nav-tabs ml-3" role="tablist">
+						  	<li class="active nav-item">
+						  		<a data-toggle="tab" href="#xenviar" class="nav-link" id="envios">Pendientes por enviar</a>
+						  	</li>
+                            <li class="nav-item">
+                            	<a data-toggle="tab" href="#xrecibir" class="nav-link" id="recibos">Pendientes por recibir</a>
+                            </li>
+                            <li class="nav-item">
+                            	<a data-toggle="tab" href="#recibidas" class="nav-link" id="consultaR">Transferencias recibidas</a>
+                            </li>
+                            <li class="nav-item">
+                            	<a data-toggle="tab" href="#enviadas" class="nav-link" id="consultaE">Transferencias enviadas</a>
+                            </li>
+						</ul>
+
+									
+
+						
+						<div class="tab-content" >
+                            <div class="col-sm-12">
+                                <div class="alert alert-success" id="procesada" hidden>
+                                    <center><h4 class="enviaorecibe"></h4></center>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="alert alert-danger" id="erroralprocesar" hidden>
+                                    <center><h4 class="enviaorecibe"></h5></center>
+                                </div>
+                            </div>
+							<!-- Modal detalles remision / reposicion -->
+							  <div class="modal fade" id="myModal">
+							    <div class="modal-dialog modal-lg">
+							      <div class="modal-content" style="width: 122%; left: -8%">
+							      
+							        <!-- Modal Header -->
+							        <div class="modal-header">
+							          <h4 class="modal-title titlemyt"></h4>
+							          <button type="button" class="close" data-dismiss="modal">&times;</button>
+							        </div>
+							        
+							    <!-- Modal body -->
+							    <div class="modal-body">
+							        <form action="<?php echo BASE_URL;?>transferencia/procesarRemision" method="post" accept-charset="utf-8" role="form" id="formdetails">
+                                        <input type="hidden" id="tipo">
+                                        <input type="hidden" id="idrepos" name="idrepos">
+							          	<div class="dataTable_wrapper">
+	                                        <div class="table-responsive col-sm-12">
+	                                            <table id="tabladetallesremi" class="display table table-sm table-striped table-bordered table-hover" >
+	                                                <thead class="theadH">
+	                                                	<tr>
+	                                                		<th colspan="8"><center><o class="titlemyt"></o></center></th>
+	                                                	</tr>
+	                                                    <tr>
+	                                                        <th>Codigo</th>
+	                                                        <th>Producto</th>
+	                                                        <th>Solicitado</th>
+	                                                        <th>Cant. Enviada</th>
+	                                                        <th>Existencia</th>
+	                                                        <th>Min</th>
+	                                                        <th>Accion</th>
+	                                                    </tr>
+	                                                </thead>
+	                                                <tbody id="cuerpo_r"></tbody>
+	                                            </table>
+	                                        </div>
+                                    	</div>
+                                    	<input type="submit" name="btn-subm" id="btn-subm" value="enviar" hidden>
+							        </form>
+							    </div>
+							        
+							        <!-- Modal footer -->
+							        <div class="modal-footer">
+                                      <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cerrar</button>
+                                      <button type="button" class="btn btn-sm btn-outline-primary" hidden="" id="proccess">Procesar</button>
+							          <button type="button" class="btn btn-sm btn-outline-primary" hidden="" id="recept">Recibir</button>
+							        </div>
+							        
+							      </div>
+							    </div>
+							  </div>
+							  <!-- fin de la modal -->
+
+				<!-- MODAL DEL LA FUNCION PROCESAR REMISIONES -->
+                <div class="modal fade modalremision" id="modalremision" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog modal-md" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div class="modal-title" id="enunciado"><h4> Procesando la <?php echo $this->datos[0]['statusN']." #00".$this->datos[0]['idr']."<br> de la unidad de negocio: <o style='text-transform: capitalize;'>".strtolower($g['tiendae'])."<o>";?> </h4></div>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                            <form action="<?php echo BASE_URL;?>inventario/success/ended" method="post" accept-charset="utf-8">
+                                
+
+                                
+                                
+                                <div class="form-group row">
+                                    <div class="col-sm-4">
+                                        <label class="labels" >Producto</label>
+                                        <input type="text" class="form-control" name="nombrem" id="nombrem" value="<?php echo $g['producto'];?>" readonly>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label class="labels" >Marca</label>
+                                        <input type="text" class="form-control" name="marcam" id="marcam" value="<?php echo $g['marca'];?>" readonly>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label class="labels" >Cant. Solicitada</label>
+                                        <input type="text" class="form-control" name="cantsolicitada" id="cantsolicitada" value="<?php echo $g['cantidad'].' '.$g['abrevsol'];?>" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-4">
+                                        <label class="labels" >Existencia</label><a href="#"><span style="color: #337ab7; cursor: hand; cursor: pointer; float: left; margin-left: 3%; font-size: 17px" class="fa fa-info-circle" data-toggle="modal" data-target="#modalconversion"></span></a>
+                                        <input type="text" class="form-control" name="existenciam" id="existenciam" readonly="" >
+                                    </div>
+                                    
+                                    <div class="col-sm-4 ">
+                                        <label class="labels"  >Stock minimo</label>
+                                        <input type="text" class="form-control" name="stockmin" id="stockmin" readonly="" >
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label class="labels"  >Stock maximo</label>
+                                        <input type="text" class="form-control" name="stockmax" id="stockmax" readonly="" >
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                  <div class="col-sm-4 ">
+                                        <label class="labels" >Cant. Enviada</label><span style="color: #337ab7; cursor: hand; cursor: pointer; float: left; margin-left: 3%; font-size: 17px" class="fa fa-info-circle" data-toggle="modal" data-target="#modalinfo"></span>
+                                        <input type="text" class="form-control" name="cantenviada" id="cantenviada"  value="<?php echo $g['cantidad'];?>">
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label class="labels" >Unidad de Medida</label>
+                                        <select name="umenviada" id="umenviada" class="form-control" required>
+                                          <option value="<?php echo $g['idumpresentacion'];?>"><?php echo $g['abrevcompr'];?></option>
+                                          <option selected value="<?php echo $g['idumcompra'];?>"><?php echo $g['abrevpres'];?></option>
+                                          <option value="<?php echo $g['idumsist'];?>"><?php echo $g['abrevsist'];?></option>
+                                        </select>
+                                    </div>
+                                  </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-9">
+                                        <label class="labels" >Observaciones</label>
+                                        <textarea rows="4" cols="50" class="form-control sty" 
+                                            placeholder="detalles sobre el envio" id="message" required
+                                            data-validation-required-message="por favor ingrese los detalles del envio" minlength="2" 
+                                            data-validation-minlength-message="Minimo 2 caracteres" 
+                                            maxlength="300" name="detalles" style="resize:none">
+                                        </textarea>
+                                    </div>
+                                </div>
+                                
+                            <div class="container">
+                                <div class="row ">
+                                    <div class="col-sm-12 d-flex justify-content-center">
+                                        <input type="submit" class="btn btn-sm btn-outline-primary" value="Enviar" id="botonG">
+                                    </div>
+                                </div>
+                            </div>
+                                
+
+                                </form>
+                            </div>
+                            <div style="border: none" class="modal-footer">    
+                            </div>
+                                
+                            
+                        </div>
+                    </div>
+                </div>
+							<input type="hidden" name="idT" id="idtienda" value="<?php echo $this->g[0]['idT'];?>">
+                            <input type="hidden" name="idemp" id="idempresa" value="<?php echo $this->g[0]['empresa_id'];?>">
+							<center>
+							    <div id="load" hidden>
+							        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+							    </div>
+							</center>
+							<div class="row form-group">
+								<div class="col-sm-12" style="margin-bottom: -1%">
+									<?php if ($this->g[0]['modelo'] != null): ?>
+			                            <div>
+			                              	<img class="hidden-sm-down" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png">
+			                              	<img width="25%" height="8%" class="hidden-sm-up" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png">
+			                            </div>
+	                        		<?php endif ?>
+                        
+                          			<input type="hidden" id="modelos" value="<?php echo $this->g[0]['idm']; ?>">
+			                        <?php if (isset($this->_error)) {
+			                            echo $this->_error;
+			                        } ?>
+			                        <?php if ($this->g[0]['modelo'] == null): ?>
+			                            <div>
+			                              <img class="hidden-sm-down" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->g[0]['tienda']; ?>.png">
+			                              <img width="25%" height="8%" class="hidden-sm-up" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->g[0]['tienda']; ?>.png">
+			                            </div>
+			                        <?php endif ?>
+								</div>
+								<div class="col-sm-12" style="margin-bottom: -1%">
+									<div class="row form-group d-flex justify-content-center">
+										<div class="col-xs-12 col-sm-12 col-md-10 col-lg-6">
+											<h4 class="text-white" style="background: #337ab7; border-radius: 4px; text-align: center" id="selectedpro"></h4>
+										</div>
+										
+									</div>
+								</div>
+
+							</div>
+							
+						<div>
+							
+						
+                            <div id="xenviar" class="tab-pane fade in active" role="tabpanel">
+						        	<div class="dataTable_wrapper">
+                                        <div class="table-responsive col-sm-12">
+                                            <table id="tablaxenviar" class="display table table-sm table-striped table-bordered table-hover" >
+                                                <thead class="theadH">
+                                                	<tr>
+                                                		<th colspan="6"><center>Transferencias pendientes de ser enviadas</center></th>
+                                                	</tr>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Destino</th>
+                                                        <th>Solicitud</th>
+                                                        <th>Solicitante</th>
+                                                        <th>Solicitado</th>
+                                                        <th>Productos</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="cuerpo_r"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+									
+
+                                		
+
+                                    
+
+										  
+
+										 <center>
+										    <div id="loading" hidden>
+										        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+										    </div>
+										</center>
+										<div id="tablaoculta" hidden>
+											<div class="form-group row">										
+												<div class="col-sm-12">
+				                                    <h4 style="border-bottom: solid 1px #A5A5A5;">Productos de la factura N°: <o class="Facturanum"></o></h4>
+				                                </div>
+			                                </div>
+											<div class="dataTable_wrapper ">
+
+					                             <div class="col-sm-12 table-responsive">    
+					                              <div class="container">                            	
+					                                <table id="tablacompra" class="display table table-sm table-striped table-bordered table-hover" >
+					                                  <thead class="theadH">
+					                                      <tr>
+					                                          <th><center>#</center></th>
+					                                          <th><center>Codigo</center></th>
+					                                          <th><center>Producto</center></th>
+					                                          <th><center>Cantidad</center></th>
+					                                          <th><center>Precio</center></th>
+					                                          <th><center>Productos</center></th>
+					                                      </tr>
+					                                  </thead>
+					                                  <tbody id="cuerpo_r"></tbody>
+					                                  
+					                              </table>
+					                              <div class="container">
+					                                <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
+					                                  <div class="col-12" id="costot">
+					                                    
+					                                  </div>
+					                                </div>
+					                              </div>
+					                            </div>
+					                          </div>     
+					                        </div>
+					                        <div class="row d-flex justify-content-center" >
+											  	<div class="col-sm-3" id="botones" hidden>
+											  		<button class="btn btn-sm btn-outline-danger" id="cancelarproceso" >Cancelar</button>
+											  		<button class="btn btn-sm btn-outline-primary" id="procesar">Registrar factura</button>
+											  	</div>
+											</div>
+										</div>
+
+										
+                                      </div>  
+
+
+
+<div id="xrecibir" class="tab-pane fade" role="tabpanel" >
+	<div class="dataTable_wrapper">
+        <div class="table-responsive col-sm-12">
+            <table id="tablaxrecibir" class="display table table-sm table-striped table-bordered table-hover" >
+                <thead class="theadH">
+                	<tr>
+                		<th colspan="6"><center>Transferencias pendientes por ser recibidas</center></th>
+                	</tr>
+                    <tr>
+                        <th>#</th>
+                        <th>Origen</th>
+                        <th>Solicitud</th>
+                        <th>Solicitante</th>
+                        <th>Solicitado</th>
+                        <th>Productos</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo_r"></tbody>
+            </table>
+        </div>
+    </div>
+
+        		
+</div>
+
+<div id="recibidas" class="tab-pane fade" role="tabpanel">
+	<div class="row">
+		<div class="col-sm-2">
+			<label class="labels">Desde</label>
+			<input type="date" class="form-control form-control-sm desde" name="fecha1" id="desde">
+		</div>
+		<div class="col-sm-2">
+			<label class="labels">Hasta</label>
+			<input type="date" class="form-control form-control-sm hasta" name="fecha2" id="hasta">
+		</div>
+		<div class="col-sm-2">
+			<br><button class="btn btn-sm btn-outline-primary" type="button" id="btn-consult">Consultar</button>
+		</div>
+	</div>
+	<div class="mt-3">
+		<div class="dataTable_wrapper">
+	        <div class="table-responsive col-sm-12">
+	            <table id="tablarecibidas" class="display table table-sm table-striped table-bordered table-hover" >
+	                <thead class="theadH">
+	                	<tr>
+			        		<th colspan="6"><center>Transferencias recibidas</center></th>
+			        	</tr>
+	                    <tr>
+	                        <th>#</th>
+	                        <th>Origen</th>
+	                        <th>Solicitud</th>
+	                        <th>Solicitante</th>
+	                        <th>Solicitado</th>
+	                        <th>Productos</th>
+	                    </tr>
+	                </thead>
+	                <tbody id="cuerpo_r"></tbody>
+	            </table>
+	        </div>
+	    </div>
+	</div>
+	
+</div>
+<div id="enviadas" class="tab-pane fade" role="tabpanel">
+	<div class="row">
+		<div class="col-sm-2">
+			<label class="labels">Desde</label>
+			<input type="date" class="form-control form-control-sm desde" name="fecha1" id="fecha1">
+		</div>
+		<div class="col-sm-2">
+			<label class="labels">Hasta</label>
+			<input type="date" class="form-control form-control-sm hasta" name="fecha2" id="fecha2">
+		</div>
+		<div class="col-sm-2">
+			<br><button class="btn btn-sm btn-outline-primary" type="button" id="btn-consult2">Consultar</button>
+		</div>
+	</div>
+	<div class="mt-3">
+		<div class="dataTable_wrapper">
+	        <div class="table-responsive col-sm-12">
+	            <table id="tablaenviadas" class="display table table-sm table-striped table-bordered table-hover" >
+	                <thead class="theadH">
+	                	<tr>
+                    		<th colspan="6"><center>Transferencias enviadas</center></th>
+                    	</tr>
+	                    <tr>
+	                        <th>#</th>
+	                        <th>Destino</th>
+	                        <th>Solicitud</th>
+	                        <th>Solicitante</th>
+	                        <th>Solicitado</th>
+	                        <th>Productos</th>
+	                    </tr>
+	                </thead>
+	                <tbody id="cuerpo_r"></tbody>
+	            </table>
+	        </div>
+	    </div>
+	</div>
+</div>
+    	
+</div>
+</div>
+
+
+
+                       
+                            
+                        </div>
+                        <center><div id="mensaje" hidden><img width="45px" height="45px" src="http://localhost/COCAI/public/img/check1.gif" alt="exito"/></div></center>
+                             
+                        
+                              
+                
+                </div>
+              </div>
+        </div>
+</div>
+</div>
+                            
+</body>
+
+</div>
+
+
+
+<!-- Autocomplete -->
+
+</html>

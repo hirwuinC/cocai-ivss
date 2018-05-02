@@ -63,7 +63,7 @@
                             echo $this->_error;
                         } ?>
                         <div>
-                            <img width="8%" height="8%" style="float: right;" src="<?php $model=strtolower($this->datos[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-responsive" alt="modelo">
+                            <img width="10%" height="8%" style="float: right;" src="<?php $model=strtolower($this->datos[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-responsive" alt="modelo">
                         </div>
 
                                 <div class="dataTable_wrapper ">
@@ -74,7 +74,10 @@
                                                 <tr>
                                                     <th>Codigo</th>
                                                     <th>Ingrediente</th>
-                                                    <th>Solcitar</th>
+                                                    <th>Existencia</th>
+                                                    <th>Min</th>
+                                                    <th>Max</th>
+                                                    <th>Accion</th>
 
                                                 </tr>
                                             </thead>
@@ -129,7 +132,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                      <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+                                      <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
                                       <button class="btn btn-sm btn-outline-primary"  type="submit" class=""  id="btnguardar"><b>Enviar solicitud</b></button>
                                     </div>
                                     </form>

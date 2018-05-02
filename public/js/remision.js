@@ -41,10 +41,25 @@ jQuery(document).ready(function($) {
             "columns": [
                 { "data": "codigi", className: "tdleft"},
                 { "data": "ingrediente", className: "tdleft"},
+                { "data": "stockt", className: "tdleft",
+                	render: function(data, type,row){
+                		return ''+data+' '+row['abums']
+                	}
+            	},
+                { "data": "stmin", className: "tdleft",
+                	render: function(data, type,row){
+                		return ''+data+' '+row['abums']
+                	}
+            	},
+                { "data": "stmax", className: "tdleft",
+                	render: function(data, type,row){
+                		return ''+data+' '+row['abums']
+                	}
+            	},
                 { "data": null , className: "tdcenter",
           render : function(data, type, row) {
           	//var ingr = row['ingrediente'].replace(/ /gi, "@"); 
-              return '<span  onclick="agregaringrediente('+row['idi']+','+idT+')" class="fa fa-check test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="agregar"></span>'
+              return '<a href="#" onclick="agregaringrediente('+row['idi']+','+idT+')" title="Solicitar '+row['ingrediente']+'">Solicitar</a'
           }    
        }                 
             ],
@@ -59,10 +74,25 @@ jQuery(document).ready(function($) {
             "columns": [
                 { "data": "codigi", className: "tdleft"},
                 { "data": "ingrediente", className: "tdleft"},
+                { "data": "stockt", className: "tdleft",
+                	render: function(data, type,row){
+                		return ''+data+' '+row['abums']
+                	}
+            	},
+                { "data": "stmin", className: "tdleft",
+                	render: function(data, type,row){
+                		return ''+data+' '+row['abums']
+                	}
+            	},
+                { "data": "stmax", className: "tdleft",
+                	render: function(data, type,row){
+                		return ''+data+' '+row['abums']
+                	}
+            	},
                 { "data": null , className: "tdcenter",
           render : function(data, type, row) {
           	//var ingr = row['ingrediente'].replace(/ /gi, "@"); 
-              return '<span  onclick="addmerc('+row['idi']+','+idT+')" class="fa fa-check test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="agregar"></span>'
+          		return '<a href="#" onclick="addmerc('+row['idi']+','+idT+')" title="Solicitar '+row['ingrediente']+'">Solicitar</a'
           }    
        }                 
             ],
@@ -90,8 +120,15 @@ function agregaringrediente(ingrediente,idt){
 		$('#tit').empty();
 		$('#tit').append('Solicitar '+data[0]['nombre']+' '+data[0]['marca']);
 		$('#unidades').empty();
-				$('#unidades').append('<option value="'+data[0]['idUS']+'">'+data[0]['unidadS']+'</option>'+
-					'<option selected value="'+data[0]['idUP']+'">'+data[0]['unidadP']+'</option>');	
+		if (data[0]['idUS'] != data[0]['idUP']) {
+			$('#unidades').append('<option value="seleccione" selected disabled>Seleccione..</option>'+
+				'<option value="'+data[0]['idUS']+'">'+data[0]['unidadS']+'</option>'+
+					'<option value="'+data[0]['idUP']+'">'+data[0]['unidadP']+'</option>');
+		}else{
+			$('#unidades').append('<option value="seleccione" selected disabled>Seleccione..</option>'+
+				'<option value="'+data[0]['idUS']+'">'+data[0]['unidadS']+'</option>');
+		}
+					
 		});
 	
 	$('#modalcant').modal('show');

@@ -29,6 +29,9 @@
             jQuery(document).ready(function($) {
               var valor = $('#valor').val();
                     setInterval('verificarN("'+valor+'")',3000);
+              $('#toggle-btn').click(function(event) {
+                $('#toggle-btn').blur();
+              });
             });
         </script>
 
@@ -119,10 +122,13 @@
                                                   <a href="'.BASE_URL.'compra/index/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Ingresar / Editar compras</a>
                                                 </li>
                                                 <li>
-                                                  <a href="'.BASE_URL.'inventario/remisionM/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Remision de mercancia</a>
+                                                  <a href="'.BASE_URL.'inventario/remisionM/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Requisiciones</a>
                                                 </li>
                                                 <li>
                                                   <a href="'.BASE_URL.'inventario/reposicionM/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Reposicion de mercancia</a>
+                                                </li>
+                                                <li>
+                                                  <a href="'.BASE_URL.'transferencia/index/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Transferencia de mercancia</a>
                                                 </li>
                                               </ul>
                                           </li>
@@ -198,6 +204,9 @@
                                                 <li>
                                                   <a href="'.BASE_URL.'inventario/reposicionM/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Reposicion de mercancia</a>
                                                 </li>
+                                                <li>
+                                                  <a href="'.BASE_URL.'transferencia/index/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Transferencia de mercancia</a>
+                                                </li>
                                               </ul>
                                           </li>
                                            <li>
@@ -253,11 +262,15 @@
         <nav class="navbar">
           <div class="container-fluid">
             <div class="navbar-holder d-flex align-items-center justify-content-between">
-              <div class="navbar-header"><a id="toggle-btn" href="#" class="menu-btn" style="height: 30px"><i style="font-size: 1.5em" class="icon-bars"> </i></a><a href="<?php echo BASE_URL.'index/index/'; ?>" class="navbar-brand">
-                  <div class="text-default hidden-sm-down"><i class="material-icons" style="font-size: 16px; vertical-align: top">home</i> COCAI <strong class="text-primary"> WEB</strong></div></a></div>
+              <div class="navbar-header"><a id="toggle-btn" href="#" class="menu-btn" style="height: 30px" data-toggle="tooltip" data-placement="bottom" title="Reducir/Ampliar menu"><i style="font-size: 1.5em" class="icon-bars"> </i></a><a href="<?php echo BASE_URL.'index/index/'; ?>" class="navbar-brand" data-toggle="tooltip" data-placement="bottom" title="Ir a la pagina de inicio">
+                  <div class="text-default hidden-sm-down">
+                    <div class="hidden-xs-down">
+                      <img width="30" height="30" src="<?php echo PUBLIC_URL;?>img\Logo-EPOC-WEB-vertical.png" class="img-fluid mr-2" alt="epoc" style="float: left; margin-top: -5px">
+                    </div> COCAI <strong class="text-primary"> WEB</strong></div></a></div>
+
               <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
                 <li class="nav-item dropdown"> 
-                  <a id="not" rel="nofollow" data-target="#" href="#"  aria-haspopup="true" aria-expanded="false" class="nav-link">
+                  <a id="not" rel="nofollow" data-target="#" href="#"  aria-haspopup="true" aria-expanded="false" class="nav-link" data-toggle="tooltip" data-placement="left" title="Notificaciones">
                     <i class="fa fa-bell-slash"></i>
                       <span id="circulo" style="border-radius: 10px; font-size: 11px; visibility: hidden;" class="badge badge-danger">
                         <o id="notifications"></o>

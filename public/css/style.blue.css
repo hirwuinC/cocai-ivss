@@ -27,6 +27,11 @@ Bootstrapious Boilerplate Template
   .font12{
     font-size: 12px;
   }
+
+  .cnt {
+    width: 18%;
+  }
+  
   .labels{
       margin-bottom: -1%;
       float: left;

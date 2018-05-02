@@ -828,11 +828,23 @@ FROM notificacion_has_remision
 			$modelos = Session::modelo('idUsuario');
 			switch ($privilegios) {
 				case 'e':
-					$query = "SELECT reposicion_id, remision_id, remision.unidad_negocio_id as udnremi, status_id, remision.fecha as fecharemi, remision.hora as horaremi, descripcion, cantidad, rm.unidad_negocio_id as udnrepo, notificacion_has_remision.unidad_negocio_id as udnr, rm.fecha as fecharepo, rm.hora as horarepo, total, tipo_reposicion
-FROM notificacion_has_remision 
-					left join remision on remision_id = remision.id
-                    left join reposicion_mercancia as rm on rm.id = notificacion_has_remision.reposicion_id
-					where notificacion_has_remision.status_id = 126 or notificacion_has_remision.status_id = 127 or notificacion_has_remision.status_id = 128 or notificacion_has_remision.status_id = 129 order by notificacion_has_remision.status_id, remision.fecha, rm.fecha asc";
+					$query = "SELECT remision_id, reposicion_id, nt.unidad_negocio_id as idunt, status_id, unidad_negocio.codigo as codiudR, unidad_negocio.nombre as tiendaR, unidad_negocio.rif as rifr, unidad_negocio.razon_social as razon_sr, unidad_negocio.correo as emailur, unidad_negocio.empresa_id as idempresaur, referencia.referencia as status, reposicion_mercancia.unidad_negocio_id as idurepo, remision.unidad_negocio_id as iduremi, udnrepo.nombre as tiendarepo, udnrepo.rif as rifrepo, udnrepo.razon_social as razon_srepo, udnrepo.correo as emailurepo, udnrepo.empresa_id as idempresaurepo, udnremi.nombre as tiendaremi, udnremi.rif as rifremi, udnremi.razon_social as razon_sremi, udnremi.correo as emailuremi, udnremi.empresa_id as idempresauremi, usuario.nombre as nombreremi, usuario.apellido as apellidoremi, user.nombre as nombrerepo, user.apellido as apellidorepo, remision.usuario_id as idusremi, reposicion_mercancia.usuario_id as idusrepo,  modelo.nombre as modelo, modelrepo.nombre as modelorepo, modelremi.nombre as modeloremi, num_remision, num_reposicion, remision.fecha as fecharemi, remision.hora as horaremi, reposicion_mercancia.fecha as fecharepo, reposicion_mercancia.hora as horarepo, reposicion_mercancia.total
+				FROM `notificacion_has_remision`as nt 
+				LEFT JOIN remision on remision_id = remision.id 
+				LEFT JOIN reposicion_mercancia on reposicion_mercancia.id = reposicion_id 
+				INNER JOIN unidad_negocio on unidad_negocio.id = nt.unidad_negocio_id 
+				LEFT JOIN unidad_negocio as udnrepo on udnrepo.id = reposicion_mercancia.unidad_negocio_id 
+				LEFT JOIN unidad_negocio as udnremi on udnremi.id = remision.unidad_negocio_id 
+				INNER JOIN referencia on referencia.id = status_id
+				left JOIN usuario on usuario.id = remision.usuario_id
+				left JOIN usuario as user on user.id = reposicion_mercancia.usuario_id
+				LEFT JOIN modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
+      			LEFT JOIN modelo on modelo.id = modelo_has_submodelo.modelo_id
+      			LEFT JOIN modelo_has_submodelo as mhsrepo on mhsrepo.id = udnrepo.modelo_has_submodelo_id
+      			LEFT JOIN modelo as modelrepo on modelrepo.id = modelo_has_submodelo.modelo_id
+      			LEFT JOIN modelo_has_submodelo as mhsremi on mhsremi.id = udnremi.modelo_has_submodelo_id
+      			LEFT JOIN modelo as modelremi on modelremi.id = modelo_has_submodelo.modelo_id
+					where nt.status_id = 126 or nt.status_id = 127 or nt.status_id = 128 or nt.status_id = 129 order by nt.status_id, remision.fecha, reposicion_mercancia.fecha asc";
 					$data = $this->_main->select($query);
 					echo json_encode($data);
 				break;
@@ -842,7 +854,7 @@ FROM notificacion_has_remision
 					for ($i=0; $i < count($modelos); $i++) {
 						$udn[$i] = $modelos[$i]['idUd'];
 					$query = "SELECT reposicion_id, remision_id, remision.unidad_negocio_id as udnremi, status_id, remision.fecha as fecharemi, remision.hora as horaremi, descripcion, cantidad, rm.unidad_negocio_id as udnrepo, notificacion_has_remision.unidad_negocio_id as udnr, rm.fecha as fecharepo, rm.hora as horarepo, total, tipo_reposicion
-FROM notificacion_has_remision 
+					FROM notificacion_has_remision 
 					left join remision on remision_id = remision.id
                     left join reposicion_mercancia as rm on rm.id = notificacion_has_remision.reposicion_id
 					where notificacion_has_remision.status_id = 126 or notificacion_has_remision.status_id = 127 or notificacion_has_remision.status_id = 128 or notificacion_has_remision.status_id = 129 order by notificacion_has_remision.status_id, remision.fecha, rm.fecha asc";
@@ -862,39 +874,6 @@ FROM notificacion_has_remision
 		
 			}	    
       	}
-
-
-      	function rmm($status,$idr,$idudn,$cont){
-      		$query = "SELECT distinct remision_id as idr, notificacion_has_remision.unidad_negocio_id as idur, status_id as idstatusN, unidad_negocio.codigo as codigour, unidad_negocio.nombre as tiendar, unidad_negocio.rif as rifr, unidad_negocio.razon_social as razon_sr, unidad_negocio.correo as emailur, unidad_negocio.empresa_id as idempresaur, fecha, hora, cantidad, remision.descripcion, mercancia_has_unidad_negocio.mercancia_id, unidad_medida_consumo_id as idumpresentacion, unidad_medida_sistema_id as idumsist, unidad_medida_compra_id as idumcompra, udn.id as idue, udn.nombre as tiendae, udn.rif as rife, udn.razon_social as razon_se, udn.correo as emailue, udn.empresa_id as idempresaue, mercancia.id as idm, mercancia.codigo as codim, mercancia.codigo_anterior as coditcr, mercancia.nombre as producto, mercancia.marca as marca, contenido_neto, familia_id, ref.referencia as familia, usuario.nombre, usuario.apellido, ref2.referencia as tipo_u, modelo.nombre as modelo, refn.referencia as statusN,umpresentacion.abreviatura as abrevpres, umsistema.abreviatura as abrevsist, umcompra.abreviatura as abrevcompr, stock_max, stock_min, umsolicitud.id as idumsol, umsolicitud.abreviatura as abrevsol, existencia
-			FROM notificacion_has_remision
-      		inner join referencia as refn on refn.id = notificacion_has_remision.status_id
-      		inner join unidad_negocio on notificacion_has_remision.unidad_negocio_id = unidad_negocio.id
-      		inner join remision on remision_id = remision.id
-      		inner join unidad_negocio as udn on remision.unidad_negocio_id = udn.id
-      		inner join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
-      		inner join modelo on modelo.id = modelo_has_submodelo.modelo_id
-      		inner join mercancia on mercancia.id = remision.mercancia_id
-      		inner join mercancia_has_unidad_negocio on mercancia.id = mercancia_has_unidad_negocio.mercancia_id
-      		inner join referencia as ref on mercancia.familia_id = ref.id
-      		inner join usuario on remision.usuario_id = usuario.id
-      		inner join referencia as ref2 on ref2.id = usuario.tipo_usuario_id
-      		inner join unidad_medida as umpresentacion on unidad_medida_consumo_id = umpresentacion.id
-      		inner join unidad_medida as umsistema on unidad_medida_sistema_id = umsistema.id
-            left join unidad_medida as umcompra on unidad_medida_compra_id = umcompra.id
-            inner join unidad_medida as umsolicitud on remision.unidad_medida_id = umsolicitud.id
-      		where notificacion_has_remision.remision_id = $idr and notificacion_has_remision.unidad_negocio_id = $idudn
-      		and notificacion_has_remision.status_id=$status group by unidad_negocio.id";
-      		$info = $this->_main->select($query);
-      		$this->_view->datos = $info;
-      		$this->_view->render('notiremision', 'inventario', '','');
-
-
-    	}
-
-    	function rpm($status,$idr,$idudn,$cont){
-
-    	}
-
     	
 
     	function remisionM($id,$success = false){
@@ -906,17 +885,15 @@ FROM notificacion_has_remision
 		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
 		    $this->_view->setJs(array('datatable/js/tabla'));
     		
-    		$modelos = Session::modelo('idUsuario');
-    			$query = "SELECT unidad_negocio.id, unidad_negocio.nombre, modelo.id as idM, modelo.nombre as modelo From unidad_negocio 
-    		inner join modelo_has_submodelo on modelo_has_submodelo_id = modelo_has_submodelo.id
-    		inner join modelo on modelo_id = modelo.id where unidad_negocio.id = $id";
+    		$query = "SELECT id, nombre, empresa_id FROM unidad_negocio where unidad_negocio.id = $id";
     		$datosT = $this->_main->select($query);
+    		
 
-    		$modeloid = $datosT[0]['idM'];
+    		$idempresa = $datosT[0]['empresa_id'];
     		$query = "SELECT unidad_negocio.id, unidad_negocio.nombre, modelo.nombre as modelo from unidad_negocio 
-    		inner join modelo_has_submodelo  on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
-    		inner join modelo on modelo.id = modelo_has_submodelo.modelo_id
-    		where modelo_has_submodelo.modelo_id = $modeloid and unidad_negocio.id !=$id";
+    		left join modelo_has_submodelo  on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
+    		left join modelo on modelo.id = modelo_has_submodelo.modelo_id
+    		where empresa_id = $idempresa";
     		$tiendas = $this->_main->select($query);
     		$query = "SELECT nombre from mercancia";
     		$products = $this->_main->select($query);
@@ -1042,6 +1019,10 @@ FROM notificacion_has_remision
     	}
 
     	function insertRemision(){
+    		$query = "SELECT count(id) as cant from remision";
+    		$cont = $this->_main->select($query);
+    		$num = date('ynj');
+    		$num_remi = $num.$cont[0]['cant']+1;
     		$mystring = $_POST['cantidadR'];
 				$findme   = ',';
 				$pos = strpos($mystring, $findme);
@@ -1057,7 +1038,7 @@ FROM notificacion_has_remision
 			#echo $fecha.' '.$hora;exit(); 
 			if ($_SERVER['REQUEST_METHOD']=='POST') {
 				//Controller::varDump($_POST);exit();
-				$query = "INSERT INTO remision (`fecha`, `hora`, `descripcion`, `cantidad`, `unidad_medida_id`, `unidad_negocio_id`, `usuario_id`, `mercancia_id`) VALUES ('".$fecha."','".$hora."','".$_POST['descripcion']."','".$cantidadr."','".$_POST['unidades']."','".$_POST['tiendae']."',$idUsuario,'".$_POST['mercancia_id']."');";
+				$query = "INSERT INTO remision (`num_remision`, `fecha`, `hora`, `descripcion`, `cantidad`, `unidad_medida_id`, `unidad_negocio_id`, `usuario_id`, `mercancia_id`) VALUES ('".$num_remi."','".$fecha."','".$hora."','".$_POST['descripcion']."','".$cantidadr."','".$_POST['unidades']."','".$_POST['tiendae']."',$idUsuario,'".$_POST['mercancia_id']."');";
 				$idr = $this->_main->insertar($query);
 				$query = "INSERT INTO notificacion_has_remision (`remision_id`, `unidad_negocio_id`, `status_id`) VALUES ($idr,'".$_POST['tiendar']."','".$_POST['status_id']."')";
 				$idn =$this->_main->insertar($query);
@@ -1518,7 +1499,10 @@ FROM notificacion_has_remision
 	    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
 	    $this->_view->setJs(array('datatable/js/tabla'));
         $iduser = Session::get('idUsuario');
-
+        	$query = "SELECT count(id) as cant from reposicion_mercancia";
+    		$cont = $this->_main->select($query);
+    		$num = date('ynj');
+    		$num_repo = $num.$cont[0]['cant']+1;
     		$fecha = date('Y-m-d');
 			$hora = date('g:i:s a');
 			$idUsuario = Session::get('idUsuario');
@@ -1527,8 +1511,8 @@ FROM notificacion_has_remision
 			$idtienda = $_SESSION['idtienda'];
 			$tipor = 'compra a proveedores';
 			#echo $fecha.' '.$hora;exit(); 
-			$query = "INSERT INTO reposicion_mercancia (`fecha`, `hora`, `total`, `tipo_reposicion`, `unidad_negocio_id`, `usuario_id`) 
-			VALUES ('".$fecha."','".$hora."','".$totalPagar."','".$tipor."','".$idtienda."','".$iduser."')";
+			$query = "INSERT INTO reposicion_mercancia (`num_reposicion`, `fecha`, `hora`, `total`, `tipo_reposicion`, `unidad_negocio_id`, `usuario_id`) 
+			VALUES ('".$num_repo."','".$fecha."','".$hora."','".$totalPagar."','".$tipor."','".$idtienda."','".$iduser."')";
 				$idr = $this->_main->insertar($query);
 			if (is_null($orden[0]['idproveedor'])) {
 				//Controller::varDump($_POST);exit();
@@ -1538,7 +1522,7 @@ FROM notificacion_has_remision
 				$idempresa = $this->_main->select($query);
 				$query = "SELECT * FROM notificacion_has_remision where reposicion_id = $idr and unidad_negocio_id = '".$idempresa[0][0]."'";
 				$comprobarnoti = $this->_main->select($query);
-				if (!isset($comprobarnoti)) {
+				if (empty($comprobarnoti)) {
 					$query = "INSERT INTO notificacion_has_remision (`reposicion_id`, `unidad_negocio_id`, `status_id`) VALUES ($idr,'".$idempresa[0][0]."',129)";
 					$idn =$this->_main->insertar($query);
 				}
@@ -1573,7 +1557,7 @@ FROM notificacion_has_remision
     public function cargaringredientes($idt){
 
 				//Controller::varDump($_POST);exit();
-				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, mercancia.precio_unitario as precioU  FROM `mercancia`
+				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, mercancia.precio_unitario as precioU, mudn.existencia, mudn.stock_min, mudn.stock_max, format(existencia,4,'de_DE') as stockt, format(stock_min,4,'de_DE') as stmin, format(stock_max,4,'de_DE') as stmax   FROM `mercancia`
 			left join unidad_medida as umc on umc.id = mercancia.unidad_medida_compra_id
             inner join unidad_medida as ump on ump.id = mercancia.unidad_medida_consumo_id
             inner join unidad_medida as ums on ums.id = mercancia.unidad_medida_sistema_id
