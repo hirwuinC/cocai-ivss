@@ -53,8 +53,8 @@
                         
 
                         <div style="margin-top: 1%" class="card cardH">
-                        <div class="card-header">
-                            <center><h3 ><o id="titulocard">Solicitud de reposicion</o> de mercancia <?php $ti=strtolower($this->datos[0]['tiendaen']); echo "[".ucwords($ti)."]"; ?></h3></center>
+                        <div class="card-header" hidden>
+                            <center><h3 ><o id="titulocard">Requisiciones </o><?php $ti=strtolower($this->datos[0]['tiendaen']); echo "[".ucwords($ti)."]"; ?></h3></center>
                         </div>
                         <div class="card-block">
                         
@@ -64,9 +64,9 @@
                         } ?>
                         <div class="col-12 d-flex justify-content-end">
                             <img  src="<?php 
-                            if (isset($this->datos[0]['modelo'])){ $model=strtolower($this->datos[0]['modelo']);
+                            if (isset($this->datosT[0]['modelo'])){ $model=strtolower($this->datosT[0]['modelo']);
                             }else{
-                              $model=strtolower($this->datos[0]['tiendaen']);
+                              $model=strtolower($this->datosT[0]['nombre']);
                             }
                              echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-fluid" alt="modelo">
                         </div>
@@ -134,19 +134,21 @@
                                       <input type="hidden" name="tiendae" id="tiendae" value="<?php echo $this->idu;?>">
                                       <input type="hidden" name="status_id" id="status_id" value="126">
 
-                                      <?php if (!is_null($this->datos[0]['idempresa'])) {?>
-                                        
                                         <div class="form-group">
-                                        <input type="hidden" name="destinatario" value="<?php echo $this->datos[0]['idempresa'];?>">
+                                          <label  for="">Destinatario:</label>
+                                          <select class="form-control form-control-sm" name="destinatario" id="tiendar" required="">
+                                            <option value="" selected disabled>Seleccione..</option>
+                                            <?php if (isset($this->empresa[0]['id'])): ?>
+                                              <option value="<?php echo $this->empresa[0]['id'] ?>"><?php echo $this->empresa[0]['nombre'] ?></option>
+                                            <?php endif ?>
+                                            <?php $cont=count($this->datos); 
+                                              for ($i=0; $i < $cont ; $i++) { 
+                                                echo '<option value="'.$this->datos[$i]['id'].'">'.$this->datos[$i]['nombre'].'</option>';
+                                              } 
+                                            ?>
+                                          </select>
                                         </div>
-                                      <?php }else{ ?>
-                                        <div class="form-group">
-                                        <label  for="">Proveedor:</label>
-                                        <select class="form-control form-control-sm" name="prove" id="prove" required="">
-                                        <option value="" selected disabled>Seleccione..</option>
-                                        </select>
-                                        </div>
-                                      <?php } ?>
+                                      
                                         <div class="form-group">
                                           <label for="recipient-name" class="form-control-label">Cantidad:</label>
                                           <input type="text" class="form-control form-control-sm monto"  name="cantidadR" id="cantidadR">
@@ -162,7 +164,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                      <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+                                      <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
                                       <button class="btn btn-sm btn-outline-primary"  type="button" class=""  id="btnguardar"><b>Agregar</b></button>
                                     </div>
                                     </form>
@@ -195,7 +197,7 @@
                                         <td><center><b>Codigo</b></center></td>
                                         <td><center><b>Producto</b></center></td>
                                         <td><center><b>Cantidad</b></center></td>
-                                        <td><center><b>Proveedor</b></center></td>
+                                        <td><center><b>Destino</b></center></td>
                                         <td><center><b>Precio</b></center></td>
                                         
                                     </tr>
@@ -224,7 +226,7 @@
                         <div class="form-group row d-flex justify-content-center">
                             <div class="col-sm-2">
                               
-                              <input type="button" value="Cancelar" class="form-control btn btn-sm btn-outline-secondary" id="cancelar" data-toggle="modal" data-target="#modalanular2" onclick="confirmarCancelarPedido()">
+                              <input type="button" value="Cancelar" class="form-control btn btn-sm btn-outline-danger" id="cancelar" data-toggle="modal" data-target="#modalanular2" onclick="confirmarCancelarPedido()">
                             
                           </div>
                             <!-- <form class="form-horizontal" role="form" action="<?php echo BASE_URL;?>pedido/index"  method="post" id="formpedido"> -->

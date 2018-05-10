@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="us">
+<head>
+  <meta charset="utf-8">
+  <title>COCAI</title>
+  <link href="<?php echo PUBLIC_URL; ?>css/jquery-ui.css" rel="stylesheet">
+  <style>
+    label{
+      margin-bottom: -1%;
+      float: left;
+    }
+
+  /* Tooltip */
+  .test + .tooltip > .tooltip-inner {
+      background-color: #337ab7; 
+      color: #FFFFFF; 
+      border: none; 
+      padding: 1px;
+      font-size: 14px;
+  }
+  /* Tooltip on top */
+  .test + .tooltip.top > .tooltip-arrow {
+      border-top: 5px solid #337ab7;
+  }
+  /* Tooltip on bottom */
+  .test + .tooltip.bottom > .tooltip-arrow {
+      border-bottom: 5px solid blue;
+  }
+  /* Tooltip on left */
+  .test + .tooltip.left > .tooltip-arrow {
+      border-left: 5px solid red;
+  }
+  /* Tooltip on right */
+  .test + .tooltip.right > .tooltip-arrow {
+      border-right: 5px solid black;
+  }
+  </style>
+
+
+  
+</head>
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+<div id="body" hidden>
+<div id="page-wrapper">
+            <div class="">
+
+                <div class="row">
+                    <div class="col-sm-12 ">
+                        
+
+                        <div style="margin-top: 1%" class="card cardH">
+                        <div class="card-header">
+                            <center><h3 ><o id="titulocard">Orden de compra </o><?php $ti=strtolower($this->datos[0]['tiendaen']); echo "[".ucwords($ti)."]"; ?></h3></center>
+                        </div>
+                        <div class="card-block">
+                        
+                        
+                        <?php if (isset($this->_error)) {
+                            echo $this->_error;
+                        } ?>
+                        <div class="col-12 d-flex justify-content-end">
+                            <img  src="<?php 
+                            if (isset($this->datos[0]['modelo'])){ $model=strtolower($this->datos[0]['modelo']);
+                            }else{
+                              $model=strtolower($this->datos[0]['tiendaen']);
+                            }
+                             echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-fluid" alt="modelo">
+                        </div>
+
+                            
+                          
+                            <div id="datos1" class="form-group col-sm-12">
+                              
+
+                                <div class="dataTable_wrapper " >
+                                       <div class="col-sm-12 table-responsive">
+                                       
+                                          <table id="tablarepo" class="table table-sm table-striped table-bordered table-hover" >
+                                            <thead class="theadH">
+                                                <tr>
+                                                    <th>Codigo</th>
+                                                    <th>Ingrediente</th>
+                                                    <th>Existencia</th>
+                                                    <th>Min</th>
+                                                    <th>Max</th>
+                                                    <th>Accion</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody id="cuerpo_i"></tbody>
+                                            
+                                        </table>
+                                        
+                                                 
+                                          </div>
+                                          
+                                  </div>
+
+                                <!-- Modal anular-->
+                                <div  class="modal fade" id="modalanular2" role="dialog">
+                                  <div class="modal-dialog modal-sm" >
+                                    <div class="modal-content modalp3" >
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" style="text-align: left">Cancelar solicitud</h5>
+                                        <button type="button" class="close" data-dismiss="modal" id="closem2">&times;</button>
+                                      </div>
+                                      <div class="modal-body" >
+                                          <h5 style="color: red; text-align: left"><b>Seguro que desea cancelar esta solicitud??<br>Esta acción no se puede deshacer.</b></h5>
+                                      </div>
+                                      <div class="modal-footer" id="botonescancelar">
+                                        
+                                      </div>
+                                    </div>
+                                  
+                                  </div>
+                                </div>
+                                  <!-- Modal cantidad x ingrediente-->
+                              <div class="modal fade modalcant" id="modalcant" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-sm">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="tit"></h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    <div class="modal-body">
+                                    <form id="usuario" class="form-horizontal" role="form" action="<?php  echo BASE_URL;?>inventario/insertRemision"  method="post">
+                                      <input type="hidden" name="mercancia_id" id="mercid">
+                                      <input type="hidden" name="tiendae" id="tiendae" value="<?php echo $this->idu;?>">
+                                      <input type="hidden" name="status_id" id="status_id" value="126">
+
+                                      <?php if (!is_null($this->datos[0]['idempresa'])) {?>
+                                        
+                                        <div class="form-group">
+                                        <input type="hidden" name="destinatario" value="<?php echo $this->datos[0]['idempresa'];?>">
+                                        </div>
+                                      <?php }else{ ?>
+                                        <div class="form-group">
+                                        <label  for="">Proveedor:</label>
+                                        <select class="form-control form-control-sm" name="prove" id="prove" required="">
+                                        <option value="" selected disabled>Seleccione..</option>
+                                        </select>
+                                        </div>
+                                      <?php } ?>
+                                        <div class="form-group">
+                                          <label for="recipient-name" class="form-control-label">Cantidad:</label>
+                                          <input type="text" class="form-control form-control-sm monto"  name="cantidadR" id="cantidadR">
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="recipient-name" class="form-control-label">Unidad de medida:</label>
+                                          <select id="unidades" name="unidades"  class="form-control form-control-sm">
+                                          </select>
+                                        </div>
+                                        <div class="form-group" id="cantx" hidden>
+                                          <label for="recipient-name" class="form-control-label" id="cantC"></label>
+                                          <input type="text" class="form-control form-control-sm"  name="cantidadx1" id="cantidadx1" value="1">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+                                      <button class="btn btn-sm btn-outline-primary"  type="button" class=""  id="btnguardar"><b>Agregar</b></button>
+                                    </div>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- fin modal -->
+                                
+
+                                 
+                            </div>
+
+
+
+                  <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-lg-12 ">
+                      
+                    <div style="margin-top: 2%" class= "col-xs-12 col-sm-12 col-md-12 col-lg-12" id="carrito-i" hidden>
+                      <div  class= "panel panel-default">
+                      <div class="card-header" style="height: 30px; padding: 5px">
+                            <center><h4 >Pedido</h4></center>
+                        </div>
+                      <div class="card">
+                        <div class="col-sm-12 table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <td><center><b>Codigo</b></center></td>
+                                        <td><center><b>Producto</b></center></td>
+                                        <td><center><b>Cantidad</b></center></td>
+                                        <td><center><b>Proveedor</b></center></td>
+                                        <td><center><b>Precio</b></center></td>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody id="pedido">
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="offset-sm-10 table-responsive">
+                        <table  class="">
+                            <thead>
+                            <!-- <tr id="st">
+                                
+                            </tr>
+                            <tr id="ti">
+                               
+                            </tr> -->
+                            <tr id="t">
+                                
+                            </tr>
+                            </thead>
+                        </table>
+                        </div>
+                        <div class="form-group row d-flex justify-content-center">
+                            <div class="col-sm-2">
+                              
+                              <input type="button" value="Cancelar" class="form-control btn btn-sm btn-outline-secondary" id="cancelar" data-toggle="modal" data-target="#modalanular2" onclick="confirmarCancelarPedido()">
+                            
+                          </div>
+                            <!-- <form class="form-horizontal" role="form" action="<?php echo BASE_URL;?>pedido/index"  method="post" id="formpedido"> -->
+                          <input type="text" value="hi" name="senuelo" hidden>
+                          <div class="col-sm-2">
+                            
+                            <input type="button" value="Enviar Solicitud" id="solicitar" class="form-control btn btn-sm btn-outline-primary" onclick="insertsolicitud()">
+                          
+                        </div>
+                           <!-- </form> -->
+                        </div>
+                    </div>
+                    </div>
+                    </div> 
+                  </div>
+                </div>
+              </div>
+                                               
+
+
+
+
+
+
+
+                        </form>
+
+                  </div>
+                </div>
+              </div>
+        </div>
+</div>
+</div>
+</body>
+
+</div>
+
+
+
+<!-- Autocomplete -->
+
+</html>

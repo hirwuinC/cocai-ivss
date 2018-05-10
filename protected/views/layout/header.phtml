@@ -119,16 +119,24 @@
                                               <i class="fa fa-shopping-bag"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
                                               <ul class="collapse list-unstyled" id="compras'.$j.'">
                                                 <li>
-                                                  <a href="'.BASE_URL.'compra/index/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Ingresar / Editar compras</a>
+                                                  <a href="'.BASE_URL.'compra/index/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'">Ingresar / Editar compras</a>
                                                 </li>
                                                 <li>
-                                                  <a href="'.BASE_URL.'inventario/remisionM/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Requisiciones</a>
+                                                  <a href="'.BASE_URL.'compra/ordenC/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Orden de compra</a>
                                                 </li>
+                                              </ul>
+                                          </li>
+                                          <li>
+                                            <a href="#transfer'.$j.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Requisiciones / Transferencias
+                                              <i class="fa fa-commenting-o"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
+                                              <ul class="collapse list-unstyled" id="transfer'.$j.'">
+                                                
                                                 <li>
-                                                  <a href="'.BASE_URL.'inventario/reposicionM/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Reposicion de mercancia</a>
+                                                  <a href="'.BASE_URL.'transferencia/requisicion/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'">Requisiciones <i class="fa fa-envelope-o"></i></a>
                                                 </li>
+                                                
                                                 <li>
-                                                  <a href="'.BASE_URL.'transferencia/index/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Transferencia de mercancia</a>
+                                                  <a href="'.BASE_URL.'transferencia/index/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'">Transferencia de mercancia <i class="fa fa-exchange"></i></a>
                                                 </li>
                                               </ul>
                                           </li>
@@ -140,13 +148,10 @@
                                                   <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Proveedor</a>
                                                 </li>
                                                 <li>
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Carga factura de compra</a>
-                                                </li>
-                                                <li>
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Ranking de venta</a>
-                                                </li>
-                                                <li>
                                                   <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Reportes</a>
+                                                </li>
+                                                <li>
+                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Exportar tablas</a>
                                                 </li>
                                               </ul>
                                           </li>';
@@ -202,10 +207,21 @@
                                                   <a href="'.BASE_URL.'compra/index/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Ingresar / Editar compras</a>
                                                 </li>
                                                 <li>
-                                                  <a href="'.BASE_URL.'inventario/reposicionM/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Reposicion de mercancia</a>
+                                                  <a href="'.BASE_URL.'compra/ordenC/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Orden de compra</a>
                                                 </li>
+                                              </ul>
+                                          </li>
+                                          <li>
+                                            <a href="#transferCP'.$p.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Requisiciones / Transferencias
+                                              <i class="fa fa-commenting-o"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
+                                              <ul class="collapse list-unstyled" id="transferCP'.$p.'">
+                                                
                                                 <li>
-                                                  <a href="'.BASE_URL.'transferencia/index/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Transferencia de mercancia</a>
+                                                  <a href="'.BASE_URL.'transferencia/requisicion/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'">Requisiciones <i class="fa fa-envelope-o"></i></a>
+                                                </li>
+                                                
+                                                <li>
+                                                  <a href="'.BASE_URL.'transferencia/index/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'">Transferencia de mercancia <i class="fa fa-exchange"></i></a>
                                                 </li>
                                               </ul>
                                           </li>

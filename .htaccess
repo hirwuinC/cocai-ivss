@@ -6,7 +6,7 @@ RewriteCond %{REQUEST_FILENAME} !-l
 
 RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
 
-#AddDefaultCharset UTF-8
+AddDefaultCharset UTF-8
 #AddDefaultCharset off
 #AddDefaultCharset on
 <filesMatch "\.(js|css)$">

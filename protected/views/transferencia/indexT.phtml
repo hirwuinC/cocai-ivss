@@ -30,10 +30,10 @@
                         <div class="card-block" style="padding-bottom: 0px; ">                        
 						<ul class="nav nav-pills nav-tabs ml-3" role="tablist">
 						  	<li class="active nav-item">
-						  		<a data-toggle="tab" href="#xenviar" class="nav-link" id="envios">Pendientes por enviar</a>
+						  		<a data-toggle="tab" href="#xenviar" class="nav-link" id="envios">Pendientes por enviar <o style="float: right; margin-left: 5px; " id="xe"></o></a>
 						  	</li>
                             <li class="nav-item">
-                            	<a data-toggle="tab" href="#xrecibir" class="nav-link" id="recibos">Pendientes por recibir</a>
+                            	<a data-toggle="tab" href="#xrecibir" class="nav-link" id="recibos">Pendientes por recibir <o style="float: right; margin-left: 5px; " id="xr"></o></a>
                             </li>
                             <li class="nav-item">
                             	<a data-toggle="tab" href="#recibidas" class="nav-link" id="consultaR">Transferencias recibidas</a>
@@ -47,6 +47,7 @@
 
 						
 						<div class="tab-content" >
+                            <input type="hidden" id="tipe" value="<?php echo $this->n; ?>">
                             <div class="col-sm-12">
                                 <div class="alert alert-success" id="procesada" hidden>
                                     <center><h4 class="enviaorecibe"></h4></center>
@@ -100,8 +101,10 @@
 							        
 							        <!-- Modal footer -->
 							        <div class="modal-footer">
+                                    <u id="validarrecep" style="color: red"></u>
                                       <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cerrar</button>
                                       <button type="button" class="btn btn-sm btn-outline-primary" hidden="" id="proccess">Procesar</button>
+                                      <span class="fa fa-exclamation-triangle" id="warning" hidden style=" cursor: hand; cursor: pointer" title="Ver alerta"></span>
 							          <button type="button" class="btn btn-sm btn-outline-primary" hidden="" id="recept">Recibir</button>
 							        </div>
 							        
@@ -109,6 +112,58 @@
 							    </div>
 							  </div>
 							  <!-- fin de la modal -->
+
+                              <!-- Modal error de solicitud -->
+                              <div class="modal fade" id="modaler">
+                                <div class="modal-dialog modal-sm">
+                                  <div class="modal-content">
+                                  
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                      <h5 class="modal-title">Error en la Solicitud N° <o id="numr"></o></h5>
+                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    
+                                    <!-- Modal body -->
+                                    <div class="modal-body" style="padding: 0px">
+                                      <div class="alert alert-danger" id="cuerpomodaler" ></div>
+                                    </div>
+                                    
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-sm btn-outline-danger" data-dismiss="modal">Aceptar</button>
+                                    </div>
+                                    
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- fin modal -->
+
+                              <!-- Modal validacion existencia-->
+                              <div class="modal fade" id="modalexistencia">
+                                <div class="modal-dialog modal-sm">
+                                  <div class="modal-content">
+                                  
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="mti"></h5>
+                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    
+                                    <!-- Modal body -->
+                                    <div class="modal-body" style="padding: 0px">
+                                      <div class="alert alert-danger" id="cuerpomodalex" ></div>
+                                    </div>
+                                    
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-sm btn-outline-danger" data-dismiss="modal">Aceptar</button>
+                                    </div>
+                                    
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- fin modal -->
 
 				<!-- MODAL DEL LA FUNCION PROCESAR REMISIONES -->
                 <div class="modal fade modalremision" id="modalremision" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

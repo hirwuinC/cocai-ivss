@@ -130,12 +130,18 @@ function sugerenciaCompra(idc){
 }
 
 function insertsolicitud(){
-    alert('si');
-    window.location.replace(BASE_URL+'inventario/insertsolicitudr/');
+    //alert('si');
+    window.location.replace(BASE_URL+'transferencia/insertsolicitudr/');
         
 }
 
 function agregar (id,idt,cant,cantx,idprov,textouc,um) {
+    var tiendar = $('#tiendar').val();
+    if (tiendar!=null) {
+        var enlace = BASE_URL+'/inventario/carroCompra/'+id+'/'+1+'/'+idt+'/'+cant+'/'+cantx+'/'+idprov+'/'+textouc+'/'+um+'/'+tiendar;
+    }else{
+        var enlace = BASE_URL+'/inventario/carroCompra/'+id+'/'+1+'/'+idt+'/'+cant+'/'+cantx+'/'+idprov+'/'+textouc+'/'+um+'/false';
+    }
     /*if (screen.width < 800){
         $('#cartshop').addClass('plus');
         $('#cartshop').css('color', 'green');
@@ -145,7 +151,7 @@ function agregar (id,idt,cant,cantx,idprov,textouc,um) {
 	//alert(textouc);
 
 	$.ajax({
-        url: BASE_URL+'/inventario/carroCompra/'+id+'/'+1+'/'+idt+'/'+cant+'/'+cantx+'/'+idprov+'/'+textouc+'/'+um,
+        url: enlace,
         type: 'POST',
         dataType: 'json',
     })
@@ -231,7 +237,6 @@ function cancelarPedido(){
 }
 
 function tablaPedido(data){
-
     if (data == 'false') {
         $('#carrito-i').slideUP('slow');
     }else{
@@ -252,28 +257,31 @@ function tablaPedido(data){
         $('#cancelar').prop('disabled',true);
         $('#solicitar').prop('disabled',true);
     }
+    var tt = data[1].toLocaleString('es-ES', { minimumFractionDigits: 4 });
     $('#pedido').empty(); $('#t').empty(); $('#ti').empty(); $('#st').empty();
     $('#st').append('<td style="border: none; padding: 3px">SubTotal:</td>'+
                         '<td style="text-align: right;border: none; padding: 3px"><b>'+data[1][2]+' '+moneda+'</b></td>');
     $('#ti').append('<td style="border: none; padding: 3px">ITBMS:</td>'+
                         '<td style="text-align: right;border: none; padding: 3px"><b>'+data[1][1]+' '+moneda+'</b></td>');
     $('#t').append('<td style="border: none; padding: 3px">TOTAL:</td>'+
-                        '<td style="text-align: right;border: none; padding: 3px"><b>'+numberFormat(data[1])+' '+moneda+'</b></td>');
+                        '<td style="text-align: right;border: none; padding: 3px"><b>'+tt+' '+moneda+'</b></td>');
         for (var i =1; i <=data[0].length; i++) {
+            var c = parseFloat(data[0][i]['precio']);
+            var cant = c.toLocaleString('es-ES', { minimumFractionDigits: 4 });
             $('#pedido').append(
             '<tr>'+
             '<td class="columnas" style=" text-align: left;">'+data[0][i]['codigo']+'</td>'+                          
             '<td class="columnas" style=" text-align: left;">'+data[0][i]['nombre']+' '+data[0][i]['marca']+'</td>'+ 
             '<td class="columnas" style=" text-align: center;">'+data[0][i]['cantidad']+' '+data[0][i]['unidadc']+'</td>'+
             '<td class="columnas" style=" text-align: left;">'+data[0][i]['proveedor']+'</td>'+
-            '<td class="columnas" style=" text-align: right;">'+numberFormat(data[0][i]['precio'])+moneda+'</td>'+
+            '<td class="columnas" style=" text-align: right;">'+cant+' '+moneda+'</td>'+
             '<td class="columnas" style=" text-align: center;"><button style="background:none; border:none" onclick="eliminarProducto('+data[0][i]['id']+')"><span class=" fa fa-times" ></span></button></td>'+
             '</tr>');   
             if (data[0][i]['cantidad'] == 1) {
                 $('#menos'+i).prop('disabled',true);
             };
                
-         }
+        }
     }
     
 }

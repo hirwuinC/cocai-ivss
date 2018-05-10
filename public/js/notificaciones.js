@@ -8,6 +8,7 @@ function verificarN(valor){
   .done(function(data) {
     //alert("sisi");
     var notif = data.length;
+    var existentes = $('#requisiciones').val();
     //alert(notif);
       $('#circulo').css({'visibility': 'visible'});
       $('#notifications').empty();
@@ -24,56 +25,67 @@ function verificarN(valor){
         $('.fa-bell').toggleClass('fa-bell-slash fa-bell');
         $('#circulo').css({'visibility': 'hidden'});
       }
-
+      
+      if (existentes<notif) {
+        webnotif(notif,data);
+        
+      }
       notifications(notif,data);
   })
   
 }
 
 function notifications(notif,data){
-  //alert(data[0][3]);
+  
   
   $('#news').empty();
   var c=1;
   for (var i=0; i <= notif; i++) {
-    switch (data[i][3]) {
+    switch (data[i]['status_id']) {
           case '126':
             st = 'Solicitud de remision';
-            func = 'rmm';
+            func = 1;
             campo = data[i]['remision_id'];
             idu = data[i]['idunt'];
             break;
           
           case '127':
             st = 'remision Enviada';
-            func = 'rme';
+            func = 2;
           break;
 
           case '128':
             st = 'Recepcion de remision';
-            func = 'rrm';
+            func = 3;
           break;
 
           case '129':
-            st = 'Reposicion de mercancia';
-            func = 'rpm';
+            st = 'Requisicion';
+            func = 1;
             campo = data[i]['reposicion_id'];
             idu = data[i]['idunt'];
+          break;
+
+          case '201':
+            st = 'Requisicion recibida';
+            func = 2;
+            campo = data[i]['reposicion_id'];
+            idu = data[i]['idurepo'];
           break;
         }
     v=c+ +i;
     if (data.length > 0) {
       if (data[i]['fecharemi']!=null) {
           $('#news').append('<li>'+
-                          '<a class="notif" href="'+BASE_URL+'transferencia/'+func+'/'+data[i]['status_id']+'/'+campo+'/'+idu+'/'+notif+'"">'+
-                              ''+st+' #'+data[i][1]+'  <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['fecharemi']+'</o>'+' <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['horaremi']+'</o>'+
+                          '<a class="notif" href="'+BASE_URL+'transferencia/index/'+idu+'/'+func+'">'+
+                              ''+st+' #'+data[i]['remision_id']+'  <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['fecharemi']+'</o>'+' <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['horaremi']+'</o>'+
                           '</a>'+
                         '</li>'
           );
       }else{
         $('#news').append('<li>'+
-                          '<a class="notif" href="'+BASE_URL+'transferencia/'+func+'/'+data[i]['status_id']+'/'+campo+'/'+idu+'/'+notif+'"">'+
-                              ''+st+' #'+data[i][0]+'  <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['fecharepo']+'</o>'+' <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['horarepo']+'</o>'+
+                          '<a class="notif" href="'+BASE_URL+'transferencia/index/'+idu+'/'+func+'">'+
+                              ''+st+' #'+data[i]['reposicion_id']+'  <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['fecharepo']+'</o>'+' <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['horarepo']+'</o>'+
                           '</a>'+
                         '</li>'
           );
@@ -85,10 +97,61 @@ function notifications(notif,data){
 
 
   }
+  
 }
 
-function infoConversion(idP,idT){
-  //alert(idP); alert(idT);
+function webnotif(cont,data) {
+  $('#requisiciones').val('');
+  $('#requisiciones').val(cont);
+  if (Notification) {
+    if (Notification.permission !== "granted") {
+    Notification.requestPermission()
+    }
+    var title = "COCAI EPOC-WEB"
+    var tipo = data[0]['status_id'];
+    if (tipo == '129') {
+      var x = 'Enviada por';
+      var ti = data[0]['tiendaR'];
+    }else if (tipo == '201') {
+      var x = 'por';
+      var ti = data[0]['tiendarepo'];
+    }
+    
+    var extra = {
+    icon: BASE_URL+"public/img/Logo-EPOC-WEB-vertical.png",
+    body: "Nueva "+data[0]['status']+' '+x+' '+ti+' a las '+data[0]['horarepo']
+    }
+      
+
+    var noti = new Notification( title, extra)
+    noti.onclick = function(){
+
+      alert("Nuevo pedido recibido a las "+data[0]['hora']);
+      noti.close();
+    }
+    noti.onclose = {
+    // Al cerrar
+    }
+    setTimeout( function() { noti.close() }, 15000)
+  }
+
+
+  incrementarreq(cont);
+}
+
+function incrementarreq(cont){
+  $.ajax({
+      url: BASE_URL+'/inventario/incrementarreq/'+cont,
+      type: 'POST',
+      dataType: 'json',
+    })
+  .done(function(data) {
+    alert("aqui");
+  });
+}
+
+/*function infoConversion(idP,idT){
+  alert(idP); alert(idT);
   $.ajax({
     url: BASE_URL+'/inventario/modalUpdate/'+idP+'/'+idT,
     type: 'POST',
@@ -112,4 +175,8 @@ function infoConversion(idP,idT){
        '</div>'
     );
   });
-}
+}*/
+
+
+
+

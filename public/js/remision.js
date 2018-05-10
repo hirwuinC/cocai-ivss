@@ -24,7 +24,7 @@ jQuery(document).ready(function($) {
 		.done(function(data) {
 			$('#cantis').prop("hidden",false);
 			$('#unicant').prop("hidden",false);
-			alert(data[0]['id']);
+			//alert(data[0]['id']);
 			$('#mercid').empty();
 			$('#mercid').val(data[0]['id']);
 				$('#unidades').append('<option value="'+data[0]['idUS']+'">'+data[0]['US']+'</option>'+

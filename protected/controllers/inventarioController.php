@@ -844,8 +844,9 @@ FROM notificacion_has_remision
       			LEFT JOIN modelo as modelrepo on modelrepo.id = modelo_has_submodelo.modelo_id
       			LEFT JOIN modelo_has_submodelo as mhsremi on mhsremi.id = udnremi.modelo_has_submodelo_id
       			LEFT JOIN modelo as modelremi on modelremi.id = modelo_has_submodelo.modelo_id
-					where nt.status_id = 126 or nt.status_id = 127 or nt.status_id = 128 or nt.status_id = 129 order by nt.status_id, remision.fecha, reposicion_mercancia.fecha asc";
+					where nt.status_id = 126 or nt.status_id = 127 or nt.status_id = 128 or nt.status_id = 129 or nt.status_id = 201 order by nt.status_id, remision.fecha, reposicion_mercancia.fecha asc";
 					$data = $this->_main->select($query);
+
 					echo json_encode($data);
 				break;
 				
@@ -853,11 +854,11 @@ FROM notificacion_has_remision
 					
 					for ($i=0; $i < count($modelos); $i++) {
 						$udn[$i] = $modelos[$i]['idUd'];
-					$query = "SELECT reposicion_id, remision_id, remision.unidad_negocio_id as udnremi, status_id, remision.fecha as fecharemi, remision.hora as horaremi, descripcion, cantidad, rm.unidad_negocio_id as udnrepo, notificacion_has_remision.unidad_negocio_id as udnr, rm.fecha as fecharepo, rm.hora as horarepo, total, tipo_reposicion
+					$query = "SELECT remision_id, reposicion_id, remision.unidad_negocio_id as udnremi, status_id, remision.fecha as fecharemi, remision.hora as horaremi, descripcion, cantidad, rm.unidad_negocio_id as udnrepo, notificacion_has_remision.unidad_negocio_id as udnr, rm.fecha as fecharepo, rm.hora as horarepo, total, tipo_reposicion
 					FROM notificacion_has_remision 
 					left join remision on remision_id = remision.id
                     left join reposicion_mercancia as rm on rm.id = notificacion_has_remision.reposicion_id
-					where notificacion_has_remision.status_id = 126 or notificacion_has_remision.status_id = 127 or notificacion_has_remision.status_id = 128 or notificacion_has_remision.status_id = 129 order by notificacion_has_remision.status_id, remision.fecha, rm.fecha asc";
+					where notificacion_has_remision.status_id = 126 or notificacion_has_remision.status_id = 127 or notificacion_has_remision.status_id = 128 or notificacion_has_remision.status_id = 129 or notificacion_has_remision.status_id = 201 order by notificacion_has_remision.status_id, remision.fecha, rm.fecha asc";
 						$datos = $this->_main->select($query);
 						//echo count($datos)."<br>";
 						
@@ -874,9 +875,16 @@ FROM notificacion_has_remision
 		
 			}	    
       	}
+
+      	public function incrementarreq($cantidad){
+			session::destroy('requisiciones');
+			$_SESSION['requisiciones'] = $cantidad;
+			$data = $_SESSION['requisiciones'];
+			echo json_encode($data);
+      	}
     	
 
-    	function remisionM($id,$success = false){
+    	/*function remisionM($id,$success = false){
     		$this->_view->setJs(array('js/jquery-1.12.4.min'));
     		$this->_view->setJs(array('js/remision'));
     		$this->_view->setCss(array('datatable/css/bootstrap4.min'));
@@ -911,51 +919,11 @@ FROM notificacion_has_remision
 
 				}
       		$this->_view->render('remision', 'inventario', '',''); 		
-    	}
+    	}*/
 
-    	function reposicionM($id,$success = false){
-    		$this->_view->setJs(array('js/jquery-1.12.4'));
-    		$this->_view->setJs(array('js/remision'));
-    		$this->_view->setJs(array('js/carrito'));
-    		$this->_view->setCss(array('datatable/css/bootstrap4.min'));
-		    $this->_view->setjs(array('datatable/js/jquerydatatable.min'));
-		    $this->_view->setJs(array('datatable/js/datatable.b4.min'));
-		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
-		    $this->_view->setJs(array('datatable/js/tabla'));
-		    Session::destroy('idtienda');
-		    Session::destroy('totalPagar');
-       		Session::destroy('carrito1');
-    		$_SESSION['idtienda'] = $id;
-    		$modelos = Session::modelo('idUsuario');
-    			$query = "SELECT unidad_negocio.id, unidad_negocio.nombre, modelo.id as idM, modelo.nombre as modelo, empresa_id From unidad_negocio left join modelo_has_submodelo on modelo_has_submodelo_id = modelo_has_submodelo.id left join modelo on modelo_id = modelo.id where unidad_negocio.id = $id";
-    		$datosT = $this->_main->select($query);
-    		if (!is_null($datosT[0]['idM'])) {
-    			$modeloid = $datosT[0]['idM'];
-    		$query = "SELECT unidad_negocio.id, unidad_negocio.nombre, modelo.nombre as modelo from unidad_negocio 
-    		inner join modelo_has_submodelo  on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
-    		inner join modelo on modelo.id = modelo_has_submodelo.modelo_id
-    		where modelo_has_submodelo.modelo_id = $modeloid and unidad_negocio.id !=$id";
-    		$tiendas = $this->_main->select($query);
-    		}
-    		
-    		$query = "SELECT nombre from mercancia";
-    		$products = $this->_main->select($query);
-    		$this->_view->prod = $products;
-    		$tiendas[0]['tiendaen'] = $datosT[0]['nombre'];
-    		$tiendas[0]['idempresa'] = $datosT[0]['empresa_id'];
+    	
 
-    		$this->_view->datos = $tiendas;
-    		$this->_view->idu = $id;
-    		if ($success == 'success') {
-					$this->_view->_error = Controller::getBoxAlert(
-	                        'Solicitud enviada con exito', 
-	                        '',
-	                        'success');
-	        		//$this->_view->render('remision', 'inventario', '','');
-
-				}
-      		$this->_view->render('reposicion', 'inventario', '',''); 		
-    	}
+    	
 
     	function facturasdecompra($tienda){
     		$this->_view->setJs(array('js/facturas'));
@@ -1018,7 +986,7 @@ FROM notificacion_has_remision
     		echo json_encode($data);
     	}
 
-    	function insertRemision(){
+    	/*function insertRequisicion(){
     		$query = "SELECT count(id) as cant from remision";
     		$cont = $this->_main->select($query);
     		$num = date('ynj');
@@ -1047,7 +1015,7 @@ FROM notificacion_has_remision
 			}
 
 
-    	}
+    	}*/
 
 
     	/*public function conversionExistencia($idP, $idT){
@@ -1291,7 +1259,7 @@ FROM notificacion_has_remision
     		echo json_encode($response);
     	}
 
-    	function carroCompra($id, $operador=false, $idt, $cant,$cantx,$idprov,$unidadc,$um){
+    	function carroCompra($id, $operador=false, $idt, $cant,$cantx,$idprov,$unidadc,$um,$tiendar=false){
 
     	$query="SELECT mercancia.id as 'idP', mercancia.codigo, mercancia.codigo_anterior, mercancia.nombre as 'producto', mercancia.marca, mercancia.contenido_neto, mercancia.formula_c, mercancia.formula_p, mercancia.formula_s, mercancia.cantidad_presentacion,  mc.existencia, mc.stock_min, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.id as 'idf', ref.referencia as 'familia', mc.status FROM `mercancia` 
 						inner join mercancia_has_unidad_negocio as mc on mc.mercancia_id = mercancia.id 
@@ -1303,6 +1271,17 @@ FROM notificacion_has_remision
     	$producto = $this->_main->select($query);
     	if ($idprov != 'false') {
     		$datosprov = $this->datosprov($idprov);
+    		$datosr[0]['nombre'] = false;
+    		$datosr[0]['id'] = false;
+    	}else if ($tiendar != false) {
+    		$query="SELECT unidad_negocio.id as idudn, nombre FROM unidad_negocio 
+					where unidad_negocio.id = $tiendar";
+					$emp = $this->_main->select($query);
+    		$datosprov[0]['nombre'] = $emp[0]['nombre'];
+    		$datosprov[0]['id'] = false;
+    		$datosprov[0]['precio'] = $producto[0]['precio_unitario'];
+    		$datosr[0]['nombre'] = $emp[0]['nombre'];
+    		$datosr[0]['id'] = $emp[0]['idudn'];
     	}else{
     		$query="SELECT empresa.id as idempresa, empresa.nombre as nombreempresa FROM unidad_negocio 
 					inner join unidad_negocio as empresa on empresa.id = unidad_negocio.empresa_id where unidad_negocio.id = $idt";
@@ -1310,6 +1289,8 @@ FROM notificacion_has_remision
     		$datosprov[0]['nombre'] = $emp[0]['nombreempresa'];
     		$datosprov[0]['id'] = false;
     		$datosprov[0]['precio'] = $producto[0]['precio_unitario'];
+    		$datosr[0]['nombre'] = false;
+    		$datosr[0]['id'] = false;
     	}
     if(isset($_SESSION['carrito1'])){
       if(isset($id)){
@@ -1335,6 +1316,8 @@ FROM notificacion_has_remision
                 $arreglo1[$numero]['idproveedor']=$datosprov[0]['id'];
                 $arreglo1[$numero]['unidadc']=$unidadc;
                 $arreglo1[$numero]['idumc']=$um;
+                $arreglo1[$numero]['tiendar']=$datosr[0]['nombre'];
+                $arreglo1[$numero]['idudn']=$datosr[0]['id'];
                 
                 $_SESSION['carrito1']=$arreglo1;    
             break;
@@ -1348,18 +1331,20 @@ FROM notificacion_has_remision
                 $arreglo1[$numero]['idproveedor']=$datosprov[0]['id'];
                 $arreglo1[$numero]['unidadc']=$unidadc;
                 $arreglo1[$numero]['idumc']=$um;
+                $arreglo1[$numero]['tiendar']=$datosr[0]['nombre'];
+                $arreglo1[$numero]['idudn']=$datosr[0]['id'];
 
                 $_SESSION['carrito1']=$arreglo1;
             break;
           }
           
         }else{
-          $_SESSION['carrito1']=$this->pedido($producto,'nuevo',$cant,$cantx,$datosprov,$unidadc,$um);
+          $_SESSION['carrito1']=$this->pedido($producto,'nuevo',$cant,$cantx,$datosprov,$unidadc,$um,$datosr);
         }
     }
   }else{
     
-    $_SESSION['carrito1']=$this->pedido($producto,'primero',$cant,$cantx,$datosprov,$unidadc,$um);
+    $_SESSION['carrito1']=$this->pedido($producto,'primero',$cant,$cantx,$datosprov,$unidadc,$um,$datosr);
 
   } //print_r($_SESSION['carrito1']); exit();
     $totales = $this->conversionprecio($_SESSION['carrito1'],$cant,$cantx);
@@ -1368,7 +1353,7 @@ FROM notificacion_has_remision
     echo json_encode($data);
   }
 
-    function pedido($producto, $opcion,$cant,$cantx,$datosprov,$unidadc,$um){
+    function pedido($producto, $opcion,$cant,$cantx,$datosprov,$unidadc,$um,$datosr){
       $id=Session::get('idU'); 
       switch ($opcion) {
         case 'primero':
@@ -1383,7 +1368,9 @@ FROM notificacion_has_remision
                   'proveedor'=>$datosprov[0]['nombre'],
                   'idproveedor'=>$datosprov[0]['id'],
                   'unidadc'=>$unidadc,
-                  'idumc'=>$um
+                  'idumc'=>$um,
+                  'tiendar'=>$datosr[0]['nombre'],
+                  'idudn'=>$datosr[0]['id']
                   );
               //$_SESSION['carrito1']=$arreglo1;
         break;
@@ -1399,7 +1386,9 @@ FROM notificacion_has_remision
               	  'proveedor'=>$datosprov[0]['nombre'],
                   'idproveedor'=>$datosprov[0]['id'],
                   'unidadc'=>$unidadc,
-                  'idumc'=>$um
+                  'idumc'=>$um,
+                  'tiendar'=>$datosr[0]['nombre'],
+                  'idudn'=>$datosr[0]['id']
               );
               array_push($arreglo1, $datosNuevos);
              // $_SESSION['carrito1']=$arreglo1; 
@@ -1428,7 +1417,9 @@ FROM notificacion_has_remision
                      'proveedor'=>$arreglo1[$i]['proveedor'],
                   	 'idproveedor'=>$arreglo1[$i]['idproveedor'],
                   	 'unidadc'=>$arreglo1[$i]['unidadc'],
-                  	 'idumc'=>$arreglo1[$i]['idumc']
+                  	 'idumc'=>$arreglo1[$i]['idumc'],
+                  	 'tiendar'=>$arreglo1[$i]['tiendar'],
+                  	 'idudn'=>$arreglo1[$i]['idudn']
                      );
             $j++;
           }
@@ -1462,7 +1453,7 @@ FROM notificacion_has_remision
 			for ($i=0; $i < count($producto); $i++){ 
 				$preciot[$i] = ($producto[$i]['cantidad'] * $producto[$i]['cant']) * $producto[$i]['precio'];
 				$preciofinal = $preciofinal + $preciot[$i];
-				$total = number_format($preciofinal,2,",",".");
+				$total = number_format($preciofinal,4,",",".");
 				//echo $total;
 			} 
 			return $total;//exit();
@@ -1491,68 +1482,7 @@ FROM notificacion_has_remision
         return $data;
       }
 
-      public function insertsolicitudr(){
-      	$this->_view->setJs(array('js/carrito/'));		
-      	$this->_view->setCss(array('datatable/css/bootstrap4.min'));
-	    $this->_view->setjs(array('datatable/js/jquerydatatable.min'));
-	    $this->_view->setJs(array('datatable/js/datatable.b4.min'));
-	    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
-	    $this->_view->setJs(array('datatable/js/tabla'));
-        $iduser = Session::get('idUsuario');
-        	$query = "SELECT count(id) as cant from reposicion_mercancia";
-    		$cont = $this->_main->select($query);
-    		$num = date('ynj');
-    		$num_repo = $num.$cont[0]['cant']+1;
-    		$fecha = date('Y-m-d');
-			$hora = date('g:i:s a');
-			$idUsuario = Session::get('idUsuario');
-			$orden=$_SESSION['carrito1'];
-        	$totalPagar=$_SESSION['totalPagar'];
-			$idtienda = $_SESSION['idtienda'];
-			$tipor = 'compra a proveedores';
-			#echo $fecha.' '.$hora;exit(); 
-			$query = "INSERT INTO reposicion_mercancia (`num_reposicion`, `fecha`, `hora`, `total`, `tipo_reposicion`, `unidad_negocio_id`, `usuario_id`) 
-			VALUES ('".$num_repo."','".$fecha."','".$hora."','".$totalPagar."','".$tipor."','".$idtienda."','".$iduser."')";
-				$idr = $this->_main->insertar($query);
-			if (is_null($orden[0]['idproveedor'])) {
-				//Controller::varDump($_POST);exit();
-				$query = "SELECT empresa_id, unidad_negocio.id as idU, unidad_negocio.nombre as udn, modelo.nombre as modelo From unidad_negocio
-	    		left join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
-	      		left join modelo on modelo.id = modelo_has_submodelo.modelo_id where unidad_negocio.id = $idtienda";
-				$idempresa = $this->_main->select($query);
-				$query = "SELECT * FROM notificacion_has_remision where reposicion_id = $idr and unidad_negocio_id = '".$idempresa[0][0]."'";
-				$comprobarnoti = $this->_main->select($query);
-				if (empty($comprobarnoti)) {
-					$query = "INSERT INTO notificacion_has_remision (`reposicion_id`, `unidad_negocio_id`, `status_id`) VALUES ($idr,'".$idempresa[0][0]."',129)";
-					$idn =$this->_main->insertar($query);
-				}
-				
-				for ($i=1; $i < count($orden); $i++) { 
-		              $query = "INSERT INTO mercancia_has_reposicion(cantidad, precio, ingrediente_id, unidad_medida_id, proveedor_id, reposicion_id) VALUES  
-		              ('".$orden[$i]['cantidad']."','".$orden[$i]['precio']."','".$orden[$i]['id']."','".$orden[$i]['idumc']."',NULL,$idr)"; 
-		              $mhr = $this->_main->insertar($query);
-		          }
-			}else{
-				for ($i=0; $i < count($orden); $i++) { 
-               $query = "INSERT INTO mercancia_has_reposicion(cantidad, precio, ingrediente_id, unidad_medida_id, proveedor_id, reposicion_id) VALUES  
-              ('".$orden[$i]['cantidad']."','".$orden[$i]['precio']."','".$orden[$i]['id']."','".$orden[$i]['idumc']."','".$orden[$i]['idproveedor']."',$idr)"; 
-              $mhr = $this->_main->insertar($query);
-			}
-			
-          }
-		
-        if (isset($mhr)) {
-        	$this->_view->_totalP = $totalPagar;
-        $this->_view->_pedido = $orden;
-        $this->_view->_tienda = $idempresa;
-        $this->_view->_idtienda = $idtienda;
-        $this->_view->render('solicitudcreada', 'inventario', '');
-        }else{
-        $this->_view->render('reposicion', 'inventario', '','');
-        }
-        #var_dump($orden); echo "</br><br>";
-        #var_dump($totalPagar); echo "</br>";exit();    
-    }
+      
 
     public function cargaringredientes($idt){
 

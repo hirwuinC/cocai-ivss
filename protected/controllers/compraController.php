@@ -59,6 +59,50 @@
 
 		}
 
+		function ordenC($id,$success = false){
+    		$this->_view->setJs(array('js/jquery-1.12.4'));
+    		$this->_view->setJs(array('js/remision'));
+    		$this->_view->setJs(array('js/carrito'));
+    		$this->_view->setCss(array('datatable/css/bootstrap4.min'));
+		    $this->_view->setjs(array('datatable/js/jquerydatatable.min'));
+		    $this->_view->setJs(array('datatable/js/datatable.b4.min'));
+		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
+		    $this->_view->setJs(array('datatable/js/tabla'));
+		    Session::destroy('idtienda');
+		    Session::destroy('totalPagar');
+       		Session::destroy('carrito1');
+    		$_SESSION['idtienda'] = $id;
+    		$modelos = Session::modelo('idUsuario');
+    			$query = "SELECT unidad_negocio.id, unidad_negocio.nombre, modelo.id as idM, modelo.nombre as modelo, empresa_id From unidad_negocio left join modelo_has_submodelo on modelo_has_submodelo_id = modelo_has_submodelo.id left join modelo on modelo_id = modelo.id where unidad_negocio.id = $id";
+    		$datosT = $this->_main->select($query);
+    		if (!is_null($datosT[0]['idM'])) {
+    			$modeloid = $datosT[0]['idM'];
+    		$query = "SELECT unidad_negocio.id, unidad_negocio.nombre, modelo.nombre as modelo from unidad_negocio 
+    		inner join modelo_has_submodelo  on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
+    		inner join modelo on modelo.id = modelo_has_submodelo.modelo_id
+    		where modelo_has_submodelo.modelo_id = $modeloid and unidad_negocio.id !=$id";
+    		$tiendas = $this->_main->select($query);
+    		}
+    		
+    		$query = "SELECT nombre from mercancia";
+    		$products = $this->_main->select($query);
+    		$this->_view->prod = $products;
+    		$tiendas[0]['tiendaen'] = $datosT[0]['nombre'];
+    		$tiendas[0]['idempresa'] = $datosT[0]['empresa_id'];
+
+    		$this->_view->datos = $tiendas;
+    		$this->_view->idu = $id;
+    		if ($success == 'success') {
+					$this->_view->_error = Controller::getBoxAlert(
+	                        'Solicitud enviada con exito', 
+	                        '',
+	                        'success');
+	        		//$this->_view->render('remision', 'inventario', '','');
+
+				}
+      		$this->_view->render('ordenescompra', 'compra', '','');
+    	}
+
 		public function tablaproductos($tipo,$idpro=false,$idt=false){
 			//var_dump($_POST); exit();
 			if (isset($_POST['cantidad'])) {

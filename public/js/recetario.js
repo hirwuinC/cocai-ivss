@@ -259,10 +259,10 @@ jQuery(document).ready(function($) {
 		 			$('#parapvp').prop('hidden', false);
 		 			var pvp = datos[0]['pvp'];
 		 			var porcentajec = multi/pvp;
-		 			$('#costot').append('<b>Total costo: '+totalcosto+' Bs / % de costo: ['+porcentajec.toLocaleString('es-ES', { maximumFractionDigits: 2 })+']</b>');
+		 			$('#costot').append('<b>Total costo: '+totalcosto+' '+moneda+' / % de costo: ['+porcentajec.toLocaleString('es-ES', { maximumFractionDigits: 2 })+']</b>');
 		 		}else{
 		 			$('#parapvp').prop('hidden', true);
-		 			$('#costot').append('<b>Total costo: '+totalcosto+'</b>');
+		 			$('#costot').append('<b>Total costo: '+totalcosto+' '+moneda+'</b>');
 		 		}
 	 		}
 	 		

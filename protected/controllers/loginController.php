@@ -4,6 +4,7 @@
 		public function __construct() {
 			parent::__construct();
 			$this->_login = $this->loadModel('login');
+			$this->_main = $this->loadModel('main');
 			$this->_sidebar_menu = false;
 		}
 		
@@ -48,12 +49,22 @@
 				if ($valor == 1) {
 					Session::set('header',$valor);
 				}
+				
+				
 				Session::set('clave', $_POST['password']);
 				Session::set('idUsuario', $data['id']);
 				Session::set('authenticated', true);
 				$privilegio = Session::modelo('idUsuario');
 				Session::set('level', $data['tipoU']);
 				Session::set('time', time());
+				$bussines= Session::empresa('idUsuario');
+				  if (!empty($bussines)) {
+				    $privilegios = 'e';
+				  }else{
+				    $privilegios = 't';
+				  }
+				$r = $this->_main->contarrequisiciones($privilegios);
+				Session::set('requisiciones', $r);
 				if (empty($privilegio)) {
 					$this->_view->_error = Controller::getBoxAlert(
 							'El usuario no tiene marca asignada, para su administracion.', 

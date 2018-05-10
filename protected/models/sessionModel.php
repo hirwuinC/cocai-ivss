@@ -21,7 +21,7 @@
 				left join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id 
 				left join modelo on modelo.id = modelo_has_submodelo.modelo_id
 				inner join referencia on usuario.tipo_usuario_id = referencia.id
-				WHERE usuario.id = $id";
+				WHERE usuario.id = $id and unidad_negocio.desactivada = 0";
 			
 			$roles = $this->_db->query($this->_query);
 				

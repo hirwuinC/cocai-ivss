@@ -1,6 +1,92 @@
 $(document).ready(function() {
-	$('#envios').trigger('click');
-		idt = $('#idtienda').val();
+    burbujaspendientes();
+    idt = $('#idtienda').val();
+    //para redireccionar desde las notificaciones
+    var tipe = $('#tipe').val();
+    switch (tipe) {
+        case '2':
+            $('#envios').trigger('click');
+            setTimeout(function(){
+                $('#recibos').trigger('click');
+            }, 600);
+            
+        break;
+        case '3':
+            $('#consultaR').trigger('click');
+        break;
+        case '4':
+            $('#consultaE').trigger('click');
+        break;
+        default:
+            $('#envios').trigger('click');
+        break;
+    }
+    var fecha1 = new Date();
+        if(fecha1.getMonth()+1<10){
+        mes='0'+(fecha1.getMonth()+1);
+        }else{
+            mes =fecha1.getMonth()+1;
+        } 
+        if(fecha1.getDate()<10){
+            dia='0'+(fecha1.getDate());
+        }else{
+            dia =fecha1.getDate();
+        }
+        //alert(mes); 
+        var hoy = (fecha1.getFullYear()+"-"+(mes)+"-"+(dia));
+        $('#desde').attr('max', hoy);
+        $('#desde').val('');
+        $('#desde').val(hoy);
+        $('#hasta').attr('max', hoy);
+        $('#hasta').attr('min', hoy);
+        $('#hasta').val('');
+        $('#hasta').val(hoy);
+        $('#fecha1').attr('max', hoy);
+        $('#fecha1').val('');
+        $('#fecha1').val(hoy);
+        $('#fecha2').attr('max', hoy);
+        $('#fecha2').attr('min', hoy);
+        $('#fecha2').val('');
+        $('#fecha2').val(hoy);
+
+
+        $('#fecha1').change(function(event) {
+            var f1 = $('#fecha1').val();
+            $.ajax({
+                url: BASE_URL+'/compra/validarfechas/'+f1,
+                type: 'POST',
+                dataType: 'json'
+            })
+            .done(function(data) {
+            $('#fecha2').attr('max', data['fechaf']);
+            $('#fecha2').attr('min', data['fechai']);
+            $('#fecha2').focus();
+
+            });
+            
+            
+        });
+
+        $('#desde').change(function(event) {
+            var f1 = $('#desde').val();
+            $.ajax({
+                url: BASE_URL+'/compra/validarfechas/'+f1,
+                type: 'POST',
+                dataType: 'json'
+            })
+            .done(function(data) {
+            $('#hasta').attr('max', data['fechaf']);
+            $('#hasta').attr('min', data['fechai']);
+            $('#hasta').focus();
+
+            });
+            
+            
+        });
+
+
+	
+		
 		var st1 = 126;
 		var st2 = 129;
 		var tipo = 1;
@@ -128,6 +214,7 @@ $(document).ready(function() {
             },5000);
 
         });
+        burbujaspendientes();
     });
 
     $('#proccess').click(function(event) {
@@ -140,6 +227,10 @@ $(document).ready(function() {
         var idr = $('#idrepos').val();
         var idt = $('#idtienda').val();
         recibirrepo(idr,idt);
+    });
+
+    $('#warning').click(function(event) {
+        $('#modalexistencia').modal('show');
     });
 
 });
@@ -205,7 +296,7 @@ function tablaxenviar(idt,st1,st2,tipo){
                 "orderable": false,
                 "targets": 0
                 } ],
-                "order": [[ 1, 'asc' ]],
+                //"order": [[ 1, 'asc' ]],
                 destroy: true,
                 responsive: true
                 }); 
@@ -231,7 +322,7 @@ function tablaxrecibir(idt,st1,st2,tipo){
                 		if (row['reposicion_id'] == 0) {
                 			return ''+data+''
                 		}else{
-                			return ''+row['tiendarepo']
+                			return ''+row['tiendaR']
                 		}
                 		
                 	}
@@ -269,9 +360,19 @@ function tablaxrecibir(idt,st1,st2,tipo){
                 { "data": "remision_id", className: "tdcenter ",
                     render : function(data, type, row) {
                     	if (row['reposicion_id'] == 0) {
-                			return '<span class="fa fa-list-alt" title="Ver detalles de la remision '+row['num_remision']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesremi('+data+','+row['status_id']+','+row['idunt']+',2)"></span>'
+                            if (row['status_id'] == 126) {
+                                return '<span class="fa fa-list-alt" title="La Solicitud aun no ha sido procesada por '+row['tiendaR']+'" style="cursor:help; cursor:pointer; color: red" onclick="detallesremi('+data+','+row['status_id']+','+row['idunt']+',2)"></span>'
+                            }else{
+                                return '<span class="fa fa-list-alt" title="Ver detalles de la remision '+row['num_remision']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesremi('+data+','+row['status_id']+','+row['idunt']+',2)"></span>'
+                            }
+                			
                         }else{
-                            return '<span class="fa fa-list-alt" title="Ver detalles de la reposicion '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesrepo('+row['reposicion_id']+','+row['status_id']+','+row['idunt']+',2)"></span>'
+                            if (row['status_id'] == 129) {
+                                return '<span class="fa fa-list-alt" title="La Solicitud aun no ha sido procesada por '+row['tiendaR']+'" style="cursor:hand; cursor:pointer; color: red" onclick="detallesrepo('+row['reposicion_id']+','+row['status_id']+','+row['idunt']+',2)"></span>'
+                            }else{
+                                return '<span class="fa fa-list-alt" title="Ver detalles de la reposicion '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesrepo('+row['reposicion_id']+','+row['status_id']+','+row['idunt']+',2)"></span>'    
+                            }
+                            
                         }
                        
                   } 
@@ -282,7 +383,7 @@ function tablaxrecibir(idt,st1,st2,tipo){
                 "orderable": false,
                 "targets": 0
                 } ],
-                "order": [[ 1, 'asc' ]],
+                //"order": [[ 1, 'asc' ]],
                 destroy: true,
                 responsive: true
                 }); 
@@ -350,7 +451,7 @@ function tablarecibidas(idt,st1,st2,tipo,f1,f2){
                 "orderable": false,
                 "targets": 0
                 } ],
-                "order": [[ 1, 'asc' ]],
+                //"order": [[ 1, 'asc' ]],
                 destroy: true,
                 responsive: true
                 }); 
@@ -427,7 +528,7 @@ function tablaenviadas(idt,st1,st2,tipo,f1,f2){
                 "orderable": false,
                 "targets": 0
                 } ],
-                "order": [[ 1, 'asc' ]],
+                //"order": [[ 1, 'asc' ]],
                 destroy: true,
                 responsive: true
                 }); 
@@ -450,6 +551,13 @@ function detallesremi(id,status,idt,tipo){
         dataType: 'json'
     })
     .done(function(data) {
+        if (status == 126) {
+                $('#validarrecep').empty();
+                $('#validarrecep').html('<b>La Solicitud aun no ha sido procesada por '+data["data"][0]['tiendar']+'</b>');   
+            }else{
+                $('#validarrecep').empty();
+            }
+        $('#validarrecep').empty();
         $('.titlemyt').empty();
         $('.titlemyt').append('Producto de la remision # '+data["data"][0]['num_remision']);
         tabladetallesremi(id,status,idt,tipo);
@@ -460,29 +568,61 @@ function detallesremi(id,status,idt,tipo){
 
 function detallesrepo(id,status,idt,tipo){
     $.ajax({
-        url: BASE_URL+'/transferencia/detallesrepo/'+id+'/'+status+'/'+idt,
+        url: BASE_URL+'/transferencia/validarproductosrequisicion/'+id+'/'+idt,
         type: 'POST',
         dataType: 'json'
     })
     .done(function(data) {
-        $('.titlemyt').empty();
-        $('.titlemyt').append('Producto de la reposicion # '+data["data"][0]['num_reposicion']);
-        if (tipo == 1) {
-            $('#recept').hide();
-            $('#proccess').show();
-            $('#proccess').prop('hidden', false);
-        }else if (tipo == 2) {
-            $('#proccess').hide();
-            $('#recept').show();
-            $('#recept').prop('hidden', false);
+        $('#cuerpomodaler').empty();
+        $('#numr').empty();
+        if (data!=0){
+            $('#numr').append(data[0]['num_reposicion']);
+            $('#cuerpomodaler').append('<h5>Los siguientes productos de esta solicitud: </h5>');
+            for (var i = 0; i < data.length; i++) {
+                $('#cuerpomodaler').append('<h6 class="ml-3"><li>'+data[i]['nombre']+' '+data[i]['marca']+'</li></h6>');
+            }
+            $('#cuerpomodaler').append('<h5>No estan asignados a la unidad de negocio '+data[0]['tiendant']+'. Por favor comuniquese con el solicitante para cancelar esta solicitud.</h5>');
+            $('#modaler').modal('show');
         }else{
-            $('#recept').hide();
-            $('#proccess').hide();
-        }
-        
-        tabladetallesrepo(id,status,idt,tipo);
-        $('#myModal').modal('show');
-    });
+            $.ajax({
+                url: BASE_URL+'/transferencia/detallesrepo/'+id+'/'+status+'/'+idt,
+                type: 'POST',
+                dataType: 'json'
+            })
+            .done(function(data) {
+                
+                    $('.titlemyt').empty();
+                    $('.titlemyt').append('Producto de la reposicion # '+data["data"][0]['num_reposicion']);
+                    if (tipo == 1) {
+                        $('#recept').hide();
+                        $('#proccess').show();
+                        $('#proccess').prop('hidden', false);
+                    }else if (tipo == 2) {
+                        if (status == 129) {
+                            $('#validarrecep').empty();
+                            $('#validarrecep').append('La Solicitud aun no ha sido procesada por '+data["data"][0]['tiendar']);
+                            $('#recept').prop('disabled', true);
+                        }else{
+                            $('#validarrecep').empty();
+                            $('#recept').prop('disabled', false);
+                        }
+                        $('#proccess').hide();
+                        $('#recept').show();
+                        $('#recept').prop('hidden', false);
+                    }else{
+                        $('#validarrecep').empty();
+                        $('#recept').hide();
+                        $('#proccess').hide();
+                    }
+                    
+                    tabladetallesrepo(id,status,idt,tipo);
+                    $('#myModal').modal('show');
+                
+                
+            });
+        }     
+    }); 
+    
 }
 
 function tabladetallesremi(id,status,idt,tipo){
@@ -495,42 +635,52 @@ function tabladetallesremi(id,status,idt,tipo){
                         return ''+data+' '+row['marca']
                     }
                 },
-                { "data": "cantidad", className: "tdright font11",
+                { "data": "cant", className: "tdright font11",
                     render : function(data,type, row){
                         return ''+data+' '+row['abrevsol']
                     }
                 },
-                { "data": "cantidad", className: "tdright font11 cnt",
+                { "data": "cant", className: "tdright font11 cnt",
                     render : function(data,type, row){
                         switch (tipo) {
                             case 1:
                                 return '<div class="input-group" style="float: right;">'+
-                                    '<input type="text" class="form-control form-control-sm monto" name="cantenv" id="cantenv" value="'+data+'" onkeyup="format(this)" required>'+
+                                    '<input type="text" class="form-control form-control-sm monto" name="cantenv" id="cantenv1" value="'+data+'" onkeyup="evalualo()"" required>'+
                                     '<span class="input-group-addon btn-sm" id="basic-addon1">'+row['abrevsol']+'</span>'+
                                 '</div>'
                             break;
                             case 2:
-                                return ''+row['cantidad_recibida']+' '+row['abrevsol']+'<input type="hidden" class="form-control form-control-sm monto" name="cantenv" id="cantenv" value="'+row['cantidad_recibida']+'" required readonly style="background: none; border:none">'
+                                return ''+row['cantr']+' '+row['abrevsol']+'<input type="hidden" class="form-control form-control-sm monto" name="cantenv" id="cantenv1" value="'+row['cantr']+'" required readonly style="background: none; border:none">'
                             break;
                             case 3:
-                                return ''+row['cantidad_recibida']+' '+row['abrevsol']
+                                return ''+row['cantr']+' '+row['abrevsol']
                             break;
                             case 4:
-                                return ''+row['cantidad_recibida']+' '+row['abrevsol']
+                                return ''+row['cantr']+' '+row['abrevsol']
                             break;
                             
                             
                         }
                     }
                 },
-                { "data": "existencia", className: "tdright font11",
+                { "data": "stock", className: "tdright font11",
                     render : function(data,type, row){
-                        return ''+data+' '+row['abrevsist']
+                        if (tipo == 2 || tipo == 3) {
+                            return ''+row['stockte']+' '+row['abrevsist']
+                        }else{
+                            return ''+data+' '+row['abrevsist']
+                        }
+                        
                     }
                 },        
-                { "data": "stock_min", className: "tdright font11",
+                { "data": "stmin", className: "tdright font11",
                     render : function(data,type, row){
-                        return ''+data+' '+row['abrevsist']
+                        if (tipo == 2 || tipo == 3) {
+                            return ''+row['minte']+' '+row['abrevsist']
+                        }else{
+                            return ''+data+' '+row['abrevsist']
+                        }
+                        
                     } 
                 },
                 { "data": "idm", className: "tdcenter ",
@@ -540,7 +690,12 @@ function tabladetallesremi(id,status,idt,tipo){
                                 return '<a href="#" title="Procesar la remision '+row['num_remision']+'" onclick="procesarremi('+row['idr']+','+idt+','+data+','+row['idumsol']+')">Procesar</a>'
                             break;
                             case 2:
-                                return '<a href="#" title="Recibir la remision '+row['num_remision']+'" onclick="recibirremi('+row['idr']+','+row['idue']+','+data+','+row['idumsol']+')">Recibir</a>'
+                                if (status == 126) {
+                                    return '<a title="La remision '+row['num_remision']+' aun no ha sido procesada por '+row['tiendar']+'" style="color: red; cursor:help">Recibir</a>'
+                                }else{
+                                    return '<a href="#" title="Recibir la remision '+row['num_remision']+'" onclick="recibirremi('+row['idr']+','+row['idue']+','+data+','+row['idumsol']+')">Recibir</a>'
+                                }
+                                
                             break;
                             case 3:
                                 return 'Recibido'
@@ -585,46 +740,56 @@ function tabladetallesrepo(id,status,idt,tipo){
                         return ''+data+' '+row['marca']
                     }
                 },
-                { "data": "cantidad", className: "tdright font11",
+                { "data": "cant", className: "tdright font11",
                     render : function(data,type, row){
                         return ''+data+' '+row['abrevsol']
                     }
                 },
-                { "data": "cantidad", className: "tdright font11 cnt",
+                { "data": "cant", className: "tdright font11 cnt",
                     render : function(data,type, row){
                         switch (tipo) {
                             case 1:
+                                evalualo(row['idm'],idt,row['reposicion_id']);
                                 return '<div class="input-group" style="float: right;">'+
-                                    '<input type="text" class="form-control form-control-sm monto" name="cantenv[]" id="cantenv" value="'+data+'" onkeyup="format(this)" required>'+
+                                    '<input type="text" class="form-control form-control-sm monto" name="cantenv[]" id="cantenv'+row['idm']+''+row['reposicion_id']+'" value="'+data+'" onclick="formatealo('+row['idm']+','+idt+')" onkeyup="evalualo('+row['idm']+','+idt+','+row['reposicion_id']+')" autocomplete="off" required>'+
                                     '<input type="hidden" class="form-control form-control-sm" name="idmer[]" value="'+row['idm']+'">'+
-                                    '<input type="hidden" class="form-control form-control-sm" name="idume[]" value="'+row['idumsol']+'">'+
+                                    '<input type="hidden" class="form-control form-control-sm" name="idume[]" id="idume'+row['idm']+''+row['reposicion_id']+'" value="'+row['idumsol']+'">'+
+                                    '<input type="hidden" class="form-control form-control-sm evaluar" id="valido'+row['idm']+''+row['reposicion_id']+'" >'+
                                     '<span class="input-group-addon btn-sm" id="basic-addon1">'+row['abrevsol']+'</span>'+
                                 '</div>'
                             break;
                             case 2:
-                                return ''+row['cantidad_recibida']+' '+row['abrevsol']+'<input type="hidden" class="form-control form-control-sm monto" name="cantenv[]" id="cantenv" value="'+row['cantidad_recibida']+'" required readonly style="background: none; border:none">'+
+                                return ''+row['cantr']+' '+row['abrevsol']+'<input type="hidden" class="form-control form-control-sm monto" name="cantenv[]" id="cantenv" value="'+row['cantr']+'" required readonly style="background: none; border:none">'+
                                         '<input type="hidden" class="form-control form-control-sm" name="idmer[]" value="'+row['idm']+'">'+
                                         '<input type="hidden" class="form-control form-control-sm" name="idume[]" value="'+row['idumsol']+'">'
                             break;
                             case 3:
-                                return ''+row['cantidad_recibida']+' '+row['abrevsol']
+                                return ''+row['cantr']+' '+row['abrevsol']
                             break;
                             case 4:
-                                return ''+row['cantidad_recibida']+' '+row['abrevsol']
+                                return ''+row['cantr']+' '+row['abrevsol']
                             break;
                             
                             
                         }
                     }
                 },
-                { "data": "existencia", className: "tdright font11",
+                { "data": "stock", className: "tdright font11",
                     render : function(data,type, row){
-                        return ''+data+' '+row['abrevsist']
+                        if (tipo == 2 || tipo == 3) {
+                            return ''+row['stockte']+' '+row['abrevsist']
+                        }else{
+                            return ''+data+' '+row['abrevsist']
+                        }
                     }
                 },        
-                { "data": "stock_min", className: "tdright font11",
+                { "data": "stmin", className: "tdright font11",
                     render : function(data,type, row){
-                        return ''+data+' '+row['abrevsist']
+                        if (tipo == 2 || tipo == 3) {
+                            return ''+row['minte']+' '+row['abrevsist']
+                        }else{
+                            return ''+data+' '+row['abrevsist']
+                        }
                     } 
                 },
                 { "data": "idm", className: "tdcenter "}
@@ -675,4 +840,139 @@ function recibirrepo(idr,idt){
     $('#formdetails').attr('action', BASE_URL+'transferencia/recibirReposicion/'+idr+'/'+idt);
     $('#btn-subm').trigger('click');
 }
+
+function formatealo(idm,idt){
+    $('.monto').number(true, 4, ',', '.');
+}
+
+function evalualo(idm,idt,idr){
+    var cantidad = $('#cantenv'+idm+idr).val();
+    var idum = $('#idume'+idm+idr).val();
+    $.ajax({
+        url: BASE_URL+'/transferencia/validarcantidades/'+idm+'/'+idt+'/'+cantidad+'/'+idum,
+        type: 'POST',
+        dataType: 'json'
+    })
+    .done(function(data) {
+        //var resta1 = data[0]['existencia']-cantidad;
+        if (data == 1) {
+            //alert("existencia menor a cero");
+            $('#mti').empty();  
+            $('#mti').append('Existencia excedida');  
+            $('#cuerpomodalex').empty();  
+            $('#cuerpomodalex').append('La cantidad a enviar de al menos un producto, excede su existencia.<br>por favor verifique antes de poder completar la transferencia');
+            $('#valido'+idm+idr).val('');
+            $('#valido'+idm+idr).val(data);
+            $('#cantenv'+idm+idr).css('color', 'red');
+            $('#modalexistencia').modal('show');
+        }else if (data == 2) {
+            $('#mti').empty();  
+            $('#mti').append('Existencia minima superada');
+            $('#cuerpomodalex').empty();  
+            $('#cuerpomodalex').append('El stock minimo de al menos uno de los productos sera superado.<br>Por favor proceda con precaucion');
+            $('#valido'+idm+idr).val('');
+            $('#valido'+idm+idr).val(data);
+            $('#cantenv'+idm+idr).css('color', '#EAB31F');
+            
+            //alert("stock minimo superado");
+        }else if (data == 3) {
+            $('#mti').empty();  
+            $('#mti').append('Existencia agotada');
+            $('#cuerpomodalex').empty();  
+            $('#cuerpomodalex').append('La existencia de al menos un producto quedara en cero(0).<br> Por favor proceda con precaucion');
+           // alert("existencia sera cero");
+            $('#valido'+idm+idr).val('');
+            $('#valido'+idm+idr).val(data);
+            $('#cantenv'+idm+idr).css('color', '#FA6E21');
+            
+        }else{
+            //alert("permitidio");
+            $('#valido'+idm+idr).val('');
+            $('#valido'+idm+idr).val(data);
+            $('#cantenv'+idm+idr).css('color', '#464a4c');
+            
+        }
+       
+        var check = activaodesactiva();
+        if(check == 4) {
+            $('#proccess').prop('disabled', false);
+            $('#warning').hide();
+        }else if (check == 3) {
+            $('#warning').css('color', '#FA6E21');
+            $('#proccess').prop('disabled', false);
+            $('#warning').show();
+            $('#warning').prop('hidden', false);
+        }else if (check == 2) {
+            $('#warning').css('color', '#EAB31F');
+            $('#proccess').prop('disabled', false);
+            $('#warning').show();
+            $('#warning').prop('hidden', false);
+        }else {
+            $('#warning').css('color', 'red');
+            $('#warning').show();
+            $('#warning').prop('hidden', false);
+            $('#proccess').prop('disabled', true);
+        }
+        
+    });
+    
+}
+
+    function activaodesactiva() {
+        var validos = 4;
+        $("input.evaluar").each(function() {
+        var $this = $(this);
+                if( $this.val() == 1 ) {
+                    validos = $this.val();
+                    return validos;
+                }else if ($this.val() == 2) {
+                    validos = $this.val();
+                    return validos;
+                }else if ($this.val() == 3) {
+                    validos = $this.val();
+                    return validos;
+                }
+        });
+        if(validos == 1) {
+            return validos;
+        }else if (validos == 2) {
+            return validos;
+        }else {
+            return validos;
+        }
+    }
+
+function burbujaspendientes(){
+    var idt = $('#idtienda').val();
+    //para agregar la cantidad de envios pendientes por recibir y por enviar
+$.ajax({
+        url: BASE_URL+'/transferencia/contarteansferencias/'+idt,
+        type: 'POST',
+        dataType: 'json'
+    })
+    .done(function(data) {
+        xe = data[0]['xenviar'];
+        xr = data[0]['xrecibir'];
+        if (xe == 0) {
+            $('#xe').empty();
+        }else if (xe >9) {
+            $('#xe').empty();
+            $('#xe').append('<h6 style="background: #d9534f; color:white; font-size: 11px; border-radius: 50px; padding:3px 3px 3px 3px">9+</h6>');
+        }else{
+            $('#xe').empty();
+            $('#xe').append('<h6 style="background: #d9534f; color:white; font-size: 11px; border-radius: 50px; padding:1px 4px 1px 4px">'+xe+'</h6>');
+        }
+        if (xr == 0) {
+            $('#xr').empty();
+        }else if (xr >9) {
+            $('#xr').empty();
+            $('#xr').append('<h6 style="background: #d9534f; color:white; font-size: 11px; border-radius: 50px; padding:3px 3px 3px 3px">9+</h6>');
+        }else{
+            $('#xr').empty();
+            $('#xr').append('<h6 style="background: #d9534f; color:white; font-size: 11px; border-radius: 50px; padding:1px 4px 1px 4px">'+xr+'</h6>');
+        }
+    
+    });
+}
+    
 
