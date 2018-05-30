@@ -828,7 +828,7 @@ FROM notificacion_has_remision
 			$modelos = Session::modelo('idUsuario');
 			switch ($privilegios) {
 				case 'e':
-					$query = "SELECT remision_id, reposicion_id, nt.unidad_negocio_id as idunt, status_id, unidad_negocio.codigo as codiudR, unidad_negocio.nombre as tiendaR, unidad_negocio.rif as rifr, unidad_negocio.razon_social as razon_sr, unidad_negocio.correo as emailur, unidad_negocio.empresa_id as idempresaur, referencia.referencia as status, reposicion_mercancia.unidad_negocio_id as idurepo, remision.unidad_negocio_id as iduremi, udnrepo.nombre as tiendarepo, udnrepo.rif as rifrepo, udnrepo.razon_social as razon_srepo, udnrepo.correo as emailurepo, udnrepo.empresa_id as idempresaurepo, udnremi.nombre as tiendaremi, udnremi.rif as rifremi, udnremi.razon_social as razon_sremi, udnremi.correo as emailuremi, udnremi.empresa_id as idempresauremi, usuario.nombre as nombreremi, usuario.apellido as apellidoremi, user.nombre as nombrerepo, user.apellido as apellidorepo, remision.usuario_id as idusremi, reposicion_mercancia.usuario_id as idusrepo,  modelo.nombre as modelo, modelrepo.nombre as modelorepo, modelremi.nombre as modeloremi, num_remision, num_reposicion, remision.fecha as fecharemi, remision.hora as horaremi, reposicion_mercancia.fecha as fecharepo, reposicion_mercancia.hora as horarepo, reposicion_mercancia.total
+					$query = "SELECT remision_id, reposicion_id, nt.unidad_negocio_id as idunt, status_id, unidad_negocio.codigo as codiudR, unidad_negocio.nombre as tiendaR, unidad_negocio.rif as rifr, unidad_negocio.razon_social as razon_sr, unidad_negocio.correo as emailur, unidad_negocio.empresa_id as idempresaur, referencia.referencia as status, reposicion_mercancia.unidad_negocio_id as idurepo, remision.unidad_negocio_id as iduremi, udnrepo.nombre as tiendarepo, udnrepo.rif as rifrepo, udnrepo.razon_social as razon_srepo, udnrepo.correo as emailurepo, udnrepo.empresa_id as idempresaurepo, udnremi.nombre as tiendaremi, udnremi.rif as rifremi, udnremi.razon_social as razon_sremi, udnremi.correo as emailuremi, udnremi.empresa_id as idempresauremi, usuario.nombre as nombreremi, usuario.apellido as apellidoremi, user.nombre as nombrerepo, user.apellido as apellidorepo, remision.usuario_id as idusremi, reposicion_mercancia.usuario_id as idusrepo,  modelo.nombre as modelo, modelrepo.nombre as modelorepo, modelremi.nombre as modeloremi, num_remision, num_reposicion, remision.fecha as fecharemi, remision.hora as horaremi, reposicion_mercancia.fecha as fecharepo, DATE_FORMAT(reposicion_mercancia.fecha, '%d/%m/%Y') as daterepo, reposicion_mercancia.hora as horarepo, reposicion_mercancia.total
 				FROM `notificacion_has_remision`as nt 
 				LEFT JOIN remision on remision_id = remision.id 
 				LEFT JOIN reposicion_mercancia on reposicion_mercancia.id = reposicion_id 
@@ -844,7 +844,7 @@ FROM notificacion_has_remision
       			LEFT JOIN modelo as modelrepo on modelrepo.id = modelo_has_submodelo.modelo_id
       			LEFT JOIN modelo_has_submodelo as mhsremi on mhsremi.id = udnremi.modelo_has_submodelo_id
       			LEFT JOIN modelo as modelremi on modelremi.id = modelo_has_submodelo.modelo_id
-					where nt.status_id = 126 or nt.status_id = 127 or nt.status_id = 128 or nt.status_id = 129 or nt.status_id = 201 order by nt.status_id, remision.fecha, reposicion_mercancia.fecha asc";
+					where nt.status_id = 126 or nt.status_id = 127 or nt.status_id = 128 or nt.status_id = 129 or nt.status_id = 201 order by nt.status_id, remision.fecha, reposicion_mercancia.id desc";
 					$data = $this->_main->select($query);
 
 					echo json_encode($data);
@@ -858,7 +858,7 @@ FROM notificacion_has_remision
 					FROM notificacion_has_remision 
 					left join remision on remision_id = remision.id
                     left join reposicion_mercancia as rm on rm.id = notificacion_has_remision.reposicion_id
-					where notificacion_has_remision.status_id = 126 or notificacion_has_remision.status_id = 127 or notificacion_has_remision.status_id = 128 or notificacion_has_remision.status_id = 129 or notificacion_has_remision.status_id = 201 order by notificacion_has_remision.status_id, remision.fecha, rm.fecha asc";
+					where notificacion_has_remision.status_id = 126 or notificacion_has_remision.status_id = 127 or notificacion_has_remision.status_id = 128 or notificacion_has_remision.status_id = 129 or notificacion_has_remision.status_id = 201 order by notificacion_has_remision.status_id, remision.fecha, rm.id desc";
 						$datos = $this->_main->select($query);
 						//echo count($datos)."<br>";
 						
@@ -877,6 +877,13 @@ FROM notificacion_has_remision
       	}
 
       	public function incrementarreq($cantidad){
+			session::destroy('requisiciones');
+			$_SESSION['requisiciones'] = $cantidad;
+			$data = $_SESSION['requisiciones'];
+			echo json_encode($data);
+      	}
+
+      	public function restarreq($cantidad){
 			session::destroy('requisiciones');
 			$_SESSION['requisiciones'] = $cantidad;
 			$data = $_SESSION['requisiciones'];
@@ -971,7 +978,7 @@ FROM notificacion_has_remision
     	}
 
     	 function autocompletarp(){
-    		$query = "SELECT distinct id,nombre as label, nombre as value from mercancia group by nombre";
+    		//$query = "SELECT distinct id,nombre as label, nombre as value from mercancia group by nombre";
     		$query = "SELECT distinct id, nombre as value from mercancia group by nombre";
     		$data = $this->_main->select($query);
     		echo json_encode($data);
@@ -1259,7 +1266,7 @@ FROM notificacion_has_remision
     		echo json_encode($response);
     	}
 
-    	function carroCompra($id, $operador=false, $idt, $cant,$cantx,$idprov,$unidadc,$um,$tiendar=false){
+    	function carroCompra($id, $operador=false, $idt, $cant,$cantx,$idprov,$unidadc,$um,$tiendar=false,$precioOC=false){
 
     	$query="SELECT mercancia.id as 'idP', mercancia.codigo, mercancia.codigo_anterior, mercancia.nombre as 'producto', mercancia.marca, mercancia.contenido_neto, mercancia.formula_c, mercancia.formula_p, mercancia.formula_s, mercancia.cantidad_presentacion,  mc.existencia, mc.stock_min, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.id as 'idf', ref.referencia as 'familia', mc.status FROM `mercancia` 
 						inner join mercancia_has_unidad_negocio as mc on mc.mercancia_id = mercancia.id 
@@ -1269,28 +1276,37 @@ FROM notificacion_has_remision
 						inner join referencia as ref on ref.id = mercancia.familia_id 
 						WHERE mercancia.id = $id and mc.unidad_negocio_id = $idt order by ref.referencia ASC";
     	$producto = $this->_main->select($query);
+    	if ($precioOC != 'false') {
+    		$p = $precioOC;
+    	}else{
+    		$p = $producto[0]['precio_unitario'];
+    	}
     	if ($idprov != 'false') {
     		$datosprov = $this->datosprov($idprov);
+    		$datosprov[0]['precio'] = $p;
     		$datosr[0]['nombre'] = false;
     		$datosr[0]['id'] = false;
-    	}else if ($tiendar != false) {
+    		$datosr[0]['tipo'] = 1;
+    	}else if ($tiendar != 'false') {
     		$query="SELECT unidad_negocio.id as idudn, nombre FROM unidad_negocio 
 					where unidad_negocio.id = $tiendar";
 					$emp = $this->_main->select($query);
     		$datosprov[0]['nombre'] = $emp[0]['nombre'];
     		$datosprov[0]['id'] = false;
-    		$datosprov[0]['precio'] = $producto[0]['precio_unitario'];
+    		$datosprov[0]['precio'] = $p;
     		$datosr[0]['nombre'] = $emp[0]['nombre'];
     		$datosr[0]['id'] = $emp[0]['idudn'];
+    		$datosr[0]['tipo'] = 2;
     	}else{
-    		$query="SELECT empresa.id as idempresa, empresa.nombre as nombreempresa FROM unidad_negocio 
-					inner join unidad_negocio as empresa on empresa.id = unidad_negocio.empresa_id where unidad_negocio.id = $idt";
+    		$query="SELECT id as idempresa, nombre as nombreempresa FROM unidad_negocio 
+					where unidad_negocio.id = $idt";
 					$emp = $this->_main->select($query);
     		$datosprov[0]['nombre'] = $emp[0]['nombreempresa'];
     		$datosprov[0]['id'] = false;
-    		$datosprov[0]['precio'] = $producto[0]['precio_unitario'];
+    		$datosprov[0]['precio'] = $p;
     		$datosr[0]['nombre'] = false;
     		$datosr[0]['id'] = false;
+    		$datosr[0]['tipo'] = 3;
     	}
     if(isset($_SESSION['carrito1'])){
       if(isset($id)){
@@ -1308,6 +1324,7 @@ FROM notificacion_has_remision
         if($encontro==true){
           switch ($operador) {
             case '1':
+               	$arreglo1[$numero]['id']= $producto[0]['idP'];
                	$arreglo1[$numero]['nombre']= $producto[0]['producto'];
                 $arreglo1[$numero]['precio']= $datosprov[0]['precio'];
                 $arreglo1[$numero]['cantidad']=$cant;
@@ -1318,11 +1335,13 @@ FROM notificacion_has_remision
                 $arreglo1[$numero]['idumc']=$um;
                 $arreglo1[$numero]['tiendar']=$datosr[0]['nombre'];
                 $arreglo1[$numero]['idudn']=$datosr[0]['id'];
+                $arreglo1[$numero]['tipo']=$datosr[0]['tipo'];
                 
                 $_SESSION['carrito1']=$arreglo1;    
             break;
             
             default:
+                $arreglo1[$numero]['id']= $producto[0]['idP'];
                 $arreglo1[$numero]['nombre']= $producto[0]['producto'];
                 $arreglo1[$numero]['precio']= $datosprov[0]['precio'];
                 $arreglo1[$numero]['cantidad']=$cant;
@@ -1333,6 +1352,7 @@ FROM notificacion_has_remision
                 $arreglo1[$numero]['idumc']=$um;
                 $arreglo1[$numero]['tiendar']=$datosr[0]['nombre'];
                 $arreglo1[$numero]['idudn']=$datosr[0]['id'];
+                $arreglo1[$numero]['tipo']=$datosr[0]['tipo'];
 
                 $_SESSION['carrito1']=$arreglo1;
             break;
@@ -1370,7 +1390,8 @@ FROM notificacion_has_remision
                   'unidadc'=>$unidadc,
                   'idumc'=>$um,
                   'tiendar'=>$datosr[0]['nombre'],
-                  'idudn'=>$datosr[0]['id']
+                  'idudn'=>$datosr[0]['id'],
+                  'tipo'=>$datosr[0]['tipo']
                   );
               //$_SESSION['carrito1']=$arreglo1;
         break;
@@ -1388,7 +1409,8 @@ FROM notificacion_has_remision
                   'unidadc'=>$unidadc,
                   'idumc'=>$um,
                   'tiendar'=>$datosr[0]['nombre'],
-                  'idudn'=>$datosr[0]['id']
+                  'idudn'=>$datosr[0]['id'],
+                  'tipo'=>$datosr[0]['tipo']
               );
               array_push($arreglo1, $datosNuevos);
              // $_SESSION['carrito1']=$arreglo1; 
@@ -1419,7 +1441,8 @@ FROM notificacion_has_remision
                   	 'unidadc'=>$arreglo1[$i]['unidadc'],
                   	 'idumc'=>$arreglo1[$i]['idumc'],
                   	 'tiendar'=>$arreglo1[$i]['tiendar'],
-                  	 'idudn'=>$arreglo1[$i]['idudn']
+                  	 'idudn'=>$arreglo1[$i]['idudn'],
+                  	 'tipo'=>$arreglo1[$i]['tipo']
                      );
             $j++;
           }
@@ -1475,8 +1498,8 @@ FROM notificacion_has_remision
       }
 
       public function datosprov($idprov){
-      	$query ="SELECT * FROM proveedor 
-		inner join proveedor_has_mercancia on proveedor.id = proveedor_id
+      	$query ="SELECT proveedor.id, nombre, rif, razon_social, correo, proveedor.status, ubicacion_id, empresa_id, proveedor_has_mercancia.id as idphm, mercancia_id, proveedor_id, codigo_x_proveedor,precio,proveedor_has_mercancia.status as stphm FROM proveedor 
+		left join proveedor_has_mercancia on proveedor.id = proveedor_id
 		WHERE proveedor_id = $idprov";
 		$data=$this->_main->select($query);
         return $data;
@@ -1487,7 +1510,8 @@ FROM notificacion_has_remision
     public function cargaringredientes($idt){
 
 				//Controller::varDump($_POST);exit();
-				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, mercancia.precio_unitario as precioU, mudn.existencia, mudn.stock_min, mudn.stock_max, format(existencia,4,'de_DE') as stockt, format(stock_min,4,'de_DE') as stmin, format(stock_max,4,'de_DE') as stmax   FROM `mercancia`
+				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, mercancia.precio_unitario as precioU, mudn.existencia, mudn.stock_min, mudn.stock_max, format(existencia,4,'de_DE') as stockt, format(stock_min,4,'de_DE') as stmin, format(stock_max,4,'de_DE') as stmax, referencia.referencia as familia   FROM `mercancia`
+			inner join referencia on referencia.id = familia_id
 			left join unidad_medida as umc on umc.id = mercancia.unidad_medida_compra_id
             inner join unidad_medida as ump on ump.id = mercancia.unidad_medida_consumo_id
             inner join unidad_medida as ums on ums.id = mercancia.unidad_medida_sistema_id

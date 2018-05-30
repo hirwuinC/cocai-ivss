@@ -55,9 +55,6 @@ function datosfactura($idf){
     return $fact;
 }
 
-function facturado($factu){
-
-}
 
 // Tabla coloreada
 function FancyTable($header, $data)
@@ -127,6 +124,5 @@ $pdf->SetFont('Arial','',10);
 $pdf->Cell(0,5,'Sub total: '.$factu[0]['total_factura'].' '.$moneda,0,1,'R');
 $pdf->Cell(0,5,'Impuesto('.$factu[0]['porcImp'].'%): '.$factu[0]['impuesto'].' '.$moneda,0,1,'R');
 $pdf->Cell(0,5,'Total: '.$factu[0]['ttl'].' '.$moneda,0,1,'R');
-$pdf->facturado($factu);
 $pdf->Output('factura_'.$factu[0]['num_factura'].'.pdf','I');
 ?>

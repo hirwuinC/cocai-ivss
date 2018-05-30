@@ -308,6 +308,7 @@
 			$motivo = 199;
 			$tipoM = 131;
 			$totalf = 0;
+			$totalp = 0;
 			$findme   = ',';
 			$hoy = date('Y-m-d');
 			for ($j=0; $j <count($datos); $j++) {
@@ -341,18 +342,43 @@
 					}else{
 						$conversion = $datos[$i]['cant'];
 					}
+
+					if ($datos[$i]['idum'] == $datos[$i]['ums'] and ($datos[$i]['idum'] != $datos[$i]['ump'])) {
+						$a = $datos[$i]['cant'];
+						$b = $datos[$i]['precioc'];
+						$c = 1000;
+						$m = $b*$c;
+						$d = $m/$a;
+						$preicoconsumo = $d;
+					}else if ($datos[$i]['idum'] != $datos[$i]['ums'] and $datos[$i]['idum'] != $datos[$i]['ump']) {
+						$a = $datos[$i]['unidadesx'];
+						$b = $datos[$i]['precioc'];
+						$c = $b/$a;
+						$preicoconsumo = $c;
+					}else{
+						$preicoconsumo = $datos[$i]['precioc'];
+					}
 					
 					$query = "SELECT existencia FROM mercancia_has_unidad_negocio where unidad_negocio_id = $idT and mercancia_id = '".$datos[$i]['id']."'";
 					$stock = $this->_main->select($query);
-					$query = "INSERT INTO `mercancia_has_factura`(`factura_id`, `mercancia_id`, `cantidad`, `cantidadx`, `unidad_medida_id`, `precio_unitario_um`, `devolucion`) VALUES ('".$factura."','".$datos[$i]['id']."','".$datos[$i]['cant']."','".$datos[$i]['unidadesx']."', '".$datos[$i]['idum']."','".$datos[$i]['precioc']."',0)";
+					$query = "INSERT INTO `mercancia_has_factura`(`factura_id`, `mercancia_id`, `cantidad`, `cantidadx`, `unidad_medida_id`, `precio_unitario_um`, `preciou_consumo`, `devolucion`) VALUES ('".$factura."','".$datos[$i]['id']."','".$datos[$i]['cant']."','".$datos[$i]['unidadesx']."', '".$datos[$i]['idum']."','".$datos[$i]['precioc']."','".$preicoconsumo."',0)";
 					$mercanciaF = $this->_main->insertar($query);
 					$cant = $stock[0]['existencia']+$conversion;
 					$this->_main->log($datos[$i]['id'],$idT,$accion);
 					$this->_main->kardex($datos[$i]['cantidad'],$motivo,$tipoM,$datos[$i]['id'],$idT,$datos[$i]['idum'],$datos[$i]['comentario']);
 					$query = "UPDATE mercancia_has_unidad_negocio set existencia=$cant where unidad_negocio_id = $idT and mercancia_id = '".$datos[$i]['id']."'";
 					$actualizado = $this->_main->modificar($query);
-				
+					$query = "SELECT SUM(preciou_consumo) as pc, count(id) as registros FROM mercancia_has_factura where mercancia_id = '".$datos[$i]['id']."'";
+					$datosPrecio = $this->_main->select($query);
+					$totalp = $datosPrecio[0]['pc'];
+					$registros = $datosPrecio[0]['registros'];
+					$promedio = $totalp/$registros;
+					$query = "UPDATE mercancia set precio_unitario=$promedio where mercancia.id = '".$datos[$i]['id']."'";
+					$actualizapre = $this->_main->modificar($query);	
+
 			}
+
+			
 			echo json_encode($datos);
 			//Session::destroy('productosC');
 
@@ -485,14 +511,86 @@
 			echo json_encode($devuelto);
 		}
 
+		public function validarprecio($idum,$precio,$idt,$idprod){
+			$query = "SELECT MAX(mercancia_has_factura.id) as idmhf, unidad_medida_id as um_id, precio_unitario_um as pu_um FROM `mercancia_has_factura`
+			inner join factura on factura.id = factura_id
+			where unidad_negocio_id = $idt and mercancia_id = $idprod and unidad_medida_id = $idum";
+			$fact = $this->_main->select($query);
+			if (isset($fact)) {
+				$p1 = $fact[0]['pu_um'];
+				$p2 = $precio;
+				$multi = $p2*100;
+				if ($p1 == 0) {
+					$divi = $multi/1;
+				}else{
+					$divi = $multi/$p1;
+				}
+				$porc = $divi-100;
+				$data[0] = $porc;
+				$data[1] = number_format($p1,4,",",".");
+			}
+			echo json_encode($data);
+			
+		}
+
+
+
 		function pdf(){
 			require('/libs/fpdf.php');
+			$pdf = new FPDF();
+			$pdf->AddPage();
+			$pdf->SetFont('Arial','B',16);
+			$pdf->Cell(40,10,'¡Hola, Mundo!');
+			$pdf->Output();
+		}
 
-$pdf = new FPDF();
-$pdf->AddPage();
-$pdf->SetFont('Arial','B',16);
-$pdf->Cell(40,10,'¡Hola, Mundo!');
-$pdf->Output();
+		public function consultasOC($idt){
+			$query = "SELECT reposicion_mercancia.id as idrepo, num_reposicion, fecha, hora, total, tipo_reposicion, unidad_negocio_id, usuario_id, usuario, usuario.nombre, apellido, codigo, unidad_negocio.nombre as tienda, empresa_id, correo, pais_id From reposicion_mercancia 
+			inner join usuario on usuario.id = usuario_id
+			inner join unidad_negocio on unidad_negocio_id = unidad_negocio.id
+			where unidad_negocio_id = $idt and tipo_reposicion = 'Orden de compra enviada' order by reposicion_mercancia.id desc";
+			$data = $this->_main->select($query);
+			for ($i=0; $i <count($data) ; $i++) {
+				$query = "SELECT proveedor.nombre as prove, correo From proveedor 
+			inner join mercancia_has_reposicion on mercancia_has_reposicion.proveedor_id = proveedor.id
+			inner join reposicion_mercancia on mercancia_has_reposicion.reposicion_id = reposicion_mercancia.id
+			where reposicion_id = '".$data[$i]['idrepo']."' and tipo_reposicion = 'Orden de compra enviada'";
+			$proveedor[] = $this->_main->select($query);
+			
+			$data[$i]['nombreproveedor'] = $proveedor[$i][0]['prove'];
+			$data[$i]['email'] = $proveedor[$i][0]['correo'];
+			}
+			
+			$response = array("data"=>$data);
+    		//print_r($response);
+    		echo json_encode($response);
+		}
+
+		public function detallesOC($idr){
+			$query = "SELECT distinct reposicion_mercancia.id as idr, num_reposicion, fecha, hora, cantidad, format(cantidad,4,'de_DE') as cant, reposicion_mercancia.tipo_reposicion, unidad_medida_consumo_id as idumpresentacion, unidad_medida_sistema_id as idumsist, unidad_medida_compra_id as idumcompra, udn.id as idue, udn.nombre as tiendae, udn.rif as rife, udn.razon_social as razon_se, udn.correo as emailue, udn.empresa_id as idempresaue, mercancia.id as idm, mercancia.codigo as codim, mercancia.codigo_anterior as coditcr, mercancia.nombre as producto, mercancia.marca as marca, contenido_neto, familia_id, ref.referencia as familia, modelo.nombre as modelo, umpresentacion.abreviatura as abrevpres, umsistema.abreviatura as abrevsist, umcompra.abreviatura as abrevcompr, umsolicitud.id as idumsol, umsolicitud.abreviatura as abrevsol,  cantidad_recibida, format(cantidad_recibida,4,'de_DE') as cantr, mercancia_has_unidad_negocio.existencia, mercancia_has_unidad_negocio.stock_max, mercancia_has_unidad_negocio.stock_min, format(mercancia_has_unidad_negocio.existencia,4,'de_DE') as stock, format(mercancia_has_unidad_negocio.stock_min,4,'de_DE') as stmin, format(mercancia_has_unidad_negocio.stock_max,4,'de_DE') as stmax
+			FROM reposicion_mercancia
+            left join mercancia_has_reposicion on mercancia_has_reposicion.reposicion_id = reposicion_mercancia.id
+      		left join unidad_negocio as udn on reposicion_mercancia.unidad_negocio_id = udn.id
+      		left join modelo_has_submodelo on modelo_has_submodelo.id = udn.modelo_has_submodelo_id
+      		left join modelo on modelo.id = modelo_has_submodelo.modelo_id
+      		left join mercancia on mercancia.id = mercancia_has_reposicion.ingrediente_id
+      		left join mercancia_has_unidad_negocio on mercancia.id = mercancia_has_unidad_negocio.mercancia_id and udn.id = mercancia_has_unidad_negocio.unidad_negocio_id
+      		left join referencia as ref on mercancia.familia_id = ref.id
+      		left join unidad_medida as umpresentacion on unidad_medida_consumo_id = umpresentacion.id
+      		left join unidad_medida as umsistema on unidad_medida_sistema_id = umsistema.id
+            left join unidad_medida as umcompra on unidad_medida_compra_id = umcompra.id
+            left join unidad_medida as umsolicitud on mercancia_has_reposicion.unidad_medida_id = umsolicitud.id
+      		where reposicion_mercancia.id = $idr";
+      		$data = $this->_main->select($query);
+      		$response = array("data"=>$data);
+    		//print_r($response);
+    		echo json_encode($response);
+		}
+
+		public function validarnumfact($num){
+			$query = "SELECT num_factura From factura where num_factura = $num";
+			$data = $this->_main->select($query);
+			echo json_encode($data);
 		}
 
 

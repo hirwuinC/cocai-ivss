@@ -9,7 +9,7 @@
 	
 			parent::__construct();
 			$this->_main = $this->loadModel('main');
-			//$this->_transferencia = $this->loadModel('transferencia');
+			$this->_compra = $this->loadModel('compra');
 			//Session::accessRole(array('Super usuario','AdministradorB'));
 		}
 
@@ -83,7 +83,7 @@
           $this->_view->render('requisiciones', 'transferencia', '','');    
       }
 
-      public function insertsolicitudr(){
+      public function insertsolicitudr($tipo){
         $this->_view->setJs(array('js/carrito/'));    
         $this->_view->setCss(array('datatable/css/bootstrap4.min'));
         $this->_view->setjs(array('datatable/js/jquerydatatable.min'));
@@ -99,24 +99,26 @@
         $hora = date('g:i:s a');
         $idUsuario = Session::get('idUsuario');
         $idtienda = $_SESSION['idtienda'];
+
         if (isset($_SESSION['carrito1'])) {
           $orden=$_SESSION['carrito1'];
           $totalPagar=$_SESSION['totalPagar'];
-          if (is_null($orden[0]['idproveedor'])) {
-            $tipor = 'Solicitud de mercancia al centro de produccion';
+          if ($orden[1]['tipo'] == 2) {
+            $tipor = 'Solicitud de requisicion';
           }else{
-            $tipor = 'compra a proveedores';
+            $tipor = 'Orden de compra enviada';
           }
           #echo $fecha.' '.$hora;exit(); 
           $query = "INSERT INTO reposicion_mercancia (`num_reposicion`, `fecha`, `hora`, `total`, `tipo_reposicion`, `unidad_negocio_id`, `usuario_id`) 
           VALUES ('".$num_repo."','".$fecha."','".$hora."','".$totalPagar."','".$tipor."','".$idtienda."','".$iduser."')";
             $idr = $this->_main->insertar($query);
-          if (is_null($orden[0]['idproveedor'])) {
-            //Controller::varDump($_POST);exit();
             $query = "SELECT empresa_id, unidad_negocio.id as idU, unidad_negocio.nombre as udn, modelo.nombre as modelo From unidad_negocio
               left join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
                 left join modelo on modelo.id = modelo_has_submodelo.modelo_id where unidad_negocio.id = $idtienda";
             $idempresa = $this->_main->select($query);
+          if ($orden[1]['tipo'] == 2) {
+            //Controller::varDump($_POST);exit();
+            
             $query = "SELECT * FROM notificacion_has_remision where reposicion_id = $idr and unidad_negocio_id = '".$orden[1]['idudn']."'";
             $comprobarnoti = $this->_main->select($query);
             if (empty($comprobarnoti)) {
@@ -130,27 +132,52 @@
               $mhr = $this->_main->insertar($query);
             }
           }else{
-            for ($i=0; $i < count($orden); $i++) { 
+            for ($i=1; $i < count($orden); $i++) { 
                    $query = "INSERT INTO mercancia_has_reposicion(cantidad, precio, ingrediente_id, unidad_medida_id, proveedor_id, reposicion_id) VALUES  
-                  ('".$orden[$i]['cantidad']."','".$orden[$i]['precio']."','".$orden[$i]['id']."','".$orden[$i]['idumc']."','".$orden[$i]['idproveedor']."',$idr)"; 
+                  ('".$orden[$i]['cantidad']."','".$orden[$i]['precio']."','".$orden[$i]['id']."','".$orden[$i]['idumc']."','".$orden[1]['idproveedor']."',$idr)"; 
                   $mhr = $this->_main->insertar($query);
           }
           
               }
         
             if (isset($mhr)) {
+
               $this->_view->_totalP = $totalPagar;
               $this->_view->_pedido = $orden;
               $this->_view->_tienda = $idempresa;
               $this->_view->_idtienda = $idtienda;
-              Session::destroy('carrito1');
-              Session::destroy('totalPagar');
-              $this->_view->render('solicitudcreada', 'transferencia', '');
+              if ($tipo == 1) {
+                $query = "SELECT correo FROM proveedor where id = '".$orden[1]['idproveedor']."'";
+                $email = $this->_main->select($query);
+                $query ="SELECT correo FROM unidad_negocio where id = '".$idtienda."'";
+                $correot = $this->_main->select($query);
+                if (isset($email)) {
+                  $this->_compra->correo($orden,$totalPagar,$idempresa,$email,$correot);
+                }
+                
+                Session::destroy('carrito1');
+                Session::destroy('totalPagar');
+                $this->_view->render('ordencreada', 'transferencia', '');
+              }else{
+                Session::destroy('carrito1');
+                Session::destroy('totalPagar');
+                $this->_view->render('solicitudcreada', 'transferencia', '');
+              }
+              
             }else{
-              $this->_view->render('requisicion', 'transferencia', '','');
+              if ($tipo == 1) {
+                $this->_view->redirect('compra/ordenC/'.$idtienda);
+              }else{
+                $this->_view->render('requisicion', 'transferencia', '','');
+              }
+              
             }
         }else{
-          $this->_view->redirect('transferencia/requisicion/'.$idtienda);
+            if ($tipo == 1) {
+                $this->_view->redirect('compra/ordenC/'.$idtienda);
+              }else{
+                $this->_view->redirect('transferencia/requisicion/'.$idtienda);
+              }
         }
         
         
@@ -192,7 +219,7 @@
       			LEFT JOIN modelo as modelrepo on modelrepo.id = modelo_has_submodelo.modelo_id
       			LEFT JOIN modelo_has_submodelo as mhsremi on mhsremi.id = udnremi.modelo_has_submodelo_id
       			LEFT JOIN modelo as modelremi on modelremi.id = modelo_has_submodelo.modelo_id
-				WHERE $cond $condic and (status_id = $status1 or status_id = $status2 $condic2)";
+				WHERE $cond $condic and (status_id = $status1 or status_id = $status2 $condic2) order by reposicion_id";
 			$data = $this->_main->select($query);
 			$response = array("data"=>$data);
     		//print_r($response);
@@ -441,10 +468,8 @@
 	    			$conversion[] = $cantenv[$i];
 	    		}
 	    		$stockrestante = $stock[$i][0]['existencia']+$conversion[$i];
-	    		if ($stockrestante>=0) {
 	    			$query = "UPDATE mercancia_has_unidad_negocio set existencia = $stockrestante where unidad_negocio_id = $idt and mercancia_id = $selected";
 	    			$updatedstock = $this->_main->modificar($query);
-    			}
           $this->_main->log($selected,$idt,$accion);
           $this->_main->kardex($conversion[$i],$motivo,$tipoM,$selected,$idt,$idum[$i],$datosr[0]['tipo_reposicion']);
     			$i++;
@@ -466,6 +491,37 @@
         echo json_encode($data);
       }
 
+      public function anularrequisiciones($idr){
+        $query = "UPDATE `notificacion_has_remision` SET `status_id`=202 WHERE reposicion_id = $idr";
+        $anulado = $this->_main->modificar($query);
+        $query = "SELECT num_reposicion from reposicion_mercancia where id = $idr";
+        $repoanulada = $this->_main->select($query);
+        echo json_encode($repoanulada);
+      }
+
+      public function consultarcanceladas($idt,$status,$f1,$f2){
+        $query = "SELECT remision_id, reposicion_id, nt.unidad_negocio_id as idunt, status_id, unidad_negocio.codigo as codiudR, unidad_negocio.nombre as tiendaR, unidad_negocio.rif as rifr, unidad_negocio.razon_social as razon_sr, unidad_negocio.correo as emailur, unidad_negocio.empresa_id as idempresaur, referencia.referencia as status, reposicion_mercancia.unidad_negocio_id as idurepo, remision.unidad_negocio_id as iduremi, udnrepo.nombre as tiendarepo, udnrepo.rif as rifrepo, udnrepo.razon_social as razon_srepo, udnrepo.correo as emailurepo, udnrepo.empresa_id as idempresaurepo, udnremi.nombre as tiendaremi, udnremi.rif as rifremi, udnremi.razon_social as razon_sremi, udnremi.correo as emailuremi, udnremi.empresa_id as idempresauremi, usuario.nombre as nombreremi, usuario.apellido as apellidoremi, user.nombre as nombrerepo, user.apellido as apellidorepo, remision.usuario_id as idusremi, reposicion_mercancia.usuario_id as idusrepo,  modelo.nombre as modelo, modelrepo.nombre as modelorepo, modelremi.nombre as modeloremi, num_remision, num_reposicion, remision.fecha as fecharemi, remision.hora as horaremi, reposicion_mercancia.fecha as fecharepo, reposicion_mercancia.hora as horarepo, reposicion_mercancia.total
+        FROM `notificacion_has_remision`as nt 
+        LEFT JOIN remision on remision_id = remision.id 
+        LEFT JOIN reposicion_mercancia on reposicion_mercancia.id = reposicion_id 
+        INNER JOIN unidad_negocio on unidad_negocio.id = nt.unidad_negocio_id 
+        LEFT JOIN unidad_negocio as udnrepo on udnrepo.id = reposicion_mercancia.unidad_negocio_id 
+        LEFT JOIN unidad_negocio as udnremi on udnremi.id = remision.unidad_negocio_id 
+        INNER JOIN referencia on referencia.id = status_id
+        left JOIN usuario on usuario.id = remision.usuario_id
+        left JOIN usuario as user on user.id = reposicion_mercancia.usuario_id
+        LEFT JOIN modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
+            LEFT JOIN modelo on modelo.id = modelo_has_submodelo.modelo_id
+            LEFT JOIN modelo_has_submodelo as mhsrepo on mhsrepo.id = udnrepo.modelo_has_submodelo_id
+            LEFT JOIN modelo as modelrepo on modelrepo.id = modelo_has_submodelo.modelo_id
+            LEFT JOIN modelo_has_submodelo as mhsremi on mhsremi.id = udnremi.modelo_has_submodelo_id
+            LEFT JOIN modelo as modelremi on modelremi.id = modelo_has_submodelo.modelo_id
+        WHERE reposicion_mercancia.fecha BETWEEN '".$f1."' and '".$f2."' and status_id = $status and (nt.unidad_negocio_id = $idt or reposicion_mercancia.unidad_negocio_id = $idt)";
+      $data = $this->_main->select($query);
+      $response = array("data"=>$data);
+        //print_r($response);
+        echo json_encode($response);
+      }
 
     	
 

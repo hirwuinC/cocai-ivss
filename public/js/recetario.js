@@ -8,6 +8,24 @@ jQuery(document).ready(function($) {
 	});
 
 	$('#ayuda1').click(function(event) {
+		$('#t2').empty();
+		$('#t2').append('Informacion sobre los productos de inventario');
+		$('#cuerpodelete2').empty();
+		$('#cuerpodelete2').append('<h5>Los productos semi terminados son aquellos productos producidos en tienda,'+
+			' que contienen una receta compuesta por uno o mas ingredientes y a su vez estos productos semi terminados pueden'+
+			' formar parte de la receta de otro producto semiterminado o de productos de venta.</h5>');
+		$('#help1').slideToggle('slow');
+		$('#help1').prop('hidden', false);
+	});
+
+	$('#ayuda3').click(function(event) {
+		$('#t2').empty();
+		$('#t2').append('Informacion sobre el costo por porcion');
+		$('#cuerpodelete2').empty();
+		$('#cuerpodelete2').append('<h5>Para que el calculo del costo por porcion sea correcto, el producto de inventario debe tener registrada correctamente la siguiente informacion:'+
+			'<li class="ml-2">Precio unitario</li>'+
+			'<li class="ml-2">Contenido neto</li>'+
+			'</h5>');
 		$('#help1').slideToggle('slow');
 		$('#help1').prop('hidden', false);
 	});
@@ -246,14 +264,13 @@ jQuery(document).ready(function($) {
 	 	})
 	 	.done(function(datos) {
 	 		$('#costot').empty();
-	 		//alert(datos[0]['pvp']);
 	 		var ttl = datos[0]['costot'];
 	 		if (ttl == null) {
 	 			var totalcosto = false;
 	 			var total = false;
 	 		}else{
 	 			var totalcosto = ttl;
-	 			var total = datos[0][0];
+	 			var total = datos[0]['costototal'];
 	 			if (datos[0]['pvp']) {
 		 			var multi = total*100;
 		 			$('#parapvp').prop('hidden', false);

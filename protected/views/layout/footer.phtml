@@ -51,7 +51,9 @@
 	</script>
 	<script type="text/javascript"> 
 		$(document).ready(function(){
-
+			if (Notification.permission !== "granted") {
+			    Notification.requestPermission()
+			}
 				var texto = $('#titulocard').text();
 			$('#valormenu').val(texto);
 			var escritura = $('#valormenu').val();

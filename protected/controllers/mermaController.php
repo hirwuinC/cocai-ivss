@@ -343,6 +343,9 @@
 				$pro = $this->_main->select($query);
 				if (!is_null($pro[0]['receta_id'])) {
 					$ing = $this->_main->ingredientesexplosion($pro[0]['codigo'],$idt,$cantidad);
+					if ($ing == false) {
+							echo json_encode('error');exit();
+					}
 					for ($j=0; $j <count($ing) ; $j++) { 
 						if (isset($ing[$j]['recetaing'])) {
 							$idrece = $ing[$j]['recetaing'];

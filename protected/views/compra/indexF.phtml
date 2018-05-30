@@ -32,9 +32,6 @@
 						  	<li class="active nav-item">
 						  		<a data-toggle="tab" href="#insert" class="nav-link" id="ingresar">Registrar factura</a>
 						  	</li>
-                            <!-- <li class="nav-item">
-                            	<a class="nav-link" id="rec" style="cursor: not-allowed;"><o data-toggle="tooltip" data-placement="right" title="Debe seleccionar un producto para poder consultar su receta" id="tooltiprec">Recetario</o></a>
-                            </li> -->
                             <li class="nav-item">
                             	<a data-toggle="tab" href="#consults" class="nav-link" id="consultas">Consultas</a>
                             </li>
@@ -439,7 +436,7 @@
 										      <div class="modal-content">
 										        <!-- Modal Header -->
 										        <div class="modal-header">
-										          <h4 class="modal-title">Error en los totales</h4>
+										          <h4 class="modal-title" id="titleadv"></h4>
 										          <button type="button" class="close" data-dismiss="modal">&times;</button>
 										        </div>
 										        <!-- Modal body -->
@@ -682,7 +679,7 @@
 				                      <th><center>Cantidad</center></th>
 				                      <th><center>Precio unit.</center></th>
 				                      <th><center>Precio Total</center></th>
-				                      <th data-toggle="tooltip" data-placement="top" title="Generar nota de credito"><center>NC.</center></th>
+				                      <th title="Generar nota de credito"><center>NC.</center></th>
 				                  </tr>
 				              </thead>
 				              <tbody id="cuerpo_r"></tbody>

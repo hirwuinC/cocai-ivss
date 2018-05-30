@@ -89,6 +89,7 @@ $(document).ready(function() {
     }
     $('#tipo_ingrediente').change(function(event) {
       var tipo = $('#tipo_ingrediente option:selected').text();
+      var fam = $('.familia').val();
       if (tipo == 'Agrupado') {
         $('#unidad_medida_pr').val(13);
         $('#unidad_medida_s').val(13);
@@ -108,10 +109,14 @@ $(document).ready(function() {
         $('#botonG').prop('disabled', true);
         $('#unidad_medida_c').removeAttr('required');
       }else{
+        if (fam != 135) {
+          $('#unidad_medida_c').attr('required', 'required');
+        }else{
+          $('#unidad_medida_c').removeAttr('required');
+        }
         $('.simples').fadeIn(500);
         $('.agrupado').fadeOut('fast');
         $('#botonG').prop('disabled', false);
-        $('#unidad_medida_c').attr('required', 'required');
       }
     });
 

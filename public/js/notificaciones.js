@@ -30,6 +30,9 @@ function verificarN(valor){
         webnotif(notif,data);
         
       }
+      if (notif<existentes) {
+        restarreq(notif);
+      }
       notifications(notif,data);
   })
   
@@ -78,14 +81,14 @@ function notifications(notif,data){
       if (data[i]['fecharemi']!=null) {
           $('#news').append('<li>'+
                           '<a class="notif" href="'+BASE_URL+'transferencia/index/'+idu+'/'+func+'">'+
-                              ''+st+' #'+data[i]['remision_id']+'  <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['fecharemi']+'</o>'+' <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['horaremi']+'</o>'+
+                              ''+st+' #'+data[i]['num_remision']+'  <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['fecharemi']+'</o>'+' <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['horaremi']+'</o>'+
                           '</a>'+
                         '</li>'
           );
       }else{
         $('#news').append('<li>'+
                           '<a class="notif" href="'+BASE_URL+'transferencia/index/'+idu+'/'+func+'">'+
-                              ''+st+' #'+data[i]['reposicion_id']+'  <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['fecharepo']+'</o>'+' <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['horarepo']+'</o>'+
+                              ''+st+' #'+data[i]['num_reposicion']+'  <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['daterepo']+'</o>'+' <o style="font-size: 9px; color: #B1B0B0;">'+data[i]['horarepo']+'</o>'+
                           '</a>'+
                         '</li>'
           );
@@ -111,10 +114,10 @@ function webnotif(cont,data) {
     var tipo = data[0]['status_id'];
     if (tipo == '129') {
       var x = 'Enviada por';
-      var ti = data[0]['tiendaR'];
+      var ti = data[0]['tiendarepo'];
     }else if (tipo == '201') {
       var x = 'por';
-      var ti = data[0]['tiendarepo'];
+      var ti = data[0]['tiendaR'];
     }
     
     var extra = {
@@ -125,8 +128,22 @@ function webnotif(cont,data) {
 
     var noti = new Notification( title, extra)
     noti.onclick = function(){
+      switch (data[0]['status_id']) {
+          case '129':
+            st = 'Requisicion';
+            func = 1;
+            campo = data[0]['reposicion_id'];
+            idu = data[0]['idunt'];
+          break;
 
-      alert("Nuevo pedido recibido a las "+data[0]['hora']);
+          case '201':
+            st = 'Requisicion recibida';
+            func = 2;
+            campo = data[0]['reposicion_id'];
+            idu = data[0]['idurepo'];
+          break;
+        }
+      abrir_emergente(BASE_URL+'transferencia/index/'+idu+'/'+func);
       noti.close();
     }
     noti.onclose = {
@@ -146,7 +163,20 @@ function incrementarreq(cont){
       dataType: 'json',
     })
   .done(function(data) {
-    alert("aqui");
+    
+  });
+}
+
+function restarreq(cont){
+  $('#requisiciones').val('');
+  $('#requisiciones').val(cont);
+  $.ajax({
+      url: BASE_URL+'/inventario/restarreq/'+cont,
+      type: 'POST',
+      dataType: 'json',
+    })
+  .done(function(data) {
+    
   });
 }
 

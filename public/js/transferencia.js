@@ -34,13 +34,13 @@ $(document).ready(function() {
         }
         //alert(mes); 
         var hoy = (fecha1.getFullYear()+"-"+(mes)+"-"+(dia));
-        $('#desde').attr('max', hoy);
-        $('#desde').val('');
-        $('#desde').val(hoy);
-        $('#hasta').attr('max', hoy);
-        $('#hasta').attr('min', hoy);
-        $('#hasta').val('');
-        $('#hasta').val(hoy);
+        $('.desde').attr('max', hoy);
+        $('.desde').val('');
+        $('.desde').val(hoy);
+        $('.hasta').attr('max', hoy);
+        $('.hasta').attr('min', hoy);
+        $('.hasta').val('');
+        $('.hasta').val(hoy);
         $('#fecha1').attr('max', hoy);
         $('#fecha1').val('');
         $('#fecha1').val(hoy);
@@ -67,17 +67,17 @@ $(document).ready(function() {
             
         });
 
-        $('#desde').change(function(event) {
-            var f1 = $('#desde').val();
+        $('.desde').change(function(event) {
+            var f1 = $('.desde').val();
             $.ajax({
                 url: BASE_URL+'/compra/validarfechas/'+f1,
                 type: 'POST',
                 dataType: 'json'
             })
             .done(function(data) {
-            $('#hasta').attr('max', data['fechaf']);
-            $('#hasta').attr('min', data['fechai']);
-            $('#hasta').focus();
+            $('.hasta').attr('max', data['fechaf']);
+            $('.hasta').attr('min', data['fechai']);
+            $('.hasta').focus();
 
             });
             
@@ -135,6 +135,14 @@ $(document).ready(function() {
 		$('#xenviar').css('display', 'none');
 	});
 
+    $('#cancels').click(function(event) {
+        $('#canceladas').css('display', 'block');
+        $('#recibidas').css('display', 'none');
+        $('#xrecibir').css('display', 'none');
+        $('#xenviar').css('display', 'none');
+        $('#enviadas').css('display', 'none');
+    });
+
     $('#btn-consult').click(function(event) {
         var st1 = 128;
         var st2 = 134;
@@ -151,6 +159,13 @@ $(document).ready(function() {
         var f1 = $('#fecha1').val();
         var f2 = $('#fecha2').val();
         tablaenviadas(idt,st1,st2,tipo,f1,f2);
+    });
+
+    $('#btn-consult3').click(function(event) {
+        var status = 202
+        var f1 = $('#fec1').val();
+        var f2 = $('#fec2').val();
+        tablacanceladas(idt,status,f1,f2);
     });
 
     $('#formdetails').submit(function(event) {
@@ -187,6 +202,7 @@ $(document).ready(function() {
                 tablaxrecibir(idt,st1,st2,tipos);
                 $('#procesada').slideUp('slow');
             },5000);
+            burbujaspendientes();
             
         })
         .fail(function(data) {
@@ -214,7 +230,7 @@ $(document).ready(function() {
             },5000);
 
         });
-        burbujaspendientes();
+        
     });
 
     $('#proccess').click(function(event) {
@@ -260,7 +276,7 @@ function tablaxenviar(idt,st1,st2,tipo){
                 		
                 	}
             	},
-                { "data": "nombreremi", className: "tdcenter font11",
+                { "data": "nombreremi", className: "tdleft font11",
                 	render : function(data,type, row){
                 		if (row['reposicion_id'] == 0) {
                 			return ''+data+' '+row['apellidoremi']
@@ -285,7 +301,9 @@ function tablaxenviar(idt,st1,st2,tipo){
                     	if (row['reposicion_id'] == 0) {
                 			return '<span class="fa fa-list-alt" title="Ver detalles de la remision '+row['num_remision']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesremi('+data+','+row['status_id']+','+idt+',1)"></span>'
                 		}else{
-                			return '<span class="fa fa-list-alt" title="Ver detalles de la reposicion '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesrepo('+row['reposicion_id']+','+row['status_id']+','+idt+',1)"></span>'
+                			return '<span class="fa fa-list-alt" title="Ver detalles de la requisicion '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesrepo('+row['reposicion_id']+','+row['status_id']+','+idt+',1)"></span>'+
+                                    '<span class="fa fa-file-pdf-o ml-2" title="imprimir la solicitud '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="printsolicitud('+row['reposicion_id']+',1)"></span>'+
+                                    '<span class="fa fa-remove ml-2" title="Descartar y cancelar la solicitud '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="anularrequisicion('+row['reposicion_id']+','+row['status_id']+','+idt+',1)"></span>'
                 		}            
                        
                   } 
@@ -337,7 +355,7 @@ function tablaxrecibir(idt,st1,st2,tipo){
                 		
                 	}
             	},
-                { "data": "nombreremi", className: "tdcenter font11",
+                { "data": "nombreremi", className: "tdleft font11",
                 	render : function(data,type, row){
                 		if (row['reposicion_id'] == 0) {
                 			return ''+data+' '+row['apellidoremi']
@@ -368,9 +386,12 @@ function tablaxrecibir(idt,st1,st2,tipo){
                 			
                         }else{
                             if (row['status_id'] == 129) {
-                                return '<span class="fa fa-list-alt" title="La Solicitud aun no ha sido procesada por '+row['tiendaR']+'" style="cursor:hand; cursor:pointer; color: red" onclick="detallesrepo('+row['reposicion_id']+','+row['status_id']+','+row['idunt']+',2)"></span>'
+                                return '<span class="fa fa-list-alt" title="La Solicitud aun no ha sido procesada por '+row['tiendaR']+'" style="cursor:hand; cursor:pointer; color: red" onclick="detallesrepo('+row['reposicion_id']+','+row['status_id']+','+row['idunt']+',2)"></span>'+
+                                        '<span class="fa fa-file-pdf-o ml-2" title="imprimir la solicitud '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="printsolicitud('+row['reposicion_id']+',1)"></span>'+
+                                        '<span class="fa fa-remove ml-2" title="Descartar y cancelar la solicitud '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="anularrequisicion('+row['reposicion_id']+','+row['status_id']+','+row['idunt']+',2)"></span>'
                             }else{
-                                return '<span class="fa fa-list-alt" title="Ver detalles de la reposicion '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesrepo('+row['reposicion_id']+','+row['status_id']+','+row['idunt']+',2)"></span>'    
+                                return '<span class="fa fa-list-alt" title="Ver detalles de la reposicion '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesrepo('+row['reposicion_id']+','+row['status_id']+','+row['idunt']+',2)"></span>'+
+                                        '<span class="fa fa-file-pdf-o ml-2" title="imprimir la solicitud '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="printsolicitud('+row['reposicion_id']+',2)"></span>'
                             }
                             
                         }
@@ -415,7 +436,7 @@ function tablarecibidas(idt,st1,st2,tipo,f1,f2){
                 		
                 	}
             	},
-                { "data": "nombreremi", className: "tdcenter font11",
+                { "data": "nombreremi", className: "tdleft font11",
                 	render : function(data,type, row){
                 		if (row['reposicion_id'] == 0) {
                 			return ''+data+' '+row['apellidoremi']
@@ -440,7 +461,8 @@ function tablarecibidas(idt,st1,st2,tipo,f1,f2){
                     	if (row['reposicion_id'] == 0) {
                 			return '<span class="fa fa-list-alt" title="Ver detalles de la remision '+row['num_remision']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesremi('+data+','+row['status_id']+','+row['idunt']+',3)"></span>'
                         }else{
-                            return '<span class="fa fa-list-alt" title="Ver detalles de la reposicion '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesrepo('+row['reposicion_id']+','+row['status_id']+','+row['idunt']+',3)"></span>'
+                            return '<span class="fa fa-list-alt" title="Ver detalles de la reposicion '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesrepo('+row['reposicion_id']+','+row['status_id']+','+row['idunt']+',3)"></span>'+
+                                    '<span class="fa fa-file-pdf-o ml-2" title="imprimir la solicitud '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="printsolicitud('+row['reposicion_id']+',3)"></span>'
                         }
                        
                   } 
@@ -492,7 +514,7 @@ function tablaenviadas(idt,st1,st2,tipo,f1,f2){
                 		
                 	}
             	},
-                { "data": "nombreremi", className: "tdcenter font11",
+                { "data": "nombreremi", className: "tdleft font11",
                 	render : function(data,type, row){
                 		if (row['reposicion_id'] == 0) {
                 			return ''+data+' '+row['apellidoremi']
@@ -517,7 +539,8 @@ function tablaenviadas(idt,st1,st2,tipo,f1,f2){
                     	if (row['reposicion_id'] == 0) {
                 			return '<span class="fa fa-list-alt" title="Ver detalles de la remision '+row['num_remision']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesremi('+data+','+row['status_id']+','+idt+',4)"></span>'
                         }else{
-                            return '<span class="fa fa-list-alt" title="Ver detalles de la reposicion '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesrepo('+row['reposicion_id']+','+row['status_id']+','+idt+',4)"></span>'
+                            return '<span class="fa fa-list-alt" title="Ver detalles de la reposicion '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesrepo('+row['reposicion_id']+','+row['status_id']+','+idt+',4)"></span>'+
+                                    '<span class="fa fa-file-pdf-o ml-2" title="imprimir la solicitud '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="printsolicitud('+row['reposicion_id']+',4)"></span>'
                         }
                        
                   } 
@@ -592,7 +615,7 @@ function detallesrepo(id,status,idt,tipo){
             .done(function(data) {
                 
                     $('.titlemyt').empty();
-                    $('.titlemyt').append('Producto de la reposicion # '+data["data"][0]['num_reposicion']);
+                    $('.titlemyt').append('Producto de la requisicion # '+data["data"][0]['num_reposicion']);
                     if (tipo == 1) {
                         $('#recept').hide();
                         $('#proccess').show();
@@ -974,5 +997,162 @@ $.ajax({
     
     });
 }
+
+function anularrequisicion(idr,status_id,idt,tipo){
+    $.ajax({
+        url: BASE_URL+'/transferencia/detallesrepo/'+idr+'/'+status_id+'/'+idt,
+        type: 'POST',
+        dataType: 'json'
+    })
+    .done(function(data) {
+        $('#numer').empty();
+        $('#numer').append(data["data"][0]['num_reposicion']);
+        
+        
+    });
+    $('#modalanularreq').modal('show');
+    $('#anularrepo').click(function(event) {
+        anulada(idr,status_id,idt,tipo);
+    });
+    
+}
+
+function anulada(idr,status_id,idt,tipo){
+    $.ajax({
+        url: BASE_URL+'/transferencia/anularrequisiciones/'+idr,
+        type: 'POST',
+        dataType: 'json'
+    })
+    .done(function(data) {
+        $('#modalanularreq').modal('hide');
+        $('.enviaorecibe').empty();
+        $('.enviaorecibe').append('La solicitud N°'+data[0]['num_reposicion']+' fue cancelada de forma exitosa');
+        $('#procesada').slideDown('slow');
+        $('#procesada').prop('hidden', false);
+        if (tipo == 1) {
+            var st1 = 126;
+            var st2 = 129;
+            setTimeout(function(){
+                $('#envios').trigger('click');
+                $('#procesada').slideUp('slow');
+            },5000);
+        }else{
+            var st1 = 127;
+            var st2 = 201;
+            setTimeout(function(){
+                $('#recibos').trigger('click');
+                $('#procesada').slideUp('slow');
+            },5000);
+            
+        }
+    });
+}
+
+function tablacanceladas(idt,status,f1,f2){
+    var tc = $('#tablacanceladas').DataTable({
+            "ajax": BASE_URL+'/transferencia/consultarcanceladas/'+idt+'/'+status+'/'+f1+'/'+f2,
+            "columns": [
+                { "data": null, className: "tdcenter font11"},
+                { "data": "tiendaremi", className: "tdleft font11",
+                    render : function(data,type, row){
+                        if (row['reposicion_id'] == 0) {
+                            return ''+data+''
+                        }else{
+                            return ''+row['tiendarepo']
+                        }
+                        
+                    }
+                },
+                { "data": "tiendaR", className: "tdleft font11"},
+                { "data": "num_remision", className: "tdleft font11",
+                    render : function(data,type, row){
+                        if (row['reposicion_id'] == 0) {
+                            return ''+data+''
+                        }else{
+                            return ''+row['num_reposicion']
+                        }
+                        
+                    }
+                },
+                { "data": "nombreremi", className: "tdleft font11",
+                    render : function(data,type, row){
+                        if (row['reposicion_id'] == 0) {
+                            return ''+data+' '+row['apellidoremi']
+                        }else{
+                            return ''+row['nombrerepo']+' '+row['apellidorepo']
+                        }
+                        
+                    }
+                },
+                { "data": "fecharemi", className: "tdcenter font11",
+                    render : function(data,type, row){
+                        if (row['reposicion_id'] == 0) {
+                            return ''+data+'<br/>'+row['horaremi']
+                        }else{
+                            return ''+row['fecharepo']+'<br/>'+row['horarepo']
+                        }
+                        
+                    }
+                },        
+                { "data": "remision_id", className: "tdcenter ",
+                    render : function(data, type, row) {
+                        if (row['reposicion_id'] == 0) {
+                            return '<span class="fa fa-list-alt" title="Ver detalles de la remision '+row['num_remision']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesremi('+data+','+row['status_id']+','+row['idunt']+',4)"></span>'
+                        }else{
+                            return '<span class="fa fa-list-alt" title="Ver detalles de la reposicion '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesrepo('+row['reposicion_id']+','+row['status_id']+','+row['idunt']+',4)"></span>'+
+                                    '<span class="fa fa-file-pdf-o ml-2" title="imprimir la solicitud '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="printsolicitud('+row['reposicion_id']+',5)"></span>'
+                        }
+                       
+                  } 
+                }               
+            ],
+                "columnDefs": [ {
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+                } ],
+                //"order": [[ 1, 'asc' ]],
+                destroy: true,
+                responsive: true
+                }); 
+    $('#_10').on( 'click', function () {
+        table.page.len( 10 ).draw();
+    } );
+    $('#tablacanceladas').css("width","100%");
+    tc.on( 'order.dt search.dt', function () {
+    tc.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+        cell.innerHTML = i+1;
+    } );
+    } ).draw();
+        $('#tablacanceladas_wrapper').removeClass('container-fluid');
+    
+}
+
+    function printsolicitud(idr,tipo){
+        switch (tipo) {
+            case 1:
+                var url = BASE_URL+'printer?r='+idr+'&st1=126&st2=129&tipo='+tipo;
+            break;
+            case 2:
+                var url = BASE_URL+'printer?r='+idr+'&st1=127&st2=201&tipo='+tipo; 
+            break;
+            case 3:
+                var f1 = $('#desde').val();
+                var f2 = $('#hasta').val();
+                var url = BASE_URL+'printer?r='+idr+'&st1=128&st2=134&tipo='+tipo+'&f1='+f1+'&f2='+f2;
+            break;
+            case 4:
+                var f1 = $('#fecha1').val();
+                var f2 = $('#fecha2').val();
+                var url = BASE_URL+'printer?r='+idr+'&st1=128&st2=134&tipo='+tipo+'&f1='+f1+'&f2='+f2;  
+            break;
+            case 5:
+                var f1 = $('#fec1').val();
+                var f2 = $('#fec2').val();
+                var url = BASE_URL+'printer?r='+idr+'&st1=202&st2=202&tipo='+tipo+'&f1='+f1+'&f2='+f2;  
+            break;
+        }
+        abrir_emergente(url);
+    }
     
 

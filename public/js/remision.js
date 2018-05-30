@@ -74,17 +74,18 @@ jQuery(document).ready(function($) {
             "columns": [
                 { "data": "codigi", className: "tdleft"},
                 { "data": "ingrediente", className: "tdleft"},
-                { "data": "stockt", className: "tdleft",
+                { "data": "familia", className: "tdleft"},
+                { "data": "stockt", className: "tdright",
                 	render: function(data, type,row){
                 		return ''+data+' '+row['abums']
                 	}
             	},
-                { "data": "stmin", className: "tdleft",
+                { "data": "stmin", className: "tdright",
                 	render: function(data, type,row){
                 		return ''+data+' '+row['abums']
                 	}
             	},
-                { "data": "stmax", className: "tdleft",
+                { "data": "stmax", className: "tdright",
                 	render: function(data, type,row){
                 		return ''+data+' '+row['abums']
                 	}
@@ -137,21 +138,17 @@ function agregaringrediente(ingrediente,idt){
 }
 
 function addmerc(ingrediente,idt){
-	//alert(ingrediente);
 	$('#cantidadR').empty();
-	$.ajax({
-		url: BASE_URL+'/inventario/selectprov/'+ingrediente,
-        type: 'POST',
-        dataType: 'json'
-	})
-	.done(function(data) {
-		$('#prove').empty();
-		$('#prove').append('<option value="" selected disabled>Seleccione..</option>');
-		for (var i = 0; i <= data.length; i++) {
-			$('#prove').append('<option value="'+data[i]['id']+'">'+data[i]['nombre']+'</option>');
-		}
-					
-	});
+	var idemp = $('#idempresa').val();
+	var idt = $('#tiendae').val();
+    $('#mercid').val('');
+    $('#mercid').val(ingrediente);
+    if (idemp) {
+    	load('proveedor','idprov',idemp,ingrediente);
+    }else{
+    	load('proveedor','idprov',idt,ingrediente);
+    }
+    
 	$('#mercid').val('');
 	$('#mercid').val(ingrediente);
 	$.ajax({
@@ -164,7 +161,7 @@ function addmerc(ingrediente,idt){
 		$('#tit').empty();
 		$('#tit').append('Solicitar '+data[0]['nombre']+' '+data[0]['marca']);
 		$('#unidades').empty();
-		if (data[0]['idUC'] != data[0]['idUP']) {
+		if (data[0]['idUC']!= null && data[0]['idUC'] != data[0]['idUP']) {
 			$('#unidades').append('<option value="" selected disabled>Seleccione..</option>'+
 					'<option value="'+data[0]['idUC']+'">'+data[0]['unidadC']+'</option>'+
 					'<option value="'+data[0]['idUP']+'">'+data[0]['unidadP']+'</option>');
@@ -178,6 +175,61 @@ function addmerc(ingrediente,idt){
 	$('#modalcant').modal('show');
 	
 
+}
+
+function detallesOC(id){
+    $.ajax({
+        url: BASE_URL+'/compra/detallesOC/'+id,
+        type: 'POST',
+        dataType: 'json'
+    })
+    .done(function(data) {
+        
+        $('.titlemyt').empty();
+        $('.titlemyt').append('Productos de la Orden de compra # '+data["data"][0]['num_reposicion']);
+        vertabladetallesOC(id);
+          
+	}); 
+}
+
+function vertabladetallesOC(id){
+	var t6 = $('#tabladetallesOC').DataTable({
+            "ajax": BASE_URL+'/compra/detallesOC/'+id,
+            "columns": [
+                { "data": "codim", className: "tdleft font11"},
+                { "data": "producto", className: "tdleft font11",
+                    render : function(data,type, row){
+                        return ''+data+' '+row['marca']
+                    }
+                },
+                { "data": "cant", className: "tdright font11",
+                    render : function(data,type, row){
+                        return ''+data+' '+row['abrevsol']
+                    }
+                },
+                { "data": "stock", className: "tdright font11",
+                    render : function(data,type, row){
+                            return ''+data+' '+row['abrevsist']
+                    }
+                },        
+                { "data": "stmin", className: "tdright font11",
+                    render : function(data,type, row){ 
+                            return ''+data+' '+row['abrevsist']
+                    } 
+                }
+
+            ],
+                
+                "order": [[ 1, 'asc' ]],
+                destroy: true,
+                responsive: true
+                }); 
+    $('#_10').on( 'click', function () {
+        table.page.len( 10 ).draw();
+    } );
+    $('#tabladetallesOC').css("width","100%");
+	$('#tabladetallesOC_wrapper').removeClass('container-fluid');
+	$('#modaldetalleOC').modal('show');  
 }
 
 

@@ -22,6 +22,9 @@
     $('#tablara').DataTable({
                 responsive: true
         });
+    $('#tablaprov').DataTable({
+                responsive: true
+        });
     
 });
  

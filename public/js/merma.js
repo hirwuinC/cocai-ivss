@@ -377,6 +377,8 @@ $(document).ready(function() {
 	}
 
 function mermar(idp,tipoP,idum){
+	$('#alert-sinrec').slideUp();
+	$('#alert-stmin').slideUp();
 	load('referencia','motivo',121);
 	var producto = $('#p'+idp+tipoP).val();
 	var marca = $('#m'+idp+tipoP).val();
@@ -400,6 +402,8 @@ function mermar(idp,tipoP,idum){
 	$('#unim').append(abreviatura);
 	$('#titleM').empty();
 	$('#titleM').append(producto+' '+mark);
+	$('#productoamemrmar').empty();
+	$('#productoamemrmar').append(producto+' '+mark);
 	if (tipoP == 2) {
 		if (receta == 0) {
 			$('#alertpvta').removeClass('alert-info');
@@ -464,10 +468,14 @@ function validacion(){
             dataType: 'json'
         })
       	.done(function(data) {
-      		if (data != 1) {
+      		//data = 1: cantidad a mermar valida
+      		if (data == 'error') {
+	    		$('#mermar').prop('disabled', true);
+      			$('#alert-sinrec').slideDown();
+      			$('#alert-sinrec').prop('hidden', false);
+	    	}else if (data != 'error' && data != 1) {
       			$('#validado').empty();
       			$('#validado').append(data[0]['nombre']+' '+data[0]['marca']);
-      			//data = 1: cantidad a mermar no valida por que es mayor a la existencia 
       			$('#mermar').prop('disabled', true);
       			$('#alert-stmin').slideDown();
       			$('#alert-stmin').prop('hidden', false);
@@ -536,5 +544,8 @@ $(document).ready(function() {
 
 	$('#close-alert').click(function(event) {
 		$('#alert-stmin').slideUp();
+	});
+	$('#close-alert2').click(function(event) {
+		$('#alert-sinrec').slideUp();
 	});
 });

@@ -39,7 +39,10 @@
                             	<a data-toggle="tab" href="#recibidas" class="nav-link" id="consultaR">Transferencias recibidas</a>
                             </li>
                             <li class="nav-item">
-                            	<a data-toggle="tab" href="#enviadas" class="nav-link" id="consultaE">Transferencias enviadas</a>
+                                <a data-toggle="tab" href="#enviadas" class="nav-link" id="consultaE">Transferencias enviadas</a>
+                            </li>
+                            <li class="nav-item">
+                            	<a data-toggle="tab" href="#canceladas" class="nav-link" id="cancels">Solicitudes canceladas</a>
                             </li>
 						</ul>
 
@@ -164,6 +167,26 @@
                                 </div>
                               </div>
                               <!-- fin modal -->
+
+                              <!-- Modal anular-->
+                                <div  class="modal fade" id="modalanularreq" role="dialog">
+                                  <div class="modal-dialog modal-sm" >
+                                    <div class="modal-content modalp3" >
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" style="text-align: left">Cancelar la solicitud N°<o id="numer"></o></h5>
+                                        <button type="button" class="close" data-dismiss="modal" id="closem2">&times;</button>
+                                      </div>
+                                      <div class="modal-body" >
+                                          <h5 style="color: red; text-align: left"><b>Seguro que desea cancelar esta solicitud?<br>Esta acción no se puede deshacer.</b></h5>
+                                      </div>
+                                      <div class="modal-footer" >
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-dismiss="modal">No</button>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" id="anularrepo">Si</button>
+                                      </div>
+                                    </div>
+                                  
+                                  </div>
+                                </div>
 
 				<!-- MODAL DEL LA FUNCION PROCESAR REMISIONES -->
                 <div class="modal fade modalremision" id="modalremision" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -307,7 +330,7 @@
                                                         <th>Solicitud</th>
                                                         <th>Solicitante</th>
                                                         <th>Solicitado</th>
-                                                        <th>Productos</th>
+                                                        <th>Acciones</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="cuerpo_r"></tbody>
@@ -345,7 +368,7 @@
 					                                          <th><center>Producto</center></th>
 					                                          <th><center>Cantidad</center></th>
 					                                          <th><center>Precio</center></th>
-					                                          <th><center>Productos</center></th>
+					                                          <th><center>Acciones</center></th>
 					                                      </tr>
 					                                  </thead>
 					                                  <tbody id="cuerpo_r"></tbody>
@@ -388,7 +411,7 @@
                         <th>Solicitud</th>
                         <th>Solicitante</th>
                         <th>Solicitado</th>
-                        <th>Productos</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="cuerpo_r"></tbody>
@@ -409,8 +432,8 @@
 			<label class="labels">Hasta</label>
 			<input type="date" class="form-control form-control-sm hasta" name="fecha2" id="hasta">
 		</div>
-		<div class="col-sm-2">
-			<br><button class="btn btn-sm btn-outline-primary" type="button" id="btn-consult">Consultar</button>
+		<div class="col-sm-2 mt-3">
+      <button class="btn btn-sm btn-outline-primary mt-1" type="button" id="btn-consult">Consultar</button>
 		</div>
 	</div>
 	<div class="mt-3">
@@ -427,7 +450,7 @@
 	                        <th>Solicitud</th>
 	                        <th>Solicitante</th>
 	                        <th>Solicitado</th>
-	                        <th>Productos</th>
+	                        <th>Acciones</th>
 	                    </tr>
 	                </thead>
 	                <tbody id="cuerpo_r"></tbody>
@@ -447,8 +470,8 @@
 			<label class="labels">Hasta</label>
 			<input type="date" class="form-control form-control-sm hasta" name="fecha2" id="fecha2">
 		</div>
-		<div class="col-sm-2">
-			<br><button class="btn btn-sm btn-outline-primary" type="button" id="btn-consult2">Consultar</button>
+		<div class="col-sm-2 mt-3">
+      <button class="btn btn-sm btn-outline-primary mt-1" type="button" id="btn-consult2">Consultar</button>
 		</div>
 	</div>
 	<div class="mt-3">
@@ -465,7 +488,7 @@
 	                        <th>Solicitud</th>
 	                        <th>Solicitante</th>
 	                        <th>Solicitado</th>
-	                        <th>Productos</th>
+	                        <th>Acciones</th>
 	                    </tr>
 	                </thead>
 	                <tbody id="cuerpo_r"></tbody>
@@ -473,6 +496,47 @@
 	        </div>
 	    </div>
 	</div>
+</div>
+
+<div id="canceladas" class="tab-pane fade" role="tabpanel">
+    <div class="row">
+        <div class="col-sm-2">
+            <label class="labels">Desde</label>
+            <input type="date" class="form-control form-control-sm desde" name="fecha1" id="fec1">
+        </div>
+        <div class="col-sm-2">
+            <label class="labels">Hasta</label>
+            <input type="date" class="form-control form-control-sm hasta" name="fecha2" id="fec2">
+        </div>
+        <div class="col-sm-2 mt-3">
+          <button class="btn btn-sm btn-outline-primary mt-1" type="button" id="btn-consult3">Consultar</button>
+        </div>
+    </div>
+  <div class="mt-3">
+    <div class="dataTable_wrapper mt-2">
+        <div class="table-responsive col-sm-12">
+            <table id="tablacanceladas" class="display table table-sm table-striped table-bordered table-hover" >
+                <thead class="theadH">
+                    <tr>
+                        <th colspan="7"><center>Solicitudes canceladas</center></th>
+                    </tr>
+                    <tr>
+                        <th>#</th>
+                        <th>Origen</th>
+                        <th>Destino</th>
+                        <th>Solicitud</th>
+                        <th>Solicitante</th>
+                        <th>Solicitado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo_r"></tbody>
+            </table>
+        </div>
+    </div>
+  </div>
+
+                
 </div>
     	
 </div>

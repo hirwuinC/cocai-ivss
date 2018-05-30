@@ -257,7 +257,7 @@
                             </div>
                             
                         </div>
-                        <center><div id="mensaje" hidden><img width="45px" height="45px" src="http://localhost/COCAI/public/img/check1.gif" alt="exito"/></div></center>
+                        <center><div id="mensaje" hidden><img width="45px" height="45px" src="<?php echo PUBLIC_URL; ?>img/check1.gif" alt="exito"/></div></center>
                              
                         <div class="" id="recetasysubs" hidden>
                           
@@ -283,7 +283,7 @@
                                           <th><center>Ingrediente</center></th>
                                           <th><center>Cantidad</center></th>
                                           <th><center>U/M</center></th>
-                                          <th><center>Costo</center></th>
+                                          <th><center>Costo porcion <i data-toggle="modal" data-target="#modalhelp"  id="ayuda3"  class="fa fa-info-circle" style="font-size: 15px;  text-shadow: 1px 1px black; float: right"></i></center></th>
                                         <?php if (is_null($this->model[0]['empresa_id'])): ?>
                                           <th><center>Acciones</center></th>
                                         <?php endif ?>
@@ -353,11 +353,11 @@
                               <div class="modal-dialog modal-sm">
                                 <div class="modal-content">
                                   <div class="modal-header">
-                                    <h5 class="modal-title" ><b id="t">Informacion sobre los productos de inventario</b></h5>
+                                    <h5 class="modal-title" ><b id="t2"></b></h5>
                                     <button type="button" class="close" data-dismiss="modal">&times;</button> 
                                   </div>
-                                  <div class="modal-body" id="cuerpodelete">
-                                    <h5>Los productos semi terminados son aquellos productos producidos en tienda, que contienen una receta compuesta por uno o mas ingredientes y a su vez estos productos semi terminados pueden formar parte de la receta de otro producto semiterminado o de productos de venta.</h5>                                    
+                                  <div class="modal-body" id="cuerpodelete2">
+                                                                        
                                   </div>
                                   <div class="modal-footer" id="botones">
                                       <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Aceptar</button> 

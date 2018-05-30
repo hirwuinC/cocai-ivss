@@ -139,7 +139,7 @@ WHERE modelo_has_submodelo.modelo_id = $modelo";
 		public function consultasp($idp,$idreceta){
 			if ($idp != 999999) {
 				//echo "if<br>"; 
-				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, format(ixr.cantidad,4,'de_DE') as cantidad, ixr.cantidad as quantity, abreviatura, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, producto.id as idprod, producto.nombre as producto, format(mercancia.precio_unitario,4,'de_DE') as costo, mercancia.precio_unitario as precioU, receta.id as idreceta, mercancia.receta_id, receta.nombre as receta, contenido_neto  FROM `ingrediente_has_receta` as ixr
+				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, format(ixr.cantidad,4,'de_DE') as cantidad, ixr.cantidad as quantity, abreviatura, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, producto.id as idprod, producto.nombre as producto, format(mercancia.precio_unitario,4,'de_DE') as costo, mercancia.precio_unitario as precioU, receta.id as idreceta, mercancia.receta_id, receta.nombre as receta, contenido_neto, rendimiento, familia_id FROM `ingrediente_has_receta` as ixr
 			inner join receta on receta.id = ixr.receta_id
 			inner join unidad_medida on unidad_medida.id = ixr.unidad_medida_id
 			inner join mercancia on mercancia.id = ixr.ingrediente_id
@@ -149,7 +149,7 @@ WHERE modelo_has_submodelo.modelo_id = $modelo";
 
 			}else{
 				//echo "else<br>"; 
-				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, format(ixr.cantidad,4,'de_DE') as cantidad, ixr.cantidad as quantity, abreviatura, mercancia.nombre as producto, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, format(mercancia.precio_unitario,4,'de_DE') as costo, mercancia.precio_unitario as precioU, ixr.receta_id as idreceta, mercancia.receta_id, receta.nombre as receta, contenido_neto  
+				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, format(ixr.cantidad,4,'de_DE') as cantidad, ixr.cantidad as quantity, abreviatura, mercancia.nombre as producto, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, format(mercancia.precio_unitario,4,'de_DE') as costo, mercancia.precio_unitario as precioU, ixr.receta_id as idreceta, mercancia.receta_id, receta.nombre as receta, contenido_neto, rendimiento, familia_id
 					FROM `mercancia`
 					inner join ingrediente_has_receta as ixr on mercancia.id = ixr.ingrediente_id
 					inner join receta on receta.id = ixr.receta_id

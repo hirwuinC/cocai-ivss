@@ -1,5 +1,5 @@
 <style type="text/css" media="screen">
-    .control-label{
+    .labels{
         margin-bottom: 0px;
     }
 </style>
@@ -82,7 +82,7 @@
                                                 <td class="font12" ><?php echo $g['marca'];?></td>
                                                 <td class="font12" ><?php echo $g['familia'];?></td>  
                                                 <td class="font12" style="text-align:right;"><?php echo $g['stock'].$g['abreviaturaS'].' ';?>
-                                                    <a style="cursor: pointer; cursor: hand;" onclick="infoConversion('<?php echo $g['idP'];?>','<?php echo $g['idT'];?>')"><i data-toggle="tooltip" data-placement="top" title="Ver informacion detallada de la existencia" class="fa fa-info-circle"></i>
+                                                    <a style="cursor: pointer; cursor: hand;" onclick="infoConversion('<?php echo $g['idP'];?>','<?php echo $g['idT'];?>')"><i data-toggle="tooltip" data-placement="top" title="Ver informacion detallada de la existencia" class="fa fa-info-circle ico faicons"></i>
                                                     </a>
                                                 </td>
                                                 <td class="font12" style="text-align:center;"><?php echo $status;?></td>
@@ -90,7 +90,7 @@
                                                 <th>
                                                     <center>
                                                         <a style="cursor: hand; font-size: 14px" class="test" data-toggle="modal" data-target="#prodUpdate" onclick="modalUpdate('<?php echo $g['idP'];?>','<?php echo $g['idT'];?>')">
-                                                            <span  class="fa fa-edit" data-toggle="tooltip" data-placement="top" title="Editar Producto"></span>
+                                                            <span  class="fa fa-edit ico faicons" data-toggle="tooltip" data-placement="top" title="Editar Producto"></span>
                                                         </a>
                                                         <!-- <a style="cursor: hand; margin-left: 10px; font-size: 17px" class="test" data-toggle="modal" data-target="#modalreposicion" onclick="compradirecta('<?php echo $g['idP'];?>','<?php echo $g['idT'];?>')">
                                                             <span data-toggle="tooltip" data-placement="top" title="Reposicion de mercancia por compra directa" class="fa fa-money"></span>
@@ -163,80 +163,80 @@
 
                                 <div class="form-group row ">
                                     <div class="col-sm-3">
-                                        <label class="control-label">Codigo</label>
+                                        <label class="labels">Codigo</label>
                                         <input style="cursor: not-allowed" type="text" class="form-control form-control-sm codigop" id="codi" name="codigo" readonly="">
                                     </div>
                                     <div class="col-sm-1" id="glyphicon"></div>
                                     <div class="col-sm-3">
-                                        <label class="control-label">Codigo anterior</label>
+                                        <label class="labels">Codigo anterior</label>
                                         <input style="cursor: not-allowed" type="text" class="form-control form-control-sm" name="codigo_tcr" id="c_tcr" readonly>
                                     </div>
                                     <div class="col-sm-3 col-sm-">
-                                        <label class="control-label">status</label>
+                                        <label class="labels">status</label>
                                         <select name="status" id="status" class="form-control form-control-sm" required> 
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group row ">
                                     <div class="col-sm-3">
-                                        <label class="control-label">Nombre</label>
+                                        <label class="labels">Nombre</label>
                                         <input type="text" class="form-control form-control-sm" name="nombre" id="nombre" required>
                                     </div>
                                     <div class="col-sm-1" id="glyphi"></div>
                                     <div class="col-sm-3">
-                                        <label class="control-label">Marca</label>
+                                        <label class="labels">Marca</label>
                                         <input type="text" class="form-control form-control-sm" name="marca" id="marca">
                                     </div>
                                     <div class="col-sm-3 col-sm-">
-                                        <label class="control-label">Clasificacion</label>
+                                        <label class="labels">Clasificacion</label>
                                         <select name="familia_id" id="familias" class="form-control form-control-sm" required> 
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group row ">
                                     <div class="col-sm-3">
-                                        <label class="control-label">Precio unitario</label>
+                                        <label class="labels">Precio unitario</label>
                                         <input type="text" class="form-control form-control-sm precios" name="precio_unitario" id="pU"  required placeholder="0,00">
                                     </div>
                                     
                                     <div class="col-sm-3 ">
-                                        <label class="control-label">Stock minimo <o class="abrevia"></o> </label>
+                                        <label class="labels">Stock minimo <o class="abrevia"></o> </label>
                                         <input type="text" class="form-control form-control-sm monto" name="stockmin" id="stockmin">
                                     </div>
                                     <div class="col-sm-3">
-                                        <label class="control-label">Stock maximo <o class="abrevia"></o></label>
+                                        <label class="labels">Stock maximo <o class="abrevia"></o></label>
                                         <input type="text" class="form-control form-control-sm monto" name="stockmax" id="stockmax">
                                     </div>
                                     <div class="col-sm-3">
-                                        <label class="control-label">Existencia <o class="abrevia"></o></label>
+                                        <label class="labels">Existencia <o class="abrevia"></o></label>
                                         <input style="cursor: not-allowed" type="text"  class="form-control form-control-sm monto" name="existencia" id="existencia" readonly="" title="Se actualiza al cargar las remisiones y/o reposicion de mercancia">
                                     </div>
                                 </div>
                                 <div class="form-group row ">
                                     <div class="col-sm-3">
-                                        <label class="control-label">Unidad de compra</label>
+                                        <label class="labels">Unidad de compra</label>
                                         <select name="unidad_medida_co" class="form-control form-control-sm" id="unidad_medida_co" required>
                                         </select>
                                     </div>   
                                     <div class="col-sm-3">
-                                        <label class="control-label">Unidad de presentacion</label>
+                                        <label class="labels">Unidad de presentacion</label>
                                         <select name="unidad_medida_pr" id="unidad_medida_pr" class="form-control form-control-sm" required>
                                         </select>
                                     </div>   
                                     <div class="col-sm-3">
-                                        <label class="control-label">Unidad de sistema</label>
+                                        <label class="labels">Unidad de sistema</label>
                                         <select name="unidad_medida_si" id="unidad_medida_si" class="form-control form-control-sm" required>
                                         </select>
                                     </div> 
                                     <div class="col-sm-3 ">
-                                        <label class="control-label">Contenido neto</label>
+                                        <label class="labels">Contenido neto</label>
                                         <input type="text" class="form-control form-control-sm monto" name="contenidoN" id="contenidoN">
                                     </div>  
 
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-3 ">
-                                        <label class="control-label"><o id="abrevU"></o></label>
+                                        <label class="labels"><o id="abrevU"></o></label>
                                         <input type="text" class="form-control form-control-sm" name="cantidad" id="cantidad">
                                     </div>
                                     <div class="col-sm-3">
@@ -252,7 +252,7 @@
                                             
                                                 <div class="row align-items-center d-flex justify-content-center ">
                                                     <div class="col-xs-4 col-sm-4 col-md-3 mt-3">
-                                                        <label class="labels" style="float: left;">U/M compra <a class="secreto" onclick="infoFormula()"><i data-toggle="tooltip" data-placement="top" title="Ver informacion" class="fa fa-info-circle" style="cursor: hand; cursor: pointer;"></i></a></label>
+                                                        <label class="labels" style="float: left;">U/M compra <a class="secreto" onclick="infoFormula()"><i title="Ver informacion" class="fa fa-info-circle" style="cursor: hand; cursor: pointer;"></i></a></label>
                                                         <input type="text" class="form-control form-control-sm formulac" name="formulac" id="formulac">
                                                     </div>
                                                     <div class="col-xs-4 col-sm-4 col-md-3 mt-3">
@@ -305,15 +305,15 @@
                                                           <input type="text" name="submodelo" hidden value="<?php echo $this->g[0]['submodelo_id']; ?>" >
                                                           <div class="col-sm-12">
                                                             <div class="col-sm-2">
-                                                              <label class="control-label" style="float: left;">Orden</label>
+                                                              <label class="labels" style="float: left;">Orden</label>
                                                               <input type="text" class="form-control form-control-sm" name="orden" required>
                                                             </div>
                                                             <div class="col-sm-6">
-                                                              <label class="control-label" style="float: left;">Nombre</label>
+                                                              <label class="labels" style="float: left;">Nombre</label>
                                                               <input type="text" class="form-control form-control-sm" name="nombre" required placeholder="Nombre del grupo">
                                                             </div>
                                                             <div class="col-sm-3">
-                                                              <label class="control-label" style="float: left;">Status</label>
+                                                              <label class="labels" style="float: left;">Status</label>
                                                               <select name="status" class="form-control form-control-sm" required>
                                                                 <option value="" disabled>Seleccione</option>
                                                                 <option value="0">Activo</option>
@@ -348,7 +348,7 @@
                                                             <div class="col-sm-2" id="orden"></div>
                                                             <div class="col-sm-5" id="nombre"></div>
                                                             <div class="col-sm-3" >
-                                                              <label class="control-label" style="float: left;">Status</label>
+                                                              <label class="labels" style="float: left;">Status</label>
                                                               <select name="status" id="status" class="form-control form-control-sm">
                                                               <option value="" disabled>seleccione</option>
                                                               </select>

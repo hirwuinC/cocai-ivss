@@ -71,9 +71,18 @@
                              echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-fluid" alt="modelo">
                         </div>
 
-                            
-                          
-                            <div id="datos1" class="form-group col-sm-12">
+              <ul class="nav nav-pills nav-tabs ml-3" role="tablist">
+                <li class="active nav-item">
+                  <a data-toggle="tab" href="#crearOC" class="nav-link" id="crearorden">Crear orden de compra<o style="float: right; margin-left: 5px; " id="xe"></o></a>
+                </li>
+                <li class="nav-item">
+                  <a data-toggle="tab" href="#consultarOC" class="nav-link" id="consultarordenes">Consultas<o style="float: right; margin-left: 5px; " id="xr"></o></a>
+                </li>
+            </ul> 
+
+<div class="tab-content" >
+  <div id="crearOC" class="tab-pane fade in active" role="tabpanel">
+    <div id="datos1" class="form-group col-sm-12 mt-3">
                               
 
                                 <div class="dataTable_wrapper " >
@@ -84,6 +93,7 @@
                                                 <tr>
                                                     <th>Codigo</th>
                                                     <th>Ingrediente</th>
+                                                    <th>familia</th>
                                                     <th>Existencia</th>
                                                     <th>Min</th>
                                                     <th>Max</th>
@@ -132,21 +142,16 @@
                                     <form id="usuario" class="form-horizontal" role="form" action="<?php  echo BASE_URL;?>inventario/insertRemision"  method="post">
                                       <input type="hidden" name="mercancia_id" id="mercid">
                                       <input type="hidden" name="tiendae" id="tiendae" value="<?php echo $this->idu;?>">
+                                      <input type="hidden" name="tiendae" id="idempresa" value="<?php echo $this->datos[0]['idempresa'];?>">
                                       <input type="hidden" name="status_id" id="status_id" value="126">
 
-                                      <?php if (!is_null($this->datos[0]['idempresa'])) {?>
-                                        
+                                      
                                         <div class="form-group">
-                                        <input type="hidden" name="destinatario" value="<?php echo $this->datos[0]['idempresa'];?>">
+                                          <label  for="">Proveedor:</label>
+                                            <select class="form-control form-control-sm" name="prove" id="idprov" required="">
+                                              <option value="" selected disabled>Seleccione..</option>
+                                            </select>
                                         </div>
-                                      <?php }else{ ?>
-                                        <div class="form-group">
-                                        <label  for="">Proveedor:</label>
-                                        <select class="form-control form-control-sm" name="prove" id="prove" required="">
-                                        <option value="" selected disabled>Seleccione..</option>
-                                        </select>
-                                        </div>
-                                      <?php } ?>
                                         <div class="form-group">
                                           <label for="recipient-name" class="form-control-label">Cantidad:</label>
                                           <input type="text" class="form-control form-control-sm monto"  name="cantidadR" id="cantidadR">
@@ -155,6 +160,10 @@
                                           <label for="recipient-name" class="form-control-label">Unidad de medida:</label>
                                           <select id="unidades" name="unidades"  class="form-control form-control-sm">
                                           </select>
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="recipient-name" class="form-control-label" >Precio del Proveedor</label>
+                                          <input type="text" class="form-control form-control-sm monto"  name="precioOC" id="precioOC" value="1">
                                         </div>
                                         <div class="form-group" id="cantx" hidden>
                                           <label for="recipient-name" class="form-control-label" id="cantC"></label>
@@ -231,7 +240,7 @@
                           <input type="text" value="hi" name="senuelo" hidden>
                           <div class="col-sm-2">
                             
-                            <input type="button" value="Enviar Solicitud" id="solicitar" class="form-control btn btn-sm btn-outline-primary" onclick="insertsolicitud()">
+                            <input type="button" value="Enviar Solicitud" id="solicitar" class="form-control btn btn-sm btn-outline-primary" >
                           
                         </div>
                            <!-- </form> -->
@@ -242,15 +251,90 @@
                   </div>
                 </div>
               </div>
-                                               
+          </form>
+  </div>
 
+  <div id="consultarOC" class="tab-pane fade mt-3" role="tabpanel">
 
+              <!-- Modal detalles Orden de compra -->
+                <div class="modal fade" id="modaldetalleOC">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content" style="width: 122%; left: -8%">
+                    
+                      <!-- Modal Header -->
+                      <div class="modal-header">
+                        <h4 class="modal-title titlemyt"></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      </div>
+                      
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                      <!-- <form action="<?php echo BASE_URL;?>transferencia/procesarRemision" method="post" accept-charset="utf-8" role="form" id="formdetails"> -->
+                                       <!--  <input type="hidden" id="tipo">
+                                        <input type="hidden" id="idrepos" name="idrepos"> -->
+                                      <div class="dataTable_wrapper">
+                                          <div class="table-responsive col-sm-12">
+                                              <table id="tabladetallesOC" class="display table table-sm table-striped table-bordered table-hover" >
+                                                  <thead class="theadH">
+                                                    <tr>
+                                                      <th colspan="8"><center><o class="titlemyt"></o></center></th>
+                                                    </tr>
+                                                      <tr>
+                                                          <th>Codigo</th>
+                                                          <th>Producto</th>
+                                                          <th>Cant. Solicitada</th>
+                                                          <th>Existencia</th>
+                                                          <th>Min</th>
+                                                      </tr>
+                                                  </thead>
+                                                  <tbody id="cuerpo_r"></tbody>
+                                              </table>
+                                          </div>
+                                      </div>
+                                      <!-- <input type="submit" name="btn-subm" id="btn-subm" value="enviar" hidden> -->
+                      <!-- </form> -->
+                  </div>
+                      
+                      <!-- Modal footer -->
+                      <div class="modal-footer">
+                                    <!-- <u id="validarrecep" style="color: red"></u> -->
+                                      <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cerrar</button>
+                                      <!-- <button type="button" class="btn btn-sm btn-outline-primary" hidden="" id="proccess">Procesar</button>
+                                      <span class="fa fa-exclamation-triangle" id="warning" hidden style=" cursor: hand; cursor: pointer" title="Ver alerta"></span> 
+                                      <button type="button" class="btn btn-sm btn-outline-primary" hidden="" id="recept">Recibir</button>-->
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+                <!-- fin de la modal -->
 
+    <div class="dataTable_wrapper " >
+       <div class="col-sm-12 table-responsive">
+          <table id="tablaconsultOC" class="table table-sm table-striped table-bordered table-hover" >
+            <thead class="theadH">
+                <tr>
+                  <th colspan="7"><center>Consulta de ordenes de compra</center></th>
+                </tr>
+                <tr>
+                    <th>#</th>
+                    <th>Num. Orden</th>
+                    <th>Fecha</th>
+                    <th>Proveedor</th>
+                    <th>Correo proveedor</th>
+                    <th>Solicitante</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpo_i"></tbody>    
+        </table>         
+      </div>
+    </div>
 
-
-
-
-                        </form>
+  </div>
+</div>
+                          
+                            
 
                   </div>
                 </div>

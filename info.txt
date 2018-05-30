@@ -36,3 +36,20 @@ quede en recibir las remisiones.
 
 para la validacion:
 usar .each para q por cada input se haga la consulta y si en alguno entra en el caso donde se debe bloquear el boton se bloquea si no se deja desbloqueado, validarlo en un hover del boton de procesar o en el click
+
+
+StockT
+StockE
+index/index.phtm
+merma.js
+merma/indexM.phtml
+mainModel
+compraController
+factura.js
+remision.js
+transferencia.js
+printercontroller
+transferencias/indexT.phtml
+inventarioController
+compra/ordenescompra.phtml
+compra/requisiciones.phtml

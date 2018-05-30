@@ -41,7 +41,7 @@
 <nav style="font-size: 11px" class="side-navbar">
       <div class="side-navbar-wrapper">
         <div class="sidenav-header d-flex align-items-center justify-content-center">
-          <div class="sidenav-header-inner text-center"><img src="<?php echo PUBLIC_URL; ?>aimg/avatar-1.jpg" alt="" class="img-fluid rounded-circle">
+          <div class="sidenav-header-inner text-center"><img src="<?php echo PUBLIC_URL; ?>img/nophoto.jpg" alt="" class="img-fluid rounded-circle">
             <h2 class="h5 text-uppercase"><?php $usuario = Session::modelo('idUsuario'); echo  utf8_decode($usuario[0]['name'].' '.$usuario[0]['apellido'].' ' );?></h2><span class="text-uppercase"><?php $usuario = Session::modelo('idUsuario'); echo  utf8_decode($usuario[0]['perfil']);?></span>
           </div>
           <div class="sidenav-header-logo"><a href="<?php echo BASE_URL.'index/index/'; ?>" class="brand-small text-center"> <strong>C</strong><strong class="text-primary">W</strong></a></div>
@@ -107,7 +107,7 @@
                                                 <a id="'.BASE_URL.'merma/inicio/'.$id[$j].'" class="subM" style="margin-left:5px; cursor:hand; cursor:pointer;" onclick="abrir_emergente(this.id)" name="'.$id[$j].'">Mermas <span><img style="width: 10px; height:11px; margin-top:-40%" src="'.PUBLIC_URL.'img/icono-papelera.png'.'" alt=""></span></a>
                                                 </li>
                                           <li>
-                                            <a href="'.BASE_URL.'explosion/index/'.$id[$j].'" style="margin-left:5px; " name="'.$id[$j].'">Ranking / Explosión de ingredientes
+                                            <a href="'.BASE_URL.'explosion/index/'.$id[$j].'" style="margin-left:5px; " name="'.$id[$j].'">Ranking / Explosiones
                                               <i class="fa fa-bomb"></i></a>   
                                           </li>
                                           <li>
@@ -144,9 +144,6 @@
                                             <a href="#admint'.$j.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Administracion
                                               <i class="fa fa-briefcase"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
                                               <ul class="collapse list-unstyled" id="admint'.$j.'">
-                                                <li>
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Proveedor</a>
-                                                </li>
                                                 <li>
                                                   <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Reportes</a>
                                                 </li>
@@ -192,11 +189,11 @@
                                               <i class="fa fa-cutlery"></i></a>   
                                           </li>
                                           <li>
-                                            <a style="margin-left:5px; " href="'.BASE_URL.'merma/inicio/'.$menu[$p]['idUd'].'" class="subM" name="'.$menu[$p]['idUd'].'">Mermas <i class="fa fa-trash"></i></a>
+                                            <a id="'.BASE_URL.'merma/inicio/'.$menu[$p]['idUd'].'" style="margin-left:5px; " class="subM ico faicons" name="'.$menu[$p]['idUd'].'" onclick="abrir_emergente(this.id)">Mermas <span><img style="width: 10px; height:11px; margin-top:-40%" src="'.PUBLIC_URL.'img/icono-papelera.png'.'" alt=""></span></a>
                                           </li>
                                           
                                           <li>
-                                            <a href="'.BASE_URL.'explosion/index/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:5px; " name="'.$menu[$p]['idUd'].'">Ranking / Explosión de ingredientes
+                                            <a href="'.BASE_URL.'explosion/index/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:5px; " name="'.$menu[$p]['idUd'].'">Ranking / Explosiones
                                               <i class="fa fa-bomb"></i></a>   
                                           </li>
                                           <li>
@@ -230,16 +227,13 @@
                                               <i class="fa fa-briefcase"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
                                               <ul class="collapse list-unstyled" id="adm'.$p.'">
                                                 <li style="margin-left:12px; ">
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM" name="'.$menu[$p]['idUd'].'"></i>Proveedor</a>
-                                                </li>
-                                                <li style="margin-left:12px; ">
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM" name="'.$menu[$p]['idUd'].'"></i>Carga factura de compra</a>
-                                                </li>
-                                                <li style="margin-left:12px; ">
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM" name="'.$menu[$p]['idUd'].'"></i>Ranking de venta</a>
+                                                  <a href="'.BASE_URL.'proveedores/index/'.$menu[$p]['idUd'].'" class="subM" name="'.$menu[$p]['idUd'].'"></i>Proveedores</a>
                                                 </li>
                                                 <li style="margin-left:12px; ">
                                                   <a /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM" name="'.$menu[$p]['idUd'].'"></i>Reportes</a>
+                                                </li>
+                                                <li>
+                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Exportar tablas</a>
                                                 </li>
                                               </ul>
                                           </li>';

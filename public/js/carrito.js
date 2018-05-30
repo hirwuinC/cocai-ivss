@@ -1,4 +1,8 @@
 $(document).ready(function() {
+    $('#crearorden').trigger('click');
+    $('#consultarordenes').click(function(event) {
+        tablaconsultOC();
+    });
     $(window).on('ready , scroll', function() {
         if ($(window).scrollTop() > 30) {
             $('.main-menu').addClass('minified');
@@ -6,6 +10,7 @@ $(document).ready(function() {
             $('.main-menu').removeClass('minified');
         }
     });
+
 
 
     
@@ -71,8 +76,8 @@ $(document).ready(function() {
         
     });  
     idprov = 'false';
-    $('#prove').change(function(event) {
-            idprov = $('#prove').val();
+    $('#idprov').change(function(event) {
+            idprov = $('#idprov').val();
     });    
     $('#cantidadx1').keyup(function(event) {
         delete c2;
@@ -129,18 +134,26 @@ function sugerenciaCompra(idc){
 
 }
 
-function insertsolicitud(){
+function insertsolicitud(valor){
     //alert('si');
-    window.location.replace(BASE_URL+'transferencia/insertsolicitudr/');
+    window.location.replace(BASE_URL+'transferencia/insertsolicitudr/'+valor);
         
 }
 
 function agregar (id,idt,cant,cantx,idprov,textouc,um) {
+    var precioOC = $('#precioOC').val();
+    if (precioOC) {
+        var poc = precioOC;
+        $('#solicitar').attr('onclick', 'insertsolicitud(1)');
+    }else{
+        var poc = 'false';
+        $('#solicitar').attr('onclick', 'insertsolicitud(2)');
+    }
     var tiendar = $('#tiendar').val();
     if (tiendar!=null) {
-        var enlace = BASE_URL+'/inventario/carroCompra/'+id+'/'+1+'/'+idt+'/'+cant+'/'+cantx+'/'+idprov+'/'+textouc+'/'+um+'/'+tiendar;
+        var enlace = BASE_URL+'/inventario/carroCompra/'+id+'/'+1+'/'+idt+'/'+cant+'/'+cantx+'/'+idprov+'/'+textouc+'/'+um+'/'+tiendar+'/'+poc;
     }else{
-        var enlace = BASE_URL+'/inventario/carroCompra/'+id+'/'+1+'/'+idt+'/'+cant+'/'+cantx+'/'+idprov+'/'+textouc+'/'+um+'/false';
+        var enlace = BASE_URL+'/inventario/carroCompra/'+id+'/'+1+'/'+idt+'/'+cant+'/'+cantx+'/'+idprov+'/'+textouc+'/'+um+'/false'+'/'+poc;
     }
     /*if (screen.width < 800){
         $('#cartshop').addClass('plus');
@@ -232,7 +245,8 @@ function cancelarPedido(){
     })
     .done(function(data) {
     	//alert('cancelado');
-    	tablaPedido(data);
+        $('#carrito-i').slideUp('slow');
+    	tablaPedido('false');
     })
 }
 
@@ -310,40 +324,67 @@ function imgXseleccion(id,idc){
       return resultado;
     }
 
-/*function carritoHeader(){
-    //alert('sisa');
-    $('#pedidos').empty(); $('#ts').empty(); $('#tis').empty(); $('#sts').empty();
-    //$('#totalPagar').empty();
+    function tablaconsultOC(){
+        var idt = $('#tiendae').val();
+        var tc = $('#tablaconsultOC').DataTable({
+            "ajax": BASE_URL+'/compra/consultasOC/'+idt,
+            "columns": [
+                { "data": null, className: "tdcenter font11"},
+                { "data": "num_reposicion", className: "tdleft font11"},
+                { "data": "fecha", className: "tdcenter font11",
+                    render : function(data,type, row){
+                        return ''+data+'<br>'+row['hora']                      
+                    }
+                },
+                { "data": "nombreproveedor", className: "tdleft font11",
+                    render : function(data,type, row){
+                        return ''+data                        
+                    }
+                },
+                { "data": "email", className: "tdleft font11",
+                    render : function(data,type, row){
+                        return ''+data
+                    }
+                },
+                { "data": "nombre", className: "tdleft font11",
+                    render : function(data,type, row){
+                        return ''+data+' '+row['apellido']  
+                    }
+                },        
+                { "data": "idrepo", className: "tdcenter ",
+                    render : function(data, type, row) {
+                            return '<span class="fa fa-list-alt" title="Ver detalles de la reposicion '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesOC('+data+')"></span>'+
+                                    '<span class="fa fa-file-pdf-o ml-2" title="imprimir la solicitud '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="printOC('+data+','+idt+')"></span>'
+                       
+                  } 
+                }               
+            ],
+                "columnDefs": [ {
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+                } ],
+                //"order": [[ 1, 'asc' ]],
+                destroy: true,
+                responsive: true
+                }); 
+    $('#_10').on( 'click', function () {
+        table.page.len( 10 ).draw();
+    } );
+    $('#tablaconsultOC').css("width","100%");
+    tc.on( 'order.dt search.dt', function () {
+    tc.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+        cell.innerHTML = i+1;
+    } );
+    } ).draw();
+        $('#tablaconsultOC_wrapper').removeClass('container-fluid');
+        $('#tablaconsultOC_filter').css('float', 'right');
+        
+        
+    }
 
-    $.ajax({
-        url: BASE_URL+'/index/cargaPedidoIndex',
-        type: 'POST',
-        dataType: 'json',
-    })
-    .done(function(data) {
-        //alert(data[1][0]+' Bs'); alert(data[1][1]+' Bs'); alert(data[1][2]+' Bs'); 
-        if (data == true) {
-            $('#cancelar').prop('disabled',true);
-            $('#solicitar').prop('disabled',true);
-        };  
-        $('#sts').append('<td style="border: none; padding: 3px">SubTotal:</td>'+
-                        '<td style="text-align: right;border: none; padding: 3px"><b>'+data[1][0]+' Bs</b></td>');
-        $('#tis').append('<td style="border: none; padding: 3px">TTL IVA:</td>'+
-                        '<td style="text-align: right;border: none; padding: 3px"><b>'+data[1][1]+' Bs</b></td>');
-        $('#ts').append('<td style="border: none; padding: 3px">TOTAL:</td>'+
-                        '<td style="text-align: right;border: none; padding: 3px"><b>'+data[1][2]+' Bs</b></td>');
-        for (var i =0; i <=data[0].length; i++) {
-            
-            $('#pedidos').append(
-            '<tr>'+                             
-            '<td class="columnas" style=" text-align: left;">'+data[0][i]['nombre']+'</td>'+
-            '<td class="col-xs-4 col-sm-4 col-lg-4" style=" text-align: center;"><button style="margin-right:10px; background:none; border:none" id="menos'+i+'" onclick="restarCantidad('+data[0][i]['id']+')"><span class=" fa fa-minus-circle" style="font-size:20px"></span></button>'+data[0][i]['cantidad']+'<button style="margin-left:10px; background:none; border:none" onclick="sumarCantidad('+data[0][i]['id']+')"><span class=" fa fa-plus-circle" style="font-size:20px"></span></button></td>'+
-            '<td class="columnas" style=" text-align: right;">'+data[0][i]['precio']+' Bs</td>'+
-            '<td class="columnas" style=" text-align: center;"><button style="background:none; border:none" onclick="eliminarProducto('+data[0][i]['id']+')"><span class=" fa fa-times" style="text-align:center;"></span></button></td>'+
-            '</tr>'); 
-            if (data[0][i]['cantidad'] == 1) {
-                $('#menos'+i).prop('disabled',true);
-            };       
-         }
-});
-}*/
+    function printOC(idr,idt){
+        var url = BASE_URL+'printer?r='+idr+'&idti='+idt;  
+        abrir_emergente(url);
+    }
+

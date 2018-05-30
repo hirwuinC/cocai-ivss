@@ -24,7 +24,7 @@
                         <div class="card cardH">
 
                             <div class="card-header">
-                              <center><h3 ><o id="titulocard">Solicitud enviada</o> <?php $ti=strtolower($this->_tienda[0]['udn']); echo "[".ucwords($ti)."]"; ?></h3></center>
+                              <center><h3 ><o id="titulocard">Orden de compra enviada</o> <?php $ti=strtolower($this->_tienda[0]['udn']); echo "[".ucwords($ti)."]"; ?></h3></center>
                             </div>
                           
                           <div class="card-block">
@@ -41,7 +41,7 @@
                             </div>
                           <?php else: ?>
                             <div class="col-12 d-flex justify-content-end">
-                              <img width="8%" height="8%" style="float: right;" src="<?php $model=strtolower($this->_tienda[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->_tienda[0]['udn']; ?>.png" class="img-fluid" alt="">
+                              <img width="12%" height="8%" style="float: right;" src="<?php $model=strtolower($this->_tienda[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->_tienda[0]['udn']; ?>.png" class="img-fluid" alt="">
                             </div>
                         <?php endif ?>
                         
@@ -67,7 +67,7 @@
                                             <td ><?php echo $i?></td>
                                             <td><center><?php echo $this->_pedido[$i]['codigo']; ?></center></td>
                                             <td><center><?php echo $this->_pedido[$i]['nombre']; ?></center></td>
-                                            <td><center><?php echo $this->_pedido[$i]['cantidad']; ?></center></td>
+                                            <td><center><?php echo $this->_pedido[$i]['cantidad'].' '.$this->_pedido[$i]['unidadc']; ?></center></td>
                                             <td><center><?php echo $this->_pedido[$i]['proveedor']; ?></center></td>
                                             <td><center><?php echo number_format($this->_pedido[$i]['precio'],4,",",".")." ".$_SESSION['monedatienda']; ?></center></td>
                                           </tr>
@@ -78,7 +78,7 @@
                             </div>
                           <div class="row d-flex justify-content-center">
                               <div class="col-sm-2">
-                                <a href="<?php echo BASE_URL ?>transferencia/requisicion/<?php echo $this->_idtienda; ?>" class="btn btn-sm btn-outline-primary">Nueva Solicitud</a>
+                                <a href="<?php echo BASE_URL ?>compra/ordenC/<?php echo $this->_idtienda; ?>" class="btn btn-sm btn-outline-primary">Nueva Solicitud</a>
                               </div>
                           </div>
                            

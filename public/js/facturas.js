@@ -1,21 +1,60 @@
 $(document).ready(function() {
+    var idt = $('#idtienda').val();
+    var ide = $('#idempresa').val();
+    if (ide != false) {
+        load('proveedor','selectp',ide, 999999);
+    }else{
+        load('proveedor','selectp',idt, 999999);
+    }
 	load('direccion','estado',false);
-	load('proveedor','selectp',false);
+	
     load('unidad_medida','unidad_medida_c',false);
     $('#totalfact').number(true, 4, ',', '.');
     $('#ingresar').trigger('click');
     var idt= $('#idtienda').val();
-    $('#num_factura').keyup(function(event) {
+    
+
+    $('#num_factura').bind("change mouseout",function(event) {
+        $('#num_factura').blur();
         var numerof = $('#num_factura').val();
-        $('.Facturanum').empty();
-        $('.Facturanum').append(numerof);
-        if (numerof.length>0) {
-            $('#btnseleccion').prop('disabled', false);
-            $('#btnseleccion').attr('title', 'Seleccionas productos');
+        $.ajax({
+            url: BASE_URL+'/compra/validarnumfact/'+numerof,
+            type: 'POST',
+            dataType: 'json'
+        })
+        .done(function(data) {
+        if (data.length > 0) {
+            var num = data[0]['num_factura'];
         }else{
-            $('#btnseleccion').prop('disabled', true);
-            $('#btnseleccion').attr('title', 'Ingrese el numero de factura para continuar');
+            var num = false;
         }
+        if (num == numerof) {
+
+            $('#titleadv').empty();
+            $('#titleadv').append('Error en los datos de la factura');
+            $('#msjerror').empty();
+            $('#msjerror').append('El numero de factura ingresado ya se encuentra registrado.<br><br> <h5>Por favor verifique e intente nuevamente</h5>');
+            $('#btnseleccion').prop('disabled', true);
+            $('#procesar').prop('disabled', true);
+            $('#modaltotalf').modal('show');
+        }else{
+            $('.Facturanum').empty();
+            $('.Facturanum').append(numerof);
+            if (numerof.length>0) {
+                $('#btnseleccion').prop('disabled', false);
+                $('#btnseleccion').attr('title', 'Seleccionas productos');
+            }else{
+                $('#btnseleccion').prop('disabled', true);
+                $('#btnseleccion').attr('title', 'Ingrese el numero de factura para continuar');
+            }
+        }
+            
+        });
+        
+    });
+
+    $('#btnseleccion').click(function(event) {
+        tablaing(idt);
     });
     $('#ingresar').click(function(event) {
         $('#consults').hide();
@@ -113,6 +152,7 @@ $(document).ready(function() {
         }else{
             $('#guardarm').prop('disabled', true);
         }
+        validarultimoprecio();
     });
 
     $('.monto').keyup(function(event) {
@@ -124,6 +164,10 @@ $(document).ready(function() {
         }else{
             $('#guardarm').prop('disabled', true);
         }
+    });
+
+    $('#precioc').change(function(event) {
+        validarultimoprecio();
     });
 
     $('#formproductos').submit(function(event) {
@@ -265,6 +309,10 @@ $(document).ready(function() {
         
     });
     tablaing(idt);
+
+    $('#totalfact').change(function(event) {
+        validartotal();
+    });
     
 });
 
@@ -970,30 +1018,83 @@ function tablaing(idt){
             .done(function(data) {
                 montoSup = data - ttlfact;
                 montoInf = ttlfact - data;
-                if (data>ttlfact) {
+                $('#titleadv').empty();
+                $('#titleadv').append('Error en los totales!');
+                if (montoSup <=1 && data>ttlfact) {
+                    $('#procesar').prop('disabled', false);
+                    $('#msjerror').empty();
+                    $('#msjerror').append('la sumatoria de precio de los productos agregados es superior al total de la factura por un monto de '+montoSup+' '+moneda+'<br>'+
+                        '<h5>puede continuar con la carga de la factura pero tenga en cuenta esta diferencia</h5>');
+                    $('#modaltotalf').modal('show');                    
+                    $('#totalfact').css('border-color', '#FFAE00');
+                    $('#errortotalfactura').show();
+                    $('#errortotalfactura').prop('hidden', false);
+                    $('#errortotalfactura').css('color', '#FFAE00');
+                }else if (montoInf <=1 && data<ttlfact) {
+                    $('#procesar').prop('disabled', false);
+                    $('#msjerror').empty();
+                    $('#msjerror').append('la sumatoria de precio de los productos agregados es inferior al total de la factura por un monto de '+montoInf+' '+moneda+'<br>'+
+                        '<h5>puede continuar con la carga de la factura pero tenga en cuenta esta diferencia</h5>');
+                    $('#modaltotalf').modal('show');                    
+                    $('#totalfact').css('border-color', '#FFAE00');
+                    $('#errortotalfactura').show();
+                    $('#errortotalfactura').prop('hidden', false);
+                    $('#errortotalfactura').css('color', '#FFAE00');
+                }else if (montoSup >1 && data>ttlfact) {
                     $('#procesar').prop('disabled', true);
                     $('#msjerror').empty();
                     $('#msjerror').append('la sumatoria de precio de los productos agregados es superior al total de la factura por un monto de '+montoSup+' '+moneda+'<br>'+
-                        '<h5>Por favor verifique los valores ingresados e intente nuevamente</h5>');
-                    $('#modaltotalf').modal('show');
-                    $('#totalfact').css('border-color', 'red');
-                    $('#errortotalfactura').show();                
-                    $('#errortotalfactura').prop('hidden', false);
-                }else if (data<ttlfact) {
-                    $('#procesar').prop('disabled', true);
-                    $('#msjerror').empty();
-                    $('#msjerror').append('la sumatoria de precio de los productos es inferior al total de la factura por un monto de '+montoInf+' '+moneda+'<br>'+
                         '<h5>Por favor verifique los valores ingresados e intente nuevamente</h5>');
                     $('#modaltotalf').modal('show');                    
                     $('#totalfact').css('border-color', 'red');
                     $('#errortotalfactura').show();
                     $('#errortotalfactura').prop('hidden', false);
+                    $('#errortotalfactura').css('color', 'red');
+                }else if (montoInf >1 && data<ttlfact) {
+                    $('#procesar').prop('disabled', true);
+                    $('#msjerror').empty();
+                    $('#msjerror').append('la sumatoria de precio de los productos agregados es inferior al total de la factura por un monto de '+montoInf+' '+moneda+'<br>'+
+                        '<h5>Por favor verifique los valores ingresados e intente nuevamente</h5>');
+                    $('#modaltotalf').modal('show');
+                    $('#totalfact').css('border-color', 'red');
+                    $('#errortotalfactura').show();                
+                    $('#errortotalfactura').prop('hidden', false);
+                    $('#errortotalfactura').css('color', 'red');
                 }else{
                     $('#errortotalfactura').hide();
                     $('#totalfact').css('border-color', '#00000026'); 
                     $('#procesar').prop('disabled', false);
                 }
             });
+    }
+
+    function validarultimoprecio(){
+        var idt = $('#idtienda').val();
+        var um = $('#unidad_medida_c').val();
+        var txtum = $('#unidad_medida_c option:selected').text();
+        var prod = $('#idpro').val();
+        var precio = $('#precioc').val();
+        var moneda = $('#monedatienda').val();
+        if (um.length >0 && precio.length>0) {
+            $.ajax({
+                url: BASE_URL+'/compra/validarprecio/'+um+'/'+precio+'/'+idt+'/'+prod,
+                type: 'POST',
+                dataType: 'json'
+            })
+            .done(function(data) {
+                var porc = data[0];
+                var precioant = data[1];
+                if (porc >=10) {
+                    $('#titleadv').empty();
+                    $('#titleadv').append('Aviso!');
+                    $('#msjerror').empty();
+                    $('#msjerror').append('Esta comprando este producto un '+porc.toLocaleString('es-ES', { maximumFractionDigits: 2 })+'% por encima del precio de la ultima compra. <br/>'+
+                        'El ultimo precio fue de '+precioant+' '+moneda+' por '+txtum+'');
+                    $('#modaltotalf').modal('show');
+                }
+            });
+            
+        }
     }
 
     $(document).ready(function() {
