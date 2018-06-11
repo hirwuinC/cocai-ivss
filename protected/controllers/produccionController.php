@@ -301,5 +301,59 @@
 			}
 		}
 
+		public function datosdelsemi($idt,$idsemi){
+			$datatienda = $this->_main->datostienda($idt);
+			for ($i=0; $i <count($datatienda) ; $i++) { 
+				if ($idsemi == $datatienda[$i]['idP']) {
+					$data = $datatienda[$i];
+				}
+			}
+			if (!isset($data)) {
+				$data = false;
+			}
+			echo json_encode($data);
+		}
+
+		public function costoentanda($idmer,$rreal,$idt){
+			$totalxtanda = 0;
+			$query = "SELECT DISTINCT ingrediente_id, receta.id as idrece, cantidad as quantity, format(cantidad,4,'de_DE') as cantidad, ihr.unidad_medida_id, mercancia.codigo, mercancia.nombre as producto, marca, precio_unitario as precioU, format(precio_unitario,4,'de_DE') as costoing, contenido_neto, formula_c, unidad_medida_sistema_id, mc.existencia, format(mc.existencia,4,'de_DE') as stock, unidad_medida.abreviatura, um.abreviatura as abreviaturasis 
+				FROM `ingrediente_has_receta` as ihr
+				left join unidad_medida on unidad_medida_id = unidad_medida.id
+				left join mercancia on mercancia.id = ingrediente_id
+				left join unidad_medida as um on unidad_medida_sistema_id = um.id
+				left join receta on ihr.receta_id = receta.id
+				left join mercancia_has_unidad_negocio as mc on ingrediente_id = mc.mercancia_id 
+				where ihr.receta_id = $idmer and unidad_negocio_id = $idt";
+				$data = $this->_main->select($query);
+
+			for ($i=0; $i < count($data) ; $i++) { 
+                $a = $data[$i]['contenido_neto'];
+                $b = $data[$i]['precioU'];
+                $c = $data[$i]['quantity'];
+                $bxc = $b*$c;
+                if ($data[$i]['contenido_neto'] != 0) {
+                    $x = $bxc/$a;
+                }else{
+                    $x = $bxc/1;
+                }
+
+                $costotanda[$i] = $x*$rreal;
+                $cantreq = $data[$i]['quantity']*$rreal;
+                $totalxtanda = $costotanda[$i]+$totalxtanda;
+                
+                $data[$i]['costoporcion'] = number_format($x,4,",",".");
+                $data[$i]['costop'] = $x;
+                $data[$i]['costotanda'] = number_format($costotanda[$i],4,",",".");
+                $data[$i]['costoxtanda'] = $costotanda[$i];
+                $data[$i]['cantreq'] = number_format($cantreq,4,",",".");
+                $data[$i]['cantidadreq'] = $cantreq;
+                $data[0]['totaltanda'] = number_format($totalxtanda,4,",",".");
+                $data[0]['totalxtanda'] = $totalxtanda;
+            }
+            $response = array("data"=>$data);
+    		//print_r($response);
+    		echo json_encode($response);
+		}
+
 	}
 ?>

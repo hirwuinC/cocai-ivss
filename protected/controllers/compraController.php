@@ -9,7 +9,7 @@
 	
 			parent::__construct();
 			$this->_main = $this->loadModel('main');
-			//$this->_compra = $this->loadModel('compra');
+			$this->_compra = $this->loadModel('compra');
 			//Session::accessRole(array('Super usuario','AdministradorB'));
 		}
 		
@@ -44,14 +44,15 @@
 			echo json_encode($data);
 		}
 
-		public function materiaprima($idt){
+		public function materiaprima($idt,$idprov){
 			$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, mercancia.precio_unitario as precioU, mudn.existencia, format(mudn.existencia,4,'de_DE') as stock, stock_min, stock_max, format(mudn.stock_min,4,'de_DE') as stmin, format(mudn.stock_max,4,'de_DE') as stmax FROM `mercancia`
             left join unidad_medida as umc on umc.id = mercancia.unidad_medida_compra_id
             inner join unidad_medida as ump on ump.id = mercancia.unidad_medida_consumo_id
             inner join unidad_medida as ums on ums.id = mercancia.unidad_medida_sistema_id
             inner join mercancia_has_unidad_negocio as mudn on mudn.mercancia_id = mercancia.id
             inner join unidad_negocio on unidad_negocio.id = mudn.unidad_negocio_id
-            where mudn.unidad_negocio_id = $idt and familia_id != 135";
+            left join proveedor_has_mercancia on mercancia.id = proveedor_has_mercancia.mercancia_id
+            where mudn.unidad_negocio_id = $idt and familia_id != 135 and proveedor_id = $idprov";
             $data = $this->_main->select($query);
 			$response = array("data"=>$data);
     		//print_r($response);
@@ -61,45 +62,14 @@
 
 		function ordenC($id,$success = false){
     		$this->_view->setJs(array('js/jquery-1.12.4'));
-    		$this->_view->setJs(array('js/remision'));
-    		$this->_view->setJs(array('js/carrito'));
+    		$this->_view->setJs(array('js/facturas'));
     		$this->_view->setCss(array('datatable/css/bootstrap4.min'));
 		    $this->_view->setjs(array('datatable/js/jquerydatatable.min'));
 		    $this->_view->setJs(array('datatable/js/datatable.b4.min'));
 		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
 		    $this->_view->setJs(array('datatable/js/tabla'));
-		    Session::destroy('idtienda');
-		    Session::destroy('totalPagar');
-       		Session::destroy('carrito1');
-    		$_SESSION['idtienda'] = $id;
-    		$modelos = Session::modelo('idUsuario');
-    			$query = "SELECT unidad_negocio.id, unidad_negocio.nombre, modelo.id as idM, modelo.nombre as modelo, empresa_id From unidad_negocio left join modelo_has_submodelo on modelo_has_submodelo_id = modelo_has_submodelo.id left join modelo on modelo_id = modelo.id where unidad_negocio.id = $id";
-    		$datosT = $this->_main->select($query);
-    		if (!is_null($datosT[0]['idM'])) {
-    			$modeloid = $datosT[0]['idM'];
-    		$query = "SELECT unidad_negocio.id, unidad_negocio.nombre, modelo.nombre as modelo from unidad_negocio 
-    		inner join modelo_has_submodelo  on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
-    		inner join modelo on modelo.id = modelo_has_submodelo.modelo_id
-    		where modelo_has_submodelo.modelo_id = $modeloid and unidad_negocio.id !=$id";
-    		$tiendas = $this->_main->select($query);
-    		}
-    		
-    		$query = "SELECT nombre from mercancia";
-    		$products = $this->_main->select($query);
-    		$this->_view->prod = $products;
-    		$tiendas[0]['tiendaen'] = $datosT[0]['nombre'];
-    		$tiendas[0]['idempresa'] = $datosT[0]['empresa_id'];
-
-    		$this->_view->datos = $tiendas;
-    		$this->_view->idu = $id;
-    		if ($success == 'success') {
-					$this->_view->_error = Controller::getBoxAlert(
-	                        'Solicitud enviada con exito', 
-	                        '',
-	                        'success');
-	        		//$this->_view->render('remision', 'inventario', '','');
-
-				}
+		    $valores = $this->_main->datostienda($id);
+			$this->_view->g = $valores;
       		$this->_view->render('ordenescompra', 'compra', '','');
     	}
 
@@ -133,6 +103,44 @@
 				$id = $idpro;
 				$idt = $idt;
 			}
+			if (isset($_POST['impuesto']) and $_POST['impuesto'] >0) {
+				$porcimpuesto = $_POST['impuesto'];
+				$mul = $monto*$porcimpuesto;
+				$impuesto = $mul/100;
+			}else{
+				$porcimpuesto = 0;
+				$impuesto = 0;
+			}
+			if (isset($_POST['tipoimpuesto'])) {
+				$tipoImp = $_POST['tipoimpuesto'];
+				if ($tipoImp == 1) {
+					$preciot = $monto;
+					$monto = $preciot-$impuesto;
+				}else{
+					$preciot = $monto+$impuesto;
+					$monto = $monto;
+				}
+			}
+			
+			
+			
+			if (isset($_POST['dctoporc']) and $_POST['dctoporc']>0) {
+				$porcdescuento = $_POST['dctoporc'];
+				$mul2 = $preciot*$porcdescuento;
+				$descuento = $mul2/100;
+			}else if (isset($_POST['dctomonto']) and $_POST['dctomonto']>0) {
+				$descuento = $_POST['dctomonto'];
+				$mul2 = $descuento*100;
+				$porcdescuento = $mul2/$preciot;
+			}else{
+				$descuento = 0;
+				$porcdescuento = 0;
+			}
+			if (isset($preciot) and isset($cant)) {
+				$preciofinalU = $preciot-$descuento;
+				$preciototal = $cant*$preciofinalU;
+			}
+			
 
 			
 			$query = "SELECT mercancia.id, nombre, marca,codigo, precio_unitario, mercancia.contenido_neto, um1.id as idums, um1.abreviatura as ums, um2.id as idump, um2.abreviatura as ump, mhudn.existencia, format(existencia,4,'de_DE') as stock, format(precio_unitario,4,'de_DE') as costo, formula_c FROM mercancia
@@ -158,6 +166,13 @@
 			            case '1':
 			                $arreglo[$numero]['id']= $id;
 			                $arreglo[$numero]['precio']=$datos[0]['precio_unitario'];
+			                $arreglo[$numero]['porcimpuesto']=$porcimpuesto;
+			                $arreglo[$numero]['impuesto']=$impuesto;
+			                $arreglo[$numero]['tipoImp']=$tipoImp;
+			                $arreglo[$numero]['porcdescuento']=$porcdescuento;
+			                $arreglo[$numero]['descuento']=$descuento;
+			                $arreglo[$numero]['preciofinalU']=$preciofinalU;
+			                $arreglo[$numero]['preciototal']=$preciototal;
 			                $arreglo[$numero]['costo']=$datos[0]['costo'];
 			                $arreglo[$numero]['ump'] = $datos[0]['ump'];
 			                $arreglo[$numero]['ums'] = $datos[0]['ums'];
@@ -192,6 +207,13 @@
 				        	$arreglo = $_SESSION['productosC'];
 				        	$datosNuevos=array('id'=>$id,
 			                    'precio'=>$datos[0]['precio_unitario'],
+			                    'porcimpuesto'=>$porcimpuesto,
+			                    'impuesto'=>$impuesto,
+			                    'tipoImp'=>$tipoImp,
+			                    'porcdescuento'=>$porcdescuento,
+			                    'descuento'=>$descuento,
+			                    'preciofinalU'=>$preciofinalU,
+			                    'preciototal'=>$preciototal,
 			                    'costo'=>$datos[0]['costo'],
 			                    'ump'=>$datos[0]['ump'],
 			                    'ums'=>$datos[0]['ums'],
@@ -217,6 +239,13 @@
 			}else{
 				$arreglo[]=array('id'=>$id,
                     'precio'=>$datos[0]['precio_unitario'],
+                    'porcimpuesto'=>$porcimpuesto,
+                    'impuesto'=>$impuesto,
+                    'tipoImp'=>$tipoImp,
+                    'porcdescuento'=>$porcdescuento,
+                    'descuento'=>$descuento,
+                    'preciofinalU'=>$preciofinalU,
+                    'preciototal'=>$preciototal,
                     'costo'=>$datos[0]['costo'],
                     'ump'=>$datos[0]['ump'],
 			        'ums'=>$datos[0]['ums'],
@@ -279,29 +308,22 @@
 			echo json_encode($data);
 		}
 
-		public function validartotalF($imp=false){
+		public function validartotalF(){
 			$datos = $_SESSION['productosC'];
 			$totalf = 0;
-			if ($imp == false) {
-				$imp = 0;
-			}
 			for ($j=0; $j <count($datos); $j++) {
-				$totalpro[$j] = $datos[$j]['precioc']*$datos[$j]['cant'];
+				$totalpro[$j] = $datos[$j]['preciototal'];
 				$totalf = $totalpro[$j]+$totalf; 
 			}
-			if ($imp>0) {
-				$porcentaje = $imp;
-				$multiplicacion = $totalf*$porcentaje;
-				$impuesto = $multiplicacion/100;
+			if (!empty($datos)) {
+				echo json_encode($totalf);
 			}else{
-				$porcentaje = 0;
-				$impuesto = 0;
+				echo json_encode('nodata');
 			}
-			$TotalF = $totalf-$impuesto;
-			echo json_encode($totalf);
+			
 		}
 
-		public function procesarfactura($idT=false){
+		public function procesarfactura($idT,$type=false,$oc=false){
 			//var_dump($_POST);exit();
 			$datos = $_SESSION['productosC'];
 			$accion = 'Modificado';
@@ -309,25 +331,37 @@
 			$tipoM = 131;
 			$totalf = 0;
 			$totalp = 0;
+			$totalimp = 0;
+			$totalpcimp = 0;
+			$totaldcto = 0;
+			$totalpcdcto = 0;
 			$findme   = ',';
 			$hoy = date('Y-m-d');
+			$num_orden = date('ynjhi');
+
 			for ($j=0; $j <count($datos); $j++) {
-				$totalpro[$j] = $datos[$j]['precioc']*$datos[$j]['cant'];
+				$totalpro[$j] = $datos[$j]['preciototal'];
 				$totalf = $totalpro[$j]+$totalf; 
+				$totalimppro[$j] = $datos[$j]['impuesto'];
+				$totalimp = $totalimppro[$j]+$totalimp;
+				$totalporcimppro[$j] =  $datos[$j]['porcimpuesto'];
+				$totalpcimp = $totalporcimppro[$j]+$totalpcimp;
+				$totaldctopro[$j] = $datos[$j]['descuento'];
+				$totaldcto = $totaldctopro[$j]+$totaldcto;
+				$totalporcdctopro[$j] =  $datos[$j]['porcdescuento'];
+				$totalpcdcto = $totalporcdctopro[$j]+$totalpcdcto;
 			}
-			if ($_POST['impuesto']>0) {
-				$porcentaje = $_POST['impuesto'];
-				$multiplicacion = $totalf*$porcentaje;
-				$impuesto = $multiplicacion/100;
-			}else{
-				$porcentaje = 0;
-				$impuesto = 0;
-			}
-			$TotalF = $totalf-$impuesto;
+			//$TotalF = $totalf-$impuesto;
 			/*echo $TotalF."<br>";
 			echo $impuesto; exit();*/
-			$query = "INSERT INTO `factura`(`num_factura`, `fecha_carga`, `fecha_factura`, `porcentaje_impuesto`, `impuesto_factura`, `total_factura`, `proveedor_id`, `unidad_negocio_id`) VALUES ('".$_POST['num_factura']."','".$hoy."','".$_POST['fechac']."','".$porcentaje."','".$impuesto."','".$TotalF."','".$_POST['selectp']."',$idT)";
-			$factura = $this->_main->insertar($query);
+			if ($type == 'oc') {
+				$query = "INSERT INTO `orden_compra`(`num_orden`,`fecha`, `porcentaje_impuesto`, `impuesto`, `porcentaje_descuento`, `descuento`, `total_orden`, `proveedor_id`, `unidad_negocio_id`, `status_id`) VALUES ('".$num_orden."','".$hoy."','".$totalpcimp."','".$totalimp."', '".$totalpcdcto."','".$totaldcto."','".$totalf."','".$_POST['selectp']."',$idT,41)";
+					$ordencompra = $this->_main->insertar($query);
+			}else{
+				$query = "INSERT INTO `factura`(`num_factura`, `fecha_carga`, `fecha_factura`, `porcentaje_impuesto`, `impuesto_factura`, `porcentaje_descuento`, `descuento`, `total_factura`, `proveedor_id`, `unidad_negocio_id`) VALUES ('".$_POST['num_factura']."','".$hoy."','".$_POST['fechac']."','".$totalpcimp."','".$totalimp."', '".$totalpcdcto."','".$totaldcto."','".$totalf."','".$_POST['selectp']."',$idT)";
+					$factura = $this->_main->insertar($query);
+			}
+			
 			for ($i=0; $i < count($datos); $i++) { 
 					$conte = $datos[$i]['contenido_neto'];
 					$pos4 = strpos($conte, $findme);
@@ -345,40 +379,66 @@
 
 					if ($datos[$i]['idum'] == $datos[$i]['ums'] and ($datos[$i]['idum'] != $datos[$i]['ump'])) {
 						$a = $datos[$i]['cant'];
-						$b = $datos[$i]['precioc'];
+						$b = $datos[$i]['preciofinalU'];
 						$c = 1000;
 						$m = $b*$c;
 						$d = $m/$a;
 						$preicoconsumo = $d;
 					}else if ($datos[$i]['idum'] != $datos[$i]['ums'] and $datos[$i]['idum'] != $datos[$i]['ump']) {
 						$a = $datos[$i]['unidadesx'];
-						$b = $datos[$i]['precioc'];
+						$b = $datos[$i]['preciofinalU'];
 						$c = $b/$a;
 						$preicoconsumo = $c;
 					}else{
-						$preicoconsumo = $datos[$i]['precioc'];
+						$preicoconsumo = $datos[$i]['preciofinalU'];
 					}
 					
 					$query = "SELECT existencia FROM mercancia_has_unidad_negocio where unidad_negocio_id = $idT and mercancia_id = '".$datos[$i]['id']."'";
 					$stock = $this->_main->select($query);
-					$query = "INSERT INTO `mercancia_has_factura`(`factura_id`, `mercancia_id`, `cantidad`, `cantidadx`, `unidad_medida_id`, `precio_unitario_um`, `preciou_consumo`, `devolucion`) VALUES ('".$factura."','".$datos[$i]['id']."','".$datos[$i]['cant']."','".$datos[$i]['unidadesx']."', '".$datos[$i]['idum']."','".$datos[$i]['precioc']."','".$preicoconsumo."',0)";
+					if ($type == 'oc') {
+					$query = "INSERT INTO `mercancia_has_oc`(`orden_compra_id`, `mercancia_id`, `cantidad`, `cantidadx`, `unidad_medida_id`, `precio_unitario_um`, `porc_impuesto`, `impuesto`, `porc_descuento`, `descuento`, `preciou_consumo`) VALUES ('".$ordencompra."','".$datos[$i]['id']."','".$datos[$i]['cant']."','".$datos[$i]['unidadesx']."', '".$datos[$i]['idum']."','".$datos[$i]['precioc']."','".$datos[$i]['porcimpuesto']."','".$datos[$i]['impuesto']."','".$datos[$i]['porcdescuento']."','".$datos[$i]['descuento']."','".$preicoconsumo."')";
 					$mercanciaF = $this->_main->insertar($query);
+					}else{
+						$query = "INSERT INTO `mercancia_has_factura`(`factura_id`, `mercancia_id`, `cantidad`, `cantidadx`, `unidad_medida_id`, `precio_unitario_um`, `porc_impuesto`, `impuesto`, `porc_descuento`, `descuento`, `preciou_consumo`, `devolucion`) VALUES ('".$factura."','".$datos[$i]['id']."','".$datos[$i]['cant']."','".$datos[$i]['unidadesx']."', '".$datos[$i]['idum']."','".$datos[$i]['precioc']."','".$datos[$i]['porcimpuesto']."','".$datos[$i]['impuesto']."','".$datos[$i]['porcdescuento']."','".$datos[$i]['descuento']."','".$preicoconsumo."',0)";
+						$mercanciaF = $this->_main->insertar($query);
+					}
 					$cant = $stock[0]['existencia']+$conversion;
-					$this->_main->log($datos[$i]['id'],$idT,$accion);
-					$this->_main->kardex($datos[$i]['cantidad'],$motivo,$tipoM,$datos[$i]['id'],$idT,$datos[$i]['idum'],$datos[$i]['comentario']);
-					$query = "UPDATE mercancia_has_unidad_negocio set existencia=$cant where unidad_negocio_id = $idT and mercancia_id = '".$datos[$i]['id']."'";
-					$actualizado = $this->_main->modificar($query);
-					$query = "SELECT SUM(preciou_consumo) as pc, count(id) as registros FROM mercancia_has_factura where mercancia_id = '".$datos[$i]['id']."'";
-					$datosPrecio = $this->_main->select($query);
-					$totalp = $datosPrecio[0]['pc'];
-					$registros = $datosPrecio[0]['registros'];
-					$promedio = $totalp/$registros;
-					$query = "UPDATE mercancia set precio_unitario=$promedio where mercancia.id = '".$datos[$i]['id']."'";
-					$actualizapre = $this->_main->modificar($query);	
-
+					
+					if ($type != 'oc') {
+						$this->_main->log($datos[$i]['id'],$idT,$accion);
+						$this->_main->kardex($datos[$i]['cantidad'],$motivo,$tipoM,$datos[$i]['id'],$idT,$datos[$i]['idum'],$datos[$i]['comentario']);
+						$query = "UPDATE mercancia_has_unidad_negocio set existencia=$cant where unidad_negocio_id = $idT and mercancia_id = '".$datos[$i]['id']."'";
+						$actualizado = $this->_main->modificar($query);
+						$query = "SELECT SUM(preciou_consumo) as pc, count(id) as registros FROM mercancia_has_factura where mercancia_id = '".$datos[$i]['id']."'";
+						$datosPrecio = $this->_main->select($query);
+						$totalp = $datosPrecio[0]['pc'];
+						$registros = $datosPrecio[0]['registros'];
+						$promedio = $totalp/$registros;
+						$query = "UPDATE mercancia set precio_unitario=$promedio where mercancia.id = '".$datos[$i]['id']."'";
+						$actualizapre = $this->_main->modificar($query);
+					}
+					if ($oc != false) {
+						$query = "UPDATE `orden_compra` SET `status_id`=43 WHERE orden_compra.id = $oc";
+						$actualizaoc = $this->_main->modificar($query);
+					}
+						
 			}
+				if ($type == 'oc') {
+					$tipo = 1;
+					$totalPagar = $totalf;
+					$query = "SELECT empresa_id, unidad_negocio.id as idU, unidad_negocio.nombre as udn, modelo.nombre as modelo From unidad_negocio
+	              	left join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
+	                left join modelo on modelo.id = modelo_has_submodelo.modelo_id where unidad_negocio.id = $idT";
+	            	$idempresa = $this->_main->select($query);
+	                $query = "SELECT correo,nombre as proveedor FROM proveedor where id = '".$_POST['selectp']."'";
+	                $email = $this->_main->select($query);
+	                $query ="SELECT correo FROM unidad_negocio where id = '".$idT."'";
+	                $correot = $this->_main->select($query);
+	                if (isset($email)) {
+	                  $this->_compra->correo($datos,$totalPagar,$idempresa,$email,$correot,$tipo);
+	                }
+	            }
 
-			
 			echo json_encode($datos);
 			//Session::destroy('productosC');
 
@@ -398,19 +458,19 @@
 
 		public function consultarF($idt,$tipo,$f1,$f2,$ide=false){
 			if ($ide != false) {
-				$query = "SELECT factura.id as idF, num_factura, DATE_FORMAT(fecha_carga, '%d-%m-%Y') as fecha_carga, DATE_FORMAT(fecha_factura, '%d-%m-%Y') as fecha_factura, porcentaje_impuesto as porcImp, format(impuesto_factura,4,'de_DE') as impuesto, impuesto_factura as impueston, format(total_factura,4,'de_DE') as total_factura, total_factura as subtotal, format(impuesto_factura + total_factura,4,'de_DE') as ttl, proveedor_id as idprov, unidad_negocio_id as idudn, unidad_negocio.nombre as tienda, proveedor.nombre as nombreprov From factura
+				$query = "SELECT factura.id as idF, num_factura, DATE_FORMAT(fecha_carga, '%d-%m-%Y') as fecha_carga, DATE_FORMAT(fecha_factura, '%d-%m-%Y') as fecha_factura, porcentaje_impuesto as porcImp, format(impuesto_factura,4,'de_DE') as impuesto, impuesto_factura as impueston, porcentaje_descuento as porcdcto, format(descuento,4,'de_DE') as descuento, descuento as descuenton, format(total_factura-impuesto_factura+descuento,4,'de_DE') as total_factura, total_factura as subtotal, format(total_factura,4,'de_DE') as ttl, proveedor_id as idprov, unidad_negocio_id as idudn, unidad_negocio.nombre as tienda, proveedor.nombre as nombreprov From factura
 				inner join proveedor on proveedor.id = proveedor_id 
 				inner join unidad_negocio on unidad_negocio.id = unidad_negocio_id
 				where fecha_factura BETWEEN '".$f1."' and '".$f2."' and factura.unidad_negocio_id = $idt ORDER BY factura.id desc";
 				$datae = $this->_main->select($query);
-				$query = "SELECT factura.id as idF, num_factura, DATE_FORMAT(fecha_carga, '%d-%m-%Y') as fecha_carga, DATE_FORMAT(fecha_factura, '%d-%m-%Y') as fecha_factura, porcentaje_impuesto as porcImp, format(impuesto_factura,4,'de_DE') as impuesto, impuesto_factura as impueston, format(total_factura,4,'de_DE') as total_factura, total_factura as subtotal, format(impuesto_factura + total_factura,4,'de_DE') as ttl, proveedor_id as idprov, unidad_negocio_id as idudn, unidad_negocio.nombre as tienda, proveedor.nombre as nombreprov From factura
+				$query = "SELECT factura.id as idF, num_factura, DATE_FORMAT(fecha_carga, '%d-%m-%Y') as fecha_carga, DATE_FORMAT(fecha_factura, '%d-%m-%Y') as fecha_factura, porcentaje_impuesto as porcImp, format(impuesto_factura,4,'de_DE') as impuesto, impuesto_factura as impueston, porcentaje_descuento as porcdcto, format(descuento,4,'de_DE') as descuento, descuento as descuenton, format(total_factura-impuesto_factura+descuento,4,'de_DE') as total_factura, total_factura as subtotal, format(total_factura,4,'de_DE') as ttl, proveedor_id as idprov, unidad_negocio_id as idudn, unidad_negocio.nombre as tienda, proveedor.nombre as nombreprov From factura
 				inner join proveedor on proveedor.id = proveedor_id 
 				inner join unidad_negocio on unidad_negocio.id = unidad_negocio_id
 				where fecha_factura BETWEEN '".$f1."' and '".$f2."' and unidad_negocio.empresa_id = $idt ORDER BY factura.id desc";
 				$datat = $this->_main->select($query);
 				$data = array_merge($datae,$datat);
 			}else{
-				$query = "SELECT factura.id as idF, num_factura, DATE_FORMAT(fecha_carga, '%d-%m-%Y') as fecha_carga, DATE_FORMAT(fecha_factura, '%d-%m-%Y') as fecha_factura, porcentaje_impuesto as porcImp, format(impuesto_factura,4,'de_DE') as impuesto, impuesto_factura as impueston, format(total_factura,4,'de_DE') as total_factura, total_factura as subtotal, format(impuesto_factura + total_factura,4,'de_DE') as ttl, proveedor_id as idprov, unidad_negocio_id as idudn, unidad_negocio.nombre as tienda, proveedor.nombre as nombreprov From factura
+				$query = "SELECT factura.id as idF, num_factura, DATE_FORMAT(fecha_carga, '%d-%m-%Y') as fecha_carga, DATE_FORMAT(fecha_factura, '%d-%m-%Y') as fecha_factura, porcentaje_impuesto as porcImp, format(impuesto_factura,4,'de_DE') as impuesto, impuesto_factura as impueston, porcentaje_descuento as porcdcto, format(descuento,4,'de_DE') as descuento, descuento as descuenton, format(total_factura-impuesto_factura+descuento,4,'de_DE') as total_factura, total_factura as subtotal, format(total_factura,4,'de_DE') as ttl, proveedor_id as idprov, unidad_negocio_id as idudn, unidad_negocio.nombre as tienda, proveedor.nombre as nombreprov From factura
 				inner join proveedor on proveedor.id = proveedor_id 
 				inner join unidad_negocio on unidad_negocio.id = unidad_negocio_id
 				where fecha_factura BETWEEN '".$f1."' and '".$f2."' and factura.unidad_negocio_id = $idt ORDER BY factura.id desc";
@@ -423,7 +483,7 @@
 
 		public function consultarD($idt,$f1,$f2,$ide=false){
 			if ($ide != false) {
-				$query = "SELECT mercancia_has_factura.id as idmhf, factura.id as idf, mercancia.id as idm, unidad_medida.id as idum, abreviatura, mercancia.codigo, mercancia.nombre, mercancia.marca, cantidad, cantidadx, precio_unitario_um as puum, devolucion, comentario_devolucion as comentarioD, factura.fecha_factura, factura.proveedor_id, factura.num_factura, unidad_negocio.id as idund, unidad_negocio.nombre as tienda, proveedor.nombre as nombreprov, proveedor.id as idprov, fecha_devolucion FROM `mercancia_has_factura`
+				$query = "SELECT mhf.id as idmhf, factura.id as idf, mercancia.id as idm, unidad_medida.id as idum, abreviatura, mercancia.codigo, mercancia.nombre, mercancia.marca, cantidad, cantidadx, precio_unitario_um as puum, format(precio_unitario_um+impuesto-mhf.descuento,4,'de_DE') as precioUpro, format(impuesto,4,'de_DE') as impuesto, impuesto as imp, porc_impuesto, format(mhf.descuento,4,'de_DE') as descuento, mhf.descuento as scto, porc_descuento, devolucion, comentario_devolucion as comentarioD, DATE_FORMAT(factura.fecha_factura, '%d-%m-%Y') as fecha_factura, factura.proveedor_id, factura.num_factura, unidad_negocio.id as idund, unidad_negocio.nombre as tienda, proveedor.nombre as nombreprov, proveedor.id as idprov, DATE_FORMAT(fecha_devolucion, '%d-%m-%Y') as fecha_devolucion, format(cantidadNC,4,'de_DE') as cantnc, precioNC, format(precioNC,4,'de_DE') as montonc FROM `mercancia_has_factura` as mhf
 				inner join mercancia on mercancia.id = mercancia_id
 				INNER JOIN factura on factura_id = factura.id
 				inner join unidad_medida on unidad_medida.id = unidad_medida_id
@@ -431,7 +491,7 @@
 				inner join proveedor on proveedor.id = proveedor_id
 				where devolucion = 1 and factura.fecha_factura BETWEEN '".$f1."' and '".$f2."' and factura.unidad_negocio_id = $idt";
 				$datae = $this->_main->select($query);
-				$query = "SELECT mercancia_has_factura.id as idmhf, factura.id as idf, mercancia.id as idm, unidad_medida.id as idum, abreviatura, mercancia.codigo, mercancia.nombre, mercancia.marca, cantidad, cantidadx, precio_unitario_um as puum, devolucion, comentario_devolucion as comentarioD, factura.fecha_factura, factura.proveedor_id, factura.num_factura, unidad_negocio.id as idund, unidad_negocio.nombre as tienda, proveedor.nombre as nombreprov, proveedor.id as idprov, fecha_devolucion FROM `mercancia_has_factura`
+				$query = "SELECT mhf.id as idmhf, factura.id as idf, mercancia.id as idm, unidad_medida.id as idum, abreviatura, mercancia.codigo, mercancia.nombre, mercancia.marca, cantidad, cantidadx, precio_unitario_um as puum, format(precio_unitario_um+impuesto-mhf.descuento,4,'de_DE') as precioUpro, format(impuesto,4,'de_DE') as impuesto, impuesto as imp, porc_impuesto, format(mhf.descuento,4,'de_DE') as descuento, mhf.descuento as scto, porc_descuento, devolucion, comentario_devolucion as comentarioD, DATE_FORMAT(factura.fecha_factura, '%d-%m-%Y') as fecha_factura, factura.proveedor_id, factura.num_factura, unidad_negocio.id as idund, unidad_negocio.nombre as tienda, proveedor.nombre as nombreprov, proveedor.id as idprov, DATE_FORMAT(fecha_devolucion, '%d-%m-%Y') as fecha_devolucion, format(cantidadNC,4,'de_DE') as cantnc, precioNC, format(precioNC,4,'de_DE') as montonc FROM `mercancia_has_factura` as mhf
 				inner join mercancia on mercancia.id = mercancia_id
 				INNER JOIN factura on factura_id = factura.id
 				inner join unidad_medida on unidad_medida.id = unidad_medida_id
@@ -441,7 +501,7 @@
 				$datat = $this->_main->select($query);
 				$data = array_merge($datae,$datat);
 			}else{
-				$query = "SELECT mercancia_has_factura.id as idmhf, factura.id as idf, mercancia.id as idm, unidad_medida.id as idum, abreviatura, mercancia.codigo, mercancia.nombre, mercancia.marca, cantidad, cantidadx, precio_unitario_um as puum, devolucion, comentario_devolucion as comentarioD, factura.fecha_factura, factura.proveedor_id, factura.num_factura, unidad_negocio.id as idund, unidad_negocio.nombre as tienda, proveedor.nombre as nombreprov, proveedor.id as idprov, fecha_devolucion FROM `mercancia_has_factura`
+				$query = "SELECT mhf.id as idmhf, factura.id as idf, mercancia.id as idm, unidad_medida.id as idum, abreviatura, mercancia.codigo, mercancia.nombre, mercancia.marca, cantidad, cantidadx, precio_unitario_um as puum, format(precio_unitario_um+impuesto-mhf.descuento,4,'de_DE') as precioUpro, format(impuesto,4,'de_DE') as impuesto, impuesto as imp, porc_impuesto, format(mhf.descuento,4,'de_DE') as descuento, mhf.descuento as scto, porc_descuento, devolucion, comentario_devolucion as comentarioD, DATE_FORMAT(factura.fecha_factura, '%d-%m-%Y') as fecha_factura, factura.proveedor_id, factura.num_factura, unidad_negocio.id as idund, unidad_negocio.nombre as tienda, proveedor.nombre as nombreprov, proveedor.id as idprov, DATE_FORMAT(fecha_devolucion, '%d-%m-%Y') as fecha_devolucion, format(cantidadNC,4,'de_DE') as cantnc, precioNC, format(precioNC,4,'de_DE') as montonc FROM `mercancia_has_factura` as mhf
 				inner join mercancia on mercancia.id = mercancia_id
 				INNER JOIN factura on factura_id = factura.id
 				inner join unidad_medida on unidad_medida.id = unidad_medida_id
@@ -456,12 +516,25 @@
 		}
 
 		public function productosfactura($idf){
-			$query = "SELECT factura.id as idF, num_factura, mercancia.id as idmer, format(cantidad,4,'de_DE') as cantidad, cantidad as cant, unidad_medida_id as idum, abreviatura, precio_unitario_um as pup, format(cantidad,4,'de_DE') as precioUpro, format(precio_unitario_um*cantidad,4,'de_DE') as precioproT, devolucion, unidad_negocio_id, mercancia.codigo, mercancia.nombre, mercancia.marca, mercancia.contenido_neto, cantidadx, abreviatura 
-			FROM `mercancia_has_factura` 
+			$query = "SELECT factura.id as idF, num_factura, mercancia.id as idmer, format(cantidad,4,'de_DE') as cantidad, cantidad as cant, unidad_medida_id as idum, abreviatura, precio_unitario_um as pup, format(precio_unitario_um,4,'de_DE') as precioUpro, format(precio_unitario_um*cantidad+impuesto-mhf.descuento,4,'de_DE') as precioproT, format(impuesto,4,'de_DE') as impuesto, impuesto as imp, porc_impuesto, format(mhf.descuento,4,'de_DE') as descuento, mhf.descuento as scto, porc_descuento, devolucion, unidad_negocio_id, mercancia.codigo, mercancia.nombre, mercancia.marca, mercancia.contenido_neto, cantidadx, abreviatura, cantidadNC, format(cantidadNC,4,'de_DE') as cantnc, precioNC, format(precioNC,4,'de_DE') as montonc
+			FROM `mercancia_has_factura` as mhf
 			inner join factura on factura.id = factura_id
 			inner join mercancia on mercancia.id = mercancia_id
 			inner join unidad_medida on unidad_medida.id = unidad_medida_id
-			where factura.id = $idf and devolucion = 0";
+			where factura.id = $idf";
+			$data = $this->_main->select($query);
+			$response = array("data"=>$data);
+    		//print_r($response);
+    		echo json_encode($response);
+		}
+
+		public function productosordenc($idOC){
+			$query = "SELECT orden_compra.id as idOC, num_orden, mercancia.id as idmer, format(cantidad,4,'de_DE') as cantidad, cantidad as cant, unidad_medida_id as idum, abreviatura, precio_unitario_um as pup, format(precio_unitario_um,4,'de_DE') as precioUpro, format(precio_unitario_um*cantidad+mhoc.impuesto-mhoc.descuento,4,'de_DE') as precioproT, format(mhoc.impuesto,4,'de_DE') as impuesto, mhoc.impuesto as imp, porc_impuesto, format(mhoc.descuento,4,'de_DE') as descuento, mhoc.descuento as scto, porc_descuento, unidad_negocio_id, mercancia.codigo, mercancia.nombre, mercancia.marca, mercancia.contenido_neto, cantidadx, abreviatura
+			FROM `mercancia_has_oc` as mhoc
+			inner join orden_compra on orden_compra.id = orden_compra_id
+			inner join mercancia on mercancia.id = mercancia_id
+			inner join unidad_medida on unidad_medida.id = unidad_medida_id
+			where orden_compra.id = $idOC";
 			$data = $this->_main->select($query);
 			$response = array("data"=>$data);
     		//print_r($response);
@@ -480,20 +553,28 @@
 				where unidad_negocio_id = $idt and mercancia_id = '".$_POST['idmer']."'";
 			$stock = $this->_main->select($query);
 			if ($_POST['idum'] != $stock[0]['ums']) {
-				$conversion = Controller::formula($_POST['idum'],$_POST['cantx'],$_POST['cant'],$_POST['conte'],$stock[0]['formula_c']);
+				$conversion = Controller::formula($_POST['idum'],$_POST['cantx'],$_POST['cantinc'],$_POST['conte'],$stock[0]['formula_c']);
 			}else{
-				$conversion = $_POST['cant'];
+				$conversion = $_POST['cantinc'];
 			}
 			$cant = $stock[0]['existencia']-$conversion;
 			$this->_main->log($_POST['idmer'],$idt,$accion);
 			$this->_main->kardex($conversion,$motivo,$tipoM,$_POST['idmer'],$idt,$_POST['idum'],$_POST['comentario']);
 			$query = "UPDATE mercancia_has_unidad_negocio set existencia=$cant where unidad_negocio_id = $idt and mercancia_id = '".$_POST['idmer']."'";
 			$actualizado = $this->_main->modificar($query);
-			$query = "SELECT * From factura where id = '".$_POST['idf']."'";
+			$query = "SELECT * FROM mercancia_has_factura where factura_id = '".$_POST['idf']."' and mercancia_id = '".$_POST['idmer']."'";
+			$mercfact = $this->_main->select($query);
+			$a = $_POST['cant'];
+			$b = $_POST['preciop']+$mercfact[0]['impuesto']-$mercfact[0]['descuento'];
+			$c = $_POST['cantinc'];
+			$multi = $c*$b;
+			$pvpnc = $multi/$a;
+			/*$query = "SELECT * From factura where id = '".$_POST['idf']."'";
 			$fact = $this->_main->select($query);
-			$preciop = $_POST['preciop']*$_POST['cant'];
-			if ($fact[0]['porcentaje_impuesto']>0) {
-				$porcentaje = $fact[0]['porcentaje_impuesto'];
+			
+			$preciop = $_POST['preciop']*$_POST['cantinc'];
+			if ($mercfact[0]['porc_impuesto']>0) {
+				$porcentaje = $mercfact[0]['porc_impuesto'];
 				$multiplicacion = $preciop*$porcentaje;
 				$impuesto = $multiplicacion/100;
 			}else{
@@ -504,8 +585,8 @@
 			$precioN = $preciop-$impuesto;
 			$precioF = $fact[0]['total_factura']-$precioN;
 			$query = "UPDATE `factura` SET `impuesto_factura`='".$impuestnuevo."' ,`total_factura`='".$precioF."' WHERE id= '".$_POST['idf']."'";
-			$updateF = $this->_main->modificar($query);
-			$query = "UPDATE mercancia_has_factura set devolucion=1, `comentario_devolucion`= '".$_POST['comentario']."', `fecha_devolucion` = '".$hoy."' 
+			$updateF = $this->_main->modificar($query);*/
+			$query = "UPDATE mercancia_has_factura set devolucion=1, `comentario_devolucion`= '".$_POST['comentario']."', `cantidadNC`= '".$_POST['cantinc']."', `precioNC`= '".$pvpnc."',  `fecha_devolucion` = '".$hoy."' 
 			where factura_id='".$_POST['idf']."' and mercancia_id ='".$_POST['idmer']."' ";
 			$devuelto = $this->_main->modificar($query);
 			echo json_encode($devuelto);
@@ -544,53 +625,268 @@
 			$pdf->Output();
 		}
 
-		public function consultasOC($idt){
-			$query = "SELECT reposicion_mercancia.id as idrepo, num_reposicion, fecha, hora, total, tipo_reposicion, unidad_negocio_id, usuario_id, usuario, usuario.nombre, apellido, codigo, unidad_negocio.nombre as tienda, empresa_id, correo, pais_id From reposicion_mercancia 
-			inner join usuario on usuario.id = usuario_id
-			inner join unidad_negocio on unidad_negocio_id = unidad_negocio.id
-			where unidad_negocio_id = $idt and tipo_reposicion = 'Orden de compra enviada' order by reposicion_mercancia.id desc";
-			$data = $this->_main->select($query);
-			for ($i=0; $i <count($data) ; $i++) {
-				$query = "SELECT proveedor.nombre as prove, correo From proveedor 
-			inner join mercancia_has_reposicion on mercancia_has_reposicion.proveedor_id = proveedor.id
-			inner join reposicion_mercancia on mercancia_has_reposicion.reposicion_id = reposicion_mercancia.id
-			where reposicion_id = '".$data[$i]['idrepo']."' and tipo_reposicion = 'Orden de compra enviada'";
-			$proveedor[] = $this->_main->select($query);
-			
-			$data[$i]['nombreproveedor'] = $proveedor[$i][0]['prove'];
-			$data[$i]['email'] = $proveedor[$i][0]['correo'];
-			}
-			
+		public function consultarOC($idt,$f1,$f2,$ide=false){
+			$data = $this->consulta_OC($idt,$f1,$f2,$ide);
 			$response = array("data"=>$data);
     		//print_r($response);
     		echo json_encode($response);
 		}
 
 		public function detallesOC($idr){
-			$query = "SELECT distinct reposicion_mercancia.id as idr, num_reposicion, fecha, hora, cantidad, format(cantidad,4,'de_DE') as cant, reposicion_mercancia.tipo_reposicion, unidad_medida_consumo_id as idumpresentacion, unidad_medida_sistema_id as idumsist, unidad_medida_compra_id as idumcompra, udn.id as idue, udn.nombre as tiendae, udn.rif as rife, udn.razon_social as razon_se, udn.correo as emailue, udn.empresa_id as idempresaue, mercancia.id as idm, mercancia.codigo as codim, mercancia.codigo_anterior as coditcr, mercancia.nombre as producto, mercancia.marca as marca, contenido_neto, familia_id, ref.referencia as familia, modelo.nombre as modelo, umpresentacion.abreviatura as abrevpres, umsistema.abreviatura as abrevsist, umcompra.abreviatura as abrevcompr, umsolicitud.id as idumsol, umsolicitud.abreviatura as abrevsol,  cantidad_recibida, format(cantidad_recibida,4,'de_DE') as cantr, mercancia_has_unidad_negocio.existencia, mercancia_has_unidad_negocio.stock_max, mercancia_has_unidad_negocio.stock_min, format(mercancia_has_unidad_negocio.existencia,4,'de_DE') as stock, format(mercancia_has_unidad_negocio.stock_min,4,'de_DE') as stmin, format(mercancia_has_unidad_negocio.stock_max,4,'de_DE') as stmax
-			FROM reposicion_mercancia
-            left join mercancia_has_reposicion on mercancia_has_reposicion.reposicion_id = reposicion_mercancia.id
-      		left join unidad_negocio as udn on reposicion_mercancia.unidad_negocio_id = udn.id
-      		left join modelo_has_submodelo on modelo_has_submodelo.id = udn.modelo_has_submodelo_id
-      		left join modelo on modelo.id = modelo_has_submodelo.modelo_id
-      		left join mercancia on mercancia.id = mercancia_has_reposicion.ingrediente_id
-      		left join mercancia_has_unidad_negocio on mercancia.id = mercancia_has_unidad_negocio.mercancia_id and udn.id = mercancia_has_unidad_negocio.unidad_negocio_id
-      		left join referencia as ref on mercancia.familia_id = ref.id
-      		left join unidad_medida as umpresentacion on unidad_medida_consumo_id = umpresentacion.id
-      		left join unidad_medida as umsistema on unidad_medida_sistema_id = umsistema.id
-            left join unidad_medida as umcompra on unidad_medida_compra_id = umcompra.id
-            left join unidad_medida as umsolicitud on mercancia_has_reposicion.unidad_medida_id = umsolicitud.id
-      		where reposicion_mercancia.id = $idr";
+			$data = $this->detalles_OC($idr);
       		$data = $this->_main->select($query);
       		$response = array("data"=>$data);
     		//print_r($response);
     		echo json_encode($response);
 		}
 
-		public function validarnumfact($num){
-			$query = "SELECT num_factura From factura where num_factura = $num";
+		public function consulta_OC($idt,$f1,$f2,$ide=false){
+			if ($ide != false) {
+				$query = "SELECT orden_compra.id as idOC, num_orden, DATE_FORMAT(fecha, '%d-%m-%Y') as fecha, fecha as dia, porcentaje_impuesto as porcImp, format(impuesto,4,'de_DE') as impuesto, impuesto as impueston, porcentaje_descuento as porcdcto, format(descuento,4,'de_DE') as descuento, descuento as descuenton, format(total_orden-impuesto+descuento,4,'de_DE') as total_orden, total_orden as subtotal, format(total_orden,4,'de_DE') as ttl, proveedor_id as idprov, unidad_negocio_id as idudn, unidad_negocio.nombre as tienda, proveedor.nombre as nombreprov, status_id From orden_compra
+				inner join proveedor on proveedor.id = proveedor_id 
+				inner join unidad_negocio on unidad_negocio.id = unidad_negocio_id
+				where fecha BETWEEN '".$f1."' and '".$f2."' and unidad_negocio_id = $idt ORDER BY orden_compra.id desc";
+				$datae = $this->_main->select($query);
+				$query = "SELECT orden_compra.id as idOC, num_orden, DATE_FORMAT(fecha, '%d-%m-%Y') as fecha, fecha as dia, porcentaje_impuesto as porcImp, format(impuesto,4,'de_DE') as impuesto, impuesto as impueston, porcentaje_descuento as porcdcto, format(descuento,4,'de_DE') as descuento, descuento as descuenton, format(total_orden-impuesto+descuento,4,'de_DE') as total_orden, total_orden as subtotal, format(total_orden,4,'de_DE') as ttl, proveedor_id as idprov, unidad_negocio_id as idudn, unidad_negocio.nombre as tienda, proveedor.nombre as nombreprov, status_id From orden_compra
+				inner join proveedor on proveedor.id = proveedor_id 
+				inner join unidad_negocio on unidad_negocio.id = unidad_negocio_id
+				where fecha BETWEEN '".$f1."' and '".$f2."' and unidad_negocio.empresa_id = $idt ORDER BY orden_compra.id desc";
+				$datat = $this->_main->select($query);
+				$data = array_merge($datae,$datat);
+			}else{
+				$query = "SELECT orden_compra.id as idOC, num_orden, DATE_FORMAT(fecha, '%d-%m-%Y') as fecha, fecha as dia, porcentaje_impuesto as porcImp, format(impuesto,4,'de_DE') as impuesto, impuesto as impueston, porcentaje_descuento as porcdcto, format(descuento,4,'de_DE') as descuento, descuento as descuenton, format(total_orden-impuesto+descuento,4,'de_DE') as total_orden, total_orden as subtotal, format(total_orden,4,'de_DE') as ttl, proveedor_id as idprov, unidad_negocio_id as idudn, unidad_negocio.nombre as tienda, proveedor.nombre as nombreprov, status_id From orden_compra
+				inner join proveedor on proveedor.id = proveedor_id 
+				inner join unidad_negocio on unidad_negocio.id = unidad_negocio_id
+				where fecha BETWEEN '".$f1."' and '".$f2."' and unidad_negocio_id = $idt ORDER BY orden_compra.id desc";
+				$data = $this->_main->select($query);
+			}
+			return $data;
+		}
+
+		public function detalles_OC($idr){
+			$query = "SELECT mhoc.id as idmhoc, orden_compra.id as idOC, mercancia.id as idm, unidad_medida.id as idum, abreviatura, mercancia.codigo, mercancia.nombre, mercancia.marca, cantidad, cantidadx, precio_unitario_um as puum, format(precio_unitario_um+mhoc.impuesto-mhoc.descuento,4,'de_DE') as precioUpro, format(mhoc.impuesto,4,'de_DE') as impuesto, mhoc.impuesto as imp, porc_impuesto, format(mhoc.descuento,4,'de_DE') as descuento, mhoc.descuento as dscto, porc_descuento, DATE_FORMAT(fecha, '%d-%m-%Y') as fecha, orden_compra.proveedor_id, num_orden, unidad_negocio.id as idund, unidad_negocio.nombre as tienda, proveedor.nombre as nombreprov, proveedor.id as idprov, total_orden, format(total_orden,4,'de_DE') as ttlorden
+			FROM `mercancia_has_oc` as mhoc
+				inner join mercancia on mercancia.id = mercancia_id
+				INNER JOIN orden_compra on orden_compra_id = orden_compra.id
+				inner join unidad_medida on unidad_medida.id = unidad_medida_id
+				inner join unidad_negocio on unidad_negocio.id = orden_compra.unidad_negocio_id
+				inner join proveedor on proveedor.id = proveedor_id
+				where orden_compra_id = $idr and orden_compra.status_id = 41";
+      		$data = $this->_main->select($query);
+      		return $data;
+		}
+
+		public function validarnumfact($num,$idprov){
+			$query = "SELECT num_factura From factura where num_factura = $num and proveedor_id = $idprov";
 			$data = $this->_main->select($query);
 			echo json_encode($data);
+		}
+
+		public function cargardesdeOC($idt,$id){
+			Session::destroy('productosC');
+			$this->_view->setJs(array('js/jquery-1.12.4.min'));
+			$this->_view->setCss(array('datatable/css/bootstrap4.min'));
+		    $this->_view->setjs(array('datatable/js/jquerydatatable.min'));
+		    $this->_view->setJs(array('datatable/js/datatable.b4.min'));
+		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
+		    $this->_view->setJs(array('datatable/js/tabla'));
+		    $this->_view->setJs(array('js/facturas'));
+		    $this->_view->setJs(array('js/ordenC'));
+		    $valores = $this->_main->datostienda($idt);
+			$this->_view->g = $valores;
+			$detalles = $this->detalles_OC($id);
+			$this->_view->detallesOC = $detalles;
+			$tipo = 1;
+			for ($i=0; $i <count($detalles) ; $i++) { 
+			//var_dump($_POST); exit();
+			if (isset($detalles[$i]['cantidad'])) {
+				$mystring = $detalles[$i]['cantidad'];
+				$mystring2 = $detalles[$i]['puum'];
+				$findme   = ',';
+				$pos = strpos($mystring, $findme);
+				$pos1 = strpos($mystring2, $findme);
+			
+				if ($pos != false) {
+					$p1 = str_replace(".","",$detalles[$i]['cantidad']);
+	           		$cant = str_replace(",",".",$p1);
+				}else{
+					$cant = $detalles[$i]['cantidad'];
+				}
+
+				if ($pos1 != false) {
+					$p2 = str_replace(".","",$detalles[$i]['puum']);
+	           		$monto = str_replace(",",".",$p2);
+				}else{
+					$monto = $detalles[$i]['puum'];
+				}
+			}
+			$idm = $detalles[$i]['idm'];
+			$idt = $idt;
+			
+			if (isset($detalles[$i]['imp']) and $detalles[$i]['imp'] >0) {
+				$porcimpuesto = $detalles[$i]['imp'];
+				$mul = $monto*$porcimpuesto;
+				$impuesto = $mul/100;
+			}else{
+				$porcimpuesto = 0;
+				$impuesto = 0;
+			}
+			
+			$preciot = $monto+$impuesto;
+			$monto = $monto;
+			$comentario = '';
+				
+			
+			
+			
+			if (isset($detalles[$i]['porc_descuento']) and $detalles[$i]['porc_descuento']>0) {
+				$porcdescuento = $detalles[$i]['porc_descuento'];
+				$mul2 = $preciot*$porcdescuento;
+				$descuento = $mul2/100;
+			}else if (isset($detalles[$i]['dscto']) and $detalles[$i]['dscto']>0) {
+				$descuento = $detalles[$i]['dscto'];
+				$mul2 = $descuento*100;
+				$porcdescuento = $mul2/$preciot;
+			}else{
+				$descuento = 0;
+				$porcdescuento = 0;
+			}
+			if (isset($preciot) and isset($cant)) {
+				$preciofinalU = $preciot-$descuento;
+				$preciototal = $cant*$preciofinalU;
+			}
+			
+
+			
+			$query = "SELECT mercancia.id, nombre, marca,codigo, precio_unitario, mercancia.contenido_neto, um1.id as idums, um1.abreviatura as ums, um2.id as idump, um2.abreviatura as ump, mhudn.existencia, format(existencia,4,'de_DE') as stock, format(precio_unitario,4,'de_DE') as costo, formula_c FROM mercancia
+			inner join unidad_medida as um1 on um1.id = mercancia.unidad_medida_sistema_id
+			inner join unidad_medida as um2 on um2.id = mercancia.unidad_medida_consumo_id
+			inner join mercancia_has_unidad_negocio as mhudn on mhudn.mercancia_id = mercancia.id
+			where mercancia.id = $idm and mhudn.unidad_negocio_id = $idt";
+				$datos = $this->_main->select($query);
+
+			if (isset($_SESSION['productosC'])) {
+				$arreglo = $_SESSION['productosC'];
+				//print_r($arreglo); echo "<br>";
+				$encontro=false;
+        		$numero=0;
+        		for($j=0;$j<count($arreglo);$j++){
+		          if($arreglo[$j]['id']==$idm){
+		            $encontro=true;
+		            $numero=$j;
+		          }
+		        }
+		        	if($encontro==true){
+			          switch ($tipo) {
+			            case '1':
+			                $arreglo[$numero]['id']= $idm;
+			                $arreglo[$numero]['precio']=$datos[0]['precio_unitario'];
+			                $arreglo[$numero]['porcimpuesto']=$porcimpuesto;
+			                $arreglo[$numero]['impuesto']=$impuesto;
+			                $arreglo[$numero]['tipoImp']=1;
+			                $arreglo[$numero]['porcdescuento']=$porcdescuento;
+			                $arreglo[$numero]['descuento']=$descuento;
+			                $arreglo[$numero]['preciofinalU']=$preciofinalU;
+			                $arreglo[$numero]['preciototal']=$preciototal;
+			                $arreglo[$numero]['costo']=$datos[0]['costo'];
+			                $arreglo[$numero]['ump'] = $datos[0]['ump'];
+			                $arreglo[$numero]['ums'] = $datos[0]['ums'];
+			                $arreglo[$numero]['formula'] = $datos[0]['formula_c'];
+			                $arreglo[$numero]['idum'] = $detalles[$i]['idum'];
+			                $arreglo[$numero]['nombre'] = $datos[0]['nombre'];
+			                $arreglo[$numero]['marca'] = $datos[0]['marca'];
+			                $arreglo[$numero]['codigo'] = $datos[0]['codigo'];
+			                $arreglo[$numero]['existencia'] = $datos[0]['existencia'];
+			                $arreglo[$numero]['stock'] = $datos[0]['stock'];
+			                $arreglo[$numero]['contenido_neto'] = $datos[0]['contenido_neto'];
+			                $arreglo[$numero]['cant'] = $cant;
+			                $arreglo[$numero]['unidadesx'] = $detalles[$i]['cantidadx'];
+			                $arreglo[$numero]['cantidad'] = $detalles[$i]['cantidad'];
+			                $arreglo[$numero]['precioc'] = $monto;			                
+			                $arreglo[$numero]['abreviatura'] = $detalles[$i]['abreviatura'];
+			                $arreglo[$numero]['comentario'] = $comentario;
+			                $_SESSION['productosC']=$arreglo;
+			              
+			              
+			            break;
+			            
+			            default:
+			            	unset($_SESSION['productosC'][$numero]);
+			                $arreglo = array_values($_SESSION['productosC']);
+			                $_SESSION['productosC']=$arreglo;
+			            break;
+			          }
+			          
+			        }else{
+			        	if ($tipo == 1) {
+				        	$arreglo = $_SESSION['productosC'];
+				        	$datosNuevos=array('id'=>$idm,
+			                    'precio'=>$datos[0]['precio_unitario'],
+			                    'porcimpuesto'=>$porcimpuesto,
+			                    'impuesto'=>$impuesto,
+			                    'tipoImp'=>1,
+			                    'porcdescuento'=>$porcdescuento,
+			                    'descuento'=>$descuento,
+			                    'preciofinalU'=>$preciofinalU,
+			                    'preciototal'=>$preciototal,
+			                    'costo'=>$datos[0]['costo'],
+			                    'ump'=>$datos[0]['ump'],
+			                    'ums'=>$datos[0]['ums'],
+			                    'formula'=>$datos[0]['formula_c'],
+			                    'idum'=>$detalles[$i]['idum'],
+			                    'nombre'=>$datos[0]['nombre'],
+			                    'marca'=>$datos[0]['marca'],
+			                    'codigo'=>$datos[0]['codigo'],
+			                    'existencia'=>$datos[0]['existencia'],
+			                    'stock'=>$datos[0]['stock'],
+			                    'contenido_neto'=>$datos[0]['contenido_neto'],
+			                    'cant'=>$cant,
+			                    'unidadesx'=>$detalles[$i]['cantidadx'],
+			                    'cantidad'=>$detalles[$i]['cantidad'],
+			                    'precioc'=>$monto,			                    
+			                    'abreviatura'=>$detalles[$i]['abreviatura'],
+			                    'comentario'=>$comentario);
+			                  array_push($arreglo, $datosNuevos);
+				          	$_SESSION['productosC']=$arreglo;
+			        	}
+			        	
+			        }
+			}else{
+				$arreglo[]=array('id'=>$idm,
+                    'precio'=>$datos[0]['precio_unitario'],
+                    'porcimpuesto'=>$porcimpuesto,
+                    'impuesto'=>$impuesto,
+                    'tipoImp'=>1,
+                    'porcdescuento'=>$porcdescuento,
+                    'descuento'=>$descuento,
+                    'preciofinalU'=>$preciofinalU,
+                    'preciototal'=>$preciototal,
+                    'costo'=>$datos[0]['costo'],
+                    'ump'=>$datos[0]['ump'],
+			        'ums'=>$datos[0]['ums'],
+			        'formula'=>$datos[0]['formula_c'],
+			        'idum'=>$detalles[$i]['idum'],
+                    'nombre'=>$datos[0]['nombre'],
+                    'marca'=>$datos[0]['marca'],
+                    'codigo'=>$datos[0]['codigo'],
+                    'existencia'=>$datos[0]['existencia'],
+                    'stock'=>$datos[0]['stock'],
+                    'contenido_neto'=>$datos[0]['contenido_neto'],
+                    'cant'=>$cant,
+                    'unidadesx'=>$detalles[$i]['cantidadx'],
+			        'cantidad'=>$detalles[$i]['cantidad'],
+                    'precioc'=>$monto,                    
+                    'abreviatura'=>$detalles[$i]['abreviatura'],
+                    'comentario'=>$comentario);
+				$_SESSION['productosC'] = $arreglo;
+			}
+			
+
+				
+		
+			}
+			$this->_view->render('facturaOC', 'compra', '','');
+
 		}
 
 

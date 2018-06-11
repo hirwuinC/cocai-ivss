@@ -83,7 +83,7 @@
 					break;
 							
 					default:
-					if ($view == 'indexM') {
+					if ($view == 'indexM' or $view == 'facturaOC') {
 						include_once ROOT . 'protected' . DS . 'views' . DS . 'layout' . DS . 'statements.phtml';
 						//include_once ROOT . 'protected' . DS . 'views' . DS . 'layout' . DS . 'header.phtml';
 						//include_once ROOT . 'protected' . DS . 'views' . DS . 'layout' . DS . 'imagalery.phtml';

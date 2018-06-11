@@ -18,38 +18,49 @@ cantidades
 impuesto / exento de impuesto
 unidad_negocio
 
-
-
-proasociados
-inventariocontroller
-inventariojs
-stocke
-insertar
-mainmodel
-indexM
-mermacontroller
-mermajs
-index produccion
-header
-
-quede en recibir las remisiones.
-
 para la validacion:
 usar .each para q por cada input se haga la consulta y si en alguno entra en el caso donde se debe bloquear el boton se bloquea si no se deja desbloqueado, validarlo en un hover del boton de procesar o en el click
-
-
-StockT
-StockE
-index/index.phtm
-merma.js
-merma/indexM.phtml
+==========================================
+08/06/2018
 mainModel
-compraController
+CompraModel
+index/index.phtml
+inventario/StockT.phtml
+inventario/StockE.phtml
+merma/indexM.phtml
+transferencias/indexT.phtml
+compra/ordenescompra.phtml
+compra/requisiciones.phtml
+compra/solicitudcreada.phtml
+compra/ordencreada.phtml
+compra/indexF.phtml
+inventario/asignacion.phtml
+produccion/index.phtml
+layout/footer.phtml
+layout/header.phtml
+merma.js
 factura.js
 remision.js
 transferencia.js
-printercontroller
-transferencias/indexT.phtml
+inventario.js
+carrito.js
+produccion.js
+style.blue.css
+compraController
+printerController
+facturaController ahora se llama -> printerfController
 inventarioController
-compra/ordenescompra.phtml
-compra/requisiciones.phtml
+transferenciaController
+produccionController
+Views.php
+
+Modificaciones en las tablas:
+Factura
+Ingredientes_factura
+
+Archivos nuevos
+printerfController
+compra/facturaOC.phtml
+ordenC.js
+
+==========================================

@@ -28,14 +28,7 @@
                         </div>
                         
                         <div class="card-block" style="padding-bottom: 0px; ">                        
-						<ul class="nav nav-tabs ml-3" role="tablist">
-						  	<li class="active nav-item">
-						  		<a data-toggle="tab" href="#insert" class="nav-link" id="ingresar">Registrar factura</a>
-						  	</li>
-                            <li class="nav-item">
-                            	<a data-toggle="tab" href="#consults" class="nav-link" id="consultas">Consultas</a>
-                            </li>
-						</ul>
+						
 
 									<!-- Modal de informacion del proveedor-->
 										  <div class="modal fade" id="modalinfoprov">
@@ -101,14 +94,14 @@
 										  <!-- fin de la modal -->
 
 						
-						<div class="tab-content" >
+						
 							<center>
 							    <div id="load" hidden>
 							        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
 							    </div>
 							</center>
 							<div class="row form-group">
-								<div class="col-sm-12" style="margin-bottom: -3%">
+								<div class="col-sm-12" >
 									<?php if ($this->g[0]['modelo'] != null): ?>
 			                            <div>
 			                              	<img class="hidden-sm-down" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png">
@@ -127,32 +120,25 @@
 			                            </div>
 			                        <?php endif ?>
 								</div>
-								<div class="col-sm-12" style="margin-bottom: -2%">
-									<div class="row form-group d-flex justify-content-center">
-										<div class="col-xs-12 col-sm-12 col-md-10 col-lg-6">
-											<h4 class="text-white" style="background: #337ab7; border-radius: 4px; text-align: center" id="selectedpro"></h4>
-										</div>
-										
-									</div>
-								</div>
+								
 
 							</div>
 							
 						<div>
 							
 						
-                            <div id="insert" class="tab-pane fade in active " role="tabpanel">
+                            
                             	<div class="col-sm-12">
-                            		<div class="alert alert-success" id="produccionOK" hidden>
-	                                    <h4 id="datosproduccion"></h4>
+                            		<div class="alert alert-success" id="FOCsuccess" hidden>
+	                                    <h4 class="datosFOC"></h4>
 	                                </div>
                             	</div>
                             	<div class="col-sm-12">
-                            		<div class="alert alert-danger" id="produccionerror" hidden>
-	                                    <h4 id="datosproduccion2"></h4>
+                            		<div class="alert alert-danger" id="FOCnerror" hidden>
+	                                    <h4 class="datosFOC"></h4>
 	                                </div>
                             	</div>
-                            <form action="<?php echo BASE_URL;?>compra/procesarfactura/<?php echo $this->g[0]['idT'] ?>" method="post" accept-charset="utf-8" role="form" id="formfactura">
+                            <form action="<?php echo BASE_URL;?>compra/procesarfactura/<?php echo $this->g[0]['idT'].'/false/'. $this->detallesOC[0]['idOC'];?>" method="post" accept-charset="utf-8" role="form" id="formfactura">
                             <div class="form-group row">
 	                                <div class="col-sm-12">
 	                                    <h4 style="border-bottom: solid 1px #A5A5A5;">Datos de la factura</h4>
@@ -178,12 +164,12 @@
 	                                </div>
 	                                <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
 	                                    <label class="control-label labels" style="float: left;">Proveedor</label><span style="float: right; cursor: pointer; cursor: hand;" title="informacion del proveedor" data-toggle="tooltip" data-placement="top" class="fa fa-info-circle" id="infoproveedor" hidden></span>
-	                                    <select name="selectp" id="selectp" class="form-control form-control-sm" required>
-	                                    </select>
+	                                    <input style="height: 30px" type="text" class="form-control form-control-sm fechac" autocomplete="off" readonly required value="<?php echo $this->detallesOC[0]['nombreprov']; ?>">
+	                                    <input type="hidden" name="selectp" id="selectp" value="<?php echo $this->detallesOC[0]['idprov']; ?>">
 	                                </div>
 	                                <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
 	                                    <label class="control-label labels" style="float: left;">Total en la factura</label><span style="float: right; cursor: help; color: red" title="El monto no coindice con la sumatoria de los productos agregados en la factura" data-toggle="tooltip" data-placement="top" class="fa fa-exclamation-triangle" id="errortotalfactura" hidden></span>
-	                                    <input style="height: 30px" type="text" class="form-control form-control-sm" name="totalfact" id="totalfact" autocomplete="off" placeholder="Total que refleja la factura" required>
+	                                    <input style="height: 30px" type="text" class="form-control form-control-sm" name="totalfact" id="totalfact" autocomplete="off" placeholder="Total que refleja la factura" required value="<?php echo $this->detallesOC[0]['ttlorden']; ?>">
 	                                </div>
 	                                
 	                                
@@ -194,8 +180,13 @@
                             	<input type="submit" name="" id="subFormFactura" hidden>
                             </div>
 						</form>
+								<div class="form-group row d-flex justify-content-center">
+	                            	<div class="col-xs-12" id="salida" hidden>
+	                            		<button class="btn btn-sm btn-outline-primary" id="btn-salir" title="Ingrese el numero de factura para continuar">Salir</button>
+	                            	</div>
+	                            </div>
 	                            <div class="form-group row d-flex justify-content-center">
-	                            	<div class="col-xs-12">
+	                            	<div class="col-xs-12" hidden>
 	                            		<button class="btn btn-sm btn-outline-primary" id="btnseleccion" title="Ingrese el numero de factura para continuar" data-toggle="modal" data-target="#modalingredientes" data-backdrop="static" data-keyboard="false" disabled >Seleccionar productos</button>
 	                            	</div>
 	                            </div>
@@ -382,10 +373,7 @@
                                         </div>
                                       </div> 
 										<!-- fin modal -->
-
-                                		
-
-                                     <!--Modal compra directa-->
+										<!--Modal compra directa-->
                                       <div class="modal" tabindex="-1" role="dialog" id="modalreposicion">
                                           <div class="modal-dialog " role="document">
                                             <div class="modal-content">
@@ -445,6 +433,9 @@
                                             </div>
                                           </div>
                                         </div>
+                                		
+
+                                     
                                         <!-- The Modal -->
 										  <div class="modal fade" id="modalcancel">
 										    <div class="modal-dialog modal-sm">
@@ -463,7 +454,7 @@
 										        <!-- Modal footer -->
 										        <div class="modal-footer">
 										          <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">No</button>
-										          <button type="button" class="btn btn-sm btn-outline-danger" id="cancel">Si</button>
+										          <button type="button" class="btn btn-sm btn-outline-danger btncancel" id="cancel">Si</button>
 										        </div>
 										      </div>
 										    </div>
@@ -568,7 +559,7 @@
 												  		<button class="btn btn-sm btn-outline-danger" id="cancelarproceso" >Cancelar</button>
 												  	</div>
 												  	<div class="col-xs-12 col-sm-12 col-md-2 col-lg-1" style="padding: 0px;">
-												  		<button class="btn btn-sm btn-outline-primary" id="procesar">Registrar factura</button>
+												  		<button class="btn btn-sm btn-outline-primary btnprocesar" id="procesar">Registrar factura</button>
 												  	</div>
 												</div>
 					                        </div>
@@ -579,7 +570,7 @@
 										</div>
 
 										
-                                      </div>  
+                                      
 
 					                        
                                       <!-- fin de la modal compra directa -->
@@ -622,211 +613,6 @@
                             	</div>
 
                             </div> -->
-
-<div id="consults" class="tab-pane fade in active " role="tabpanel">
-    <div class="col-sm-12">
-		<div class="alert alert-success" id="reversada" hidden>
-            <center><h4> La producción ha sido reversada de forma exitosa</h4></center>
-        </div>
-	</div>
-	<div class="col-sm-12">
-		<div class="alert alert-danger" id="errorreversar" hidden>
-            <center><h4> Ocurrio un error al intentar reversar la producción</h4><br>
-            <h5>Por favor intente nuevamente</h5></center>
-        </div>
-	</div>
-	<div class="row">
-		<div class="col-sm-2">
-			<label class="labels">Desde</label>
-			<input type="date" class="form-control form-control-sm" name="fecha1" id="fecha1">
-		</div>
-		<div class="col-sm-2">
-			<label class="labels">Hasta</label>
-			<input type="date" class="form-control form-control-sm" name="fecha2" id="fecha2">
-		</div>
-		<div class="col-sm-2 mt-3">
-			<button class="btn btn-sm btn-outline-primary mt-1" type="button" id="btn-consult">Consultar</button>
-		</div>
-	</div>
-
-	<div class="row mt-3" id="rowfacturas" hidden>
-		<div class="col-sm-12">
-            <h4 style="border-bottom: solid 1px #A5A5A5;" id="h4title"></h4>
-        </div>  
-	
-	                          
-	<div class="col-xs-12" id="tablaoculta2">
-		<div class="row form-group d-flex justify-content-center" >
-    		<div class="col-xs-1" id="colbtnrev">
-				<button class="btn btn-sm btn-outline-danger" id="btn-rev" value="1">Consultar notas de credito</button>
-			</div>
-		</div>
-
-	<div class="dataTable_wrapper " id="tbfact">
-        <div class="col-sm-12 table-responsive">    
-          <div class="">                            	
-            <table id="facturas" class="display table table-sm table-striped table-bordered table-hover" >
-              <thead class="theadH">
-                  <tr>
-                      <th><center>#</center></th>
-                      <?php if (is_null($this->g[0]['empresa_id'])){ ?>
-                      <th><center>Tienda</center></th>
-                      <?php } ?>
-                      <th data-toggle="tooltip" data-placement="top" title="Numero de factura"><center>Factura</center></th>
-                      <th data-toggle="tooltip" data-placement="top" title="Fecha de registo de la factura en sistema"><center>Registrada</center></th>
-                      <th data-toggle="tooltip" data-placement="top" title="Fecha de la factura"><center>Fecha</center></th>
-                      <th data-toggle="tooltip" data-placement="top" title="sub Total de la factura"><center>Sub total</center></th>
-                      <th data-toggle="tooltip" data-placement="top" title="Impuesto"><center>Impuesto</center></th>
-                      <th data-toggle="tooltip" data-placement="top" title="Descuento"><center>Descuento</center></th>
-                      <th data-toggle="tooltip" data-placement="top" title="total de la factura"><center>Total</center></th>
-                      <th><center>Proveedor</center></th>
-                      <th><center>Acciones</center></th>
-                  </tr>
-              </thead>
-              <tbody id="cuerpo_r"></tbody>
-          </table>
-          <div class="container">
-            <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
-              <div class="col-12" id="costot">
-                
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>     
-    </div>
-
-	<div class="dataTable_wrapper " id="tbdev" hidden>
-        <div class="col-sm-12 table-responsive">    
-          <div class="">                            	
-            <table id="devoluciones" class="display table table-sm table-striped table-bordered table-hover" >
-              <thead class="theadH">
-                  <tr>
-                      <th><center>#</center></th>
-                      <?php if (is_null($this->g[0]['empresa_id'])){ ?>
-                      <th><center>Tienda</center></th>
-                      <?php } ?>
-                      <th data-toggle="tooltip" data-placement="top" title="Codigo del producto"><center>Codigo</center></th>
-                      <th><center>Producto</center></th>
-                      <th><center>Marca</center></th>
-                      <th data-toggle="tooltip" data-placement="top" title="Cantidad devuelta"><center>Cant. Dev.</center></th>
-                      <th data-toggle="tooltip" data-placement="top" title="monto de la nota de credito"><center>monto dev.</center></th>
-                      <th data-toggle="tooltip" data-placement="top" title="Numero de factura"><center>Factura</center></th>
-                      <th data-toggle="tooltip" data-placement="top" title="Fecha de la factura"><center>Fecha</center></th>
-                      <th data-toggle="tooltip" data-placement="top" title="Fecha de la nota de credito"><center>NC.</center></th>
-                      <th><center>Acciones</center></th>
-                  </tr>
-              </thead>
-              <tbody id="cuerpo_r"></tbody>
-          </table>
-          <div class="container">
-            <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
-              <div class="col-12" id="costot">
-                
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>     
-    </div>
-
-    
-
-	    <!-- The Modal -->
-	<div class="modal fade" id="modaldetalleF">
-		<div class="modal-dialog modal-lg">
-		    <div class="modal-content" style="width: 120%">
-		        <!-- Modal Header -->
-		        <div class="modal-header">
-		          <h4 class="modal-title">Productos de la factura N°: <o id="mdf"></o></h4>
-		          <button type="button" class="close" id="closemodal" data-dismiss="modal">&times;</button>
-		        </div>
-		        <!-- Modal body -->
-		        <div class="modal-body">
-		        	<div class="dataTable_wrapper ">
-				        <div class="col-sm-12 table-responsive">    
-				          <div class="">                            	
-				            <table id="detallefactura" class="display table table-sm table-striped table-bordered table-hover" >
-				              <thead class="theadH">
-				                  <tr>
-				                      <th><center>#</center></th>
-				                      <th><center>Codigo</center></th>
-				                      <th><center>Producto</center></th>
-				                      <th><center>Marca</center></th>
-				                      <th><center>Cantidad</center></th>
-				                      <th><center>Precio unit.</center></th>
-				                      <th><center>Impuesto</center></th>
-				                      <th><center>Descuento</center></th>
-				                      <th><center>Precio Total</center></th>
-				                      <th><center>Cant. Dev.</center></th>
-				                      <th title="Generar nota de credito"><center>NC.</center></th>
-				                  </tr>
-				              </thead>
-				              <tbody id="cuerpo_r"></tbody>
-				          </table>
-				          <div class="container">
-				            <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
-				              <div class="col-12" id="costot">
-				                
-				              </div>
-				            </div>
-				          </div>
-				        </div>
-				      </div>     
-				    </div>
-		        </div>
-		        <!-- Modal footer -->
-		        <div class="modal-footer">
-		          <button type="button" class="btn btn-sm btn-outline-primary" data-dismiss="modal">Cerrar</button>
-		        </div>
-			</div>
-		</div>
-	</div>
-	<!-- fin modal -->
-
-										<!-- Modal confirmar devolucion-->
-										  <div class="modal fade" id="modaldevolucion">
-										    <div class="modal-dialog modal-sm">
-										      <div class="modal-content">
-										        <!-- Modal Header -->
-										        <div class="modal-header">
-										          <h4 class="modal-title">Nota de credito para <o class="productname"></o></h4>
-										          <button type="button" class="close" data-dismiss="modal">&times;</button>
-										        </div>
-										        <!-- Modal body -->
-										        <div class="modal-body">
-										        	<div class="alert alert-danger">
-										        		<input type="hidden" id="cantidadnc2">
-												        <h3>Esta seguro de realizar la nota de credito para <o id="cantdev"></o> de <o class="productname"></o> de la factura N°: <o id="fnum"></o> ?</h3>
-												        <div class="input-group">
-												        	<input type="text" class="form-control form-control-sm"  id="cantidadnc" style="border-right: none">
-												        	<div class="input-group-append">
-															    <span class="input-group-text btn-sm" style="background: #fff; border-radius: 0px; border: 1px solid rgba(0,0,0,.15);" id="abrevnc"></span>
-															</div>
-												        </div>
-														
-														<br>
-												        <h6>De ser necesario, a continuacion puede agregar un comentario sobre la nota de credito</h6>
-												        	<textarea class="form-control form-control-sm" rows="3" cols="200" id="comentarios" placeholder="Comentario.."></textarea>
-												    </div>
-										        </div>
-										        <!-- Modal footer -->
-										        <div class="modal-footer">
-										        	<h6 style="color: red" id="errorcant" hidden>Disculpe la cantidad de la nota de credito no puede ser superior a <o id="cantcorrect"></o> registrado en la factura</h6>
-										          <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">No</button>
-										          <button type="button" class="btn btn-sm btn-outline-danger" id="devolver">Si</button>
-										        </div>
-										      </div>
-										    </div>
-										  </div>
-										<!-- The Modal -->
-
-
-    </div>
-    </div>
-
-        		
-</div>
     	
 </div>
 </div>

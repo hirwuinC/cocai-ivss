@@ -12,13 +12,14 @@ $(document).ready(function() {
 		$('#rec').css('cursor', 'hand');
 		$('#tooltiprec').attr('data-original-title', 'Consultar la receta del producto seleccionado');
 		$('#selectedpro').empty();
-		$('#selectedpro').append('Producto seleccionado: '+texto);
+		$('#selectedpro').append('<o class="ml-1">Producto seleccionado: '+texto+'</o>');
 		$.ajax({
 	 		url: BASE_URL+'/produccion/nombreing/'+idmer,
 	        type: 'POST',
 	        dataType: 'json'
 	 	})
 	 	.done(function(data) {
+	 		$('#ttanda').fadeOut('fast');
 	 		var idreceta = data[0]['idre'];
 	 		var producto = 999999;
 	 		var reideal = data[0]['reideal'];
@@ -31,6 +32,8 @@ $(document).ready(function() {
 	 		$('.excel').attr('data-original-title', 'Exportar receta para '+tandas+' '+texto);
 	 		$('#idrecetas').val('');
 	 		$('#idrecetas').val(idreceta);
+	 		$('#idmercancia').val('');
+	 		$('#idmercancia').val(idmer);
 	 		$('#idrecetas').val('');
 	 		$('#idrecetas').val(idreceta);
 	 		$('.abrev').empty();
@@ -44,9 +47,11 @@ $(document).ready(function() {
 	 		$('#rreal').number(true, 4, ',', '.');
 	 		$('.ocultos').fadeIn();
 			$('.ocultos').prop('hidden', false);
+			datosdelsemi(tienda,idmer);
 			validaciontandas();
 			vering(producto,idmer,idreceta);
 			consultaproducciones(0,idmer);
+			tablatandas(idreceta);
 		});
 		
 	});
@@ -76,6 +81,12 @@ $(document).ready(function() {
 			$('#recetassemi').prop('hidden', false);
 		}
 		
+	});
+
+	$('#rreal').keyup(function(event) {
+		$('#ttanda').fadeOut('fast');
+		var idrece = $('#idrecetas').val();	
+		tablatandas(idrece);
 	});
 
 	$('#tandas').change(function(event) {
@@ -150,6 +161,27 @@ $(document).ready(function() {
 
 });
 
+	function datosdelsemi(idt,idsemi){
+		var moneda = $('#monedatienda').val();
+		$.ajax({
+            url: BASE_URL+'/produccion/datosdelsemi/'+idt+'/'+idsemi,
+            type: 'POST',
+            dataType: 'json'
+        })
+      	.done(function(data) {
+      		if (data != false) {
+      			$('#stock').empty();
+      			$('#stock').append(data['stock']+' '+data['abreviaturaS']);
+      			$('#cost').empty();
+      			$('#cost').append(data['costom']+' '+moneda);
+      			$('#tabledatos').show();
+      			$('#tabledatos').prop('hidden', false);
+      		}else{
+      			alert('Error en los datos del semi terminado');
+      		}
+      	});
+	}
+
 	function validaciontandas(){
 		var idt = $('#idtienda').val();
 		var tandas = $('#tandas').val();
@@ -193,7 +225,7 @@ $(document).ready(function() {
 			$('#selectedpro').fadeOut();
 			$('#colbtn').fadeOut();
 		}
-		var t2 =$('#producidos').DataTable({
+		var t2 = $('#producidos').DataTable({
             "ajax": BASE_URL+'/produccion/consultas/'+idt+'/'+ing+'/'+rev,
             "columns": [
             	{ "data": null, className: "tdcenter"},
@@ -303,3 +335,82 @@ $(document).ready(function() {
 			$('#alert-stmin').slideUp();
 		});
 	});
+
+	function tablatandas(idreceta){
+		var rreal = $('#rreal').val();
+		var idt = $('#idtienda').val();
+		var moneda = $('#monedatienda').val();
+		$.ajax({
+			url: BASE_URL+'/produccion/costoentanda/'+idreceta+'/'+rreal+'/'+idt,
+	        type: 'POST',
+	        dataType: 'json'
+		})
+	    .done(function(data) {
+			var t2 = $('#tablatanda').DataTable({
+            "ajax": BASE_URL+'/produccion/costoentanda/'+idreceta+'/'+rreal+'/'+idt,
+            "columns": [
+            	{ "data": null, className: "tdcenter"},
+                { "data": "codigo" , className: "tdleft"},
+                { "data": "producto" , className: "tdleft",
+                	render: function(data, type, row){
+                		return ''+data+' '+row['marca']
+                	}
+            	},
+                { "data": "stock" , className: "tdright",
+                	render : function(data, type, row) { 
+			          	return ''+data+' '+row['abreviaturasis']
+		       		}
+            	},
+            	{ "data": "cantidad" , className: "tdright",
+                	render : function(data, type, row) { 
+			          	return ''+data+' '+row['abreviatura']
+		       		}
+            	},
+            	{ "data": "costoing" , className: "tdright",
+                	render : function(data, type, row) { 
+			          	return ''+data+' '+row['abreviatura']
+		       		}
+            	},
+            	{ "data": "costoporcion" , className: "tdright",
+                	render : function(data, type, row) { 
+			          	return ''+data+' '+moneda
+		       		}
+            	},
+            	{ "data": "costotanda" , className: "tdright",
+                	render : function(data, type, row) { 
+			          	return ''+data+' '+moneda
+		       		}
+            	},
+            	{ "data": "cantreq" , className: "tdright",
+                	render : function(data, type, row) { 
+			          	return ''+data+' '+row['abreviatura']
+		       		}
+            	}  
+            ],
+            "columnDefs": [ {
+            "searchable": false,
+            "orderable": false,
+            "targets": 0
+                } ],
+                "order": [[ 1, 'asc' ]],
+            destroy: true,
+            responsive: true,
+
+        });
+			$('#costototalT').empty();
+			$('#costototalT').append(data["data"][0]['totaltanda']+' '+moneda);
+		    $('#tablatanda').css("width","100%");
+		    t2.on( 'order.dt search.dt', function () {
+		        t2.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+		            cell.innerHTML = i+1;
+		        } );
+		    } ).draw();
+		    $('#tablatanda_wrapper').removeClass('container-fluid');
+		    setTimeout(function(){
+		    	$('#ttanda').fadeIn();
+				$('#ttanda').prop('hidden', false);
+		    },500);
+		    
+		});
+		
+	}

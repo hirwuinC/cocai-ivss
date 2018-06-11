@@ -32,9 +32,9 @@
 						  	<li class="active nav-item">
 						  		<a data-toggle="tab" href="#semis" class="nav-link" id="semit">Generar producción</a>
 						  	</li>
-                            <li class="nav-item">
+                           <!--  <li class="nav-item">
                             	<a class="nav-link" id="rec" style="cursor: not-allowed;"><o data-toggle="tooltip" data-placement="right" title="Debe seleccionar un producto para poder consultar su receta" id="tooltiprec">Recetario</o></a>
-                            </li>
+                            </li> -->
                             <li class="nav-item">
                             	<a data-toggle="tab" href="#consults" class="nav-link" id="consultas">Consultas</a>
                             </li>
@@ -67,10 +67,28 @@
 			                            </div>
 			                        <?php endif ?>
 								</div>
-								<div class="col-sm-12" style="margin-bottom: -2%">
-									<div class="row form-group d-flex justify-content-center">
-										<div class="col-xs-12 col-sm-12 col-md-10 col-lg-6">
-											<h4 class="text-white" style="background: #337ab7; border-radius: 4px; text-align: center" id="selectedpro"></h4>
+								<div class="col-sm-12 mt-1" style="margin-bottom: -2%">
+									<div class="row form-group d-flex justify-content-center" style="margin-bottom: 0px">
+										<div class="col-sm-12">
+											<h4 class="text-white" style="background: #337ab7; border-radius: 4px;">
+												<o id="selectedpro"></o>
+												<table class="table table-sm table-bordered" id="tabledatos" hidden>
+													<thead class="theadH">
+														<tr>
+															<th style="font-size: 11px">Existencia</th>
+															<th style="font-size: 11px">Costo</th>
+														</tr>
+													</thead>
+													<tbody class="text-white">
+														<tr>
+															<td><o id="stock" style="text-align: left; font-size: 11px"></o></td>
+															<td><o id="cost" style="text-align: left; font-size: 11px"></o></td>
+														</tr>
+													</tbody>
+												</table>
+												
+												
+											</h4>
 										</div>
 										
 									</div>
@@ -97,45 +115,42 @@
                         				<input type="hidden" name="idempr" id="idempr" value="<?php echo $this->model[0]['empresa_id']?>">
                             			<input type="hidden" id="idrece" name="idreceta">
                             			<input type="hidden" id="rendimiento" name="rendimiento">
+                            			<input type="hidden" id="idmercancia" name="idmercancia">
                             			<div class="alert alert-danger" id="alert-stmin" hidden>
 							        		<a class="close" id="close-alert"><i class="fa fa-close"></i></a>
 							        		<h4>El producto <o id="validado"></o>, incluido en la receta que intenta producir, no esta en existencia o su existencia es insuficiente.</h4>
 							        		<h5>Por favor verifique su inventario y la cantidad a producir e intente nuevamente.</h5>
 							        	</div>
-                            		<div class="row form-group d-flex justify-content-center">
-	                            		<div class="col-xs-12 col-sm-12 col-md-10 col-lg-6">
+                            		<div class="row form-group d-flex ">
+	                            		<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 	                            			<label class="LB">Seleccione un producto semi terminado</label>
-	                            			<select name="semiterminados" id="semiterminados" class="form-control form-control-sm" size="6" required>
+	                            			<select name="semiterminados" id="semiterminados" class="form-control form-control-sm" size="7" required>
 	                            			</select>
 	                            		</div>
-	                            	</div>
-	                            		<div class="row form-horizontal d-flex justify-content-center" >
-	                            				<label class="LB ocultos" hidden>Tandas a producir:</label>
-			                            		<div class="col-xs-12 col-sm-1 ocultos" hidden>
-			                            			<input type="number" class="form-control form-control-sm" name="tandas" id="tandas" min="1" max="100" value="1" required="" data-toggle="tooltip" data-placement="right" title="Ingrese un valor entre 1 y 100">
-		                            			</div>
-	                            		</div>
-
-                            		</div>
-                            	
-                            		<div class="col-sm-12 mt-3 ocultos"  hidden>
-	                            		<div class="row form-group d-flex justify-content-center">
-		                            		<div class="col-xs-12 col-sm-12 col-md-10 col-lg-6">
+	                            		<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 ocultos mt-3"  hidden>
+	                            		<div class="row form-group d-flex justify-content-center mt-2">
+		                            		<div class="col-xs-12">
 
 		                            			<div class="card-header text-white" style="background: #337ab7; padding: 4px; height: 30px">
 						                            <center><h4 style="vertical-align: center">Informacion del rendimiento</h4></center>
 						                        </div>
 							                    <div class="card" style="border: solid 1px #337ab7">
+							                    	<div class="row form-horizontal d-flex justify-content-center mt-1 mb-1" >
+			                            				<label class="LB ocultos" hidden><b>Tandas a producir:</b></label>
+					                            		<div class="col-xs-12 col-sm-3 ocultos" hidden>
+					                            			<input type="number" class="form-control form-control-sm" name="tandas" id="tandas" min="1" max="100" value="1" required="" data-toggle="tooltip" data-placement="right" title="Ingrese un valor entre 1 y 100">
+				                            			</div>
+				                            		</div>
 			                            			<div class="row form-group d-flex justify-content-center">
 			                            				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-5">
-			                            					<label class="LB">Rendimiento ideal</label>
+			                            					<label class="LB">Rend. Ideal</label>
 			                            					<div class="input-group">
 			                            						<input type="text" class="form-control form-control-sm" name="rideal" id="rideal" readonly="" data-toggle="tooltip" data-placement="top" title="Rendimiento ideal segun la receta">
 					                            				<span class="input-group-addon btn-sm abrev"></span>
 			                            					</div>
 			                            				</div>
 			                            				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-5">
-				                            				<label class="LB">Rendimiento resultante</label>
+				                            				<label class="LB">Rend. Resultante</label>
 				                            				<div class="input-group">
 				                            					<input type="text" class="form-control form-control-sm" name="rreal" id="rreal" placeholder="Ej: 1.000,0000" data-toggle="tooltip" data-placement="top" title="Ingrese la cantidad resultante de la produccion en tienda" required>
 				                            					<span class="input-group-addon btn-sm abrev"></span>
@@ -145,17 +160,54 @@
 			                            		</div>
 		                            		</div>
 		                            	</div>
-		                            </div>
-                            		<br>
-                            		
-                            		<div class="row form-group d-flex justify-content-center">
+		                            	
+	                            		<div class="row form-group d-flex justify-content-center mt-2">
 				                            <div class="alert alert-success exporting" style="position: absolute; z-index: 99;" hidden>
 				                              	<h4>Receta exportada con exito</h4>
 				                            </div>
 				                        
-			                			<img width="35px" height="35px" class="ocultos excel" src="<?php echo PUBLIC_URL;?>img\excel.png" id="excel" hidden style="cursor: hand; cursor: pointer;" data-toggle="tooltip" data-placement="left" title="exportar receta para">
-                            			<button type="submit" class="btn btn-sm btn-outline-primary ocultos" id="btngenerar" hidden>Generar producción</button>
-                        			</div>
+				                			<img width="25px" height="25px" class="ocultos excel" src="<?php echo PUBLIC_URL;?>img\excel.png" id="excel" hidden style="cursor: hand; cursor: pointer;" data-toggle="tooltip" data-placement="left" title="exportar receta para">
+	                            			<button type="submit" class="btn btn-sm btn-outline-primary ocultos ml-1" id="btngenerar" hidden>Generar producción</button>
+	                        			</div>
+		                            </div>
+		                            
+	                            	</div>
+	                            <div class="dataTable_wrapper " id="ttanda" hidden>
+									<div class="table-responsive">
+	                            		<table id="tablatanda" class="display table table-sm table-striped table-bordered table-hover">
+	                            			<thead class="theadH">
+	                            				<tr>
+	                            					<th colspan="9" style="text-align: center">Ingredientes de la tanda actual</th>
+	                            				</tr>
+	                            				<tr>
+	                            					<th>#</th>
+	                            					<th>Codigo</th>
+	                            					<th>Ingrediente</th>
+	                            					<th>Existencia</th>
+	                            					<th>Cantidad</th>
+	                            					<th>Costo Producto</th>
+	                            					<th>Costo en subreceta</th>
+	                            					<th>Costo en tanda</th>
+	                            					<th>Cant. requerida</th>
+	                            				</tr>
+	                            			</thead>
+	                            			<tbody id="bodytanda">
+	                            			</tbody>
+	                            			<tfooter>
+	                            				<tr>
+	                            					<th colspan="8" style="text-align: right">Costo total de la tanda: <o id="costototalT"></o></th>
+	                            					<th></th>
+	                            				</tr>
+	                            			</tfooter>
+	                            		</table>
+	                            	</div>
+	                            </div>
+
+                            		</div>
+                            	
+                            		
+                            		
+                            		
                             </div>
 							</form>
 							<form action="<?php echo BASE_URL;?>produccion/printReceta" method="post" accept-charset="utf-8" id="form-print" hidden>

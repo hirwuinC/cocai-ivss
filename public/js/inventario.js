@@ -478,19 +478,36 @@ $(document).ready(function() {
         .done(function(data) {
           //alert(data[0][1]);
             $('#modtitle').empty();
-            $('#modtitle').append('Eliminar '+data[0]['producto']+' '+data[0]['marca']);
-            $('#modbody').empty();
-            
-              $('#modbody').append(
-              '<div class="alert alert-danger" style="text-align:left">'+
-              'Usted esta por eliminar el producto "'+data[0]['producto']+'" marca "'+data[0]['marca']+'", del modelo '+textname+'. ¿Realmente desea continuar?<br>Recuerde que eliminar dicho producto establecera la existencia del mismo en cero (0), si se lo vuelve a asignar mas adelante.<br>'+
-              '</div>');
+            $('#modtitle').append('Desasignar '+data[0]['producto']+' '+data[0]['marca']);
               if (tipo != 1 && data[0]['existencia']>0) {
-                alert("validado");
-              }else if (tipo == 1) {
-                verificarexistencias(idpro,idm);
-              }else{
+                $('#modbody').empty();
+                $('#modbody').append(
+                '<div class="alert alert-danger" style="text-align:left">'+
+                'Para poder desasignar el producto "'+data[0]['producto']+'" marca "'+data[0]['marca']+'", '+textname+', antes debe llevar su existencia a cero mediante el modulo de mermas. <br>'+
+                '</div>');
+                $('#modcontinuar').prop('disabled', true);
                 $('#modaldelete').modal('show');
+              }else if (tipo == 1) {
+                alert(data[0]['marca'].length);
+                if (data[0]['marca'].length >1) {
+                  var mark = 'marca "'+data[0]['marca']+'"';
+                }else{
+                  var mark = '';
+                }
+                $('#modbody').empty();
+                $('#modbody').append(
+                '<div class="alert alert-danger" style="text-align:left">'+
+                'Usted esta por desasignar el producto "'+data[0]['producto']+'" '+mark+', '+textname+'. ¿Realmente desea continuar?<br>'+
+                '</div>');
+                verificarexistencias(idpro,idm,tipo);
+              }else{
+                $('#modbody').empty();
+                $('#modbody').append(
+                '<div class="alert alert-danger" style="text-align:left">'+
+                'Usted esta por desasignar el producto "'+data[0]['producto']+'" marca "'+data[0]['marca']+'", '+textname+'. ¿Realmente desea continuar?<br>'+
+                '</div>');
+                $('#modaldelete').modal('show');
+                $('#modcontinuar').prop('disabled', false);
               }
               
         });
@@ -551,7 +568,7 @@ $(document).ready(function() {
         .done(function(data) {
           //alert(data[0][1]);
             $('#modtitle').empty();
-            $('#modtitle').append('Eliminar '+data[0]['producto']);
+            $('#modtitle').append('Desasignar '+data[0]['producto']);
             $('#modbody').empty();
             $('#modbody').append(
               '<div class="alert alert-danger" style="text-align:left">'+
@@ -620,17 +637,31 @@ $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
 
-function verificarexistencias(idpro,idm){
+function verificarexistencias(idpro,idm,tipo){
     $.ajax({
       url: BASE_URL+'/inventario/validarexistencias/'+idpro+'/'+idm,
       type: 'POST',
       dataType: 'json',
     })
     .done(function(data) {
+      var nombreM = $('#modelname').text();
+      var textname = 'del modelo '+nombreM;
       if (data == 1) {
         $('#modaldelete').modal('show');
       }else{
-        alert(data[0]['existencia']);
+        if (data[0]['marca']) {
+          var mark = 'marca "'+data[0]['marca']+'"';
+        }else{
+          var mark = '';
+        }
+        $('#modbody').empty();
+        $('#modbody').append(
+                '<div class="alert alert-danger" style="text-align:left">'+
+                'Para poder desasignar el producto "'+data[0]['producto']+'" '+mark+', '+textname+', '+
+                'antes debe llevar su existencia a cero mediante el modulo de mermas en la unidad de negocio '+data[0]['nombreudn']+'. <br>'+
+                '</div>');
+        $('#modcontinuar').prop('disabled', true);
+        $('#modaldelete').modal('show');
       }
     });
 }

@@ -53,8 +53,8 @@
                         
 
                         <div style="margin-top: 1%" class="card cardH">
-                        <div class="card-header">
-                            <center><h3 ><o id="titulocard">Orden de compra </o><?php $ti=strtolower($this->datos[0]['tiendaen']); echo "[".ucwords($ti)."]"; ?></h3></center>
+                        <div class="card-header" hidden>
+                            <center><h3 ><o id="titulocard" >Orden de compra</o> <?php $ti=strtolower($this->g[0]['tienda']); echo "[".ucwords($ti)."] Sub-modelo ".$this->g[0]['subM'];  ?></h3></center>
                         </div>
                         <div class="card-block">
                         
@@ -63,12 +63,23 @@
                             echo $this->_error;
                         } ?>
                         <div class="col-12 d-flex justify-content-end">
-                            <img  src="<?php 
-                            if (isset($this->datos[0]['modelo'])){ $model=strtolower($this->datos[0]['modelo']);
-                            }else{
-                              $model=strtolower($this->datos[0]['tiendaen']);
-                            }
-                             echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-fluid" alt="modelo">
+                            <?php if ($this->g[0]['modelo'] != null): ?>
+                                  <div>
+                                      <img class="hidden-sm-down" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png">
+                                      <img width="25%" height="8%" class="hidden-sm-up" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png">
+                                  </div>
+                              <?php endif ?>
+                        
+                                <input type="hidden" id="modelos" value="<?php echo $this->g[0]['idm']; ?>">
+                              <?php if (isset($this->_error)) {
+                                  echo $this->_error;
+                              } ?>
+                              <?php if ($this->g[0]['modelo'] == null): ?>
+                                  <div>
+                                    <img class="hidden-sm-down" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->g[0]['tienda']; ?>.png">
+                                    <img width="25%" height="8%" class="hidden-sm-up" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->g[0]['tienda']; ?>.png">
+                                  </div>
+                              <?php endif ?>
                         </div>
 
               <ul class="nav nav-pills nav-tabs ml-3" role="tablist">
@@ -79,260 +90,602 @@
                   <a data-toggle="tab" href="#consultarOC" class="nav-link" id="consultarordenes">Consultas<o style="float: right; margin-left: 5px; " id="xr"></o></a>
                 </li>
             </ul> 
+            <!-- Modal de informacion del proveedor-->
+                      <div class="modal fade" id="modalinfoprov">
+                        <div class="modal-dialog modal-sm">
+                          <div class="modal-content">
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h5 class="modal-title" >Datos del proveedor: <br><o id="nombreprov"></o></h5>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                              <div class="container">
+                                <div class="row form-group">
+                                  <h5><b>RIF / RUC: </b><o id="rifprov"></o></h5>
+                                </div>
+                                <div class="row form-group">
+                                  <h5><b>Razon social: </b><o id="razonprov"></o></h5>
+                                </div>
+                                <div class="row form-group">
+                                  <h5><b>Correo electronico: </b><o id="correoprov"></o></h5>
+                                </div>
+                                <div class="row form-group">
+                                  <h5><b>Telefono: </b><o id="tlf"></o></h5>
+                                </div>
+                                <div class="row form-group">
+                                  <h5><b>Direccion: </b><o id="estado"></o>, municipio <o id="municipio"></o>, parroquia<o id="parroquia"></o>. Urbanizacion <o id="urbanizacion"></o>, calle <o id="calle"></o>, Edif./local <o id="edificio"></o></h5>
+                                </div>
+
+                              </div>
+                            </div>
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-sm btn-outline-primary" data-dismiss="modal">Aceptar</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    <!-- fin modal -->
+
+                    <!-- The Modal -->
+                      <div class="modal fade" id="modaldetalles">
+                        <div class="modal-dialog modal-sm">
+                          <div class="modal-content">
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title">Observaciones sobre <o id="obs"></o></h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <!-- Modal body -->
+                            <div class="modal-body" style="padding: 0px;">
+                              <div class="alert alert-info">
+                                <h4 id="detalle">No se registraron observaciones para este producto</h4>
+                            </div>
+                            </div>
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                              
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- fin de la modal -->
+
 
 <div class="tab-content" >
   <div id="crearOC" class="tab-pane fade in active" role="tabpanel">
-    <div id="datos1" class="form-group col-sm-12 mt-3">
-                              
-
-                                <div class="dataTable_wrapper " >
-                                       <div class="col-sm-12 table-responsive">
-                                       
-                                          <table id="tablarepo" class="table table-sm table-striped table-bordered table-hover" >
-                                            <thead class="theadH">
-                                                <tr>
-                                                    <th>Codigo</th>
-                                                    <th>Ingrediente</th>
-                                                    <th>familia</th>
-                                                    <th>Existencia</th>
-                                                    <th>Min</th>
-                                                    <th>Max</th>
-                                                    <th>Accion</th>
-
-                                                </tr>
-                                            </thead>
-                                            <tbody id="cuerpo_i"></tbody>
-                                            
-                                        </table>
-                                        
-                                                 
-                                          </div>
-                                          
-                                  </div>
-
-                                <!-- Modal anular-->
-                                <div  class="modal fade" id="modalanular2" role="dialog">
-                                  <div class="modal-dialog modal-sm" >
-                                    <div class="modal-content modalp3" >
-                                      <div class="modal-header">
-                                        <h5 class="modal-title" style="text-align: left">Cancelar solicitud</h5>
-                                        <button type="button" class="close" data-dismiss="modal" id="closem2">&times;</button>
-                                      </div>
-                                      <div class="modal-body" >
-                                          <h5 style="color: red; text-align: left"><b>Seguro que desea cancelar esta solicitud??<br>Esta acción no se puede deshacer.</b></h5>
-                                      </div>
-                                      <div class="modal-footer" id="botonescancelar">
-                                        
-                                      </div>
-                                    </div>
-                                  
-                                  </div>
-                                </div>
-                                  <!-- Modal cantidad x ingrediente-->
-                              <div class="modal fade modalcant" id="modalcant" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-sm">
-                                  <div class="modal-content">
-                                    <div class="modal-header">
-                                      <h5 class="modal-title" id="tit"></h5>
-                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                      </button>
-                                    </div>
-                                    <div class="modal-body">
-                                    <form id="usuario" class="form-horizontal" role="form" action="<?php  echo BASE_URL;?>inventario/insertRemision"  method="post">
-                                      <input type="hidden" name="mercancia_id" id="mercid">
-                                      <input type="hidden" name="tiendae" id="tiendae" value="<?php echo $this->idu;?>">
-                                      <input type="hidden" name="tiendae" id="idempresa" value="<?php echo $this->datos[0]['idempresa'];?>">
-                                      <input type="hidden" name="status_id" id="status_id" value="126">
-
-                                      
-                                        <div class="form-group">
-                                          <label  for="">Proveedor:</label>
-                                            <select class="form-control form-control-sm" name="prove" id="idprov" required="">
-                                              <option value="" selected disabled>Seleccione..</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                          <label for="recipient-name" class="form-control-label">Cantidad:</label>
-                                          <input type="text" class="form-control form-control-sm monto"  name="cantidadR" id="cantidadR">
-                                        </div>
-                                        <div class="form-group">
-                                          <label for="recipient-name" class="form-control-label">Unidad de medida:</label>
-                                          <select id="unidades" name="unidades"  class="form-control form-control-sm">
-                                          </select>
-                                        </div>
-                                        <div class="form-group">
-                                          <label for="recipient-name" class="form-control-label" >Precio del Proveedor</label>
-                                          <input type="text" class="form-control form-control-sm monto"  name="precioOC" id="precioOC" value="1">
-                                        </div>
-                                        <div class="form-group" id="cantx" hidden>
-                                          <label for="recipient-name" class="form-control-label" id="cantC"></label>
-                                          <input type="text" class="form-control form-control-sm"  name="cantidadx1" id="cantidadx1" value="1">
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                      <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Cancelar</button>
-                                      <button class="btn btn-sm btn-outline-primary"  type="button" class=""  id="btnguardar"><b>Agregar</b></button>
-                                    </div>
-                                    </form>
-                                  </div>
+    <div class="col-sm-12">
+      <div class="alert alert-success" id="produccionOK" hidden>
+            <h4 id="datosproduccion"></h4>
+        </div>
+    </div>
+    <div class="col-sm-12">
+      <div class="alert alert-danger" id="produccionerror" hidden>
+            <h4 id="datosproduccion2"></h4>
+        </div>
+    </div>
+    <form action="<?php echo BASE_URL;?>compra/procesarfactura/<?php echo $this->g[0]['idT'] ?>/oc/" method="post" accept-charset="utf-8" role="form" id="formfactura">
+          <div class="form-group row"> 
+            <div class="col-sm-12 mt-3">
+              <div class="alert alert-success" id="facturaOK" hidden>
+                    <center><h4> La orden de compra fue procesada de manera exitosa</h4></center>
+                </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="alert alert-danger" id="facturaerror" hidden>
+                    <center><h4> Ocurrio un error al intentar procesar la orden de compra</h4><br>
+                    <h5>Por favor intente nuevamente</h5></center>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+                <label class="control-label labels" style="float: left;">Proveedor</label><span style="float: right; cursor: pointer; cursor: hand;" title="informacion del proveedor" data-toggle="tooltip" data-placement="top" class="fa fa-info-circle" id="infoproveedor" hidden></span>
+                <select name="selectp" id="selectp" class="form-control form-control-sm" required>
+                </select>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+                <label class="control-label labels" style="float: left;">Total Neto</label><span style="float: right; cursor: help; color: red" title="El monto no coindice con la sumatoria de los productos agregados en la orden de compra" data-toggle="tooltip" data-placement="top" class="fa fa-exclamation-triangle" id="errortotalfactura" hidden></span>
+                <input style="height: 30px" type="text" class="form-control form-control-sm" name="totalfact" id="totalfact" autocomplete="off" placeholder="Total neto de la orden de compra" required>
+            </div>
+          </div>
+                          
+                            <div class="col-sm-12">
+                              <input type="submit" name="" id="subFormFactura" hidden>
+                            </div>
+            </form>
+                              <div class="form-group row d-flex justify-content-center">
+                                <div class="col-xs-12">
+                                  <button class="btn btn-sm btn-outline-primary" id="btnseleccion" title="Ingrese el numero de factura para continuar" data-toggle="modal" data-target="#modalingredientes" data-backdrop="static" data-keyboard="false">Seleccionar productos</button>
                                 </div>
                               </div>
-                              <!-- fin modal -->
-                                
-
-                                 
-                            </div>
-
-
-
-                  <div class="container-fluid">
-
-                <div class="row">
-                    <div class="col-lg-12 ">
-                      
-                    <div style="margin-top: 2%" class= "col-xs-12 col-sm-12 col-md-12 col-lg-12" id="carrito-i" hidden>
-                      <div  class= "panel panel-default">
-                      <div class="card-header" style="height: 30px; padding: 5px">
-                            <center><h4 >Pedido</h4></center>
-                        </div>
-                      <div class="card">
-                        <div class="col-sm-12 table-responsive">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <td><center><b>Codigo</b></center></td>
-                                        <td><center><b>Producto</b></center></td>
-                                        <td><center><b>Cantidad</b></center></td>
-                                        <td><center><b>Proveedor</b></center></td>
-                                        <td><center><b>Precio</b></center></td>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody id="pedido">
-                                    
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="offset-sm-10 table-responsive">
-                        <table  class="">
-                            <thead>
-                            <!-- <tr id="st">
-                                
-                            </tr>
-                            <tr id="ti">
-                               
-                            </tr> -->
-                            <tr id="t">
-                                
-                            </tr>
-                            </thead>
-                        </table>
-                        </div>
-                        <div class="form-group row d-flex justify-content-center">
-                            <div class="col-sm-2">
+                            
                               
-                              <input type="button" value="Cancelar" class="form-control btn btn-sm btn-outline-secondary" id="cancelar" data-toggle="modal" data-target="#modalanular2" onclick="confirmarCancelarPedido()">
-                            
+                                    
+
+                                    <!-- Modal de ingredientes-->
+                      <div class="modal fade" id="modalingredientes">
+                        <div class="modal-dialog modal-lg" >
+                          <div class="modal-content" style="width: 120%; left: -8%">
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h5 class="modal-title" ><b>Seleccion de productos para la orden de compra</b></h5>
+                              <button type="button" class="close closeMI" data-dismiss="modal">&times;</button>
+                            </div>
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                              <div class="dataTable_wrapper">
+                                                <div class="table-responsive col-sm-12">
+                                                    <table id="tablaingredientes" class="display table table-sm table-striped table-bordered table-hover" >
+                                                        <thead class="theadH">
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Codigo</th>
+                                                                <th>Producto</th>
+                                                                <th>Marca</th>
+                                                                <th>Existencia</th>
+                                                                <th>Stock Min</th>
+                                                                <th>Stock Max</th>
+                                                                <th>Agregar</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="cuerpo_r"></tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                            </div>
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-sm btn-outline-primary closeMI" data-dismiss="modal" id="continue">Cerrar y continuar</button>
+                            </div>
                           </div>
-                            <!-- <form class="form-horizontal" role="form" action="<?php echo BASE_URL;?>pedido/index"  method="post" id="formpedido"> -->
-                          <input type="text" value="hi" name="senuelo" hidden>
-                          <div class="col-sm-2">
+                        </div>
+                      </div>
+                    <!-- fin modal -->
+
+                    <!-- Modal cantidades-->
+                                      <div class="modal fade" id="modalcant">
+                                        <div class="modal-dialog modal-sm">
+                                          <div class="modal-content">
+                                          
+                                            <!-- Modal Header -->
+                                            <div class="modal-header">
+                                              <h5 class="modal-title" id="mtitle"></h5>
+                                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            </div>
+                                            
+                                            <!-- Modal body -->
+                                            <div class="modal-body">
+                                              <form action="<?php echo BASE_URL;?>compra/tablaproductos/1" method="post" accept-charset="utf-8" role="form" id="formproductos">
+                                                <input type="hidden" name="abreviatura" id="abreviatura">
+                                                <input type="hidden" id="edit">
+                                                <div class="form-group row ml-1 mr-1">
+                                                    <div class="col-xs-12 mb-2">
+                                                <label class="labels" style="float: left; ">Unidad de compra</label>
+                                                <select style="width: 100%" name="unidad_medida_c" class="form-control form-control-sm umc" id="unidad_medida_c" required>
+                                                </select>
+                                            </div>
+                                          <div id="formulariocompleto" hidden>
+                                            <div class="col-xs-12 mb-2" id="canti" hidden>
+                                                <label class="labels" style="float: left;">Uds por <o class="uc"></o></label>
+                                                <input type="text" class="form-control form-control-sm" name="cantidadConsumo" id="cantidadConsumo" value="1">
+                                            </div>
+
+                                                    <div class="col-xs-12 mb-2">
+                                                      <label class="labels" style="float: left;">Cantidad de <o id="uc"></o> comprada</label>
+                                                        <input type="text" class="form-control form-control-sm monto" name="cantidad" id="cantidad" placeholder="ej: 1.000,0000" autocomplete="off">
+                                                    </div>
+                                                    <div class="col-xs-12 mb-2">
+                                                      <label class="labels" style="float: left;">Precio por <o class="uc"></o></label>
+                                                        <input type="text" class="form-control form-control-sm monto" name="precioc" id="precioc" placeholder="ej: 1.000,0000" autocomplete="off">
+                                                    </div>
+                                                    <div class="col-xs-12">
+                                                      <div class="row">
+                                                        <div class="col-sm-12">
+                                                          <label class="custom-control custom-checkbox ">
+                                                          <input type="checkbox" class="custom-control-input" name="exento" id="exento" checked="checked">
+                                                          <span class="custom-control-indicator"></span>
+                                                          <span class="custom-control-description">Exento de impuesto</span>
+                                                          <span style="color: red; float: right; cursor: help; margin-top: 0px" class="fa fa-exclamation-triangle ml-2" id="infoimpuesto" hidden></span>
+                                                        </label>
+                                                        </div>
+                                                        
+                                                      </div>
                             
-                            <input type="button" value="Enviar Solicitud" id="solicitar" class="form-control btn btn-sm btn-outline-primary" >
-                          
+                            <div id="porciento" hidden>
+                              <div class="row">
+                                            <div class="col-sm-6">
+                                                    <div class="input-group">
+                                                    <input type="text" class="form-control form-control-sm" name="impuesto" id="impuesto"  value="0" autocomplete="off">
+                                                    <span class="input-group-addon btn-sm">%</span>
+                                                  </div>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                  <label class="custom-control custom-radio" id="ivaincluido">
+                                    <input id="radio1" name="tipoimpuesto" type="radio" class="custom-control-input" checked="" value="1">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Inc</span>
+                                  </label>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                  <label class="custom-control custom-radio" id="ivaexcluido">
+                                    <input id="radio2" name="tipoimpuesto" type="radio" class="custom-control-input" value="2">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Exc</span>
+                                  </label>
+                                                </div>
+                                          </div>
+                            </div>    
+                                        
+                                            <div class="row mt-1">
+                                              <div class="alert alert-danger" id="errorimpuesto" hidden>
+                                                <h6>El valor del % de impuesto es muy alto, asegurese de que el valor sea correcto para continuar.</h6>
+                                              </div>
+                                            </div>
+
+                                            <div class="row mt-1">
+                                              <div class="alert alert-info" id="infoiva" hidden>
+                                                <h6 id="mensajeinfoiva"></h6>
+                                              </div>
+                                            </div>        
+                                          </div>
+
+                                          <div class="col-xs-12">
+                                            <div class="row">
+                                              <div class="col-sm-12">
+                                                  <label class="custom-control custom-checkbox ">
+                                                    <input type="checkbox" class="custom-control-input" name="descuentocheck" id="descuentocheck">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Descuento</span>
+                                                    <span style="color: red; float: right; cursor: help; margin-top: 0px" class="fa fa-exclamation-triangle ml-2" id="infodescuento" hidden></span>
+                                                  </label>
+                                              </div>
+                                            </div>
+                            
+                          <div id="valordcto" hidden>
+                            <div class="row mb-2" >
+                                          <div class="col-sm-5" id="porcentajes" >
+                                                  <div class="input-group">
+                                                  <input type="text" class="form-control form-control-sm" name="dctoporc" id="dctoporc" value="0" autocomplete="off">
+                                                  <span class="input-group-addon btn-sm">%</span>
+                                                </div>
+                                              </div>
+                                              <div class="col-sm-7" id="montodescuento" >
+                                                  <div class="input-group">
+                                                  <input type="text" class="form-control form-control-sm" name="dctomonto" id="dctomonto" value="0" autocomplete="off">
+                                                  <span class="input-group-addon btn-sm"><?php echo $_SESSION['monedatienda']; ?></span>
+                                                </div>
+                                              </div>
+                                        </div>
+                          </div>  
+                                        
+                                            <div class="row">
+                                              <div class="alert alert-danger" id="errordescuento" hidden>
+                                                <h6>El valor del descuento supera el precio del producto, asegurese de que el valor sea correcto para continuar.</h6>
+                                              </div>
+                                            </div>
+                                            <div class="row mt-1">
+                                              <div class="alert alert-info" id="infodcto" hidden>
+                                                <h6 id="mensajeinfodcto"></h6>
+                                              </div>
+                                            </div>
+                                                
+                                          </div>
+                                      </div>
+                                                    
+                                                    <div class="col-xs-12 mb-2">
+                                                      <label class="labels" style="float: left;">Observaciones:</label>
+                                                        <textarea class="form-control form-control-sm" rows="3" cols="200" name="comentario" id="comentario" placeholder="Observaciones.."></textarea>
+                                                    </div>
+                                                    <input type="hidden" name="udn" value="<?php echo $this->g[0]['idT'];?>">
+                                                    <input type="hidden" name="idpro" id="idpro">
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Modal footer -->
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
+                                              <button type="submit" class="btn btn-sm btn-outline-primary" id="guardarm" disabled>Agregar</button>
+                                              </form>
+                                            </div>
+                                            
+                                          </div>
+                                        </div>
+                                      </div> 
+                    <!-- fin modal -->
+
+                                    
+
+                                     <!--Modal compra directa-->
+                                      <div class="modal" tabindex="-1" role="dialog" id="modalreposicion">
+                                          <div class="modal-dialog " role="document">
+                                            <div class="modal-content">
+                                              <div class="modal-header">
+                                                <h5 class="modal-title" id="titulorep"></h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                                </button>
+                                              </div>
+                                              <div class="modal-body">
+                                                <form action="<?php echo BASE_URL;?>inventario/compraDirecta" method="post" accept-charset="utf-8">
+                                                    <input type="hidden" name="idT" id="idtienda" value="<?php echo $this->g[0]['idT'];?>">
+                                                    <input type="hidden" name="idemp" id="idempresa" value="<?php echo $this->g[0]['empresa_id'];?>">
+                                                    <input type="hidden" name="idP" id="idP2" >
+                                                    <input type="hidden" name="unidad_medida_si" id="umsis">
+                                                    <input type="hidden" name="motivo" id="motivo" value="122">
+                                                <div class="form-group row ">
+                                                    
+                                                    <div class="col-sm-4">
+                                                        <label class="control-label" style="float: left;">Contenido neto</label>
+                                                        <div class="col-1 d-flex offset-10" id="glyphi" data-toggle="tooltip" data-placement="right" title="ya existe un producto con el mismo nombre y marca">
+                                                        </div>
+                                                        <input type="text" class="form-control form-control-sm contneto" name="contneto" id="contneto" autocomplete="off">
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <label class="control-label" style="float: left;">Cant. comprada</label>
+                                                        <div class="col-1 d-flex offset-10" id="glyphi" data-toggle="tooltip" data-placement="right" title="ya existe un producto con el mismo nombre y marca">
+                                                        </div>
+                                                        <input type="text" class="form-control form-control-sm" name="cantcomprada" id="cantcomprada" required>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <label class="control-label" style="float: left;">U/M Compra</label>
+                                                        <select name="umcompra" class="form-control form-control-sm umc" id="umcompra" required>
+                                                            <option value="selected disabled">Seleccione..</option>}
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <label for="" class="control-label" style="float: left;">Conversion a <o id="conver"></o></label>
+                                                        <input type="text" class="form-control form-control-sm formulac" name="formulacomp" id="formulacomp">
+                                                    </div> 
+                                                    <div class="col-sm-4" id="canti" hidden>
+                                                        <label class="control-label" style="float: left;"><o id="up"></o><o class="uc"></o></label>
+                                                        <input type="text" class="form-control form-control-sm cantix" name="cantix" id="cantix">
+                                                    </div>
+                                                    <div class="col-sm-8">
+                                                        <label class="control-label" style="float: left;">Descripcion de compra</label>
+                                                        <textarea class="form-control form-control-sm" rows="2" name="descripcion"></textarea>
+                                                    </div>                                                 
+                                                </div>
+                                                
+                                              </div>
+                                              <div class="modal-footer">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+                                                <input type="submit" class="btn btn-sm btn-outline-primary" value="Guardar">
+                                              </div>
+                                            </form>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <!-- The Modal -->
+                      <div class="modal fade" id="modalcancel">
+                        <div class="modal-dialog modal-sm">
+                          <div class="modal-content">
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title">Cancelar carga de la orden</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                              <div class="alert alert-danger">
+                                <h3>Esta seguro de cancelar el proceso de carga de la orden de compra de los productos seleccionados?</h3>
+                            </div>
+                            </div>
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">No</button>
+                              <button type="button" class="btn btn-sm btn-outline-danger" id="cancel">Si</button>
+                            </div>
+                          </div>
                         </div>
-                           <!-- </form> -->
+                      </div>
+
+
+                      <!-- The Modal -->
+                      <div class="modal fade" id="modalcancela2">
+                        <div class="modal-dialog modal-sm">
+                          <div class="modal-content">
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title">Omitir </h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                              <div class="alert alert-danger">
+                                <h4>Desea eliminar este producto de la orden de compra?</h4>
+                            </div>
+                            </div>
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                              
+                            </div>
+                          </div>
                         </div>
+                      </div>
+                      <!-- fin de la modal -->
+
+                      <!-- The Modal -->
+                      <div class="modal fade" id="modaltotalf">
+                        <div class="modal-dialog modal-sm">
+                          <div class="modal-content">
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title" id="titleadv"></h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                              <div class="alert alert-danger">
+                                <h3 id="msjerror"></h3>
+                            </div>
+                            </div>
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal">Aceptar</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      
+
+                     <center>
+                        <div id="loading" hidden>
+                            <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+                        </div>
+                    </center>
+                    <div id="tablaoculta" hidden>
+                      <div class="form-group row">                    
+                        <div class="col-sm-12">
+                                            <h4 style="border-bottom: solid 1px #A5A5A5;">Productos de la orden de compra</h4>
+                                        </div>
+                                      </div>
+                      <div class="dataTable_wrapper ">
+
+                                       <div class="col-sm-12 table-responsive">    
+                                        <div class="">                              
+                                          <table id="tablacompra" class="display table table-sm table-striped table-bordered table-hover" >
+                                            <thead class="theadH">
+                                                <tr>
+                                                    <th><center>#</center></th>
+                                                    <th><center>Codigo</center></th>
+                                                    <th><center>Producto</center></th>
+                                                    <th><center>Cantidad</center></th>
+                                                    <th data-toggle="tooltip" data-placement="top" title="Precio Unitario"><center>Precio Un.</center></th>
+                                                    <th><center>Impuesto</center></th>
+                                                    <th data-toggle="tooltip" data-placement="top" title="Descuento sobre el total de la orden de compra"><center>Descuento</center></th>
+                                                    <th data-toggle="tooltip" data-placement="top" title="Precio total unitario"><center>Total Un.</center></th>
+                                                    <th><center>Total</center></th>
+                                                    <th><center>Acciones</center></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="cuerpo_r"></tbody>
+                                            
+                                        </table>
+                                        <div class="container">
+                                          <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
+                                            <div class="col-12" id="costot">
+                                              
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>     
+                                  </div>
+                                  <div id="botones" hidden>
+                                    <div class="row d-flex justify-content-center" >
+                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-1" style="padding: 0px;">
+                              <button class="btn btn-sm btn-outline-danger" id="cancelarproceso" >Cancelar</button>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-1" style="padding: 0px;">
+                              <button class="btn btn-sm btn-outline-primary" id="procesar">Registrar Orden de compra</button>
+                            </div>
+                        </div>
+                                  </div>
+                                    <div class="row d-flex justify-content-center" >
+                          <span class="parpadea text"  id="enviando" hidden>Procesando, por favor espere</span>
+                        </div>
+                                  
                     </div>
-                    </div>
-                    </div> 
-                  </div>
-                </div>
-              </div>
-          </form>
   </div>
 
   <div id="consultarOC" class="tab-pane fade mt-3" role="tabpanel">
 
-              <!-- Modal detalles Orden de compra -->
-                <div class="modal fade" id="modaldetalleOC">
-                  <div class="modal-dialog modal-lg">
-                    <div class="modal-content" style="width: 122%; left: -8%">
-                    
-                      <!-- Modal Header -->
-                      <div class="modal-header">
-                        <h4 class="modal-title titlemyt"></h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <div class="row">
+    <div class="col-sm-2">
+      <label class="labels">Desde</label>
+      <input type="date" class="form-control form-control-sm" name="fecha1" id="fecha1">
+    </div>
+    <div class="col-sm-2">
+      <label class="labels">Hasta</label>
+      <input type="date" class="form-control form-control-sm" name="fecha2" id="fecha2">
+    </div>
+    <div class="col-sm-2 mt-3">
+      <button class="btn btn-sm btn-outline-primary mt-1" type="button" id="btn-consultar">Consultar</button>
+    </div>
+  </div>
+<div class="dataTable_wrapper mt-3" id="tbfact">
+        <div class="col-sm-12 table-responsive">    
+          <div class="">                              
+            <table id="facturas" class="display table table-sm table-striped table-bordered table-hover" >
+              <thead class="theadH">
+                  <tr>
+                      <th><center>#</center></th>
+                      <?php if (is_null($this->g[0]['empresa_id'])){ ?>
+                      <th><center>Tienda</center></th>
+                      <?php } ?>
+                      <th data-toggle="tooltip" data-placement="top" title="Numero de orden"><center>Num. de orden</center></th>
+                      <th data-toggle="tooltip" data-placement="top" title="Fecha de la orden de compra"><center>Fecha</center></th>
+                      <th data-toggle="tooltip" data-placement="top" title="sub Total de la orden de compra"><center>Sub total</center></th>
+                      <th><center>Impuesto</center></th>
+                      <th><center>Descuento</center></th>
+                      <th><center>Total</center></th>
+                      <th><center>Proveedor</center></th>
+                      <th><center>Acciones</center></th>
+                  </tr>
+              </thead>
+              <tbody id="cuerpo_r"></tbody>
+          </table>
+          <div class="container">
+            <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
+              <div class="col-12" id="costot">
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>     
+    </div>
+  <!-- The Modal -->
+  <div class="modal fade" id="modaldetalleF">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="width: 120%">
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Productos de la factura N°: <o id="mdf"></o></h4>
+              <button type="button" class="close" id="closemodal" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+              <div class="dataTable_wrapper ">
+                <div class="col-sm-12 table-responsive">    
+                  <div class="">                              
+                    <table id="detalleordenc" class="display table table-sm table-striped table-bordered table-hover" >
+                      <thead class="theadH">
+                          <tr>
+                              <th><center>#</center></th>
+                              <th><center>Codigo</center></th>
+                              <th><center>Producto</center></th>
+                              <th><center>Marca</center></th>
+                              <th><center>Cantidad</center></th>
+                              <th><center>Precio unit.</center></th>
+                              <th><center>Impuesto</center></th>
+                              <th><center>Descuento</center></th>
+                              <th><center>Precio Total</center></th>
+                          </tr>
+                      </thead>
+                      <tbody id="cuerpo_r"></tbody>
+                  </table>
+                  <div class="container">
+                    <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
+                      <div class="col-12" id="costot">
+                        
                       </div>
-                      
-                  <!-- Modal body -->
-                  <div class="modal-body">
-                      <!-- <form action="<?php echo BASE_URL;?>transferencia/procesarRemision" method="post" accept-charset="utf-8" role="form" id="formdetails"> -->
-                                       <!--  <input type="hidden" id="tipo">
-                                        <input type="hidden" id="idrepos" name="idrepos"> -->
-                                      <div class="dataTable_wrapper">
-                                          <div class="table-responsive col-sm-12">
-                                              <table id="tabladetallesOC" class="display table table-sm table-striped table-bordered table-hover" >
-                                                  <thead class="theadH">
-                                                    <tr>
-                                                      <th colspan="8"><center><o class="titlemyt"></o></center></th>
-                                                    </tr>
-                                                      <tr>
-                                                          <th>Codigo</th>
-                                                          <th>Producto</th>
-                                                          <th>Cant. Solicitada</th>
-                                                          <th>Existencia</th>
-                                                          <th>Min</th>
-                                                      </tr>
-                                                  </thead>
-                                                  <tbody id="cuerpo_r"></tbody>
-                                              </table>
-                                          </div>
-                                      </div>
-                                      <!-- <input type="submit" name="btn-subm" id="btn-subm" value="enviar" hidden> -->
-                      <!-- </form> -->
-                  </div>
-                      
-                      <!-- Modal footer -->
-                      <div class="modal-footer">
-                                    <!-- <u id="validarrecep" style="color: red"></u> -->
-                                      <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cerrar</button>
-                                      <!-- <button type="button" class="btn btn-sm btn-outline-primary" hidden="" id="proccess">Procesar</button>
-                                      <span class="fa fa-exclamation-triangle" id="warning" hidden style=" cursor: hand; cursor: pointer" title="Ver alerta"></span> 
-                                      <button type="button" class="btn btn-sm btn-outline-primary" hidden="" id="recept">Recibir</button>-->
-                      </div>
-                      
                     </div>
                   </div>
                 </div>
-                <!-- fin de la modal -->
-
-    <div class="dataTable_wrapper " >
-       <div class="col-sm-12 table-responsive">
-          <table id="tablaconsultOC" class="table table-sm table-striped table-bordered table-hover" >
-            <thead class="theadH">
-                <tr>
-                  <th colspan="7"><center>Consulta de ordenes de compra</center></th>
-                </tr>
-                <tr>
-                    <th>#</th>
-                    <th>Num. Orden</th>
-                    <th>Fecha</th>
-                    <th>Proveedor</th>
-                    <th>Correo proveedor</th>
-                    <th>Solicitante</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="cuerpo_i"></tbody>    
-        </table>         
+              </div>     
+            </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-sm btn-outline-primary" data-dismiss="modal">Cerrar</button>
+            </div>
       </div>
     </div>
-
   </div>
-</div>
+  <!-- fin modal -->
                           
                             
 

@@ -11,47 +11,31 @@ $(document).ready(function() {
     load('unidad_medida','unidad_medida_c',false);
     $('#totalfact').number(true, 4, ',', '.');
     $('#ingresar').trigger('click');
+    $('#crearorden').trigger('click');
     var idt= $('#idtienda').val();
     
 
     $('#num_factura').bind("change mouseout",function(event) {
         $('#num_factura').blur();
         var numerof = $('#num_factura').val();
-        $.ajax({
-            url: BASE_URL+'/compra/validarnumfact/'+numerof,
-            type: 'POST',
-            dataType: 'json'
-        })
-        .done(function(data) {
-        if (data.length > 0) {
-            var num = data[0]['num_factura'];
+        var idprov = $('#selectp').val();
+        if (idprov.length>0 && numerof.length>0) {
+            validanumfact(numerof,idprov);
         }else{
-            var num = false;
-        }
-        if (num == numerof) {
-
-            $('#titleadv').empty();
-            $('#titleadv').append('Error en los datos de la factura');
-            $('#msjerror').empty();
-            $('#msjerror').append('El numero de factura ingresado ya se encuentra registrado.<br><br> <h5>Por favor verifique e intente nuevamente</h5>');
             $('#btnseleccion').prop('disabled', true);
-            $('#procesar').prop('disabled', true);
-            $('#modaltotalf').modal('show');
-        }else{
-            $('.Facturanum').empty();
-            $('.Facturanum').append(numerof);
-            if (numerof.length>0) {
-                $('#btnseleccion').prop('disabled', false);
-                $('#btnseleccion').attr('title', 'Seleccionas productos');
-            }else{
-                $('#btnseleccion').prop('disabled', true);
-                $('#btnseleccion').attr('title', 'Ingrese el numero de factura para continuar');
-            }
-        }
-            
-        });
-        
+        } 
     });
+
+    $('#selectp').change(function(event) {
+        var numerof = $('#num_factura').val();
+        var idprov = $('#selectp').val();
+        if (idprov.length>0 && numerof.length>0) {
+            validanumfact(numerof,idprov);
+        }else{
+            $('#btnseleccion').prop('disabled', true);
+        } 
+    });
+
 
     $('#btnseleccion').click(function(event) {
         tablaing(idt);
@@ -147,11 +131,13 @@ $(document).ready(function() {
         }else{
             $('#canti').slideUp();        
         }
-        if (cant.length>0 && precio.length>0) {
+        if (cant>0 && precio>0) {
             $('#guardarm').prop('disabled', false);
         }else{
             $('#guardarm').prop('disabled', true);
         }
+        $('#formulariocompleto').fadeIn();
+        $('#formulariocompleto').prop('hidden', false);
         validarultimoprecio();
     });
 
@@ -197,9 +183,35 @@ $(document).ready(function() {
             $('#porciento').fadeOut();
             $('#impuesto').val('');
             $('#impuesto').val(0);
+            $('#infoimpuesto').prop('hidden', true);
+            $('#impuesto').css('color', '#464a4c');
         }else{
             $('#porciento').fadeIn();
             $('#porciento').prop('hidden', false);
+        }
+    });
+
+    $('#descuentocheck').click(function(event) {
+        var mcom = $('#unidad_medida_c option:selected').text();
+        $('#dctoporc').number(true, 0, ',', '.');
+        $('#dctomonto').number(true, 4, ',', '.');
+        if ($('#descuentocheck').is(':checked')) {
+            $('#valordcto').fadeIn();
+            $('#valordcto').prop('hidden', false);
+            $('#mensajeinfodcto').empty();
+            $('#mensajeinfodcto').append('El valor del descuento que debe ingresar es por cada '+mcom);
+            $('#infodcto').slideDown();
+            $('#infodcto').prop('hidden', false);
+        }else{
+            $('#valordcto').fadeOut();
+            $('#dctoporc').val('');
+            $('#dctoporc').val(0);
+            $('#dctomonto').val('');
+            $('#dctomonto').val(0);
+            $('#infodescuento').prop('hidden', true);
+            $('#infodcto').slideUp();
+            $('#dctoporc').css('color', '#464a4c');
+            $('#dctomonto').css('color', '#464a4c');
         }
     });
 
@@ -209,7 +221,10 @@ $(document).ready(function() {
             $('#impuesto').css('color', 'red');
             $('#infoimpuesto').show();
             $('#infoimpuesto').prop('hidden', false);
-            $('#procesar').prop('disabled', false);
+            setTimeout(function(){
+                $('#procesar').prop('disabled', true);
+            },200);
+            
         }else{
             $('#impuesto').css('color', '#464a4c');
             $('#infoimpuesto').prop('hidden', true);
@@ -217,27 +232,132 @@ $(document).ready(function() {
         }
     });
 
+    $('#dctoporc').keyup(function(event) {
+        var imp = $('#dctoporc').val();
+        if (imp>100) {
+            $('#dctoporc').css('color', 'red');
+            $('#infodescuento').show();
+            $('#infodescuento').prop('hidden', false);
+            setTimeout(function(){
+                $('#procesar').prop('disabled', true);
+            },200);
+            
+        }else{
+            $('#dctoporc').css('color', '#464a4c');
+            $('#infodescuento').prop('hidden', true);
+            $('#procesar').prop('disabled', false);
+        }
+    });
+
+    $('#dctomonto').keyup(function(event) {
+        var imp = $('#dctomonto').val();
+        var cant = $('#cantidad').val();
+        var precio = $('#precioc').val();
+        var total = cant*precio;
+        if (imp>total) {
+            $('#dctomonto').css('color', 'red');
+            $('#infodescuento').show();
+            $('#infodescuento').prop('hidden', false);
+            setTimeout(function(){
+                $('#procesar').prop('disabled', true);
+            },200);
+            
+        }else{
+            $('#dctomonto').css('color', '#464a4c');
+            $('#infodescuento').prop('hidden', true);
+            $('#procesar').prop('disabled', false);
+        }
+    });
+
+    $('#infoimpuesto').mouseover(function(event) {
+        $('#errorimpuesto').slideDown();
+        $('#errorimpuesto').prop('hidden', false);
+    });
+
+    $('#infoimpuesto').mouseleave(function(event) {
+        $('#errorimpuesto').slideUp();
+    });
+
+    $('#infodescuento').mouseover(function(event) {
+        $('#errordescuento').slideDown();
+        $('#errordescuento').prop('hidden', false);
+    });
+
+    $('#infodescuento').mouseleave(function(event) {
+        $('#errordescuento').slideUp();
+    });
+
+    $('#ivaincluido').mouseover(function(event) {
+        $('#mensajeinfoiva').empty();
+        $('#mensajeinfoiva').append('El precio ingresado ya incluye el % de impuesto');
+        $('#infoiva').slideDown();
+        $('#infoiva').prop('hidden', false);
+    });
+
+    $('#ivaincluido').mouseleave(function(event) {
+        $('#infoiva').slideUp();
+    });
+
+    $('#ivaexcluido').mouseover(function(event) {
+        $('#mensajeinfoiva').empty();
+        $('#mensajeinfoiva').append('El precio ingresado no incluye el % de impuesto');
+        $('#infoiva').slideDown();
+        $('#infoiva').prop('hidden', false);
+    });
+
+    $('#ivaexcluido').mouseleave(function(event) {
+        $('#infoiva').slideUp();
+    });
+
+    $('#dctoporc').focus(function(event) {
+        $('#dctomonto').val('');
+        $('#dctomonto').val(0);
+        $('#dctomonto').css('color', '#464a4c');
+        $('#infodescuento').prop('hidden', true);
+    });
+
+    $('#dctomonto').focus(function(event) {
+        $('#dctoporc').val('');
+        $('#dctoporc').val(0);
+        $('#dctoporc').css('color', '#464a4c');
+        $('#infodescuento').prop('hidden', true);
+    });
+
+
+
+
+
+    
+
     $('#formfactura').submit(function(event) {
         event.preventDefault();
         var idT = $('#idtienda').val();
         var formdata = $("#formfactura").serialize();
+        var enlace = $(this).attr('action');
+        $('#procesar').prop('disabled', true);
+        $('#enviando').show();
+        $('#enviando').prop('hidden', false);
         $.ajax({
-            url: BASE_URL+'/compra/procesarfactura/'+idT,
+            url: enlace,
             type: 'POST',
             data: formdata,
             dataType: 'json'
         })
         .done(function(data) {
+            $('#salida').show();
+            $('#salida').prop('hidden', false);
             $('#tablaoculta').fadeOut(400);
             $('#botones').fadeOut(400);
             $('#facturaOK').slideDown();
             $('#facturaOK').prop('hidden', false);
-            setTimeout(function() {$('#facturaOK').slideUp(500);}, 6000);
+            setTimeout(function() {$('#facturaOK').slideUp(500);$('#enviando').hide();}, 6000);
         })
         .fail(function(datos){
+            $('#salida').show();
+            $('#salida').prop('hidden', false);
             $('#facturaerror').slideDown();
             $('#facturaerror').prop('hidden', false);
-            setTimeout(function() {$('#facturaerror').slideUp(500);}, 6000);
+            setTimeout(function() {$('#facturaerror').slideUp(500);$('#enviando').hide();$('#procesar').prop('disabled', true);}, 6000);
         });
     });
 
@@ -315,6 +435,41 @@ $(document).ready(function() {
     });
     
 });
+
+function validanumfact(numerof,idprov){
+    $.ajax({
+            url: BASE_URL+'/compra/validarnumfact/'+numerof+'/'+idprov,
+            type: 'POST',
+            dataType: 'json'
+        })
+        .done(function(data) {
+        if (data.length > 0) {
+            var num = data[0]['num_factura'];
+        }else{
+            var num = false;
+        }
+        if (num == numerof) {
+            $('#titleadv').empty();
+            $('#titleadv').append('Error en los datos de la factura');
+            $('#msjerror').empty();
+            $('#msjerror').append('El numero de factura ingresado ya se encuentra registrado con los datos del proveedor seleccionado.<br><br> <h5>Por favor verifique e intente nuevamente</h5>');
+            $('#btnseleccion').prop('disabled', true);
+            $('#procesar').prop('disabled', true);
+            $('#modaltotalf').modal('show');
+        }else{
+            $('.Facturanum').empty();
+            $('.Facturanum').append(numerof);
+            if (numerof.length>0) {
+                $('#btnseleccion').prop('disabled', false);
+                $('#btnseleccion').attr('title', 'Seleccionas productos');
+            }else{
+                $('#btnseleccion').prop('disabled', true);
+                $('#btnseleccion').attr('title', 'Ingrese el numero de factura para continuar');
+            }
+        }
+            
+        });
+}
 
 function infodelproveedor(prov){
     $.ajax({
@@ -395,6 +550,38 @@ function mostrartablacomprar(){
                         return ''+cant+' '+moneda
                     }
                 },
+                { "data": "impuesto", className: "tdright",
+                    render : function(data, type, row) {
+                        var c = parseFloat(data);
+                        var cant = c.toLocaleString('es-ES', { minimumFractionDigits: 4 });
+                        //var ingr = row['ingrediente'].replace(/ /gi, "@"); 
+                        return ''+cant+' '+moneda+'('+row['porcimpuesto']+'%)'
+                    }
+                },
+                { "data": "descuento", className: "tdright",
+                    render : function(data, type, row) {
+                        var c = parseFloat(data);
+                        var cant = c.toLocaleString('es-ES', { minimumFractionDigits: 4 });
+                        //var ingr = row['ingrediente'].replace(/ /gi, "@"); 
+                        return ''+cant+' '+moneda+'('+row['porcdescuento']+'%)'
+                    }
+                },
+                { "data": "preciofinalU", className: "tdright",
+                    render : function(data, type, row) {
+                        var c = parseFloat(data);
+                        var cant = c.toLocaleString('es-ES', { minimumFractionDigits: 4 });
+                        //var ingr = row['ingrediente'].replace(/ /gi, "@"); 
+                        return ''+cant+' '+moneda
+                    }
+                },
+                { "data": "preciototal", className: "tdright",
+                    render : function(data, type, row) {
+                        var c = parseFloat(data);
+                        var cant = c.toLocaleString('es-ES', { minimumFractionDigits: 4 });
+                        //var ingr = row['ingrediente'].replace(/ /gi, "@"); 
+                        return ''+cant+' '+moneda
+                    }
+                },
                 { "data": null , className: "tdcenter",
           render : function(data, type, row) {
             //var ingr = row['ingrediente'].replace(/ /gi, "@"); 
@@ -423,10 +610,14 @@ function mostrartablacomprar(){
         } );
     } ).draw();
         $('#tablacompra_wrapper').removeClass('container-fluid');
+        $('#tablacompra_filter').css('float', 'right');
     }else{
         
         $('#tablaoculta').fadeOut('slow');
         $('#tablaoculta').fadeOut('slow');
+        setTimeout(function(){
+            window.close();
+        },500)
     }
         });
         
@@ -497,8 +688,9 @@ function removedM(idpro,idt,tipo){
 
 function tablaing(idt){
     //alert(idt);
+    var idprov = $('#selectp').val();
      var t2 = $('#tablaingredientes').DataTable({
-            "ajax": BASE_URL+'/compra/materiaprima/'+idt,
+            "ajax": BASE_URL+'/compra/materiaprima/'+idt+'/'+idprov,
             "lengthChange": false,
             "columns": [
                 { "data": null, className: "tdcenter"},
@@ -558,6 +750,7 @@ function tablaing(idt){
         } );
     } ).draw();
     $('#tablaingredientes_wrapper').removeClass('container-fluid');
+    $('#tablaingredientes_filter').css('float', 'right');
 }
     
     function comprar(iding,edit){
@@ -630,8 +823,6 @@ function tablaing(idt){
         
     }
 
-
-
     function tablafacturas(idt,ide,tipo,f1,f2){
         $('#rowfacturas').slideDown();
         $('#rowfacturas').prop('hidden', false);
@@ -654,6 +845,11 @@ function tablaing(idt){
        { "data": "impuesto" , className: "tdright font11",
           render : function(data, type, row) {            
                return ''+data+' '+moneda+' ('+row['porcImp']+'%)'
+          }    
+       },
+       { "data": "descuento" , className: "tdright font11",
+          render : function(data, type, row) {            
+               return ''+data+' '+moneda+' ('+row['porcdcto']+'%)'
           }    
        },
        { "data": "ttl" , className: "tdright font11",
@@ -697,6 +893,11 @@ function tablaing(idt){
                 { "data": "impuesto" , className: "tdright font11",
                     render : function(data, type, row) {            
                         return ''+data+' '+moneda+' ('+row['porcImp']+'%)'
+                    }    
+                },
+                { "data": "descuento" , className: "tdright font11",
+                    render : function(data, type, row) {            
+                        return ''+data+' '+moneda+' ('+row['porcdcto']+'%)'
                     }    
                 },
                 { "data": "ttl" , className: "tdright font11",
@@ -749,8 +950,7 @@ function tablaing(idt){
           dataType: 'json'
         })
         .done(function(data) {
-            if (data["data"].length>0) {
-                $('#mdf').empty();
+            $('#mdf').empty();
             $('#mdf').append(data["data"][0]['num_factura']);
             var moneda = $('#monedatienda').val();
             var t4 = $('#detallefactura').DataTable({
@@ -770,18 +970,41 @@ function tablaing(idt){
                         return ''+data+' '+moneda+''
                     }    
                 },
+                { "data": "impuesto" , className: "tdright font11",
+                    render : function(data, type, row) {            
+                        return ''+data+' '+moneda+''
+                    }    
+                },
+                { "data": "descuento" , className: "tdright font11",
+                    render : function(data, type, row) {            
+                        return ''+data+' '+moneda+''
+                    }    
+                },
                 { "data": "precioproT" , className: "tdright font11",
                     render : function(data, type, row) {            
                         return ''+data+' '+moneda+''
                     }    
-                },           
+                },
+                { "data": "cantnc", className: "font11",
+                    render : function(data, type, row) {  
+                        if (row['devolucion'] != 1) {
+                            return '<center>N/A</center>'
+                        }else{
+                            return '<o style="text-align: right">'+data+' '+row['abreviatura']+'</o>'
+                        }              
+                    } 
+                },          
                 { "data": "idF", className: "tdcenter ",
-                    render : function(data, type, row) {            
-                       return '<span  onclick="devolucion('+data+','+row['idmer']+','+row['idum']+')" class="fa fa-undo test " style="cursor: pointer; cursor:hand; color: #337ab7"  title="Generar la nota de credito del producto '+row['nombre']+' '+row['marca']+'"></span>'+
+                    render : function(data, type, row) {  
+                    if (row['devolucion'] == 1) {
+                        return 'Devuelto'
+                    }else{
+                        return '<span  onclick="devolucion('+data+','+row['idmer']+','+row['idum']+')" class="fa fa-undo test " style="cursor: pointer; cursor:hand; color: #337ab7"  title="Generar la nota de credito del producto '+row['nombre']+' '+row['marca']+'"></span>'+
                        '<form action="'+BASE_URL+'compra/devolucion/'+idt+'" method="post" accept-charset="utf-8" role="form" id="formdev'+row['idmer']+''+row['idF']+'">'+
                        '<input type="hidden" id="producto'+row['idmer']+''+row['idF']+'" name="producto" value="'+row['nombre']+' '+row['marca']+'"/>'+
                        '<input type="hidden" id="canti'+row['idmer']+''+row['idF']+'" name="canti" value="'+row['cantidad']+'"/>'+
                        '<input type="hidden" id="cant'+row['idmer']+''+row['idF']+'" name="cant" value="'+row['cant']+'"/>'+
+                       '<input type="hidden" id="cantinc'+row['idmer']+''+row['idF']+'" name="cantinc" value="'+row['cant']+'"/>'+
                        '<input type="hidden" id="cantx'+row['idmer']+''+row['idF']+'" name="cantx" value="'+row['cantidadx']+'"/>'+
                        '<input type="hidden" id="fact'+row['idmer']+''+row['idF']+'" name="fact" value="'+row['num_factura']+'"/>'+
                        '<input type="hidden" id="conte'+row['idmer']+''+row['idF']+'" name="conte" value="'+row['contenido_neto']+'"/>'+
@@ -793,6 +1016,8 @@ function tablaing(idt){
                        '<input type="hidden" id="com'+row['idmer']+''+row['idF']+'" name="comentario" value=""/>'+
                         '<input type="submit" id="btn'+row['idmer']+''+row['idF']+'" hidden>'+
                        '</form>'
+                    }          
+                      
                        
                   } 
                 }               
@@ -820,11 +1045,6 @@ function tablaing(idt){
         setTimeout(function(){
             $('#modaldetalleF').modal('show');
         },1000);
-        
-    }else{
-        $('#closemodal').trigger('click');
-        alert("Todos los productos de esta factura fueron devueltos");
-    }
             
         })
         .fail(function(data) {
@@ -833,6 +1053,85 @@ function tablaing(idt){
 
         
     }
+
+    function productosOC(idOC){
+        var idt = $('#idtienda').val();
+        var enlace = BASE_URL+'/compra/productosordenc/'+idOC;
+        $.ajax({
+          url: enlace,
+          type: 'POST',
+          dataType: 'json'
+        })
+        .done(function(data) {
+            $('#mdf').empty();
+            $('#mdf').append(data["data"][0]['num_orden']);
+            var moneda = $('#monedatienda').val();
+            var t5 = $('#detalleordenc').DataTable({
+            "ajax": BASE_URL+'/compra/productosordenc/'+idOC,
+            "columns": [
+                { "data": null, className: "tdcenter font11"},
+                { "data": "codigo", className: "tdleft font11"},
+                { "data": "nombre", className: "tdleft font11"},
+                { "data": "marca", className: "tdcenter font11"},
+                { "data": "cantidad", className: "tdcenter font11",
+                    render : function(data, type, row) {            
+                        return ''+data+' '+row['abreviatura']+''
+                    }
+                },
+                { "data": "precioUpro" , className: "tdright font11",
+                    render : function(data, type, row) {            
+                        return ''+data+' '+moneda+''
+                    }    
+                },
+                { "data": "impuesto" , className: "tdright font11",
+                    render : function(data, type, row) {            
+                        return ''+data+' '+moneda+''
+                    }    
+                },
+                { "data": "descuento" , className: "tdright font11",
+                    render : function(data, type, row) {            
+                        return ''+data+' '+moneda+''
+                    }    
+                },
+                { "data": "precioproT" , className: "tdright font11",
+                    render : function(data, type, row) {            
+                        return ''+data+' '+moneda+''
+                    }    
+                }        
+                              
+            ],
+                "columnDefs": [ {
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+                } ],
+                "order": [[ 1, 'asc' ]],
+                destroy: true,
+                responsive: true
+                }); 
+    $('#_10').on( 'click', function () {
+        table.page.len( 10 ).draw();
+    } );
+    $('#detalleordenc').css("width","100%");
+    t5.on( 'order.dt search.dt', function () {
+    t5.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+        cell.innerHTML = i+1;
+    } );
+    } ).draw();
+        $('#detalleordenc_wrapper').removeClass('container-fluid');
+        $('#closemodal').trigger('click');
+        setTimeout(function(){
+            $('#modaldetalleF').modal('show');
+        },1000);
+            
+        })
+        .fail(function(data) {
+            alert("fail");
+        });
+
+        
+    }
+
 
     function devolucion(idf,idmer,idum){
         var productname = $('#producto'+idmer+idf).val();
@@ -843,10 +1142,16 @@ function tablaing(idt){
         $('.productname').append(productname);
         $('#cantdev').empty();
         $('#cantdev').append(cantidad+' '+abreviatura);
+        $('#cantidadnc').val('');
+        $('#cantidadnc').val(cantidad);
+        $('#cantidadnc2').val(cantidad);
+        $('#abrevnc').empty();
+        $('#abrevnc').append(abreviatura);
         $('#fnum').empty();
         $('#fnum').append(facturanum);
         $('#modaldevolucion').modal('show');
         $('#com'+idmer+''+idf).addClass('coments');
+        $('#cantinc'+idmer+''+idf).addClass('cantidaddevolver');
         $('#devolver').click(function(event) {
             devolver(idmer,idf);
             $('.botonform').trigger('click');
@@ -911,35 +1216,35 @@ function tablaing(idt){
                 { "data": "codigo", className: "tdleft font11"},
                 { "data": "nombre", className: "tdcenter font11"},
                 { "data": "marca" , className: "tdright font11"},
-       { "data": "cantidad" , className: "tdright font11",
-          render : function(data, type, row) {            
-               return ''+data+' '+row['abreviatura']+''
-          }    
-       },
-       { "data": "puum" , className: "tdright font11",
-          render : function(data, type, row) {            
-               return ''+data+' '+moneda+''
-          }    
-       },
-       { "data": "num_factura", className: "tdleft font11"},               
-       { "data": "fecha_factura", className: "tdleft font11"},               
-       { "data": "fecha_devolucion", className: "tdleft font11"},                             
-       { "data": "idmhf", className: "tdcenter ",
-            render : function(data, type, row) {            
-               return '<span  onclick="infodelproveedor('+row['idprov']+')" class="fa fa-info-circle test " style="cursor: pointer; cursor:hand; color: #337ab7"  title="Ver detalles del proveedor"></span>'+
-               '<span  onclick="observaciones('+data+',2)" class="fa fa-file-text test ml-2" style="cursor: pointer; cursor:hand; color: #337ab7"  title="Ver observaciones de la nota de credito del producto '+row['nombre']+' '+row['marca']+'"></span>'+
-              '<input type="hidden" id="fac'+data+'" value="'+row['ttl']+'"/>'
-          } 
-        },               
-            ],
-            "columnDefs": [ {
-            "searchable": false,
-            "orderable": false,
-            "targets": 0
-                } ],
-            //"order": [[ 1, 'asc' ]],
-            destroy: true,
-            responsive: true
+                { "data": "cantnc" , className: "tdright font11",
+                    render : function(data, type, row) {            
+                        return ''+data+' '+row['abreviatura']+''
+                    }    
+                },
+                { "data": "montonc" , className: "tdright font11",
+                    render : function(data, type, row) {            
+                        return ''+data+' '+moneda+''
+                    }    
+                },
+                { "data": "num_factura", className: "tdleft font11"},               
+                { "data": "fecha_factura", className: "tdleft font11"},               
+                { "data": "fecha_devolucion", className: "tdleft font11"},                             
+                { "data": "idmhf", className: "tdcenter ",
+                    render : function(data, type, row) {            
+                       return '<span  onclick="infodelproveedor('+row['idprov']+')" class="fa fa-info-circle test " style="cursor: pointer; cursor:hand; color: #337ab7"  title="Ver detalles del proveedor"></span>'+
+                       '<span  onclick="observaciones('+data+',2)" class="fa fa-file-text test ml-2" style="cursor: pointer; cursor:hand; color: #337ab7"  title="Ver observaciones de la nota de credito del producto '+row['nombre']+' '+row['marca']+'"></span>'+
+                      '<input type="hidden" id="fac'+data+'" value="'+row['ttl']+'"/>'
+                  } 
+                },               
+                ],
+                "columnDefs": [ {
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+                    } ],
+                //"order": [[ 1, 'asc' ]],
+                destroy: true,
+                responsive: true
         });
         }else{
             ide = idt;
@@ -952,12 +1257,12 @@ function tablaing(idt){
                 { "data": "codigo", className: "tdleft font11"},
                 { "data": "nombre", className: "tdcenter font11"},
                 { "data": "marca" , className: "tdright font11"},
-       { "data": "cantidad" , className: "tdright font11",
-          render : function(data, type, row) {            
-               return ''+data+' '+row['abreviatura']+''
-          }    
-       },
-       { "data": "puum" , className: "tdright font11",
+                { "data": "cantnc" , className: "tdright font11",
+                    render : function(data, type, row) {            
+                        return ''+data+' '+row['abreviatura']+''
+                    }    
+                },
+       { "data": "montonc" , className: "tdright font11",
           render : function(data, type, row) {            
                return ''+data+' '+moneda+''
           }    
@@ -997,7 +1302,12 @@ function tablaing(idt){
     }
 
     function pdf(idf){
-        var url = BASE_URL+'factura?f='+idf;
+        var url = BASE_URL+'printerf?f='+idf;
+        abrir_emergente(url);
+    }
+
+    function pdfOC(idOC){
+        var url = BASE_URL+'printerf?o='+idOC;
         abrir_emergente(url);
     }
 
@@ -1005,65 +1315,47 @@ function tablaing(idt){
         var imp = $('#impuesto').val();
             var ttlfact = $('#totalfact').val();
             var moneda = $('#monedatienda').val();
-            if (imp != 0) {
-                var enlace = BASE_URL+'/compra/validartotalF/'+imp;
-            }else{
-                var enlace = BASE_URL+'/compra/validartotalF/';
-            }
+            var enlace = BASE_URL+'/compra/validartotalF/';
             $.ajax({
                 url: enlace,
                 type: 'POST',
                 dataType: 'json'
             })
             .done(function(data) {
-                montoSup = data - ttlfact;
-                montoInf = ttlfact - data;
-                $('#titleadv').empty();
-                $('#titleadv').append('Error en los totales!');
-                if (montoSup <=1 && data>ttlfact) {
-                    $('#procesar').prop('disabled', false);
-                    $('#msjerror').empty();
-                    $('#msjerror').append('la sumatoria de precio de los productos agregados es superior al total de la factura por un monto de '+montoSup+' '+moneda+'<br>'+
-                        '<h5>puede continuar con la carga de la factura pero tenga en cuenta esta diferencia</h5>');
-                    $('#modaltotalf').modal('show');                    
-                    $('#totalfact').css('border-color', '#FFAE00');
-                    $('#errortotalfactura').show();
-                    $('#errortotalfactura').prop('hidden', false);
-                    $('#errortotalfactura').css('color', '#FFAE00');
-                }else if (montoInf <=1 && data<ttlfact) {
-                    $('#procesar').prop('disabled', false);
-                    $('#msjerror').empty();
-                    $('#msjerror').append('la sumatoria de precio de los productos agregados es inferior al total de la factura por un monto de '+montoInf+' '+moneda+'<br>'+
-                        '<h5>puede continuar con la carga de la factura pero tenga en cuenta esta diferencia</h5>');
-                    $('#modaltotalf').modal('show');                    
-                    $('#totalfact').css('border-color', '#FFAE00');
-                    $('#errortotalfactura').show();
-                    $('#errortotalfactura').prop('hidden', false);
-                    $('#errortotalfactura').css('color', '#FFAE00');
-                }else if (montoSup >1 && data>ttlfact) {
-                    $('#procesar').prop('disabled', true);
-                    $('#msjerror').empty();
-                    $('#msjerror').append('la sumatoria de precio de los productos agregados es superior al total de la factura por un monto de '+montoSup+' '+moneda+'<br>'+
-                        '<h5>Por favor verifique los valores ingresados e intente nuevamente</h5>');
-                    $('#modaltotalf').modal('show');                    
-                    $('#totalfact').css('border-color', 'red');
-                    $('#errortotalfactura').show();
-                    $('#errortotalfactura').prop('hidden', false);
-                    $('#errortotalfactura').css('color', 'red');
-                }else if (montoInf >1 && data<ttlfact) {
-                    $('#procesar').prop('disabled', true);
-                    $('#msjerror').empty();
-                    $('#msjerror').append('la sumatoria de precio de los productos agregados es inferior al total de la factura por un monto de '+montoInf+' '+moneda+'<br>'+
-                        '<h5>Por favor verifique los valores ingresados e intente nuevamente</h5>');
-                    $('#modaltotalf').modal('show');
-                    $('#totalfact').css('border-color', 'red');
-                    $('#errortotalfactura').show();                
-                    $('#errortotalfactura').prop('hidden', false);
-                    $('#errortotalfactura').css('color', 'red');
+                if (data != 'nodata') {
+                    montoSup = data - ttlfact;
+                    montoInf = ttlfact - data;
+                    $('#titleadv').empty();
+                    $('#titleadv').append('Error en los totales!');
+                    if (data>ttlfact) {
+                        $('#procesar').prop('disabled', true);
+                        $('#msjerror').empty();
+                        $('#msjerror').append('la sumatoria de precio de los productos agregados es superior al total de la factura por un monto de '+montoSup+' '+moneda+'<br>'+
+                            '<h5>Por favor verifique los valores ingresados e intente nuevamente</h5>');
+                        $('#modaltotalf').modal('show');                    
+                        $('#totalfact').css('border-color', 'red');
+                        $('#errortotalfactura').show();
+                        $('#errortotalfactura').prop('hidden', false);
+                        $('#errortotalfactura').css('color', 'red');
+                    }else if (data<ttlfact) {
+                        $('#procesar').prop('disabled', true);
+                        $('#msjerror').empty();
+                        $('#msjerror').append('la sumatoria de precio de los productos agregados es inferior al total de la factura por un monto de '+montoInf+' '+moneda+'<br>'+
+                            '<h5>Por favor verifique los valores ingresados e intente nuevamente</h5>');
+                        $('#modaltotalf').modal('show');
+                        $('#totalfact').css('border-color', 'red');
+                        $('#errortotalfactura').show();                
+                        $('#errortotalfactura').prop('hidden', false);
+                        $('#errortotalfactura').css('color', 'red');
+                    }else{
+                        $('#errortotalfactura').hide();
+                        $('#totalfact').css('border-color', '#00000026'); 
+                        $('#procesar').prop('disabled', false);
+                    }
                 }else{
                     $('#errortotalfactura').hide();
-                    $('#totalfact').css('border-color', '#00000026'); 
-                    $('#procesar').prop('disabled', false);
+                    $('#totalfact').css('border-color', '#00000026');
+                    $('#procesar').prop('disabled', true);
                 }
             });
     }
@@ -1095,6 +1387,172 @@ function tablaing(idt){
             });
             
         }
+    }
+
+
+    function consultarOC(){
+        var idt = $('#idtienda').val();
+        var ide = $('#idempresa').val();
+        var f1 = $('#fecha1').val();
+        var f2 = $('#fecha2').val();
+        var enlace = BASE_URL+'/compra/consultarOC/'+idt+'/'+f1+'/'+f2;
+        $.ajax({
+          url: enlace,
+          type: 'POST',
+          dataType: 'json'
+        })
+        .done(function(data) {
+            tablaconsultOC(idt,ide,f1,f2);
+        })
+        .fail(function(data) {
+            alert("No hay registro de ordenes de compra de esta unidad de negocios en el rango de fechas seleccionado");
+        });
+        
+    }
+
+    function tablaconsultOC(idt,ide,f1,f2){
+        $('#rowfacturas').slideDown();
+        $('#rowfacturas').prop('hidden', false);
+        $('#h4title').empty();
+        $('#h4title').append('Ordenes de compra');
+        var moneda = $('#monedatienda').val();
+        if (ide!=0) {
+            var t3 = $('#facturas').DataTable({
+            "ajax": BASE_URL+'/compra/consultarOC/'+idt+'/'+f1+'/'+f2,
+            "columns": [
+                { "data": null, className: "tdcenter font11"},
+                { "data": "num_orden", className: "tdleft font11"},
+                { "data": "fecha", className: "tdcenter font11"},
+                { "data": "total_orden" , className: "tdright font11",
+          render : function(data, type, row) {            
+               return ''+data+' '+moneda+''
+          }    
+       },
+       { "data": "impuesto" , className: "tdright font11",
+          render : function(data, type, row) {            
+               return ''+data+' '+moneda+' ('+row['porcImp']+'%)'
+          }    
+       },
+       { "data": "descuento" , className: "tdright font11",
+          render : function(data, type, row) {            
+               return ''+data+' '+moneda+' ('+row['porcdcto']+'%)'
+          }    
+       },
+       { "data": "ttl" , className: "tdright font11",
+          render : function(data, type, row) {            
+               return ''+data+' '+moneda+''
+          }    
+       },
+       { "data": "nombreprov", className: "tdleft font11"},               
+       { "data": "idOC", className: "tdcenter ",
+            render : function(data, type, row) {
+            if (row['status_id'] == 41) {            
+               return '<span  onclick="productosOC('+data+')" class="fa fa-list-alt test " style="cursor: pointer; cursor:hand; color: #337ab7"  title="Ver los productos de la orden de compra # '+row['num_orden']+'"></span>'+
+               '<span  onclick="pdfOC('+data+')" class="fa fa-file-pdf-o test ml-2" style="cursor: pointer; cursor:hand; color: #337ab7"  title="Exportar la orden de compra # '+row['num_orden']+'"></span>'+
+               '<span  onclick="cargarFact('+row['idudn']+','+data+')" class="fa fa-external-link test ml-2" style="cursor: pointer; cursor:hand; color: #337ab7"  title="cargar factura de la orden de compra # '+row['num_orden']+'"></span>'+
+              '<input type="hidden" id="fac'+data+'" value="'+row['ttl']+'"/>'
+            }else{
+                return '<span  onclick="productosOC('+data+')" class="fa fa-list-alt test " style="cursor: pointer; cursor:hand; color: #337ab7"  title="Ver los productos de la orden de compra # '+row['num_orden']+'"></span>'+
+                   '<span  onclick="pdfOC('+data+')" class="fa fa-file-pdf-o test ml-2" style="cursor: pointer; cursor:hand; color: #337ab7"  title="Exportar la orden de compra #  '+row['num_orden']+'"></span>'+
+                   '<span  class="fa fa-check test ml-2" style="cursor: help; color: #337ab7"  title="ya se cargo la factura de la orden de compra # '+row['num_orden']+'"></span>'+
+                  '<input type="hidden" id="fac'+data+'" value="'+row['ttl']+'"/>'
+            }
+          } 
+        },               
+            ],
+            "columnDefs": [ {
+            "searchable": false,
+            "orderable": false,
+            "targets": 0
+                } ],
+            //"order": [[ 1, 'asc' ]],
+            destroy: true,
+            responsive: true
+        });
+        }else{
+            ide = idt;
+            var t3 = $('#facturas').DataTable({
+            "ajax": BASE_URL+'/compra/consultarOC/'+idt+'/'+f1+'/'+f2+'/'+ide,
+            "columns": [
+                { "data": null, className: "tdcenter font11"},
+                { "data": "tienda", className: "tdleft font11"},
+                { "data": "num_orden", className: "tdleft font11"},
+                { "data": "fecha", className: "tdcenter font11"},
+                { "data": "total_orden" , className: "tdright font11",
+                    render : function(data, type, row) {            
+                        return ''+data+' '+moneda+''
+                    }    
+                },
+                { "data": "impuesto" , className: "tdright font11",
+                    render : function(data, type, row) {            
+                        return ''+data+' '+moneda+' ('+row['porcImp']+'%)'
+                    }    
+                },
+                { "data": "descuento" , className: "tdright font11",
+                    render : function(data, type, row) {            
+                        return ''+data+' '+moneda+' ('+row['porcdcto']+'%)'
+                    }    
+                },
+                { "data": "ttl" , className: "tdright font11",
+                    render : function(data, type, row) {            
+                        return ''+data+' '+moneda+''
+                    }    
+                },
+                { "data": "nombreprov", className: "tdleft font11"},               
+                { "data": "idOC", className: "tdcenter ",
+                    render : function(data, type, row) {
+                    if (row['status_id'] == 41) {
+                        return '<span  onclick="productosOC('+data+')" class="fa fa-list-alt test " style="cursor: pointer; cursor:hand; color: #337ab7"  title="Ver los productos de la orden de compra # '+row['num_orden']+'"></span>'+
+                       '<span  onclick="pdfOC('+data+')" class="fa fa-file-pdf-o test ml-2" style="cursor: pointer; cursor:hand; color: #337ab7"  title="Exportar la orden de compra #  '+row['num_orden']+'"></span>'+
+                       '<span  onclick="cargarFact('+row['idudn']+','+data+')" class="fa fa-external-link test ml-2" style="cursor: pointer; cursor:hand; color: #337ab7"  title="cargar factura de la orden de compra # '+row['num_orden']+'"></span>'+
+                      '<input type="hidden" id="fac'+data+'" value="'+row['ttl']+'"/>'
+                  }else{
+                    return '<span  onclick="productosOC('+data+')" class="fa fa-list-alt test " style="cursor: pointer; cursor:hand; color: #337ab7"  title="Ver los productos de la orden de compra # '+row['num_orden']+'"></span>'+
+                       '<span  onclick="pdfOC('+data+')" class="fa fa-file-pdf-o test ml-2" style="cursor: pointer; cursor:hand; color: #337ab7"  title="Exportar la orden de compra #  '+row['num_orden']+'"></span>'+
+                       '<span  class="fa fa-check test ml-2" style="cursor: help; color: #337ab7"  title="ya se cargo la factura de la orden de compra # '+row['num_orden']+'"></span>'+
+                      '<input type="hidden" id="fac'+data+'" value="'+row['ttl']+'"/>'
+                  }            
+                       
+                  } 
+                }               
+            ],
+                "columnDefs": [ {
+                "searchable": false,
+                "orderable": false,
+                "targets": 0
+                } ],
+                //"order": [[ 1, 'asc' ]],
+                destroy: true,
+                responsive: true
+                });
+        }
+           
+            $('#_10').on( 'click', function () {
+                table.page.len( 10 ).draw();
+            } );
+        $('#facturas').css("width","100%");
+        t3.on( 'order.dt search.dt', function () {
+        t3.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+        } );
+    } ).draw();
+        $('#facturas_wrapper').removeClass('container-fluid');
+        $('#facturas_filter').css('float', 'right');
+            $('#tbfact').fadeIn();
+            $('#tbfact').prop('hidden', false);
+            $('#tbdev').hide();
+
+        
+    }
+
+    function printOC(idr,idt){
+        var url = BASE_URL+'printer?r='+idr+'&idti='+idt;  
+        abrir_emergente(url);
+    }
+
+    function cargarFact(idt,idOC){
+        var url = BASE_URL+'compra/cargardesdeOC/'+idt+'/'+idOC;  
+        abrir_emergente(url);
     }
 
     $(document).ready(function() {
@@ -1130,6 +1588,34 @@ function tablaing(idt){
 
         $('.closeMI').click(function(event) {
             validartotal();  
+        });
+        $('#cantidadnc').number(true, 4, ',', '.');
+        $('#cantidadnc2').number(true, 4, ',', '.');
+        $('#cantidadnc').keyup(function(event) {
+            var cant1 = $('#cantidadnc').val();
+            var cant2 = $('#cantidadnc2').val();
+            var abreviatura = $('#abrevnc').text();
+            $('#cantcorrect').empty();
+            $('#cantcorrect').append(cant2+' '+abreviatura);
+            if (cant1>cant2) {
+                $('#devolver').prop('disabled', true);
+                $('#cantidadnc').css('color', 'red');
+                $('#errorcant').fadeIn();
+                $('#errorcant').prop('hidden', false);
+            }else{
+                $('.cantidaddevolver').val('');
+                $('.cantidaddevolver').val(cant1);
+                $('#errorcant').fadeOut();
+                $('#cantdev').empty();
+                $('#cantdev').append(cant1+' '+abreviatura);
+                $('#cantidadnc').css('color', '#464a4c');
+                $('#devolver').prop('disabled', false);
+            }
+            
+            
+        });
+        $('#btn-consultar').click(function(event) {
+            consultarOC();
         });
     });
 

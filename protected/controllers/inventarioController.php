@@ -2127,10 +2127,15 @@ FROM notificacion_has_remision
 		where modelo_id = $idm";
 		$tiendas = $this->_main->select($query);
 		for ($i=0; $i <count($tiendas) ; $i++) { 
-			$query = "SELECT * FROM mercancia_has_unidad_negocio where mercancia_id = '".$idpro."' and unidad_negocio_id = '".$tiendas[$i]['idt']."'";
+			$query = "SELECT mercancia_id, unidad_negocio_id, codigo_modelo, existencia, stock_min, stock_max, status, mercancia.codigo as codigopro, codigo_anterior, mercancia.nombre as producto, marca, precio_unitario, contenido_neto, cantidad_presentacion, formula_c, formula_p,formula_s, familia_id, sub_familia_id, unidad_negocio.codigo as codigoudn, unidad_negocio.razon_social, unidad_negocio.nombre as nombreudn, unidad_negocio.correo, unidad_negocio.empresa_id 
+			FROM mercancia_has_unidad_negocio
+			inner join mercancia on mercancia_id = mercancia.id
+            inner join unidad_negocio on unidad_negocio_id = unidad_negocio.id
+            where mercancia_id = '".$idpro."' and unidad_negocio_id = '".$tiendas[$i]['idt']."'";
 			$asignado[$i] = $this->_main->select($query);
 			//print_r($asignado[$i]);
-    		if ($asignado[$i][0]['existencia']>0) {
+			//falta modificar el select para especificar los campos que voy a traer y luego continuar con la validacion, esto para poder especificar cual tienda aun tiene existencia del producto en cuestion
+    		if (isset($asignado[$i][0]['existencia']) and $asignado[$i][0]['existencia']>0) {
 	            $data = $asignado[$i];
 	            echo json_encode($data);exit();
     		}

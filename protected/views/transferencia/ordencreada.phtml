@@ -64,12 +64,12 @@
                                     <tbody id="">
                                         <?php for ($i = 1; $i< count($this->_pedido); $i++){ ?>
                                           <tr>
-                                            <td ><?php echo $i?></td>
-                                            <td><center><?php echo $this->_pedido[$i]['codigo']; ?></center></td>
-                                            <td><center><?php echo $this->_pedido[$i]['nombre']; ?></center></td>
-                                            <td><center><?php echo $this->_pedido[$i]['cantidad'].' '.$this->_pedido[$i]['unidadc']; ?></center></td>
-                                            <td><center><?php echo $this->_pedido[$i]['proveedor']; ?></center></td>
-                                            <td><center><?php echo number_format($this->_pedido[$i]['precio'],4,",",".")." ".$_SESSION['monedatienda']; ?></center></td>
+                                            <td><center><?php echo $i?></center></td>
+                                            <td class="tdleft"><?php echo $this->_pedido[$i]['codigo']; ?></td>
+                                            <td class="tdleft"><?php echo $this->_pedido[$i]['nombre']; ?></td>
+                                            <td class="tdright"><?php echo $this->_pedido[$i]['cantidad'].' '.$this->_pedido[$i]['unidadc']; ?></td>
+                                            <td class="tdleft"><?php echo $this->_pedido[$i]['proveedor']; ?></td>
+                                            <td class="tdright"><?php echo number_format($this->_pedido[$i]['precio'],4,",",".")." ".$_SESSION['monedatienda']; ?></td>
                                           </tr>
                                         <?php } ?>
                                     </tbody> 

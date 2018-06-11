@@ -152,13 +152,20 @@
                 $query ="SELECT correo FROM unidad_negocio where id = '".$idtienda."'";
                 $correot = $this->_main->select($query);
                 if (isset($email)) {
-                  $this->_compra->correo($orden,$totalPagar,$idempresa,$email,$correot);
+                  $this->_compra->correo($orden,$totalPagar,$idempresa,$email,$correot,$tipo);
                 }
                 
                 Session::destroy('carrito1');
                 Session::destroy('totalPagar');
                 $this->_view->render('ordencreada', 'transferencia', '');
               }else{
+                $query = "SELECT correo FROM unidad_negocio where id = '".$orden[1]['idudn']."'";
+                $email = $this->_main->select($query);
+                $query ="SELECT correo FROM unidad_negocio where id = '".$idtienda."'";
+                $correot = $this->_main->select($query);
+                if (isset($email)) {
+                  $this->_compra->correo($orden,$totalPagar,$idempresa,$email,$correot,$tipo);
+                }
                 Session::destroy('carrito1');
                 Session::destroy('totalPagar');
                 $this->_view->render('solicitudcreada', 'transferencia', '');

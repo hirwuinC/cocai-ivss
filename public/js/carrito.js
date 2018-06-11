@@ -1,8 +1,6 @@
 $(document).ready(function() {
     $('#crearorden').trigger('click');
-    $('#consultarordenes').click(function(event) {
-        tablaconsultOC();
-    });
+    
     $(window).on('ready , scroll', function() {
         if ($(window).scrollTop() > 30) {
             $('.main-menu').addClass('minified');
@@ -324,67 +322,5 @@ function imgXseleccion(id,idc){
       return resultado;
     }
 
-    function tablaconsultOC(){
-        var idt = $('#tiendae').val();
-        var tc = $('#tablaconsultOC').DataTable({
-            "ajax": BASE_URL+'/compra/consultasOC/'+idt,
-            "columns": [
-                { "data": null, className: "tdcenter font11"},
-                { "data": "num_reposicion", className: "tdleft font11"},
-                { "data": "fecha", className: "tdcenter font11",
-                    render : function(data,type, row){
-                        return ''+data+'<br>'+row['hora']                      
-                    }
-                },
-                { "data": "nombreproveedor", className: "tdleft font11",
-                    render : function(data,type, row){
-                        return ''+data                        
-                    }
-                },
-                { "data": "email", className: "tdleft font11",
-                    render : function(data,type, row){
-                        return ''+data
-                    }
-                },
-                { "data": "nombre", className: "tdleft font11",
-                    render : function(data,type, row){
-                        return ''+data+' '+row['apellido']  
-                    }
-                },        
-                { "data": "idrepo", className: "tdcenter ",
-                    render : function(data, type, row) {
-                            return '<span class="fa fa-list-alt" title="Ver detalles de la reposicion '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="detallesOC('+data+')"></span>'+
-                                    '<span class="fa fa-file-pdf-o ml-2" title="imprimir la solicitud '+row['num_reposicion']+'" style="cursor:hand; cursor:pointer; color: #337ab7" onclick="printOC('+data+','+idt+')"></span>'
-                       
-                  } 
-                }               
-            ],
-                "columnDefs": [ {
-                "searchable": false,
-                "orderable": false,
-                "targets": 0
-                } ],
-                //"order": [[ 1, 'asc' ]],
-                destroy: true,
-                responsive: true
-                }); 
-    $('#_10').on( 'click', function () {
-        table.page.len( 10 ).draw();
-    } );
-    $('#tablaconsultOC').css("width","100%");
-    tc.on( 'order.dt search.dt', function () {
-    tc.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
-        cell.innerHTML = i+1;
-    } );
-    } ).draw();
-        $('#tablaconsultOC_wrapper').removeClass('container-fluid');
-        $('#tablaconsultOC_filter').css('float', 'right');
-        
-        
-    }
-
-    function printOC(idr,idt){
-        var url = BASE_URL+'printer?r='+idr+'&idti='+idt;  
-        abrir_emergente(url);
-    }
+    
 
