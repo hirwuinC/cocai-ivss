@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="us">
+<head>
+  <meta charset="utf-8">
+  <title>COCAI - Adm. Usuarios</title>
+  <link href="<?php echo PUBLIC_URL; ?>css/jquery-ui.css" rel="stylesheet">
+</head>
+<body>
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+<div id="body" hidden>    
+<input type="hidden" name="" id="idtienda" value="<?php echo $this->g[0]['idT']?>">
+<input type="hidden" name="" id="idempr" value="<?php echo $this->g[0]['empresa_id']?>">                       
+  <div id="page-wrapper">
+    <div class="row">
+      <div class="col-lg-12 ">
+        <div  class="card cardH">
+          <div class="card-header" hidden>
+              <center><h3><o id="titulocard">Administracion de Usuarios</o> <?php $ti=strtolower($this->g[0]['tienda']); echo "[".ucwords($ti)."] Sub-modelo ".$this->g[0]['subM'];  ?></h3></center>
+          </div>
+          <div class="card-block" style="padding-bottom: 0px; ">
+            <div class="dataTable_wrapper">
+              <div class="table-responsive col-sm-12">
+                <table id="tablalistuser" class="display table table-sm table-striped table-bordered table-hover" >
+                  <thead class="theadH">
+                    <tr>
+                      <th colspan="6"><center>Lista de usuarios</center></th>
+                    </tr>
+                    <tr>
+                      <th>#</th>
+                      <th>Nombre</th>
+                      <th>Apellido</th>
+                      <th>Perfil</th>
+                      <th>Cargo</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="bodyusers">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>    
+        </div>
+      </div>
+    </div>
+  </div>        
+</div>
+</body>
+</html>

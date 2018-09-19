@@ -20,6 +20,9 @@
 
                     <div class="card-block">
                         <div class="card cardH">
+                            <div class="card-header" style="padding: 5px; height: 25%" hidden="">
+                              <center><h3 class="page-header" style=""><o id="titulocard">Asignacion de productos<o/></h3> </center>
+                            </div>
                             <form action="<?php echo BASE_URL;?>inventario/insertasignacion" method="post" accept-charset="utf-8" id="form-asignar">
                             <ul class="nav nav-tabs" role="tablist">
                                 <li class="active nav-item"><a data-toggle="tab" href="#home" class="nav-link" id="info">Info <i class="fa fa-info-circle"></i></a></li>
@@ -35,19 +38,19 @@
                                 <div id="home" class="tab-pane fade in active" role="tabpanel">
                                     <br>
                                 <div class="form-group col-sm-12">
-                                  <h5><p>Seleccione la marca a la que pertenece la unidad de negocio, a la cual desea asignar los productos.</p></h5>
+                                  <h5><p>Seleccione el modelo al que pertenece el almacen, al cual desea asignar los productos.</p></h5>
                                 </div>
                                 </div>
                                 <div class="row d-flex justify-content-center">
                                                   <label class="custom-control custom-radio radios" hidden>
                                                     <input type="radio" class="custom-control-input" name="asignacion" value="1" id="radiomodelo">
                                                     <span class="custom-control-indicator"></span>
-                                                    <span class="custom-control-description" style="line-height: 1.8;">Aplicar a todo el modelo <o id="modelname"></o></span>
+                                                    <span class="custom-control-description" style="line-height: 1.8;">Aplicar a todos los almacenes de <o id="modelname"></o></span>
                                                   </label>
                                                   <label class="custom-control custom-radio radios" hidden>
                                                     <input type="radio" class="custom-control-input" name="asignacion" value="2" id="radiotiendas">
                                                     <span class="custom-control-indicator"></span>
-                                                    <span class="custom-control-description" style="line-height: 1.8;">aplicar a <o id="especific">tienda especifica </o></span>
+                                                    <span class="custom-control-description" style="line-height: 1.8;">Aplicar a <o id="especific">almacen especifico </o></span>
                                                   </label>
                                                 </div>
                                 
@@ -59,7 +62,7 @@
                                                 
 
                                             <div class="col-sm-3 xtienda"  hidden>
-                                                    <label class="control-label" style="float: left;">Unidada de negocio</label>
+                                                    <label class="control-label" style="float: left;">Almacen</label>
                                                     <div class="input-group">
                                                     <select id="AT'.$this->idm[$l].'" class="form-control form-control-sm AT"> 
                                                     <option value="" selected>Seleccione...</option>  
@@ -89,7 +92,7 @@
                                 
                                 <div class="col-sm-12" id="tabs2" hidden>
                              <ul class="nav nav-tabs" role="tablist">
-                              <li class="active nav-item"><a data-toggle="tab" href="#provta" class="nav-link" id="pventa">Productos de venta </a></li>
+                              <li class="active nav-item"><a data-toggle="tab" href="#provta" class="nav-link" id="pventa">Productos de consumo </a></li>
                               <li class="nav-item"><a data-toggle="tab" href="#procomp" class="nav-link" id="pcompra">Productos de inventario <o data-toggle="tooltip" data-placement="top" title="Click para ver informacion referente a los productos de inventario"><i data-toggle="modal" data-target="#modalhelp"  id="ayuda1"  class="fa fa-info-circle" style="font-size: 18px;"></i></o></a>
                                     
                                   

@@ -21,6 +21,7 @@
 		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
 		    $this->_view->setJs(array('datatable/js/tabla'));
 		    $this->_view->setJs(array('js/transferencia'));
+        Session::destroy('carrito3');
 			$valores = $this->_main->datostienda($id);
 			$this->_view->g = $valores;
       $this->_view->n = $tipo;
@@ -51,7 +52,7 @@
         if ($datosT[0]['empresa_id'] == 0) {
           $cond = 'empresa_id = '.$id.'';
         }else{
-          $cond = 'empresa_id ='.$datosT[0]['empresa_id'].'';
+          $cond = 'empresa_id ='.$datosT[0]['empresa_id'].' or empresa_id = '.$id.'';
         }
         $query = "SELECT unidad_negocio.id, unidad_negocio.nombre, modelo.nombre as modelo from unidad_negocio 
         inner join modelo_has_submodelo  on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
@@ -264,7 +265,7 @@
     	}
 
     	public function detallesrepo($idr,$status,$idt){
-    		$query = "SELECT distinct reposicion_mercancia.id as idr, num_reposicion, notificacion_has_remision.unidad_negocio_id as idur, status_id as idstatusN, unidad_negocio.codigo as codigour, unidad_negocio.nombre as tiendar, unidad_negocio.rif as rifr, unidad_negocio.razon_social as razon_sr, unidad_negocio.correo as emailur, unidad_negocio.empresa_id as idempresaur, fecha, hora, cantidad, format(cantidad,4,'de_DE') as cant, reposicion_mercancia.tipo_reposicion, mercancia_has_unidad_negocio.mercancia_id, unidad_medida_consumo_id as idumpresentacion, unidad_medida_sistema_id as idumsist, unidad_medida_compra_id as idumcompra, udn.id as idue, udn.nombre as tiendae, udn.rif as rife, udn.razon_social as razon_se, udn.correo as emailue, udn.empresa_id as idempresaue, mercancia.id as idm, mercancia.codigo as codim, mercancia.codigo_anterior as coditcr, mercancia.nombre as producto, mercancia.marca as marca, contenido_neto, familia_id, ref.referencia as familia, usuario.nombre, usuario.apellido, ref2.referencia as tipo_u, modelo.nombre as modelo, refn.referencia as statusN,umpresentacion.abreviatura as abrevpres, umsistema.abreviatura as abrevsist, umcompra.abreviatura as abrevcompr, umsolicitud.id as idumsol, umsolicitud.abreviatura as abrevsol, mercancia_has_unidad_negocio.existencia, cantidad_recibida, format(cantidad_recibida,4,'de_DE') as cantr, mhudn2.existencia as existenciate,  mercancia_has_unidad_negocio.stock_max, mercancia_has_unidad_negocio.stock_min, format(mercancia_has_unidad_negocio.existencia,4,'de_DE') as stock, format(mercancia_has_unidad_negocio.stock_min,4,'de_DE') as stmin, format(mercancia_has_unidad_negocio.stock_max,4,'de_DE') as stmax, mhudn2.stock_max as stock_maxte, mhudn2.stock_max as stock_minte, format(mhudn2.existencia,4,'de_DE') as stockte, format(mhudn2.stock_max,4,'de_DE') as maxte, format(mhudn2.stock_min,4,'de_DE') as minte
+    		$query = "SELECT distinct reposicion_mercancia.id as idr, notificacion_has_remision.reposicion_id, num_reposicion, notificacion_has_remision.unidad_negocio_id as idur, status_id as idstatusN, unidad_negocio.codigo as codigour, unidad_negocio.nombre as tiendar, unidad_negocio.rif as rifr, unidad_negocio.razon_social as razon_sr, unidad_negocio.correo as emailur, unidad_negocio.empresa_id as idempresaur, fecha, hora, cantidad, format(cantidad,4,'de_DE') as cant, reposicion_mercancia.tipo_reposicion, mercancia_has_unidad_negocio.mercancia_id, unidad_medida_consumo_id as idumpresentacion, unidad_medida_sistema_id as idumsist, unidad_medida_compra_id as idumcompra, udn.id as idue, udn.nombre as tiendae, udn.rif as rife, udn.razon_social as razon_se, udn.correo as emailue, udn.empresa_id as idempresaue, mercancia.id as idm, mercancia.codigo as codim, mercancia.codigo_anterior as coditcr, mercancia.nombre as producto, mercancia.marca as marca, contenido_neto, familia_id, ref.referencia as familia, usuario.nombre, usuario.apellido, ref2.referencia as tipo_u, modelo.nombre as modelo, refn.referencia as statusN,umpresentacion.abreviatura as abrevpres, umsistema.abreviatura as abrevsist, umcompra.abreviatura as abrevcompr, umsolicitud.id as idumsol, umsolicitud.abreviatura as abrevsol, mercancia_has_unidad_negocio.existencia, cantidad_recibida, format(cantidad_recibida,4,'de_DE') as cantr, mhudn2.existencia as existenciate,  mercancia_has_unidad_negocio.stock_max, mercancia_has_unidad_negocio.stock_min, format(mercancia_has_unidad_negocio.existencia,4,'de_DE') as stock, format(mercancia_has_unidad_negocio.stock_min,4,'de_DE') as stmin, format(mercancia_has_unidad_negocio.stock_max,4,'de_DE') as stmax, mhudn2.stock_max as stock_maxte, mhudn2.stock_max as stock_minte, format(mhudn2.existencia,4,'de_DE') as stockte, format(mhudn2.stock_max,4,'de_DE') as maxte, format(mhudn2.stock_min,4,'de_DE') as minte, lote, fecha_vencimiento, chofer, placa_vehiculo, num_sobre, fecha_carga
 			FROM reposicion_mercancia
             left join notificacion_has_remision on notificacion_has_remision.reposicion_id = reposicion_mercancia.id
       		left join referencia as refn on refn.id = notificacion_has_remision.status_id
@@ -391,7 +392,13 @@
         $datosr = $this->_main->select($query);
     		foreach($_POST['idmer'] as $selected){
 	    		$cantenv = $_POST['cantenv'];
-	    		$idum = $_POST['idume'];
+          $idum = $_POST['idume'];
+          $lote = $_POST['lotenum'];
+          $fvencimiento = $_POST['fvencimiento'];
+          $chofer = $_POST['chofer'];
+          $placa = $_POST['placa'];
+          $sobre = $_POST['sobre'];
+	    		$fcarga = $_POST['fechacarga'];
 		    	$query = "SELECT existencia, stock_min, stock_max, mercancia.id as idpro, codigo, nombre as producto, marca, CONCAT(nombre,' ',marca) as mercancia, unidad_medida_sistema_id as idums, formula_c, contenido_neto 
 	    		FROM `mercancia`
 				  inner join mercancia_has_unidad_negocio on mercancia_id = mercancia.id
@@ -402,18 +409,20 @@
 	    		}else{
 	    			$conversion[] = $cantenv[$i];
 	    		}
-	    		$query = "UPDATE `mercancia_has_reposicion` SET `cantidad_recibida` = '".$cantenv[$i]."' WHERE reposicion_id = $idr and ingrediente_id = $selected";
+	    		$query = "UPDATE `mercancia_has_reposicion` SET `cantidad_recibida` = '".$cantenv[$i]."', `lote` = '".$lote[$i]."', `fecha_vencimiento` = '".$fvencimiento[$i]."' WHERE reposicion_id = $idr and ingrediente_id = $selected";
     			$repo = $this->_main->modificar($query);
     			$stockrestante = $stock[$i][0]['existencia']-$conversion[$i];
+          
     			if ($stockrestante>=0) {
+            $this->_main->log($selected,$idt,$accion);
+            $this->_main->kardex($conversion[$i],$motivo,$tipoM,$selected,$idt,$idum[$i],$datosr[0]['tipo_reposicion']);
 	    			$query = "UPDATE mercancia_has_unidad_negocio set existencia = $stockrestante where unidad_negocio_id = $idt and mercancia_id = $selected";
 	    			$updatedstock = $this->_main->modificar($query);
     			}
-          $this->_main->log($selected,$idt,$accion);
-          $this->_main->kardex($conversion[$i],$motivo,$tipoM,$selected,$idt,$idum[$i],$datosr[0]['tipo_reposicion']);
+          
     			$i++;
 	        }
-	      $query = "UPDATE notificacion_has_remision set fecha_enviada = '".$fechaenv."', status_id = $newstatus where reposicion_id = $idr";
+	      $query = "UPDATE notificacion_has_remision set fecha_enviada = '".$fechaenv."', status_id = $newstatus,  chofer = '".$chofer."', placa_vehiculo = '".$placa."', num_sobre = '".$sobre."', fecha_carga = '".$fcarga."' where reposicion_id = $idr";
     		$updatenoti = $this->_main->modificar($query);
     		echo json_encode($conversion);
     	}
@@ -458,7 +467,7 @@
     		$newstatus = 134;
         $accion = "Modificado";
         $motivo = 123;
-        $tipoM = 132;
+        $tipoM = 131;
         $query = "SELECT * from reposicion_mercancia where id = $idr";
         $datosr = $this->_main->select($query);
     		foreach($_POST['idmer'] as $selected){
@@ -475,10 +484,12 @@
 	    			$conversion[] = $cantenv[$i];
 	    		}
 	    		$stockrestante = $stock[$i][0]['existencia']+$conversion[$i];
-	    			$query = "UPDATE mercancia_has_unidad_negocio set existencia = $stockrestante where unidad_negocio_id = $idt and mercancia_id = $selected";
-	    			$updatedstock = $this->_main->modificar($query);
           $this->_main->log($selected,$idt,$accion);
           $this->_main->kardex($conversion[$i],$motivo,$tipoM,$selected,$idt,$idum[$i],$datosr[0]['tipo_reposicion']);
+    			$query = "UPDATE mercancia_has_unidad_negocio set existencia = $stockrestante where unidad_negocio_id = $idt and mercancia_id = $selected";
+    			$updatedstock = $this->_main->modificar($query);
+            
+          
     			$i++;
 	    	}
 	    	$query = "UPDATE notificacion_has_remision set fecha_recibida = '".$fecharecib."', status_id = $newstatus where reposicion_id = $idr";
@@ -486,7 +497,7 @@
     		echo json_encode($conversion);
     	}
 
-      public function contarteansferencias($idt){
+      public function contartransferencias($idt){
         $query = "SELECT COUNT(reposicion_id) as xenviar FROM notificacion_has_remision where status_id = 129 and unidad_negocio_id = $idt";
         $xenviar = $this->_main->select($query);
         $query = "SELECT COUNT(reposicion_id) as xrecibir FROM notificacion_has_remision
@@ -530,7 +541,139 @@
         echo json_encode($response);
       }
 
+      public function productosm($idt){
+        $query = "SELECT * FROM `unidad_negocio` where empresa_id = $idt";
+        $almacenes = $this->_main->select($query);
+        for ($i=0; $i < count($almacenes); $i++) { 
+          $productos[] = $this->_main->datostienda($almacenes[$i]['id']);
+          
+        }
+        for ($j=1; $j <count($productos) ; $j++) { 
+          $data = array_merge($productos[0], $productos[$j]);
+          }
+        
+        $response = array("data"=>$data);
+        //print_r($response);
+        echo json_encode($response);
+      }
+
+      public function detallesproducto($idp, $idt){
+        $query = "SELECT mercancia_id as idP, unidad_negocio_id as idt, mercancia.nombre, mercancia.marca, mercancia.codigo, mc.um_sistema_id, unidad_medida.abreviatura as avrebiaturas, umdespacho.abreviatura as abreviaturad, umrecepcion.abreviatura as abreviaturar, um_recepcion_id, um_despacho_id FROM mercancia_has_unidad_negocio as mc
+        inner join mercancia on mc.mercancia_id = mercancia.id
+        left join unidad_medida on unidad_medida.id = um_sistema_id
+        left join unidad_medida as umrecepcion on umrecepcion.id = um_sistema_id
+        left join unidad_medida as umdespacho on umdespacho.id = um_sistema_id
+        where unidad_negocio_id = $idt and mercancia_id = $idp";
+        $data = $this->_main->select($query);
+        echo json_encode($data);
+      }
+
+      public function sesionrecepcion($tipo=false){
+      //Session::destroy('carrito3');
+      $query = "SELECT mercancia_id as idP, unidad_negocio_id as idt, mercancia.nombre, mercancia.marca, mercancia.codigo, mc.existencia, format(mc.existencia,2,'de_DE') as stock, mc.um_sistema_id, unidad_medida.abreviatura as avrebiaturas, umdespacho.abreviatura as abreviaturad, umrecepcion.abreviatura as abreviaturar, um_recepcion_id, um_despacho_id FROM mercancia_has_unidad_negocio as mc
+        inner join mercancia on mc.mercancia_id = mercancia.id
+        left join unidad_medida on unidad_medida.id = um_sistema_id
+        left join unidad_medida as umrecepcion on umrecepcion.id = um_sistema_id
+        left join unidad_medida as umdespacho on umdespacho.id = um_sistema_id
+        where unidad_negocio_id = '".$_POST['idti']."' and mercancia_id = '".$_POST['idpro']."'";
+        $datos = $this->_main->select($query);
+        $idp = $_POST['idpro'];
+        $idti = $_POST['idti'];
+      if (isset($_SESSION['carrito3'])) {
+        $arreglo = $_SESSION['carrito3'];
+        //print_r($arreglo); echo "<br>";
+        $encontro=false;
+            $numero=0;
+            for($i=0;$i<count($arreglo);$i++){
+              if($arreglo[$i]['id']==$idp and $idti == $arreglo[$i]['idti']){
+                $encontro=true;
+                $numero=$i;
+              }
+            }
+              if($encontro==true){
+                switch ($tipo) {
+                  case '1':
+                      $arreglo[$numero]['id']= $idp;
+                      $arreglo[$numero]['idti']= $idti;
+                      $arreglo[$numero]['um_recepcion_id'] = $datos[0]['um_recepcion_id'];
+                      $arreglo[$numero]['um_sistema_id'] = $datos[0]['um_sistema_id'];
+                      $arreglo[$numero]['nombre'] = $datos[0]['nombre'];
+                      $arreglo[$numero]['marca'] = $datos[0]['marca'];
+                      $arreglo[$numero]['codigo'] = $datos[0]['codigo'];
+                      $arreglo[$numero]['existencia'] = $datos[0]['existencia'];
+                      $arreglo[$numero]['stock'] = $datos[0]['stock'];
+                      $arreglo[$numero]['fvencimiento'] = $_POST['fvencimiento'];
+                      $arreglo[$numero]['numlote'] = $_POST['numlote'];
+                      $arreglo[$numero]['cantreci'] = $_POST['cantreci'];
+                      $arreglo[$numero]['abreviaturar'] = $datos[0]['abreviaturar'];
+                      $_SESSION['carrito3']=$arreglo;
+                    
+                    
+                  break;
+                  
+                  default:
+                    unset($_SESSION['carrito3'][$numero]);
+                      $arreglo = array_values($_SESSION['carrito3']);
+                      $_SESSION['carrito3']=$arreglo;
+                  break;
+                }
+                
+              }else{
+                if ($tipo == 1) {
+                  $arreglo = $_SESSION['carrito3'];
+                  $datosNuevos=array('id'=>$idp,
+                          'idti'=>$idti,
+                          'um_recepcion_id'=>$datos[0]['um_recepcion_id'],
+                          'um_sistema_id'=>$datos[0]['um_sistema_id'],
+                          'nombre'=>$datos[0]['nombre'],
+                          'marca'=>$datos[0]['marca'],
+                          'codigo'=>$datos[0]['codigo'],
+                          'existencia'=>$datos[0]['existencia'],
+                          'fvencimiento'=>$_POST['fvencimiento'],
+                          'numlote'=>$_POST['numlote'],
+                          'cantreci'=>$_POST['cantreci'],
+                          'abreviaturar'=>$datos[0]['abreviaturar']
+                        );
+                        array_push($arreglo, $datosNuevos);
+                    $_SESSION['carrito3']=$arreglo;
+                }
+                
+              }
+      }else{
+        $arreglo[]=array('id'=>$idp,
+                    'idti'=>$idti,
+                    'um_recepcion_id'=>$datos[0]['um_recepcion_id'],
+                    'um_sistema_id'=>$datos[0]['um_sistema_id'],
+                    'nombre'=>$datos[0]['nombre'],
+                    'marca'=>$datos[0]['marca'],
+                    'codigo'=>$datos[0]['codigo'],
+                    'existencia'=>$datos[0]['existencia'],
+                    'stock'=>$datos[0]['stock'],
+                    'fvencimiento'=>$_POST['fvencimiento'],
+                    'numlote'=>$_POST['numlote'],
+                    'cantreci'=>$_POST['cantreci'],
+                    'abreviaturar'=>$datos[0]['abreviaturar']
+                  );
+        $_SESSION['carrito3'] = $arreglo;
+      }
+      
+      echo json_encode($_SESSION['carrito3']);
+        
+    }
+
+    public function consultarsesion(){
+      $data = $_SESSION['carrito3'];
+      $response = array("data"=>$data);
+        //print_r($response);
+        echo json_encode($response);
+    }
+
+    function vaciarcarrito3(){
+      Session::destroy('carrito3');
+    }
     	
 
-	}
+	
+    
+    }
 ?>

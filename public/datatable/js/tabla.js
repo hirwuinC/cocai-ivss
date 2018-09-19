@@ -25,6 +25,12 @@
     $('#tablaprov').DataTable({
                 responsive: true
         });
+
+    $('#tablaprods').DataTable({
+                responsive: true,
+                stateSave: true
+        });
+    $('#tablaprods_wrapper').removeClass('container-fluid');
     
 });
  

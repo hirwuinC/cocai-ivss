@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="us">
+<head>
+  <meta charset="utf-8">
+  <title>Produccion</title>
+  <link href="<?php echo PUBLIC_URL; ?>css/jquery-ui.css" rel="stylesheet">
+
+
+  
+</head>
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+<div id="body" hidden>
+                            
+<div id="page-wrapper">
+            <div class="">
+
+                <div class="row">
+                    <div class="col-lg-12 ">
+                        
+
+                        <div  class="card cardH">
+                        <div class="card-header" hidden>
+                            <center><h3><o id="titulocard">Compras</o> <?php $ti=strtolower($this->g[0]['tienda']); echo "[".ucwords($ti)."] Sub-modelo ".$this->g[0]['subM'];  ?></h4></center>
+                        </div>
+                        
+                        <div class="card-block" style="padding-bottom: 0px; ">                        
+						
+
+									
+
+						
+						
+							<center>
+							    <div id="load" hidden>
+							        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+							    </div>
+							</center>
+							<div class="row form-group">
+								<div class="col-sm-12" style="margin-bottom: -3%">
+									<?php if ($this->g[0]['modelo'] != null): ?>
+			                            <div>
+			                              	<img class="hidden-sm-down" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png">
+			                              	<img width="25%" height="8%" class="hidden-sm-up" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png">
+			                            </div>
+	                        		<?php endif ?>
+                        
+                          			<input type="hidden" id="modelos" value="<?php echo $this->g[0]['idm']; ?>">
+			                        <?php if (isset($this->_error)) {
+			                            echo $this->_error;
+			                        } ?>
+			                        <?php if ($this->g[0]['modelo'] == null): ?>
+			                            <div>
+			                              <img class="hidden-sm-down" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->g[0]['tienda']; ?>.png">
+			                              <img width="25%" height="8%" class="hidden-sm-up" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->g[0]['tienda']; ?>.png">
+			                            </div>
+			                        <?php endif ?>
+								</div>
+								<div class="col-sm-12" style="margin-bottom: -2%">
+									<div class="row form-group d-flex justify-content-center">
+										<div class="col-xs-12 col-sm-12 col-md-10 col-lg-6">
+											<h4 class="text-white" style="background: #337ab7; border-radius: 4px; text-align: center" id="selectedpro"></h4>
+										</div>
+										
+									</div>
+								</div>
+
+							</div>
+							
+						<div>
+							
+						
+                            
+                            	<div class="col-sm-12">
+                            		<div class="alert alert-success" id="produccionOK" hidden>
+	                                    <h4 id="datosproduccion"></h4>
+	                                </div>
+                            	</div>
+                            	<div class="col-sm-12">
+                            		<div class="alert alert-danger" id="produccionerror" hidden>
+	                                    <h4 id="datosproduccion2"></h4>
+	                                </div>
+                            	</div>
+                            
+
+										<center>
+										    <div id="loading" hidden>
+										        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+										    </div>
+										</center>
+										<div id="tablaoculta" hidden>
+											<div class="form-group row">										
+												<div class="col-sm-12">
+				                                    <h4 style="border-bottom: solid 1px #A5A5A5;">Productos de la factura N°: <o class="Facturanum"></o></h4>
+				                                </div>
+			                                </div>
+											<div class="dataTable_wrapper ">
+
+					                             <div class="col-sm-12 table-responsive">    
+					                              <div class="">                            	
+					                                <table id="tablacompra" class="display table table-sm table-striped table-bordered table-hover" >
+					                                  <thead class="theadH">
+					                                      <tr>
+					                                          <th><center>#</center></th>
+					                                          <th><center>Codigo</center></th>
+					                                          <th><center>Producto</center></th>
+					                                          <th><center>Cantidad</center></th>
+					                                          <th data-toggle="tooltip" data-placement="top" title="Precio Unitario"><center>Precio Un.</center></th>
+					                                          <th><center>Impuesto</center></th>
+					                                          <th data-toggle="tooltip" data-placement="top" title="Descuento sobre el total de la factura"><center>Descuento</center></th>
+					                                          <th data-toggle="tooltip" data-placement="top" title="Precio total unitario"><center>Total Un.</center></th>
+					                                          <th><center>Total</center></th>
+					                                          <th><center>Acciones</center></th>
+					                                      </tr>
+					                                  </thead>
+					                                  <tbody id="cuerpo_r"></tbody>
+					                                  
+					                              </table>
+					                              <div class="container">
+					                                <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
+					                                  <div class="col-12" id="costot">
+					                                    
+					                                  </div>
+					                                </div>
+					                              </div>
+					                            </div>
+					                          </div>     
+					                        </div>
+					                        <div id="botones" hidden>
+					                        	<div class="row d-flex justify-content-center" >
+												  	<div class="col-xs-12 col-sm-12 col-md-2 col-lg-1" style="padding: 0px;">
+												  		<button class="btn btn-sm btn-outline-danger" id="cancelarproceso" >Cancelar</button>
+												  	</div>
+												  	<div class="col-xs-12 col-sm-12 col-md-2 col-lg-1" style="padding: 0px;">
+												  		<button class="btn btn-sm btn-outline-primary" id="procesar">Registrar factura</button>
+												  	</div>
+												</div>
+					                        </div>
+					                        	<div class="row d-flex justify-content-center" >
+													<span class="parpadea text"  id="enviando" hidden>Procesando, por favor espere</span>
+												</div>
+					                        
+										</div>
+
+										
+                                  
+
+					                        
+                                     
+
+
+    <div class="col-sm-12">
+		<div class="alert alert-success" id="reversada" hidden>
+            <center><h4> La producción ha sido reversada de forma exitosa</h4></center>
+        </div>
+	</div>
+	<div class="col-sm-12">
+		<div class="alert alert-danger" id="errorreversar" hidden>
+            <center><h4> Ocurrio un error al intentar reversar la producción</h4><br>
+            <h5>Por favor intente nuevamente</h5></center>
+        </div>
+	</div>
+	<div class="row">
+		<div class="col-sm-3" id="colsmselect">
+			<label class="labels">Tipo de reporte</label>
+			<select name="tiporeporte" id="tiporeporte" class="form-control form-control-sm resizeselect">
+				<option value="" selected disabled>Seleccione..</option>
+				<option value="1">Lista de precios</option>
+				<option value="2">Lista de productos</option>
+				<option value="3">Lista de Proveedores</option>
+				<option value="4">Inventario en almacén</option>
+				<option value="5">Valoración de existencias</option>
+				<option value="6">Análisis de rotación de existencias</option>
+				<option value="7">Movimientos de kardex</option>
+				<option value="8">Lista de posición de inventario por producto</option>
+				<option value="9">Compras</option>
+				<option value="10">Margen de utilidad por articulo</option>
+				<option value="11">Proyección de re-abastecimiento de materiales</option>
+				<option value="12">Cuentas por pagar a proveedores</option>
+				<option value="12">Impresión del estado de cuenta de proveedores</option>
+			</select>
+		</div>
+	</div>
+	<div class="row mt-2">
+		<div class="col-sm-2">
+			<label class="labels">Desde</label>
+			<input type="date" class="form-control form-control-sm" name="fecha1" id="fecha1">
+		</div>
+		<div class="col-sm-2">
+			<label class="labels">Hasta</label>
+			<input type="date" class="form-control form-control-sm" name="fecha2" id="fecha2">
+		</div>
+		<div class="col-sm-2 mt-3">
+			<button class="btn btn-sm btn-outline-primary mt-1" type="button" id="btn-consult">Consultar</button>
+		</div>
+	</div>
+
+	<div class="row mt-3" id="rowfacturas" hidden>
+		<div class="col-sm-12">
+            <h4 style="border-bottom: solid 1px #A5A5A5;" id="h4title"></h4>
+        </div>  
+	
+	                          
+	<div class="col-xs-12" id="tablaoculta2">
+		<div class="row form-group d-flex justify-content-center" >
+    		<div class="col-xs-1" id="colbtnrev">
+				<button class="btn btn-sm btn-outline-danger" id="btn-rev" value="1">Consultar notas de credito</button>
+			</div>
+		</div>
+
+	<div class="dataTable_wrapper " id="tbfact">
+        <div class="col-sm-12 table-responsive">    
+          <div class="">                            	
+            <table id="facturas" class="display table table-sm table-striped table-bordered table-hover" >
+              <thead class="theadH">
+                  <tr>
+                      <th><center>#</center></th>
+                      <?php if (is_null($this->g[0]['empresa_id'])){ ?>
+                      <th><center>Tienda</center></th>
+                      <?php } ?>
+                      <th data-toggle="tooltip" data-placement="top" title="Numero de factura"><center>Factura</center></th>
+                      <th data-toggle="tooltip" data-placement="top" title="Fecha de registo de la factura en sistema"><center>Registrada</center></th>
+                      <th data-toggle="tooltip" data-placement="top" title="Fecha de la factura"><center>Fecha</center></th>
+                      <th data-toggle="tooltip" data-placement="top" title="sub Total de la factura"><center>Sub total</center></th>
+                      <th data-toggle="tooltip" data-placement="top" title="Impuesto"><center>Impuesto</center></th>
+                      <th data-toggle="tooltip" data-placement="top" title="Descuento"><center>Descuento</center></th>
+                      <th data-toggle="tooltip" data-placement="top" title="total de la factura"><center>Total</center></th>
+                      <th><center>Proveedor</center></th>
+                      <th><center>Acciones</center></th>
+                  </tr>
+              </thead>
+              <tbody id="cuerpo_r"></tbody>
+          </table>
+          <div class="container">
+            <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
+              <div class="col-12" id="costot">
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>     
+    </div>
+
+	<div class="dataTable_wrapper " id="tbdev" hidden>
+        <div class="col-sm-12 table-responsive">    
+          <div class="">                            	
+            <table id="devoluciones" class="display table table-sm table-striped table-bordered table-hover" >
+              <thead class="theadH">
+                  <tr>
+                      <th><center>#</center></th>
+                      <?php if (is_null($this->g[0]['empresa_id'])){ ?>
+                      <th><center>Tienda</center></th>
+                      <?php } ?>
+                      <th data-toggle="tooltip" data-placement="top" title="Codigo del producto"><center>Codigo</center></th>
+                      <th><center>Producto</center></th>
+                      <th><center>Marca</center></th>
+                      <th data-toggle="tooltip" data-placement="top" title="Cantidad devuelta"><center>Cant. Dev.</center></th>
+                      <th data-toggle="tooltip" data-placement="top" title="monto de la nota de credito"><center>monto dev.</center></th>
+                      <th data-toggle="tooltip" data-placement="top" title="Numero de factura"><center>Factura</center></th>
+                      <th data-toggle="tooltip" data-placement="top" title="Fecha de la factura"><center>Fecha</center></th>
+                      <th data-toggle="tooltip" data-placement="top" title="Fecha de la nota de credito"><center>NC.</center></th>
+                      <th><center>Acciones</center></th>
+                  </tr>
+              </thead>
+              <tbody id="cuerpo_r"></tbody>
+          </table>
+          <div class="container">
+            <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
+              <div class="col-12" id="costot">
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>     
+    </div>
+
+    
+
+	   
+
+										
+
+
+    </div>
+    </div>
+
+        		
+</div>
+    	
+</div>
+</div>
+
+
+
+                       
+                            
+                        </div>
+                        <center><div id="mensaje" hidden><img width="45px" height="45px" src="http://localhost/COCAI/public/img/check1.gif" alt="exito"/></div></center>
+                             
+                        
+                              
+                
+                
+              </div>
+        </div>
+</div>
+</div>
+                            
+</body>
+
+</div>
+
+
+
+<!-- Autocomplete -->
+
+</html>
+<!-- <script>
+	(function($, window){
+  var arrowWidth = 20;
+
+
+  $.fn.resizeselect = function(settings) {  
+    return this.each(function() { 
+
+      $(this).change(function(){
+        var $this = $(this);
+
+        // create test element
+        var text = $this.find("option:selected").text();
+        
+        var $test = $("<span>").html(text).css({
+        	"font-size": $this.css("font-size"), // ensures same size text
+          "visibility": "hidden" 							 // prevents FOUC
+        });
+        
+
+        // add to body, get width, and get out
+        $test.appendTo($this.parent());
+        var width = $test.width();
+        if (width == 0) {
+        	width = 80;
+        	$("#colsmselect").removeClass('col-sm-3');
+        	$("#colsmselect").removeClass('col-sm-4');
+        	$("#colsmselect").addClass('col-sm-2');
+        }else if (width < 170 && width >0) {
+        	var width = $test.width();
+        	$("#colsmselect").removeClass('col-sm-3');
+        	$("#colsmselect").removeClass('col-sm-4');
+        	$("#colsmselect").addClass('col-sm-2');
+        }else if (width >200) {
+        	var width = $test.width();
+        	$("#colsmselect").removeClass('col-sm-2');
+        	$("#colsmselect").removeClass('col-sm-3');
+        	$("#colsmselect").addClass('col-sm-4');
+        }else{
+        	var width = $test.width();
+        	$("#colsmselect").removeClass('col-sm-2');
+        	$("#colsmselect").removeClass('col-sm-4');
+        	$("#colsmselect").addClass('col-sm-3');
+        }
+        $test.remove();
+        alert(width);
+        // set select width
+        $this.width(width + arrowWidth);
+
+        // run on start
+      }).change();
+
+    });
+  };
+
+  // run by default
+  $("select.resizeselect").resizeselect();                       
+
+})(jQuery, window);
+</script> -->

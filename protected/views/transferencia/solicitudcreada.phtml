@@ -58,7 +58,7 @@
                                             <th><center><b>Producto</b></center></th>
                                             <th><center><b>Cantidad</b></center></th>
                                             <th><center><b>Proveedor</b></center></th>
-                                            <th><center><b>Precio</b></center></th>
+                                            <!-- <th><center><b>Precio</b></center></th> -->
                                         </tr>
                                     </thead>
                                     <tbody id="">
@@ -69,7 +69,7 @@
                                             <td class="tdleft"><?php echo $this->_pedido[$i]['nombre']; ?></td>
                                             <td class="tdright"><?php echo $this->_pedido[$i]['cantidad'].' '.$this->_pedido[$i]['unidadc']; ?></td>
                                             <td class="tdleft"><?php echo $this->_pedido[$i]['proveedor']; ?></td>
-                                            <td class="tdright"><?php echo number_format($this->_pedido[$i]['precio'],4,",",".")." ".$_SESSION['monedatienda']; ?></td>
+                                            <!-- <td class="tdright"><?php echo number_format($this->_pedido[$i]['precio'],4,",",".")." ".$_SESSION['monedatienda']; ?></td> -->
                                           </tr>
                                         <?php } ?>
                                     </tbody> 

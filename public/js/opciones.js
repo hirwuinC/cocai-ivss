@@ -5,8 +5,8 @@ $(document).ready(function() {
         $('#datos2').prop("hidden", false);
         $(this).find('.buscador').toggleClass('fa-chevron-down fa-chevron-up');
     });
-    $(".monto").number(true, 4, ',', '.');
-    $(".precios").number(true, 4, ',', '.');
+    $(".monto").number(true, 2, ',', '.');
+    $(".precios").number(true, 2, ',', '.');
 
     $('.subM').click(function(event) {
     	var idt = $(this).attr('name');
@@ -24,7 +24,25 @@ $(document).ready(function() {
 	    });
 	});
 
+	$('.inv').click(function(event) {
+		var idt = $(this).attr("id");
+		valexistprocess(idt);
+	});
+
 });
+
+function valexistprocess(idt){
+	$.ajax({
+		url: BASE_URL+'existencias/validarmodulo/'+idt,
+		dataType: 'json',
+		type: 'POST',
+	})
+	.done(function(data) {
+    	if (data.length==0) {
+    		$('.chargestock').remove();
+    	}
+    });
+}
 
 function opciones (idsM,idm){
 	//alert(idm);
@@ -38,12 +56,12 @@ function opciones (idsM,idm){
 
 }
 
-function load(tabla,item,valor,model){
+function load(tabla,item,valor,model,filtro=false){
 		//alert(item);
 	var select = $('#'+item);
 	//alert(select);
 	$.ajax({
-		url: BASE_URL+'main/gets/'+tabla+'/'+item+'/'+valor+'/'+model,
+		url: BASE_URL+'main/gets/'+tabla+'/'+item+'/'+valor+'/'+model+'/'+filtro,
 		dataType: 'json',
 		
 		

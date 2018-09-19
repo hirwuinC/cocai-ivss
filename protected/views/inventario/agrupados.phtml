@@ -151,7 +151,7 @@
                                     </div>
                                     <div class="row ml-2">
                                       <div class="col-sm-12">
-                                        <h6 id="help2" hidden>El rendimiento ideal, representa la cantidad que se debe preparar del producto con los ingredientes que componen su receta</h6>
+                                        <h6 id="help2" hidden>El rendimiento ideal, representa la cantidad que se debe preparar del producto con los Productos que componen su receta</h6>
                                       </div>
                                     </div>
                                   </div>
@@ -245,10 +245,10 @@
                                   <thead class="theadH">
                                       <tr>
                                           <th><center>Codigo</center></th>
-                                          <th><center>Ingrediente</center></th>
+                                          <th><center>Producto</center></th>
                                           <th><center>Cantidad</center></th>
                                           <th><center>U/M</center></th>
-                                          <th><center>Costo</center></th>
+                                          <!-- <th><center>Costo</center></th> -->
                                           <th><center>Acciones</center></th>
 
                                       </tr>
@@ -270,7 +270,7 @@
                                   </div>                                  
                                 </div>
                               </div>
-                              <div class="container">
+                              <div class="container" hidden>
                                 <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
                                   <div class="col-12" id="costot">
                                     
@@ -297,12 +297,12 @@
                         </div>
 
 
-                        <!-- Modal Confirmacion para eliminar ingredientes-->
+                        <!-- Modal Confirmacion para eliminar Productos-->
                             <div class="modal fade " id="modaldelete" role="dialog">
                               <div class="modal-dialog modal-sm">
                                 <div class="modal-content">
                                   <div class="modal-header">
-                                    <h5 class="modal-title" ><b id="t">Eliminar ingrediente</b></h5>
+                                    <h5 class="modal-title" ><b id="t">Eliminar Producto</b></h5>
                                     <button type="button" class="close" data-dismiss="modal">&times;</button> 
                                   </div>
                                   <div class="modal-body" id="cuerpodelete">                                    
@@ -325,7 +325,7 @@
                                     <button type="button" class="close" data-dismiss="modal">&times;</button> 
                                   </div>
                                   <div class="modal-body" id="cuerpodelete">
-                                    <h5>Los productos semi terminados son aquellos productos producidos en tienda, que contienen una receta compuesta por uno o mas ingredientes y a su vez estos productos semi terminados pueden formar parte de la receta de otro producto semiterminado o de productos de venta.</h5>                                    
+                                    <h5>Los productos semi terminados son aquellos productos producidos en tienda, que contienen una receta compuesta por uno o mas Productos y a su vez estos productos semi terminados pueden formar parte de la receta de otro producto semiterminado o de productos de venta.</h5>                                    
                                   </div>
                                   <div class="modal-footer" id="botones">
                                       <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Aceptar</button> 
@@ -359,8 +359,8 @@
                                     <thead class="theadH">
                                         <tr>
                                             <th>Codigo</th>
-                                            <th>Ingrediente</th>
-                                            <th>Precio Unitario</th>
+                                            <th>Producto</th>
+                                            <!-- <th>Precio Unitario</th> -->
                                             <th>Acción</th>
                                         </tr>
                                     </thead>
@@ -391,7 +391,7 @@
                                   <thead class="theadH">
                                       <tr>
                                           <th><center>Codigo</center></th>
-                                          <th><center>Ingrediente</center></th>
+                                          <th><center>Producto</center></th>
                                           <th><center>Cantidad</center></th>
                                           <th><center>U/M</center></th>
                                           <th><center>Precio Unitario</center></th>
@@ -410,7 +410,7 @@
                 </div>
 
                   </div>
-                              <!-- Modal cantidad x ingrediente-->
+                              <!-- Modal cantidad x Producto-->
                               <div class="modal fade mcant" id="mcant" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-sm">
                                   <div class="modal-content">
@@ -421,7 +421,7 @@
                                     <div id="cuerpoagregar"></div>
                                         <div class="form-group">
                                           <label class="form-control-label">Cantidad:</label>
-                                          <input id="canti" class="form-control monto" placeholder="cantidad"  title="cantidad por ingrediente" >
+                                          <input id="canti" class="form-control monto" placeholder="cantidad"  title="cantidad por Producto" >
                                         </div>
                                         <div class="form-group">
                                           <label class="form-control-label">Unidad de medida:</label>

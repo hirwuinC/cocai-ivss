@@ -1,9 +1,72 @@
 $(document).ready(function() {
-	$('#modaling').modal('show');
+	$('#botonG').click(function(event) {
+		$('#enviarparainsert').trigger('click');
+		$('#guardando').prop('hidden', false);
+	});
+	$('#btn-reinsert').click(function(event) {
+		$('#rein').trigger('click');
+		setTimeout(function(){
+			$('#enviarparainsert').trigger('click');
+		},300);
+		$('#guardando').prop('hidden', false);
+		
+	});
+	$('#forminsertar').submit(function(event) {
+		event.preventDefault();
+        var enlace = $(this).attr('action');
+        var formdata = $("#forminsertar").serialize();
+        $.ajax({
+            url: enlace,
+            type: 'POST',
+            data: new FormData(this),
+            dataType: 'json',
+            contentType: false,
+                  cache: false,
+            processData:false
+        })
+        .done(function(data) {
+        	$('#guardando').prop('hidden', true);
+        	var fam = data[0]['fam'];
+        	var ingrediente = data[0]['idprod'];
+        	var idreceta = data[0]['idreceta'];
+        	var idtienda = data[0]['idt'];
+        	var tipo = data[0]['tipo'];
+        	if (tipo == 'Agrupado') {
+				mostraragrup(fam,ingrediente,idreceta);
+			}else{
+				if (data[0]['asignacion'] == 0) {
+					window.location=BASE_URL+'inventario/insert/'+idtienda;
+				}else if (data[0]['asignacion'] == 1) {
+					window.location=BASE_URL+'inventario/asignacionProducto/'+idtienda;
+				}else if (data[0]['asignacion'] == 2) {
+					window.location=BASE_URL+'inventario/insert/'+idtienda+'/1';
+				}else if (data[0]['asignacion'] == 3) {
+					window.location=BASE_URL+'inventario/reinsert/'+idtienda+'/'+ingrediente;
+				}
+			}
+        });
 
-	 		var ingrediente = $('#iding').val();
-	 		var idreceta = $('#idrece').val();
-	 		var fam = $('#fam').val();
+	});
+
+	$('#finasignar').click(function(event) {
+		var idtienda = $('#tienda').val();
+		window.location=BASE_URL+'inventario/asignacionProducto/'+idtienda;
+	});
+	$('#finstock').click(function(event) {
+		var idtienda = $('#tienda').val();
+		window.location=BASE_URL+'inventario/stockE/'+idtienda;
+	});
+	/*$*/
+});
+
+function mostraragrup(fam,ingrediente,idreceta){
+	$('.inputsag').prop('readonly', true);
+	$('.selectag').prop('disabled', true);
+	$('#')
+	$('#botonesagr').fadeIn();
+	$('#botonesagr').prop('hidden', false);
+	$('#botonessimp').fadeOut();
+	$('#modaling').modal('show');
 	 		//alert(idt);
 	 		$('#tablafiltraje').DataTable({
             "ajax": BASE_URL+'/inventario/loadingredientes/'+fam+'/'+ingrediente,
@@ -11,7 +74,7 @@ $(document).ready(function() {
             "columns": [
                 { "data": "codigi", className: "tdleft"},
                 { "data": "ingrediente", className: "tdleft"},
-                { "data": "costo", className: "tdright"},
+                /*{ "data": "costo", className: "tdright"},*/
                 { "data": null , className: "tdcenter",
           render : function(data, type, row) {
           	//var ingr = row['ingrediente'].replace(/ /gi, "@"); 
@@ -34,8 +97,8 @@ $(document).ready(function() {
 	 		$('#agregari').prop('disabled', true);
 	 	}
 	 	});
-	 	vering(999999,ingrediente,idreceta)
-});
+	 	vering(999999,ingrediente,idreceta);
+}
 
 function agregaring(ingrediente,iding,receta){
 	 	$('#cuerpoagregar').empty();
@@ -79,7 +142,7 @@ function agregaring(ingrediente,iding,receta){
 		.done(function(data) {
 		if (data == 'duplicado') {
 				$('#cuerpoagregar').empty();
-				$('#cuerpoagregar').append('<div class="alert alert-danger" style="text-align: left"><i style="float: right; color: black; font-size: 14px" class="fa fa-close" id="equis"></i></a><b>El ingrediente que intenta agregar ya pertenece a esta receta, intente con un ingrediente diferente</b></div>');
+				$('#cuerpoagregar').append('<div class="alert alert-danger" style="text-align: left"><i style="float: right; color: black; font-size: 14px" class="fa fa-close" id="equis"></i></a><b>El Producto que intenta agregar ya pertenece a esta es parte del agrupado, intente con un ingrediente diferente</b></div>');
 				$('#equis').click(function(event) {
 					$('#mcant').modal('hide');
 				});
@@ -203,7 +266,7 @@ function agregaring(ingrediente,iding,receta){
 			
 		})
 		.fail(function(data){
-			alert("no se pudo agregar");
+			alert("no se pudo editar");
 		});
 
 
@@ -229,7 +292,7 @@ function agregaring(ingrediente,iding,receta){
  		$('#btnagregar').val("");
  		$('#btnagregar').val(idp);
  		$('#enunciado').empty();
- 		$('#enunciado').append('<h4>Nuevo ingrediente para '+receta+'</h4>');
+ 		$('#enunciado').append('<h4>Nuevo Producto para: '+receta+'</h4>');
  		$('#idrece').val("");
  		$('#idrece').val(idrec);
 
@@ -270,7 +333,7 @@ function agregaring(ingrediente,iding,receta){
  	//alert(producto);alert(ingrediente);alert(idrec);
  	
   	$('#tablarecetario').fadeOut(400);
-  	setTimeout(function() {$('#recetasysubs').slideDown(300);$('#tablarecetario').prop('hidden',false); $('#tablarecetario').fadeIn(400);$('#recetasysubs').prop('hidden',false);$('html,body').animate({
+  	setTimeout(function() {$('#tablarecetario').prop('hidden',false); $('#tablarecetario').fadeIn(400);$('html,body').animate({
             scrollTop: $("#tablarecetario").offset().top
         }, 1000);}, 300);
   	//alert(empresa);
@@ -290,11 +353,11 @@ function agregaring(ingrediente,iding,receta){
             	},
                 { "data": "cantidad" },
                 { "data": "abreviatura" },
-                { "data": "costo" , className: "tdright",
+                /*{ "data": "costo" , className: "tdright",
                 	render : function(data, type, row) { 
 			          	return ''+data+' '+moneda
 		       		} 
-            	},
+            	},*/
                 { "data": null , className: "tdcenter",
           render : function(data, type, row) {
           //var ingr = row['ingrediente'].replace(/ /gi, "@");  
@@ -312,6 +375,33 @@ function agregaring(ingrediente,iding,receta){
  	
 
     $('#tablarecetario').css("width","100%");
+    validaragrupados(producto,idrec);
+ }
+
+ function validaragrupados(producto,idrec){
+ 	var enlace = BASE_URL+'/receta/consultasp/'+producto+'/'+idrec;
+ 	$.ajax({
+ 		url: enlace,
+            type: 'POST',
+            dataType: 'json'
+	 	})
+	 	.done(function(data) {
+	 		if (data["data"].length>1) {
+	 			$('.fin').prop('disabled', false);
+	 		}else{
+	 			$('.fin').prop('disabled', true);
+	 		}
+	 		if (data["data"].length>0) {
+	 			setTimeout(function(){
+	 				$('#recetasysubs').slideDown();
+	 				$('#recetasysubs').prop('hidden', false);
+	 			},350);	 			
+	 		}else{
+	 			setTimeout(function(){
+	 				$('#recetasysubs').slideUp();
+	 			},350);
+	 		}
+	 	});
  }
 
  function eliminaring(producto, iding, idreceta,ingrediente){

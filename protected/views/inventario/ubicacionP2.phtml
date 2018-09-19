@@ -1,0 +1,271 @@
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+<div id="body" hidden>
+    <input type="hidden"  id="valore" value="0">
+    <input type="hidden"  id="valore2" value="0">
+    <div id="page-wrapper">
+        <div class="">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <!-- <div class="col-sm-6">
+                        <h4 class="page-header" style="font-family: Times New Roman, Times, serif;">Lista de productos de la empresa</h4>
+                    </div> 
+                       <div class="col-sm-offset-1">
+                            <img style="margin-left:0%;" src="<?php echo PUBLIC_URL;?>img\<?php echo $this->sm[0]['modelo']; ?>.png" class="img-responsive" alt="modelo">
+                        </div> -->
+
+                    <div class="card-block">
+                        <div class="card cardH">
+                            <input type="hidden" id="tienda" value="<?php echo $this->idT; ?>">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="active nav-item"><a data-toggle="tab" href="#home" class="nav-link" id="info">Info <i class="fa fa-info-circle"></i></a></li>
+                                <?php  #print_r($this->datos);
+                                    for ($i=0; $i < count($this->modelo); $i++) { 
+                                        echo '<li class="nav-item pestanias" id="'.$this->idm[$i].'"><a data-toggle="tab" role="tab" class="nav-link" href="#n'.$this->idm[$i].'">'.$this->modelo[$i].'</a></li>';
+                                        
+                                    }
+                                ?>
+                            </ul>
+                                <input type="hidden" id="idmodel" name="idmodel">
+                                <div id="home" class="tab-pane fade in active" role="tabpanel">
+                                    <br>
+                                <div class="form-group col-sm-12">
+                                  <h5><p>Seleccione el modelo al que pertenece el almacen, al cual desea asignar los productos.</p></h5>
+                                </div>
+                                </div>
+                                
+                                
+                                <?php
+                                for ($l=0; $l < count($this->modelo); $l++) { 
+                                    echo '<div id="n'.$this->idm[$l].'" class="tab-pane fade in">
+                                            <div class="row mt-3">
+                                            
+                                                
+
+                                            <div class="col-sm-3">
+                                                    <label class="control-label" style="float: left;">Almacen</label>
+                                                    <select id="alm'.$this->idm[$l].'" class="form-control form-control-sm alm"> 
+                                                    <option value="" selected>Seleccione...</option>  
+                                                    
+                                                      
+                                            ';
+                                    for ($j=0; $j < count($this->datos); $j++) { 
+                                        if ($this->modelo[$l] == $this->datos[$j]['modelo']) {
+                                            echo '<option value="'.$this->datos[$j]['idU'].'">'.$this->datos[$j]['nombre'].'</option>';  
+                                        } 
+                                    }
+                                    echo '</select></div>';
+
+                                    echo '<div class="col-sm-3">
+                                                    <label class="control-label" style="float: left;">Grupo</label>
+                                                    <select id="grupo" class="form-control form-control-sm gru"> 
+                                                    <option value="" selected>Seleccione...</option>';
+                                    echo '</select></div>';
+
+                                    echo '<div class="col-sm-3">
+                                                    <label class="control-label" style="float: left;">Clasificación</label>
+                                                    <select id="familia" class="form-control form-control-sm cla familia"> 
+                                                    <option value="" selected>Seleccione...</option>';
+                                    
+                                    echo '</select></div>';
+                                    echo '<div class="col-sm-3">
+                                                    <label class="control-label" style="float: left;">Sub clasificación</label>
+                                                    <select id="sub_familia" class="form-control form-control-sm sub"> 
+                                                    <option value="" selected>Seleccione...</option>';
+                                    echo '</select></div></div>';
+
+                                    echo '<div class="row d-flex justify-content-center mt-3">
+                                        <div class="col-sm-1">
+                                            <button class="btn btn-sm btn-outline-primary continue" type="button" id="continue'.$l.'" disabled>Continuar</button>
+                                        </div>
+                                    </div>
+                                </div>';
+
+                                }
+                                ?>
+                                <div class="col-sm-12">
+                                <div class="alert alert-success" id="procesada" hidden>
+                                    <center><o id="nombeproducto1"></o></center>
+                                </div>
+                            </div>
+                                <div class="row mt-3">
+                                <div class="col-sm-12 tablas" hidden>
+                                    <div class="dataTable_wrapper " >
+                                        <div class="col-sm-12 table-responsive" style="padding: 0px">
+                                            <table id="tablaprod" class="table table-sm table-bordered table-hover table-striped">
+                                                <thead class="theadH">
+                                                    <tr>
+                                                        <th colspan="7" style="border-bottom: none"><center>PRODUCTOS ASIGNADOS</center></th>
+                                                    </tr> 
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Codigo</th>
+                                                        <th>Producto</th>
+                                                        <th>Marca</th>
+                                                        <th>Clasificacion</th>
+                                                        <th>Sub-clasificacion</th>
+                                                        <th>Configurar</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                              <!-- The Modal -->
+                              <div class="modal fade" id="modaldetalles">
+                                <div class="modal-dialog modal-lg">
+                                  <div class="modal-content">
+                                  
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                      <h4 class="modal-title">Cofiguracion de <o id="nombrepro"></o></h4>
+                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                      <form action="<?php echo BASE_URL;?>inventario/guardarconfig" method="post" accept-charset="utf-8" id="form-config">
+                                        <input type="hidden" id="idudn" name="idudn">
+                                        <input type="hidden" id="producto" name="producto">
+                                        <input type="hidden" id="idpro" name="idpro">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <h4 style="text-align: left; background: #337ab7; color: white;">Datos de Ubicacion en el almacen</h4>
+                                                </div>
+                                                
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Zona</label>
+                                                    <input type="text" class="form-control form-control-sm" name="zona" id="zona">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Pasillo</label>
+                                                    <input type="text" class="form-control form-control-sm" name="pasillo" id="pasillo">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Cuadrante</label>
+                                                    <input type="text" class="form-control form-control-sm" name="cuadrante" id="cuadrante">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Paleta</label>
+                                                    <input type="text" class="form-control form-control-sm" name="paleta" id="paleta">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Rack</label>
+                                                    <input type="text" class="form-control form-control-sm" name="rack" id="rack">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Columna</label>
+                                                    <input type="text" class="form-control form-control-sm" name="columna" id="columna">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Estante</label>
+                                                    <input type="text" class="form-control form-control-sm" name="estante" id="estante">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Entre paño</label>
+                                                    <input type="text" class="form-control form-control-sm" name="entrepanio" id="entrepanio">
+                                                </div>
+                                            </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <h4 style="background: #337ab7; color: white; margin-bottom: 0px">Peso volumetrico</h4>
+                                    </div>
+                                    
+                                    
+                                      <div class="col-sm-3" >
+                                          <label class="labels">Unidad de medida</label>
+                                            <select class="form-control form-control-sm" id="umvol" name="umvol">
+                                              <option value="32">Milimetro(s)</option>
+                                              <option value="28">Centimetro(s)</option>
+                                              <option value="26">Metro(s)</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-3" >
+                                            <label class="labels">Ancho</label>
+                                            <input type="text" class="form-control form-control-sm monto" name="ancho" id="ancho" value="0">
+                                        </div>
+                                        <div class="col-sm-3" >
+                                            <label class="labels">Alto</label>
+                                            <input type="text" class="form-control form-control-sm monto" name="alto" id="alto" value="0">
+                                        </div>
+                                        
+                                        <div class="col-sm-3" >
+                                            <label class="labels">Largo</label>
+                                            <input type="text" class="form-control form-control-sm monto" name="largo" id="largo" value="0">
+                                        </div>
+                                    </div>
+                                
+                                      
+                                        
+
+                                            <div class="row mt-2">
+                                                <div class="col-sm-12">
+                                                    <h4 style="text-align: left; background: #337ab7; color: white;">Datos de existencias</h4>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Stock minimo</label>
+                                                    <input type="text" class="form-control form-control-sm monto" name="stmin" id="stmin" value="0">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Stock maximo</label>
+                                                    <input type="text" class="form-control form-control-sm monto" name="stmax" id="stmax" value="0">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Punto de reorden</label>
+                                                    <input type="text" class="form-control form-control-sm monto" name="reorden" id="reorden" value="0">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Tipo de inventario</label>
+                                                    <select name="tipo_inventario" id="tipo_inventario" class="form-control form-control-sm"></select>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Tipo de almacenaje</label>
+                                                    <select name="tipo_almacenaje" id="tipo_almacenaje" class="form-control form-control-sm"></select>
+                                                </div>
+                                            </div>
+                                                
+                                            <input type="submit" id="enviaform" hidden>
+                                          
+                                      </form>
+                                      <center><img src="<?php echo PUBLIC_URL;?>img\almacen B1-5.png" alt="img"></center>
+                                    </div>
+                                    
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                      <button type="button" class="btn btn-primary" id="guardarc">Guardar</button>
+                                    </div>
+                                    
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- fin modal -->
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- /.col-lg-12 -->
+                    </div>
+                </div>
+            <!-- /.row -->
+            </div>
+        <!-- /.container-fluid -->
+        </div>
+    <!-- /#page-wrapper -->
+    <!-- no borrar -->
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#info').trigger('click');
+        });
+    </script>

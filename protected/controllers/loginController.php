@@ -53,6 +53,7 @@
 				
 				Session::set('clave', $_POST['password']);
 				Session::set('idUsuario', $data['id']);
+				Session::set('usuario', $data['usuario']);
 				Session::set('authenticated', true);
 				$privilegio = Session::modelo('idUsuario');
 				Session::set('level', $data['tipoU']);

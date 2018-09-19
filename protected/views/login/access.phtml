@@ -1,5 +1,5 @@
 
-
+</div>
         <!-- CSS -->
         <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
         <link rel="stylesheet" href="<?php echo PUBLIC_URL; ?>css/bootstrap.css">
@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="<?php echo PUBLIC_URL; ?>css/form-elements.css">
         <link rel="stylesheet" href="<?php echo PUBLIC_URL; ?>css/style.css">
         <link rel="stylesheet" href="<?php echo PUBLIC_URL; ?>css/custom.css">
-        <title>EPOC-WEB</title>
+        <title>COCAI</title>
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -16,19 +16,29 @@
         <![endif]-->
 
         <!-- Top content -->
+        <div class="row">
+            <div class="col-sm-8">
+                <img class="cabecera" hidden height="50px" src="<?php echo PUBLIC_URL;?>img\cabecera.jpg" alt="">
+            </div>
+            <div class="col-sm-4">
+                <img style="float: right" class="cabecera" hidden height="65px" src="<?php echo PUBLIC_URL;?>img\IVSS.png" alt="">
+            </div>
+            
+        </div>
+        
 <center>
     <div style="margin-top: 15%" id="cargando">
-        <img width="200" height="100" class="img" src="<?php echo PUBLIC_URL; ?>img/logo-EPOC-WEB.png"><br>
+        <img width="200" height="100" class="img" src="<?php echo PUBLIC_URL; ?>img/LOGO-COCAI.png"><br>
         <img class="img" width="150px" src="<?php echo PUBLIC_URL; ?>img/loading.gif">
     </div>
 </center>
 <div id="body" hidden>
-<div class="container py-5 ">
-    <div class="row ">
+<div class="container py-5 mt-3">
+    <div class="row mt-3">
         <div class="col-md-12 ">
             <div class="row">
             <div class="col-5 hidden-sm-up">
-                                <img style=" float: right;" src="<?php echo PUBLIC_URL;?>img\logo-EPOC-WEB.png" class="img-fluid imghd" alt="img">
+                                <img style=" float: right;" src="<?php echo PUBLIC_URL;?>img\LOGO-COCAI.png" class="img-fluid imghd" alt="img">
                             </div>
                 <div class="col-md-6 mx-auto">
                     <span class="anchor" id="formLogin"></span>
@@ -39,10 +49,10 @@
                         <div class="card-header" style="padding: 3px">
                             <div class="row ">
                                 <div class="col-3 hidden-xs-down">
-                                    <img  src="<?php echo PUBLIC_URL;?>img\logo-EPOC-WEB.png" class="img-fluid" alt="epoc" style="float: left">
+                                    <img  src="<?php echo PUBLIC_URL;?>img\LOGO-COCAI.png" class="img-fluid" alt="epoc" style="float: left">
                                 </div>
                                 <div class="col">
-                                        <h6 class="text-center textoh6">Inicio de sesion</h6>
+                                        <h6 class="text-center textoh6">Inicio de sesión</h6>
                                 </div>
                                 <div class="col-3">
                                         <button class="btn btn-sm btn-outline-secondary" style="cursor: hand; cursor: pointer; border-radius: 4px; float: right;" type="button" name="" onclick="window.close();"  >
@@ -57,10 +67,10 @@
                         <div class="card-body">
                         <div class="row mb-3 pb-3">
                             <div class="col-10">
-                                    <h5 class="text-left"><strong>EPOC-WEB</strong></h5>
+                                    <h5 class="text-left"><strong>COCAI</strong></h5>
                                     <div class="row">
                                         <div class="col">
-                                        <h6 class="text-left">Control de costos y administracion de inventario</h6>
+                                        <h6 class="text-left">Control de Costos y Administracion de Inventario</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -94,7 +104,7 @@
                         
                         <!--/card-block-->
                     </div>
-                    <p class="text-right">Powered by EPOC</p>
+                    <p class="text-right">Powered by HDJGR</p>
                     <!-- /form card login -->
 
                 </div>
@@ -123,7 +133,7 @@
         <script type="text/javascript"> 
         $(document).ready(function(){
             $('#cargando').fadeOut(700);
-            setTimeout(function() {$('#body').fadeIn(800);$('#body').prop("hidden",false)}, 700);
+            setTimeout(function() {$('#body').fadeIn(800);$('#body').prop("hidden",false);$('.cabecera').fadeIn(800);$('.cabecera').prop("hidden",false);}, 700);
            /* $("a.subM").click(function(event){ event.preventDefault(); linkLocation = this.href; $('#body').fadeOut(500, redirectPage); }); function redirectPage() { window.location = linkLocation; } 
             $(".atras").click(function(event){ event.preventDefault();  $('#body').fadeOut(500); });*/ 
         });

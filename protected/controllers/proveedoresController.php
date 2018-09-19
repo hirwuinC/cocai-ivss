@@ -9,6 +9,8 @@ class proveedoresController extends Controller{
 	
 	function index($id=false){
 		Session::destroy('numstlf');
+		Session::destroy('socios');
+		Session::destroy('vendedores');
 		$this->_view->setJs(array('js/jquery-1.12.4.min'));
 		$this->_view->setCss(array('datatable/css/bootstrap4.min'));
 	    $this->_view->setjs(array('datatable/js/jquerydatatable.min'));
@@ -24,17 +26,18 @@ class proveedoresController extends Controller{
 		$this->_view->render('indexprov', 'inventario', '','');
 		// clase  metodo 	  vista    carpeta dentro de views 
 	}
+
 	
 	function newprov($idt){
 
 		
 		if (!empty($_POST['parroquia_id'])) {
 			if (isset($_POST['edificio'])) {
-				$query = "INSERT INTO `ubicacion`(`edificio`, `calle`, `urbanizacion`, `nro_intercomunicador`, `punto_referencia`, `parroquia_id`) 
-						VALUES ('".$_POST['edificio']."','".$_POST['calle']."','".$_POST['urbanizacion']."','".$_POST['intercomunicador']."','".$_POST['p_referencia']."','".$_POST['parroquia_id']."')";
+				$query = "INSERT INTO `ubicacion`(`edificio`, `calle`, `urbanizacion`, `nro_intercomunicador`, `punto_referencia`, `parroquia_id`,`zona_postal`) 
+						VALUES ('".$_POST['edificio']."','".$_POST['calle']."','".$_POST['urbanizacion']."','".$_POST['intercomunicador']."','".$_POST['p_referencia']."','".$_POST['parroquia_id']."','".$_POST['zona_postal']."')";
 			}else{
-				$query = "INSERT INTO `ubicacion`(`edificio`, `calle`, `urbanizacion`, `punto_referencia`, `parroquia_id`) 
-						VALUES ('".$_POST['casa']."','".$_POST['calle']."','".$_POST['urbanizacion']."','".$_POST['p_referencia']."','".$_POST['parroquia_id']."')";	
+				$query = "INSERT INTO `ubicacion`(`edificio`, `calle`, `urbanizacion`, `punto_referencia`, `parroquia_id`,`zona_postal`) 
+						VALUES ('".$_POST['casa']."','".$_POST['calle']."','".$_POST['urbanizacion']."','".$_POST['p_referencia']."','".$_POST['parroquia_id']."','".$_POST['zona_postal']."')";	
 			}
 			$idub = $this->_main->insertar($query);
 			
@@ -43,9 +46,13 @@ class proveedoresController extends Controller{
 		}
 		/*print_r($_SESSION['numstlf']);
 		var_dump($_POST);exit();*/
-		$query = "INSERT INTO `proveedor`(`nombre`, `rif`, `razon_social`, `correo`, `status`, `ubicacion_id`, `empresa_id`) 
-		VALUES ('".$_POST['nombre']."','".$_POST['rif']."','".$_POST['razon_social']."','".$_POST['correo']."',0,$idub,$idt)";
+		$query = "INSERT INTO `proveedor`(`nombre`, `rif`, `razon_social`, `correo`, `pagina_web`, `status`, `ubicacion_id`, `empresa_id`,`procedencia_id`) 
+		VALUES ('".$_POST['nombre']."','".$_POST['rif']."','".$_POST['razon_social']."','".$_POST['correo']."','".$_POST['pagina']."',0,$idub,$idt,'".$_POST['procede']."')";
 		$idprov = $this->_main->insertar($query);
+		$query = "INSERT INTO `persona`(`nombre`, `telefono`, `correo`, `tipo_persona_id`, `proveedor_id`) VALUES ('".$_POST['nombrecontact']."','".$_POST['numcontact']."','".$_POST['correocontact']."',234,$idprov)";
+		$contacto = $this->_main->insertar($query);
+		$query = "INSERT INTO `requisitos`(`ISLR`, `RIF`, `certificado_contratistas`, `Solvencia_laboral`, `Permiso_sanitario`, `proveedor_id`) VALUES ('".$_POST['islr']."','".$_POST['rifvigente']."','".$_POST['contratista']."','".$_POST['solvlaboral']."','".$_POST['persanitario']."',$idprov)";
+		$permisos = $this->_main->insertar($query);
 		if (isset($_SESSION['numstlf'])) {
 			$telefonos = $_SESSION['numstlf'];
 			for ($i=0; $i <count($telefonos) ; $i++) { 
@@ -55,7 +62,21 @@ class proveedoresController extends Controller{
 				$tlfsxprov = $this->_main->insertar($query);
 			}
 		}
-		if (isset($idprov)) {
+		if (isset($_SESSION['socios'])) {
+			$socios = $_SESSION['socios'];
+			for ($i=0; $i <count($socios) ; $i++) { 
+				$query = "INSERT INTO `persona`(`nombre`, `telefono`, `correo`, `tipo_persona_id`, `proveedor_id`) VALUES ('".$socios[$i]['nombre']."','".$socios[$i]['telefono']."','".$socios[$i]['correo']."',233,$idprov)";
+				$socios = $this->_main->insertar($query);
+			}
+		}
+		if (isset($_SESSION['vendedores'])) {
+			$vendedores = $_SESSION['vendedores'];
+			for ($i=0; $i <count($vendedores) ; $i++) { 
+				$query = "INSERT INTO `persona`(`nombre`, `cargo`,`telefono`, `correo`, `tipo_persona_id`, `proveedor_id`) VALUES ('".$vendedores[$i]['nombre']."','".$vendedores[$i]['cargo']."','".$vendedores[$i]['telefono']."','".$vendedores[$i]['correo']."',232,$idprov)";
+				$vende = $this->_main->insertar($query);
+			}
+		}
+		if (!empty($idprov)) {
 			$proveedor['name'] = $_POST['nombre'];
 			$proveedor['proceso'] = $_POST['tipoproceso'];
 			echo json_encode($proveedor);
@@ -102,11 +123,14 @@ class proveedoresController extends Controller{
 	          if($arreglo[$i]['numero']==$numero and $arreglo[$i]['codigo_id'] == $codigo_id){
 	            $encontro=true;
 	            $num=$i;
+	          }else{
+	          	$num++;
 	          }
 	        }
 	        	if($encontro==true){
 		          switch ($tipo) {
 		            case '1':
+		                $arreglo[$num]['id']= $num;
 		                $arreglo[$num]['numero']= $numero;
 		                $arreglo[$num]['codigo_id']= $codigo_id;
 		                $arreglo[$num]['codigo']= $cod;
@@ -123,7 +147,8 @@ class proveedoresController extends Controller{
 		        }else{
 		        	if ($tipo == 1) {
 			        	$arreglo = $_SESSION['numstlf'];
-			        	$datosNuevos=array('numero'=>$numero,
+			        	$datosNuevos=array('id'=>$num,
+			        						'numero'=>$numero,
 			        						'codigo_id'=>$codigo_id,
 			        						'codigo'=>$cod
 		                );
@@ -133,7 +158,9 @@ class proveedoresController extends Controller{
 		        	
 		        }
 		}else{
-			$arreglo[]=array('numero'=>$numero,
+			$n = 0;
+			$arreglo[]=array('id'=>$n,
+							'numero'=>$numero,
 			        		'codigo_id'=>$codigo_id,
 			        		'codigo'=>$cod
             );
@@ -141,6 +168,146 @@ class proveedoresController extends Controller{
 		}
 		
 		echo json_encode($_SESSION['numstlf']);
+			
+	}
+
+	public function datossocio($tipo=false,$nombre = false, $correo = false){
+		if ($nombre != false and $correo != false) {
+			$nombresocio = $nombre;
+			$email = $correo;
+		}else{
+			$nombresocio = $_POST['nombresocio'];
+			$email = $_POST['mailsocio'];
+		}
+		//var_dump($_POST);
+		//Session::destroy('socios');
+		if (isset($_SESSION['socios'])) {
+			
+			$arreglo = $_SESSION['socios'];
+			//print_r($arreglo); echo "<br>";
+			$encontro=false;
+    		$num=0;
+    		for($i=0;$i<count($arreglo);$i++){
+	          if($arreglo[$i]['nombre']== $nombresocio and $arreglo[$i]['correo'] == $email){
+	            $encontro=true;
+	            $num=$i;
+	          }else{
+	          	$num++;
+	          }
+	        }
+	        	if($encontro==true){
+		          switch ($tipo) {
+		            case 1:
+		                $arreglo[$num]['id']= $num;
+		                $arreglo[$num]['nombre']= $nombresocio;
+		                $arreglo[$num]['telefono']=  $_POST['tlfsocio'];
+		                $arreglo[$num]['correo']=  $email;
+		                $_SESSION['socios']=$arreglo; 
+		            break;
+		            
+		            default:
+		            	unset($_SESSION['socios'][$num]);
+		                $arreglo = array_values($_SESSION['socios']);
+		                $_SESSION['socios']=$arreglo;
+		            break;
+		          }
+		          
+		        }else{
+		        	if ($tipo == 1) {
+			        	$arreglo = $_SESSION['socios'];
+			        	$datosNuevos=array('id'=>$num,
+			        						'nombre'=>$nombresocio,
+			        						'telefono'=>$_POST['tlfsocio'],
+			        						'correo'=>$email
+		                );
+		                  array_push($arreglo, $datosNuevos);
+			          	$_SESSION['socios']=$arreglo;
+		        	}
+		        	
+		        }
+		}else{
+			$n = 0;
+			$arreglo[]=array('id'=>$n,
+							'nombre'=>$nombresocio,
+			        		'telefono'=>$_POST['tlfsocio'],
+			        		'correo'=>$email
+            );
+			$_SESSION['socios'] = $arreglo;
+		}
+		
+		echo json_encode($_SESSION['socios']);
+			
+	}
+
+	public function datosvendedor($tipo=false,$nombre = false, $correo = false){
+		//var_dump($_POST);
+		if ($nombre != false and $correo != false) {
+			$nombrevendedor = $nombre;
+			$email = $correo;
+		}else{
+			$nombrevendedor = $_POST['nombrevendedor'];
+			$email = $_POST['mailvendedor'];
+		}
+		//var_dump($_POST);
+		//Session::destroy('vendedor');
+		if (isset($_SESSION['vendedores'])) {
+			
+			$arreglo = $_SESSION['vendedores'];
+			//print_r($arreglo); echo "<br>";
+			$encontro=false;
+    		$num=0;
+    		for($i=0;$i<count($arreglo);$i++){
+	          if($arreglo[$i]['nombre']== $nombrevendedor and $arreglo[$i]['correo'] == $email){
+	            $encontro=true;
+	            $num=$i;
+	          }else{
+	          	$num++;
+	          }
+	        }
+	        	if($encontro==true){
+		          switch ($tipo) {
+		            case 1:
+		                $arreglo[$num]['id']= $num;
+		                $arreglo[$num]['nombre']= $nombrevendedor;
+		                $arreglo[$num]['cargo']=  $_POST['cargovendedor'];
+		                $arreglo[$num]['telefono']=  $_POST['tlfvendedor'];
+		                $arreglo[$num]['correo']=  $email;
+		                $_SESSION['vendedores']=$arreglo; 
+		            break;
+		            
+		            default:
+		            	unset($_SESSION['vendedores'][$num]);
+		                $arreglo = array_values($_SESSION['vendedores']);
+		                $_SESSION['vendedores']=$arreglo;
+		            break;
+		          }
+		          
+		        }else{
+		        	if ($tipo == 1) {
+			        	$arreglo = $_SESSION['vendedores'];
+			        	$datosNuevos=array('id'=>$num,
+			        						'nombre'=>$nombrevendedor,
+			        						'cargo'=>$_POST['cargovendedor'],
+			        						'telefono'=>$_POST['tlfvendedor'],
+			        						'correo'=>$email
+		                );
+		                  array_push($arreglo, $datosNuevos);
+			          	$_SESSION['vendedores']=$arreglo;
+		        	}
+		        	
+		        }
+		}else{
+			$n = 0;
+			$arreglo[]=array('id'=>$n,
+							'nombre'=>$nombrevendedor,
+							'cargo'=>$_POST['cargovendedor'],
+			        		'telefono'=>$_POST['tlfvendedor'],
+			        		'correo'=>$email
+            );
+			$_SESSION['vendedores'] = $arreglo;
+		}
+		
+		echo json_encode($_SESSION['vendedores']);
 			
 	}
 
@@ -165,6 +332,20 @@ class proveedoresController extends Controller{
 
 	public function mostrarnumeros(){
 		$data = $_SESSION['numstlf'];
+		$response = array("data"=>$data);
+		//print_r($response);
+		echo json_encode($response);
+	}
+
+	public function mostrarsocios(){
+		$data = $_SESSION['socios'];
+		$response = array("data"=>$data);
+		//print_r($response);
+		echo json_encode($response);
+	}
+
+	public function mostrarvendedores(){
+		$data = $_SESSION['vendedores'];
 		$response = array("data"=>$data);
 		//print_r($response);
 		echo json_encode($response);

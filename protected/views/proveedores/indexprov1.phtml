@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="us">
+<head>
+  <meta charset="utf-8">
+  <title>Transferencias</title>
+  <link href="<?php echo PUBLIC_URL; ?>css/jquery-ui.css" rel="stylesheet">
+
+
+  
+</head>
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+<div id="body" hidden>
+                            
+<div id="page-wrapper">
+            <div class="">
+
+                <div class="row">
+                    <div class="col-lg-12 ">
+                        
+
+                        <div  class="card cardH">
+                        <div class="card-header" hidden>
+                            <center><h3><o id="titulocard">Proveedores</o> <?php $ti=strtolower($this->g[0]['tienda']); echo "[".ucwords($ti)."] Sub-modelo ".$this->g[0]['subM'];  ?></h4></center>
+                        </div>
+                        
+                        <div class="card-block" style="padding-bottom: 0px; ">                        
+						<ul class="nav nav-pills nav-tabs ml-3" role="tablist">
+						  	<li class="active nav-item">
+						  		<a data-toggle="tab" href="#proveedoresact" class="nav-link" id="proact">Proveedores activos</a>
+						  	</li>
+                <li class="nav-item">
+                	<a data-toggle="tab" href="#asignarprov" class="nav-link" id="asignacion">Asignacion de productos</a>
+                </li>
+                <li class="nav-item">
+                	<a data-toggle="tab" href="#proveedoresinact" class="nav-link" id="proinact">Proveedores inactivos</a>
+                </li>
+						</ul>
+
+									
+
+						
+						<div class="tab-content" >
+              <div class="col-sm-12">
+                  <div class="alert alert-success" id="exito" hidden>
+                      <center><h4 class="info1"></h4></center>
+                  </div>
+              </div>
+              <div class="col-sm-12">
+                  <div class="alert alert-danger" id="error" hidden>
+                      <center><h4 class="info1"></h5></center>
+                  </div>
+              </div>
+                              <!-- Modal validacion status-->
+                              <div class="modal fade" id="modalcambiastatus">
+                                <div class="modal-dialog modal-sm">
+                                  <div class="modal-content">
+                                  
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="mti"></h5>
+                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    
+                                    <!-- Modal body -->
+                                    <div class="modal-body" style="padding: 0px">
+                                      <div class="alert alert-info" id="cuerpomodalex" ></div>
+                                    </div>
+                                    
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-sm btn-outline-danger" data-dismiss="modal">Cancelar</button>
+                                      <button type="button" class="btn btn-sm btn-outline-primary" id="btn-si">Continuar</button>
+                                    </div>
+                                    
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- fin modal -->
+
+                              <!-- Modal anular-->
+                                <div  class="modal fade" id="modaldesa" role="dialog">
+                                  <div class="modal-dialog modal-sm" >
+                                    <div class="modal-content modalp3" >
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" style="text-align: left">Desasignar el producto <o class="nprod"></o> al proveedor <o class="nprov"></o></h5>
+                                        <button type="button" class="close" data-dismiss="modal" id="closem2">&times;</button>
+                                      </div>
+                                      <div class="modal-body" >
+                                        <input type="hidden" id="idmerc">
+                                        <input type="hidden" id="idprove">
+                                          <h5 style="color: red; text-align: left"><b>El producto <o class="nprod"></o> ya no estara asignado al proveedor <o class="nprov"></o>.<br> Desea Continuar?<br></b></h5>
+                                      </div>
+                                      <div class="modal-footer" >
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-dismiss="modal">Cancelar</button>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" id="desasigna">Continuar</button>
+                                      </div>
+                                    </div>
+                                  
+                                  </div>
+                                </div>
+
+                				<!-- Modal productos asignados -->
+                                <div class="modal fade" id="modalasignados">
+                                  <div class="modal-dialog modal-lg">
+                                    <div class="modal-content" style="width: 122%; left: -8%">
+                                    
+                                      <!-- Modal Header -->
+                                      <div class="modal-header">
+                                        <h4 class="modal-title titlemyt"></h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                      </div>
+                                      
+                                  <!-- Modal body -->
+                                  <div class="modal-body">
+                                     
+                                                        <div class="dataTable_wrapper">
+                                                            <div class="table-responsive col-sm-12">
+                                                                <table id="tablaproasig" class="display table table-sm table-striped table-bordered table-hover" >
+                                                                    <thead class="theadH">
+                                                                      <tr>
+                                                                        <th colspan="8"><center>Productos asignados</center></th>
+                                                                      </tr>
+                                                                        <tr>
+                                                                            <th>#</th>
+                                                                            <th>Codigo</th>
+                                                                            <th>Codidgo prov.</th>
+                                                                            <th>Producto</th>
+                                                                            <th>Marca</th>
+                                                                            <th>Precio Unit.</th>
+                                                                            <th>Precio Prov.</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="cuerpo_r"></tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                      
+                                      
+                                  </div>
+                                      
+                                      <!-- Modal footer -->
+                                      <div class="modal-footer">
+                                          <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cerrar</button>
+                                      </div>
+                                      
+                                    </div>
+                                  </div>
+                                </div>
+                                <!-- fin de la modal -->
+
+							<input type="hidden" name="idT" id="idtienda" value="<?php echo $this->g[0]['idT'];?>">
+                            <input type="hidden" name="idemp" id="idempresa" value="<?php echo $this->g[0]['empresa_id'];?>">
+							<center>
+							    <div id="load" hidden>
+							        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+							    </div>
+							</center>
+							<div class="row form-group">
+								<div class="col-sm-12" style="margin-bottom: -1%">
+									<?php if ($this->g[0]['modelo'] != null): ?>
+			                            <div>
+			                              	<img class="hidden-sm-down" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png">
+			                              	<img width="25%" height="8%" class="hidden-sm-up" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png">
+			                            </div>
+	                        		<?php endif ?>
+                        
+                          			<input type="hidden" id="modelos" value="<?php echo $this->g[0]['idm']; ?>">
+			                        <?php if (isset($this->_error)) {
+			                            echo $this->_error;
+			                        } ?>
+			                        <?php if ($this->g[0]['modelo'] == null): ?>
+			                            <div>
+			                              <img class="hidden-sm-down" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->g[0]['tienda']; ?>.png">
+			                              <img width="25%" height="8%" class="hidden-sm-up" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->g[0]['tienda']; ?>.png">
+			                            </div>
+			                        <?php endif ?>
+								</div>
+								<div class="col-sm-12" style="margin-bottom: -1%">
+									<div class="row form-group d-flex justify-content-center">
+										<div class="col-xs-12 col-sm-12 col-md-10 col-lg-6">
+											<h4 class="text-white" style="background: #337ab7; border-radius: 4px; text-align: center" id="selectedpro"></h4>
+										</div>
+										
+									</div>
+								</div>
+
+							</div>
+							
+						<div>
+							
+						
+                    <div id="proveedoresact" class="tab-pane fade in active" role="tabpanel">
+						        	<div class="row d-flex justify-content-start ml-2" style="margin-top: 0%">
+                        <div class="col-xs-12">
+                          <button class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#modalnewprov" id="nuevoprov">Registrar un nuevo proveedor</button>
+                        </div>
+                      </div>
+                      <div class="dataTable_wrapper mt-3">
+                                <h4 style="background: #337ab7; border-radius: 5px 5px 0px 0px; text-align: center;" class="text-white">Lista de proveedores activos</h4>
+                                 <div class="col-sm-12 table-responsive">    
+                                  <div class="">
+                                    <table id="tablaprov" class="display table table-sm table-striped table-bordered table-hover" >
+                                      <thead class="theadH">
+                                          <tr>
+                                              <th><center>#</center></th>
+                                              <th><center>Nombre</center></th>
+                                              <th><center>RIF / RUC</center></th>
+                                              <th><center>Razon Social</center></th>
+                                              <th><center>Correo</center></th>
+                                              <th><center>Acciones</center></th>
+                                          </tr>
+                                      </thead>
+                                      <tbody id="cuerpo_p">
+                                        
+                                      </tbody>
+                                      
+                                  </table>
+                                  
+                                </div>
+                              </div>     
+                            </div>
+                        
+									
+
+                                		
+
+                                    
+
+										  
+
+										 <center>
+										    <div id="loading" hidden>
+										        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+										    </div>
+										</center>
+										<div id="tablaoculta" hidden>
+											<div class="form-group row">										
+												<div class="col-sm-12">
+				                                    <h4 style="border-bottom: solid 1px #A5A5A5;">Productos de la factura N°: <o class="Facturanum"></o></h4>
+				                                </div>
+			                                </div>
+											<div class="dataTable_wrapper ">
+
+					                             <div class="col-sm-12 table-responsive">    
+					                              <div class="container">                            	
+					                                <table id="tablacompra" class="display table table-sm table-striped table-bordered table-hover" >
+					                                  <thead class="theadH">
+					                                      <tr>
+					                                          <th><center>#</center></th>
+					                                          <th><center>Codigo</center></th>
+					                                          <th><center>Producto</center></th>
+					                                          <th><center>Cantidad</center></th>
+					                                          <th><center>Precio</center></th>
+					                                          <th><center>Acciones</center></th>
+					                                      </tr>
+					                                  </thead>
+					                                  <tbody id="cuerpo_r"></tbody>
+					                                  
+					                              </table>
+					                              <div class="container">
+					                                <div class="row d-flex justify-content-start ml-3 mx-3 pl-1">
+					                                  <div class="col-12" id="costot">
+					                                    
+					                                  </div>
+					                                </div>
+					                              </div>
+					                            </div>
+					                          </div>     
+					                        </div>
+					                        <div class="row d-flex justify-content-center" >
+											  	<div class="col-sm-3" id="botones" hidden>
+											  		<button class="btn btn-sm btn-outline-danger" id="cancelarproceso" >Cancelar</button>
+											  		<button class="btn btn-sm btn-outline-primary" id="procesar">Registrar factura</button>
+											  	</div>
+											</div>
+										</div>
+                  
+                  <!-- The Modal -->
+      <div class="modal fade" id="modalnewprov">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+          
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title" id="titulomodal"></h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            
+            <!-- Modal body -->
+            <div class="modal-body">
+              <div class="row">
+                  
+                <form action="<?php echo BASE_URL;?>proveedores/newprov/<?php echo $this->g[0]['idT'];?>" method="post" accept-charset="utf-8" id="form-insert">
+                  <div class="col-lg-12">
+                    <div class="cardH">
+                      <h4 style="background: #337ab7; border-radius: 5px 5px 0px 0px; text-align: center;" class="text-white">Datos del proveedor</h4>
+                      <div class="card-body card-block">
+                        <div class="form-group row d-flex justify-content-start">
+                            <input type="hidden" name="tipoproceso" id="tipoproceso">
+                            <div class="col-xs-12 col-sm-4">
+                                <label class="labels" for="company" class=" form-control-label">Nombre</label><span class="fa fa-asterisk " style="color: #D82626; font-size: 10px"></span>
+                                <input type="text" id="nombre" name="nombre" placeholder="Nombre del proveedor" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="col-xs-12 col-sm-4">
+                                <label class="labels" for="vat" class=" form-control-label">RIF / RUC</label>
+                                <input type="text" id="rif" name="rif" placeholder="RIF del proveedor" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-xs-12 col-sm-4">
+                                <label class="labels" for="company" class=" form-control-label">Razon Social</label>
+                                <input type="text" id="rsocial" name="razon_social" placeholder="Razon social del proveedor" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-xs-12 col-sm-4">
+                                <label class="labels" for="company" class=" form-control-label">Correo</label>
+                                <input type="email" id="correo" name="correo" placeholder="correo del proveedor" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-xs-12 col-sm-4 mt-3">
+                              <button type="button" class="btn btn-sm btn-outline-info" data-toggle="modal" data-target="#modaltlfs" style="margin-top: 3%" id="tlfs">
+                                Numeros telefonicos <i class="fa fa-phone font-2xl"></i>
+                              </button>       
+                            </div>
+                        </div>
+                        <h4 style="background: #337ab7; border-radius: 5px 5px 0px 0px; text-align: center;" class="text-white">Dirección</h4>
+                        <div id="datos2">
+                                <div class="row form-group d-flex justify-content-center">                                 
+                                    <div class="col-xs-12 col-sm-3 col-md-2">
+                                        <input type="radio" name="tipo_habi" id="home" class="house"><i class="fa fa-home"> Oficina</i>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-3 col-md-2">
+                                        <input type="radio" name="tipo_habi" id="building"><i class="fa fa-building"> Edificio</i>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-5 col-md-3">
+                                        <input type="radio" name="tipo_habi" id="office" class="house"><i class="fa fa-hospital-o"> Local comercial</i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="d2" hidden>
+                            <div class="row form-group" >
+                                <div class="col-xs-12 col-sm-4">
+                                    <label style="margin-bottom: -5px" for="">Estado:</label>
+                                    <select title="Seleccione un estado" class="form-control form-control-sm" name="estado" id="estado" ></select>
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+                                    <label style="margin-bottom: -5px" for="">Municipio:</label>
+                                      <select title="Seleccione un municipio" class="form-control form-control-sm" name="municipio" id="municipio" >
+                                          <option value="Seleccione" selected disabled="">Seleccione..</option>
+                                      </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+                                    <label style="margin-bottom: -5px" for="">Parroquia:</label>
+                                      <select title="seleccione una parroquia" class="form-control form-control-sm" name="parroquia_id" id="parroquia" >
+                                          <option value="Seleccione" selected disabled>Seleccione..</option>
+                                      </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+                                    <label style="margin-bottom: -5px" for="">Urbanizacion:</label>
+                                     <input title="el nombre de la urbanizacion puede contener letras, numeros, espacios y signos y un maximo de 60 caracteres" type="text" class="form-control form-control-sm " name="urbanizacion" id="urbanizacion" placeholder="Nombre de urbanizacion" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{3,60}" >
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+                                    <label style="margin-bottom: -5px" for="">Calle:</label>
+                                      <input title="el nombre de la calle puede contener letras, numeros, espacios y signos y un maximo de 60 caracteres" type="text" class="form-control form-control-sm" name="calle" id="calle" placeholder="Nombre de calle" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{1,60}" >
+                                </div>
+                                <div class="col-xs-12 col-sm-4" id="edif" hidden>
+                                    <label style="margin-bottom: -5px" for="">Edificio:</label>
+                                    <input title="el nombre del edificio puede contener letras, numeros, espacios y signos y un maximo de 60 caracteres" type="text" class="form-control form-control-sm" name="edificio" id="edificio" placeholder="Nombre de Edif." pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{1,60}" >
+                                </div>
+                                <div class="col-xs-12 col-sm-4" id="house" hidden>
+                                    <label style="margin-bottom: -5px" for="">Oficina:</label>
+                                    <input title="el nombre de la oficina puede contener letras, numeros, espacios y signos y un maximo de 60 caracteres" type="text" class="form-control form-control-sm" name="casa" id="casa" placeholder="nombre o nro de oficina" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{1,60}" >
+                                </div>   
+                            </div>
+
+
+                            <div class="row form-group">
+                                
+                                <div class="col-xs-12 col-sm-4" id="numint" hidden>
+                                    <label style="margin-bottom: -5px" for="">Piso N°:</label>
+                                       <input title="el numero de intercomunicador puede contener letras, numeros, espacios y signos y un maximo de 5 caracteres" type="text" class="form-control form-control-sm" name="intercomunicador" id="intercomunicador" placeholder="N° de intercomunicador" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-*_°+/]{1,15}" >
+                                </div>
+                                <div class="col-xs-12 col-sm-4" id="ptoref">
+                                    <label style="margin-bottom: -5px" for="">Punto de referencia:</label>
+                                      <textarea title="el punto de referencia puede contener letras, numeros, espacios y signos y un maximo de 160 caracteres" class="form-control form-control-sm" name="p_referencia" id="p_referencia" placeholder="punto de referencia para ubicar al proveedor" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{5,160}"  rows="3"></textarea>
+                                </div>
+                                 
+                            </div>
+                            </div>
+                        
+                      </div>
+                    </div>
+                  </div>
+                  <input type="submit" id="enviaform" hidden>
+                  </form>
+              </div>
+            </div>
+            
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <div>Campos obligatorios(<span class="fa fa-asterisk" style="color: #D82626; font-size: 10px"></span>)</div>
+              <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-sm btn-outline-primary" id="guardarprov">Guardar proveedor</button>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+
+      <!-- The Modal -->
+      <div class="modal fade" id="modaltlfs">
+        <div class="modal-dialog modal-md">
+          <div class="modal-content">
+          
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Numeros telefonicos</h4>
+              <button type="button" class="close cancelupdatetlf" data-dismiss="modal">&times;</button>
+            </div>
+            
+            <!-- Modal body -->
+            <div class="modal-body">
+              <div class="row d-flex justify-content-center">
+                <label for="" class="form-control-label">N° telefonico</label>
+                <div class="col-xs-12 col-sm-8">
+                                
+                  <div class="input-group">
+                      <input type="hidden" id="idprov">
+                      <select id="codigo_tlf" name="codigo_tlf"></select>
+                      <input type="number" id="ntlf" name="ntlf" placeholder="ej: 02128784521" class="form-control form-control-sm">
+                      <span class="input-group-btn">
+                        <button class="btn btn-sm btn-outline-info" type="button" id="addtlf" disabled=""><span class="fa fa-plus"></span></button>
+                      </span>
+                  </div>
+                                
+                            </div>
+              </div>
+              <div id="tablatelefonos" class="mt-3" hidden>
+                <div class="dataTable_wrapper ">
+                  <div class="table-responsive col-sm-12">
+                  <table id="tablatlfs" class="table table-sm table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Numero</th>
+                          <th>Eliminar</th>
+                        </tr>
+                      </thead>
+                      <tbody id="cuerpot">
+                      </tbody>
+                    </table>
+                </div>
+              </div>
+              </div>
+              
+            </div>
+            
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-sm btn-outline-primary" data-dismiss="modal" id="continuetlf">Continuar</button>
+              <button type="button" class="btn btn-sm btn-outline-primary updatetlf cancelupdatetlf" data-dismiss="modal" id="cancelupdatetlf" hidden>Cancelar</button>
+              <button type="button" class="btn btn-sm btn-outline-primary updatetlf" id="updatetlf" hidden>Guardar cambios</button>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+
+       <!-- Modal error de num telefonico -->
+                              <div class="modal fade" id="modaler">
+                                <div class="modal-dialog modal-sm">
+                                  <div class="modal-content">
+                                  
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                      <h5 class="modal-title">Error en el formato del numero telefonico</h5>
+                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    
+                                    <!-- Modal body -->
+                                    <div class="modal-body" style="padding: 0px">
+                                      <div class="alert alert-danger" id="cuerpomodaler">El numero que intenta agregar no tiene un formato valido (debe contener 7 caracteres numericos)</div>
+                                    </div>
+                                    
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-sm btn-outline-danger" data-dismiss="modal">Aceptar</button>
+                                    </div>
+                                    
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- fin modal -->
+
+                              <!-- Modal de informacion del proveedor-->
+                      <div class="modal fade" id="modalinfoprov">
+                        <div class="modal-dialog modal-sm">
+                          <div class="modal-content">
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h5 class="modal-title" >Datos del proveedor: <br><o id="nombreprov"></o></h5>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                              <div class="container">
+                                <div class="row form-group">
+                                  <h5 id="dir"></h5>
+                                </div>
+
+                              </div>
+                            </div>
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-sm btn-outline-primary" data-dismiss="modal">Aceptar</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    <!-- fin modal -->
+										
+                 </div>  
+
+
+
+<div id="asignarprov" class="tab-pane fade" role="tabpanel" >
+  <input type="hidden" class="nprod" id="nprod">
+  <input type="hidden" class="nprov" id="nprov">
+
+  <div class="row d-flex justify-content-start ml-3 mb-3">
+    <div class="col-sm-3">
+      <label class="labels">Proveedor</label> 
+      <div class="input-group">
+      <select class="form-control form-control-sm" id="proveedor"></select>
+      <span class="input-group-btn">
+        <button class="btn btn-outline-primary btn-sm" type="button" disabled id="consultarasingados">
+          <i style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Consultar productos asignados" class="fa fa-search"></i>
+        </button>
+      </span>
+      <span class="input-group-btn">
+        <button class="btn btn-outline-primary btn-sm" type="button" disabled id="noasignados">
+          <i style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Asignar mas productos" class="fa fa-plus"></i>
+        </button>
+      </span>
+    </div>
+    </div>
+  </div>
+	<div class="dataTable_wrapper">
+        <div class="table-responsive col-sm-12">
+            <table id="tablaasignados" class="display table table-sm table-striped table-bordered table-hover" >
+                <thead class="theadH">
+                	<tr>
+                		<th colspan="8"><center>Productos asignados</center></th>
+                	</tr>
+                    <tr>
+                        <th>#</th>
+                        <th>Codigo</th>
+                        <th>Codidgo prov.</th>
+                        <th>Producto</th>
+                        <th>Marca</th>
+                        <th>Precio Unit.</th>
+                        <th>Precio Prov.</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo_r"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal detalles remision / reposicion -->
+                <div class="modal fade" id="myModal">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content" style="width: 122%; left: -8%">
+                    
+                      <!-- Modal Header -->
+                      <div class="modal-header">
+                        <h4 class="modal-title titlemyt"></h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      </div>
+                      
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                      <form action="" method="post" accept-charset="utf-8" role="form" id="formdetails">
+                                        <input type="hidden" class="idproveedor" name="idproveedor">
+                                        <div class="dataTable_wrapper">
+                                          <div class="table-responsive col-sm-12">
+                                              <table id="tablanoasignados" class="display table table-sm table-striped table-bordered table-hover" >
+                                                  <thead class="theadH">
+                                                    <tr>
+                                                      <th colspan="8"><center>Productos para asignar</center></th>
+                                                    </tr>
+                                                      <tr>
+                                                          <th>#</th>
+                                                          <th>Codigo</th>
+                                                          <th>Producto</th>
+                                                          <th>marca</th>
+                                                          <th>clasificacion</th>
+                                                          <th>Existencia</th>
+                                                          <th>Min</th>
+                                                          <th>Asignar</th>
+                                                      </tr>
+                                                  </thead>
+                                                  <tbody id="cuerpo_r"></tbody>
+                                              </table>
+                                          </div>
+                                      </div>
+                                      <input type="submit" name="btn-subm" id="btn-subm" value="enviar" hidden>
+                      </form>
+                  </div>
+                      
+                      <!-- Modal footer -->
+                      <div class="modal-footer">
+                                    <u id="validarrecep" style="color: red"></u>
+                                      <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cerrar</button>
+                                      <button type="button" class="btn btn-sm btn-outline-primary" hidden="" id="proccess">Procesar</button>
+                                      <span class="fa fa-exclamation-triangle" id="warning" hidden style=" cursor: hand; cursor: pointer" title="Ver alerta"></span>
+                        <button type="button" class="btn btn-sm btn-outline-primary" hidden="" id="recept">Recibir</button>
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+                <!-- fin de la modal -->
+
+                <!-- modal precio y codigo x proveedor -->
+                <div class="modal fade" id="modalprodxprov">
+                  <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                    
+                      <!-- Modal Header -->
+                      <div class="modal-header">
+                        <h6 class="modal-title"><o id="tipo"></o><o class="nprod"></o> <o id="tipo2"></o> proveedor <o class="nprov"></o></h6>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      </div>
+                      
+                      <!-- Modal body -->
+                      <div class="modal-body">
+                        <form action="<?php echo BASE_URL;?>proveedores/asingados" id="form-asignar" method="post" accept-charset="utf-8" role="form">
+                          <input type="hidden" class="idproveedor" name="idproveedor" id="idp">
+                          <input type="hidden" id="idmer" name="idmer">
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <label class="labels">Codigo (Producto-Proveedor)</label>
+                              <input type="text" name="codiprov" id="codiprov" class="form-control form-control-sm" placeholder="codigo manejado por el proveedor">
+                            </div>
+                          </div>
+                          <div class="row mt-2">
+                            <div class="col-sm-12">
+                              <label class="labels">Precio unitario del proveedor</label>
+                              <input type="text" name="preciounit" id="preciounit" class="form-control form-control-sm monto" value="0">
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <input type="submit" id="asign" hidden>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                        
+                      <!-- Modal footer -->
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="asignarprods">Guardar</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="editarprods">Guardar</button>
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+                <!-- fin de la modal -->
+
+
+   
+
+        		
+</div>
+
+<div id="proveedoresinact" class="tab-pane fade" role="tabpanel">
+    <div class="dataTable_wrapper mt-3">
+        <h4 style="background: #337ab7; border-radius: 5px 5px 0px 0px; text-align: center;" class="text-white">Lista de proveedores inactivos</h4>
+         <div class="col-sm-12 table-responsive">    
+          <div class="">
+            <table id="tablaprovin" class="display table table-sm table-striped table-bordered table-hover" >
+              <thead class="theadH">
+                  <tr>
+                      <th><center>#</center></th>
+                      <th><center>Nombre</center></th>
+                      <th><center>RIF / RUC</center></th>
+                      <th><center>Razon Social</center></th>
+                      <th><center>Correo</center></th>
+                      <th><center>Acciones</center></th>
+                  </tr>
+              </thead>
+              <tbody id="cuerpo_p">
+                
+              </tbody>
+              
+          </table>
+          
+        </div>
+      </div>     
+    </div>
+
+                
+</div>
+    	
+</div>
+</div>
+
+
+
+                       
+                            
+                        </div>
+                        <center><div id="mensaje" hidden><img width="45px" height="45px" src="http://localhost/COCAI/public/img/check1.gif" alt="exito"/></div></center>
+                             
+                        
+                              
+                
+                </div>
+              </div>
+        </div>
+</div>
+</div>
+                            
+</body>
+
+</div>
+
+
+
+<!-- Autocomplete -->
+
+</html>

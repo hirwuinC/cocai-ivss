@@ -21,139 +21,90 @@
 										);
 		}
 		
-		function index(){
-			$this->_view->setCss(array('datatable/css/dataTables.bootstrap'));
+		function index($id=false,$tipo=false){
+			$this->_view->setJs(array('js/jquery-1.12.4.min'));
+    		$this->_view->setCss(array('datatable/css/bootstrap4.min'));
+		    $this->_view->setjs(array('datatable/js/jquerydatatable.min'));
+		    $this->_view->setJs(array('datatable/js/datatable.b4.min'));
 		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
-		    $this->_view->setjs(array('datatable/js/jquery.dataTables.min'));
-		    $this->_view->setJs(array('datatable/js/dataTables.bootstrap.min'));
 		    $this->_view->setJs(array('datatable/js/tabla'));
-            $this->_view->setJs(array('js/subM'));
-			$query = "SELECT mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.descripcion, mercancia.cantidad_inventariada, mercancia.contenido_neto, mercancia.stock_minimo, mercancia.stock_maximo, mercancia.status, mercancia.precio_unitario, unidad_medida.id as 'idUM',unidad_medida.unidad, unidad_medida.abreviatura, ref.referencia as 'familia' FROM `mercancia` left join unidad_medida on unidad_medida.id = mercancia.unidad_medida_compra_id inner join referencia as ref on ref.id = mercancia.familia_id order by ref.referencia ASC";
-			$valores = $this->_main->select($query);
-			$this->_view->mercancia=$valores;
-			$this->_view->render('inicio', 'administracion', '','');
+		    $this->_view->setJs(array('js/tablas'));
+			$valores = $this->_main->datostienda($id);
+			$this->_view->g = $valores;
+      		$this->_view->n = $tipo;
+			$this->_view->render('inicio', 'usuario', '','');
 			// clase  metodo 	  vista    carpeta dentro de views 
 		}
 
+		function tablas($id=false,$tipo=false){
+			$this->_view->setJs(array('js/jquery-1.12.4.min'));
+    		$this->_view->setCss(array('datatable/css/bootstrap4.min'));
+		    $this->_view->setjs(array('datatable/js/jquerydatatable.min'));
+		    $this->_view->setJs(array('datatable/js/datatable.b4.min'));
+		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
+		    $this->_view->setJs(array('datatable/js/tabla'));
+		    $this->_view->setJs(array('js/tablas'));
+			$valores = $this->_main->datostienda($id);
+			$this->_view->g = $valores;
+      		$this->_view->n = $tipo;
+			$this->_view->render('inicio', 'usuario', '','');
+			// clase  metodo 	  vista    carpeta dentro de views 
+		}
 
-			
-			function insert(){
-				$this->_view->setJs(array('js/insertPerson'));
-				//Si hay una solicitud via POST
-				if ($_SERVER['REQUEST_METHOD']=='POST') {
+		public function consultartabla($tabla, $empresa){
+			switch ($tabla) {
+				case 'clasificacion':
+					$query = "SELECT DISTINCT(ref.id), ref.referencia from referencia 
+		            inner join referencia as ref on ref.padre_id = referencia.id
+		            inner join clasificacion_empresa on ref.id = clasificacion_id
+		            where referencia.referencia = 'familia' and empresa_id = '".$empresa."'";
+				break;
 				
-		//Guardamos en un arreglo  lo que recibimos via POST de la vista
-				$persona = array(
-					':cedula' => $_POST['cedula'] ,
-					':nombre' => $_POST['nombre'] ,
-					':apellido' => $_POST['apellido'] ,
-					':sexo' => $_POST['sexo'] ,
-					':fecha_nacimiento' => $_POST['fecha_nacimiento'] ,
-					':telefono' => $_POST['telefono'],
-					':correo' => $_POST['correo']  
-					);
-	//enviamos ala funcion Insert en el modelo de personas el arreglo 
-			$this->_person->insertPerson($persona);	
-						 // metodo  arreglo
-			$this->_view->redirect('persons/listing');
-				}else{ 
-					// se muestra la ventana si no es via post.
-					$this->_view->render('insert', 'persons', '',$this->_sidebar_menu);
-				}
+				case 'subclasificacion':
+					$query = "SELECT DISTINCT(ref.id), ref.referencia from referencia 
+		            inner join referencia as ref on ref.padre_id = referencia.id
+		            inner join subclasificacion_empresa on ref.id = subclasificacion_id
+		            where referencia.referencia = 'sub_familia' and empresa_id = '".$empresa."'";
+				break;
 			}
+			$data = $this->_main->select($query);
+			$response = array("data"=>$data);
+    		//print_r($response);
+    		echo json_encode($response);
+		}
 
+		public function agregar($tabla,$empresa,$campo){
+			$registro = str_replace("@"," ",$campo);
+			switch ($tabla) {
+				case 'clasificacion':
+					$padre_id = 13;
+					$tablap = 'clasificacion_empresa';
+					$campop = 'clasificacion_id';
+				break;
 
-
-			function listing(){
-		//llamamos a la funcion getPersons en el modelo y Guardamos en
-		// la variable $listado  guarda el resultado de la funcion GetPersons
-		//para luego ser enviada a la vista en el objeto _listado
-				$listado = $this->_person->getPersons();
-				$this->_view->_listado = $listado;
-				
-				$this->_view->render('listing', 'persons', '',$this->_sidebar_menu);
+				case 'subclasificacion':
+					$padre_id = 147;
+					$tablap = 'subclasificacion_empresa';
+					$campop = 'subclasificacion_id';
+				break;			
 			}
+			$query = "INSERT INTO referencia (referencia, padre_id) values ('".$registro."', $padre_id)";
+			$idr = $this->_main->insertar($query);
+			if (!empty($idr) and ($tabla == 'clasificacion' or $tabla == 'subclasificacion')) {
+				$query = "INSERT INTO $tablap ($campop, `empresa_id`) VALUES ($idr, $empresa)";
+				$puente = $this->_main->insertar($query);
+			}
+			echo json_encode($registro);
+		}
 
-
-
-		
-		function update($id = false){
-			//Si le damos al boton modificar.
-				if ($_SERVER['REQUEST_METHOD']=='POST') {
-		//guardamos en un arreglo los valores enviados desde la vista
-				//para luego enviarlos a la funcion UpdatePerson
-					$persona = array(
-							':id' => $_POST['id'] ,
-							':cedula' => $_POST['cedula'] ,
-							':nombre' => $_POST['nombre'] ,
-							':apellido' => $_POST['apellido'] ,
-							':sexo' => $_POST['sexo'] ,
-							':fecha_nacimiento' => $_POST['fecha_nacimiento'] ,
-							':telefono' => $_POST['telefono'],
-							':correo' => $_POST['correo']  
-						);
-					$this->_person->updatePerson($persona);	
-						 // metodo  arreglo
-					$this->_view->redirect('persons/update/'.$persona[':id']);
-					//OJO redireccionamos a persona update MAS EL ID de la persona, 
-					//para que vea los cambios
-
-				}else{//si no mostramos igual.
-
-		//llamamos a la funcion getPergetUnicaPersona en el modelo la cual
-		// le pasamos el id, Guardamos en la variable $person el resultado 
-		//de la funcion getUnicaPersona
-		//para luego ser enviada a la vista en el objeto _persona
-
-					$persona = $this->_person->getUnicaPersona($id);
-					$this->_view->_persona = $persona;
-					$this->_view->render('update', 'persons', '',$this->_sidebar_menu);
-
-				}
+		public function borrar($id){
+			$query = "DELETE FROM referencia where id = $id";
+			$borrado = $this->_main->eliminar($query);
+			echo json_encode($borrado);
 		}
 
 
 
-
-		function delete($id){
-
-			$this->_person->deletePersons($id);
-			$this->_view->redirect('persons/listing');
-
-		}
 		
-		
-		
-		function select(){
-			$this->_view->setJs(array('js/persons'));
-			$this->_view->render('select', 'persons', '',$this->_sidebar_menu);
-
-		}
-		
-		function loadSexo(){
-
-				 	$result = $this->_person->getSexo();
-					$data = array();
-					for ($i = 0; $i < count($result); $i++) {
-						$data[$i] = array("value"=>$result[$i]['id'],"option"=>$result[$i]['sexo']);
-					}
-					echo json_encode($data);
-
-		}
-		
-		
-
-	
-	
-	
-	
-
-
-
-
-
-
-
-
 
 }?>

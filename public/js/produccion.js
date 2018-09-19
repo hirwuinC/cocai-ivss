@@ -208,6 +208,7 @@ $(document).ready(function() {
 	}
 
 	function consultaproducciones(reversado=false,idmer=false){
+		var moneda = $('#monedatienda').val();
 		if (reversado == 1) {
 			var rev = 1; 
 		}else{
@@ -228,22 +229,32 @@ $(document).ready(function() {
 		var t2 = $('#producidos').DataTable({
             "ajax": BASE_URL+'/produccion/consultas/'+idt+'/'+ing+'/'+rev,
             "columns": [
-            	{ "data": null, className: "tdcenter"},
-                { "data": "codigi" , className: "tdleft"},
-                { "data": "mercancia" , className: "tdleft"},
-                { "data": "marca" , className: "tdleft"},
-                { "data": "cantidad" , className: "tdright"},
-            	{ "data": "rendimiento_ideal" , className: "tdright",
+            	{ "data": null, className: "tdcenter font11"},
+                { "data": "codigi" , className: "tdleft font11"},
+                { "data": "mercancia" , className: "tdleft font11"},
+                { "data": "marca" , className: "tdleft font11"},
+                { "data": "cantidad" , className: "tdright font11"},
+            	{ "data": "totalcost" , className: "tdright font11",
+                	render : function(data, type, row) { 
+			          	return ''+data+' '+moneda
+		       		}
+            	},
+            	{ "data": "rendimiento_ideal" , className: "tdright font11",
                 	render : function(data, type, row) { 
 			          	return ''+data+' '+row['abums']
 		       		}
             	},
-                { "data": "resultante" , className: "tdright",
+                { "data": "resultante" , className: "tdright font11",
                 	render : function(data, type, row) { 
 			          	return ''+data+' '+row['abums']
 		       		}
             	},
-            	{ "data": "fecha" , className: "tdleft"}, 
+            	{ "data": "porc_rendimiento" , className: "tdright font11",
+                	render : function(data, type, row) { 
+			          	return ''+data+'%'
+		       		}
+            	},
+            	{ "data": "fecha" , className: "tdleft font11"}, 
                 { "data": "idproduccion" , className: "tdcenter",   
 	          	render : function(data, type, row) { 
 		              	return '<span  onclick="reversarproduccion('+idt+','+data+','+row['idi']+','+row['idreceta']+')" class="fa fa-remove test" style="cursor: pointer; cursor:hand; color: #337ab7"  title="Deshacer la produccion de '+row['ingrediente']+'"></span>'+
@@ -269,6 +280,7 @@ $(document).ready(function() {
             cell.innerHTML = i+1;
         } );
     } ).draw();
+	$('#producidos_wrapper').removeClass('container-fluid');
 		
 	}
 
@@ -399,6 +411,8 @@ $(document).ready(function() {
         });
 			$('#costototalT').empty();
 			$('#costototalT').append(data["data"][0]['totaltanda']+' '+moneda);
+			$('#totalcost').val('');
+			$('#totalcost').val(data["data"][0]['totalxtanda']);
 		    $('#tablatanda').css("width","100%");
 		    t2.on( 'order.dt search.dt', function () {
 		        t2.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {

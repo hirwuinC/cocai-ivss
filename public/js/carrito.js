@@ -28,19 +28,18 @@ $(document).ready(function() {
 			$('#cancelar').prop('disabled',true);
 			$('#solicitar').prop('disabled',true);
 		};  
-		$('#st').append('<td style="border: none; padding: 3px">SubTotal:</td>'+
+		/*$('#st').append('<td style="border: none; padding: 3px">SubTotal:</td>'+
                         '<td style="text-align: right;border: none; padding: 3px"><b>'+data[1][2]+' '+moneda+'</b></td>');
         $('#ti').append('<td style="border: none; padding: 3px">ITBMS:</td>'+
                         '<td style="text-align: right;border: none; padding: 3px"><b>'+data[1][1]+' '+moneda+'</b></td>');
         $('#t').append('<td style="border: none; padding: 3px">TOTAL:</td>'+
-                        '<td style="text-align: right;border: none; padding: 3px"><b>'+data[1][2]+' '+moneda+'</b></td>');
+                        '<td style="text-align: right;border: none; padding: 3px"><b>'+data[1][2]+' '+moneda+'</b></td>');*/
     	for (var i =0; i <=data[0].length; i++) {
     		
             $('#pedido').append(
             '<tr>'+                             
             '<td class="columnas" style=" text-align: left;">'+data[0][i]['nombre']+'</td>'+
             '<td class="columnas col-xs-12 col-sm-12 col-lg-12" style=" text-align: center;"><button style="margin-right:2px; background:none; border:none" id="menos'+i+'" onclick="restarCantidad('+data[0][i]['id']+')"><span class=" fa fa-minus-circle" ></span></button>'+data[0][i]['cantidad']+'<button style="margin-left:2px; background:none; border:none" onclick="sumarCantidad('+data[0][i]['id']+')"><span class=" fa fa-plus-circle" ></span></button></td>'+
-            '<td class="columnas" style=" text-align: right;">'+data[0][i]['precio']+' '+moneda+'</td>'+
             '<td class="columnas" style=" text-align: center;"><button style="background:none; border:none" onclick="eliminarProducto('+data[0][i]['id']+')"><span class=" fa fa-times" style="text-align:center;"></span></button></td>'+
         	'</tr>'); 
         	if (data[0][i]['cantidad'] == 1) {
@@ -271,12 +270,12 @@ function tablaPedido(data){
     }
     var tt = data[1].toLocaleString('es-ES', { minimumFractionDigits: 4 });
     $('#pedido').empty(); $('#t').empty(); $('#ti').empty(); $('#st').empty();
-    $('#st').append('<td style="border: none; padding: 3px">SubTotal:</td>'+
+    /*$('#st').append('<td style="border: none; padding: 3px">SubTotal:</td>'+
                         '<td style="text-align: right;border: none; padding: 3px"><b>'+data[1][2]+' '+moneda+'</b></td>');
     $('#ti').append('<td style="border: none; padding: 3px">ITBMS:</td>'+
                         '<td style="text-align: right;border: none; padding: 3px"><b>'+data[1][1]+' '+moneda+'</b></td>');
     $('#t').append('<td style="border: none; padding: 3px">TOTAL:</td>'+
-                        '<td style="text-align: right;border: none; padding: 3px"><b>'+tt+' '+moneda+'</b></td>');
+                        '<td style="text-align: right;border: none; padding: 3px"><b>'+tt+' '+moneda+'</b></td>');*/
         for (var i =1; i <=data[0].length; i++) {
             var c = parseFloat(data[0][i]['precio']);
             var cant = c.toLocaleString('es-ES', { minimumFractionDigits: 4 });
@@ -286,7 +285,6 @@ function tablaPedido(data){
             '<td class="columnas" style=" text-align: left;">'+data[0][i]['nombre']+' '+data[0][i]['marca']+'</td>'+ 
             '<td class="columnas" style=" text-align: center;">'+data[0][i]['cantidad']+' '+data[0][i]['unidadc']+'</td>'+
             '<td class="columnas" style=" text-align: left;">'+data[0][i]['proveedor']+'</td>'+
-            '<td class="columnas" style=" text-align: right;">'+cant+' '+moneda+'</td>'+
             '<td class="columnas" style=" text-align: center;"><button style="background:none; border:none" onclick="eliminarProducto('+data[0][i]['id']+')"><span class=" fa fa-times" ></span></button></td>'+
             '</tr>');   
             if (data[0][i]['cantidad'] == 1) {

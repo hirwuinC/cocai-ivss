@@ -86,7 +86,7 @@ $('#estado').change(function(event) {
 		$('#municipio').append('<option selected disabled value="">Seleccione..</option>');
 		$('#parroquia').empty();
 		$('#parroquia').append('<option selected disabled value="">Seleccione..</option>');
-    	$('#home').trigger('click');
+    	$('#building').trigger('click');
     });
 
     $('#codigo_tlf').change(function(event) {
@@ -95,26 +95,97 @@ $('#estado').change(function(event) {
     });
 
     $('#addtlf').click(function(event) {
-    	var numerot = $('#ntlf').val();
-    	var codigoid = $('#codigo_tlf').val();
-    	var cod = $('#codigo_tlf option:selected').text();
-    	if (numerot.length!=7) {
-    		$('#modaler').modal('show');
-    		$('#ntlf').focus();
-    		$('#ntlf').css('color', 'red');
-    	}else{
-    		$('#ntlf').css('color', '#464a4c');
-	    	$.ajax({
-				url: BASE_URL+'/proveedores/datostlf/'+numerot+'/1'+'/'+codigoid+'/'+cod,
-		        type: 'POST',
-		        dataType: 'json'
-			})
-			.done(function(data) {
-	    		mostrarnumeros();
-	    	});
-    	}
-    	
-    	
+        var numerot = $('#ntlf').val();
+        var codigoid = $('#codigo_tlf').val();
+        var cod = $('#codigo_tlf option:selected').text();
+        if (numerot.length!=7) {
+            $('#modaler').modal('show');
+            $('#ntlf').focus();
+            $('#ntlf').css('color', 'red');
+        }else{
+            $('#ntlf').css('color', '#464a4c');
+            $.ajax({
+                url: BASE_URL+'/proveedores/datostlf/'+numerot+'/1'+'/'+codigoid+'/'+cod,
+                type: 'POST',
+                dataType: 'json'
+            })
+            .done(function(data) {
+                if (data.length >=2){
+                    $('#tlfs').prop('disabled', true);
+                    $('#addtlf').prop('disabled', true);
+                }else{
+                    $('#tlfs').prop('disabled', false);
+                    $('#addtlf').prop('disabled', false);
+                }
+                mostrarnumeros();
+            });
+        }
+        
+        
+    });
+
+    $('#addsocio').click(function(event) {
+        $('#enviarsocios').trigger('click');
+    });
+
+    $('#formsocios').submit(function(event) {
+
+        event.preventDefault();
+        var enlace = $(this).attr('action');
+        var formdata = $("#formsocios").serialize();
+        $.ajax({
+            url: enlace,
+            type: 'POST',
+            data: formdata,
+            dataType: 'json'
+        })
+        .done(function(data) {
+            if (data.length >=2){
+                    $('#massocios').prop('disabled', true);
+                    $('#addsocio').prop('disabled', true);
+                }else{
+                    $('#massocios').prop('disabled', false);
+                    $('#addsocio').prop('disabled', false);
+                }
+            mostrarsocios();
+            
+        })
+        .fail(function(data) {
+            alert('fail');
+
+        });
+    });
+
+    $('#addvendedor').click(function(event) {
+    	$('#enviarvendedor').trigger('click');
+    });
+
+    $('#formvendedor').submit(function(event) {
+
+        event.preventDefault();
+        var enlace = $(this).attr('action');
+        var formdata = $("#formvendedor").serialize();
+        $.ajax({
+            url: enlace,
+            type: 'POST',
+            data: formdata,
+            dataType: 'json'
+        })
+        .done(function(data) {
+            if (data.length >=2){
+                    $('#masvendedores').prop('disabled', true);
+                    $('#addvendedor').prop('disabled', true);
+                }else{
+                    $('#masvendedores').prop('disabled', false);
+                    $('#addvendedor').prop('disabled', false);
+                }
+            mostrarvendedores();
+            
+        })
+        .fail(function(data) {
+            alert('fail');
+
+        });
     });
 
     $('#ntlf').keyup(function(event) {
@@ -131,7 +202,7 @@ $('#estado').change(function(event) {
     	$('#ntlf').css('color', '#464a4c');
     	$('#continuetlf').prop('hidden', false);
 		$('.updatetlf').hide();
-    	mostrarnumeros();
+    	//mostrarnumeros();
     });
 
     $('#guardarprov').click(function(event) {
@@ -204,6 +275,13 @@ $('#estado').change(function(event) {
 	        dataType: 'json'
 		})
 		.done(function(data) {
+            if (data.length >=2){
+                    $('#tlfs').prop('disabled', true);
+                    $('#addtlf').prop('disabled', true);
+                }else{
+                    $('#tlfs').prop('disabled', false);
+                    $('#addtlf').prop('disabled', false);
+                }
 			$('#modaltlfs').modal('hide');
 			$('.info1').empty();
             $('.info1').append('Los numeros telefonicos del proveedor '+data[0]['prov']+', fueron actualizados de forma exitosa');
@@ -522,29 +600,150 @@ function cambiarstatus(idprov,st){
 }
 
 function mostrarnumeros(){
+    $.ajax({
+        url: BASE_URL+'/proveedores/mostrarnumeros/',
+        type: 'POST',
+        dataType: 'json'
+    })
+    .done(function(data) {
+        $('#tablatelefonos').slideDown('slow');
+        $('#tablatelefonos').prop('hidden', false);
+        var ttlf = $('#tablatlfs').DataTable({
+                "paging":   false,
+                //"ordering": false,
+                "info":     false,
+                "searching": false,
+                "ajax": BASE_URL+'/proveedores/mostrarnumeros',
+                "columns": [
+                    { "data": "id", className: "tdleft font11",
+                        render : function(data, type, row) {
+                            if (data ==0) {
+                                return 'Numero master'
+                            }else if (data == 1) {
+                                return 'Numero secundario'
+                            }
+                                
+                      }
+                    },
+                    { "data": "codigo", className: "tdleft font11",
+                        render : function(data, type, row) {
+                                return ''+data+'-'+row['numero']
+                      }
+                    },
+                    { "data": "numero", className: "tdcenter ",
+                        render : function(data, type, row) {
+                                return '<span class="ico faicons fa fa-remove" title="eliminar este numero de la lista ('+row['numero']+')" onclick="borrarnumero('+data+','+2+','+row['codigo_id']+')"></span>'
+                      } 
+                    }               
+                ],
+                    //"order": [[ 1, 'asc' ]],
+                    destroy: true,
+                    responsive: true
+                    }); 
+        $('#_10').on( 'click', function () {
+            table.page.len( 10 ).draw();
+        } );
+        $('#tablatlfs').css("width","100%");
+        $('#tablatlfs_wrapper').removeClass('container-fluid');
+    })
+    .fail(function(data){
+        //$('#tablatelefonos').slideUp('slow');
+        
+    })
+    
+    
+}
+
+function mostrarsocios(){
+    $.ajax({
+        url: BASE_URL+'/proveedores/mostrarsocios/',
+        type: 'POST',
+        dataType: 'json'
+    })
+    .done(function(data) {
+        var ttlf = $('#tablasocios').DataTable({
+                "paging":   false,
+                //"ordering": false,
+                "info":     false,
+                "searching": false,
+                "ajax": BASE_URL+'/proveedores/mostrarsocios',
+                "columns": [
+                    { "data": "nombre", className: "tdleft font11",
+                        render : function(data, type, row) {
+                                return ''+data+' <input type="hidden" id="n'+row['id']+'" value="'+data+'"/>'
+                      }
+                    },
+                    { "data": "telefono", className: "tdleft font11",
+                        render : function(data, type, row) {
+                                return ''+data+''
+                      }
+                    },
+                    { "data": "correo", className: "tdleft font11",
+                        render : function(data, type, row) {
+                                return ''+data+'<input type="hidden" id="c'+row['id']+'" value="'+data+'"/>'
+                      }
+                    },
+                    { "data": "id", className: "tdcenter ",
+                        render : function(data, type, row) {
+                                return '<span class="ico faicons fa fa-remove" title="eliminar a '+row['nombre']+' de esta lista?" onclick="borrarsocio('+2+','+row['id']+')"></span>'
+                      } 
+                    }               
+                ],
+                    //"order": [[ 1, 'asc' ]],
+                    destroy: true,
+                    responsive: true
+                    }); 
+        $('#_10').on( 'click', function () {
+            table.page.len( 10 ).draw();
+        } );
+        $('#tablasocios').css("width","100%");
+        $('#tablasocios_wrapper').removeClass('container-fluid');
+    })
+    .fail(function(data){
+        alert("falla");
+        
+    })
+    
+    
+}
+
+function mostrarvendedores(){
 	$.ajax({
-		url: BASE_URL+'/proveedores/mostrarnumeros/',
+		url: BASE_URL+'/proveedores/mostrarvendedores/',
         type: 'POST',
         dataType: 'json'
 	})
 	.done(function(data) {
-		$('#tablatelefonos').slideDown('slow');
-		$('#tablatelefonos').prop('hidden', false);
-	    var ttlf = $('#tablatlfs').DataTable({
+	    var ttlf = $('#tablavendedores').DataTable({
 	    		"paging":   false,
 		        //"ordering": false,
 		        "info":     false,
 		        "searching": false,
-	            "ajax": BASE_URL+'/proveedores/mostrarnumeros',
+	            "ajax": BASE_URL+'/proveedores/mostrarvendedores',
 	            "columns": [
-	                { "data": "codigo", className: "tdleft font11",
+                    { "data": "nombre", className: "tdleft font11",
+                        render : function(data, type, row) {
+                                return ''+data+' <input type="hidden" id="nv'+row['id']+'" value="'+data+'"/>'
+                      }
+                    },
+                    { "data": "cargo", className: "tdleft font11",
+                        render : function(data, type, row) {
+                                return ''+data+''
+                      }
+                    },
+                    { "data": "telefono", className: "tdleft font11",
+                        render : function(data, type, row) {
+                                return ''+data+''
+                      }
+                    },
+                    { "data": "correo", className: "tdleft font11",
 	                	render : function(data, type, row) {
-	                            return ''+data+'-'+row['numero']
+	                            return ''+data+'<input type="hidden" id="cv'+row['id']+'" value="'+data+'"/>'
 	                  }
 	            	},
-	                { "data": "numero", className: "tdcenter ",
+	                { "data": "id", className: "tdcenter ",
 	                    render : function(data, type, row) {
-	                            return '<span class="ico faicons fa fa-remove" title="eliminar este numero de la lista ('+row['numero']+')" onclick="borrarnumero('+data+','+2+','+row['codigo_id']+')"></span>'
+	                            return '<span class="ico faicons fa fa-remove" title="eliminar a '+row['nombre']+' de esta lista?" onclick="borrarvendedor('+2+','+row['id']+')"></span>'
 	                  } 
 	                }               
 	            ],
@@ -555,11 +754,11 @@ function mostrarnumeros(){
 	    $('#_10').on( 'click', function () {
 	        table.page.len( 10 ).draw();
 	    } );
-	    $('#tablatlfs').css("width","100%");
-	    $('#tablatlfs_wrapper').removeClass('container-fluid');
+	    $('#tablavendedores').css("width","100%");
+	    $('#tablavendedores_wrapper').removeClass('container-fluid');
 	})
 	.fail(function(data){
-		$('#tablatelefonos').slideUp('slow');
+		alert("falla");
 		
 	})
 	
@@ -567,14 +766,73 @@ function mostrarnumeros(){
 }
 
 function borrarnumero(num,tipo,codigo_id,codigo){
-	$.ajax({
-				url: BASE_URL+'/proveedores/datostlf/'+num+'/'+tipo+'/'+codigo_id+'/'+codigo,
-		        type: 'POST',
-		        dataType: 'json'
-			})
-			.done(function(data) {
-	    		mostrarnumeros();
-	    	});
+    $.ajax({
+                url: BASE_URL+'/proveedores/datostlf/'+num+'/'+tipo+'/'+codigo_id+'/'+codigo,
+                type: 'POST',
+                dataType: 'json'
+            })
+            .done(function(data) {
+                if (data.length >=2){
+                    $('#tlfs').prop('disabled', true);
+                    $('#addtlf').prop('disabled', true);
+                }else{
+                    $('#tlfs').prop('disabled', false);
+                    $('#addtlf').prop('disabled', false);
+                }
+                mostrarnumeros();
+            });
+}
+
+function borrarsocio(tipo,id){
+    var nombre = $('#n'+id).val();
+    var correo = $('#c'+id).val();
+    var enlace = BASE_URL+'proveedores/datossocio/'+tipo+'/'+nombre+'/'+correo;
+    /*alert(nombre);
+    alert(correo);*/
+    $.ajax({
+        url: enlace,
+        type: 'POST',
+        dataType: 'json'
+    })
+    .done(function(data) {
+        if (data.length >=2){
+            $('#massocios').prop('disabled', true);
+            $('#addsocio').prop('disabled', true);
+        }else{
+            $('#massocios').prop('disabled', false);
+            $('#addsocio').prop('disabled', false);
+        }
+        mostrarsocios();
+    })
+    .fail(function(data){
+        alert("fallo");
+    })
+}
+
+function borrarvendedor(tipo,id){
+    var nombre = $('#nv'+id).val();
+    var correo = $('#cv'+id).val();
+    var enlace = BASE_URL+'proveedores/datosvendedor/'+tipo+'/'+nombre+'/'+correo;
+    /*alert(nombre);
+    alert(correo);*/
+    $.ajax({
+		url: enlace,
+        type: 'POST',
+        dataType: 'json'
+	})
+	.done(function(data) {
+        if (data.length >=2){
+            $('#masvendedores').prop('disabled', true);
+            $('#addvendedor').prop('disabled', true);
+        }else{
+            $('#masvendedores').prop('disabled', false);
+            $('#addvendedor').prop('disabled', false);
+        }
+		mostrarvendedores();
+	})
+    .fail(function(data){
+        alert("fallo");
+    })
 }
 
 function tablaproact(st){

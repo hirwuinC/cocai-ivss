@@ -46,7 +46,7 @@
                             </div>
                           <?php else: ?>
                             <div>
-                              <img width="8%" height="8%" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->model[0]['udn']; ?>.png" class="img-responsive" alt="">
+                              <img width="11%" height="10%" style="float: right;" src="<?php $model=strtolower($this->model[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->model[0]['udn']; ?>.png" class="img-responsive" alt="">
                             </div>
                         <?php endif ?>
                         
@@ -75,14 +75,15 @@
 
                              <div id="" class="form-group row ml-3">
                                 <div class="col-xs-12 col-sm-3 col-md-4 col-lg-3 ">
-                                    <label class="labels" for="">Tipo de mov.:</label>
+                                    <label class="labels" for="">Tipo:</label>
                                       <select  id="tipoMov" name="tipoMov"  class="form-control form-control-sm" disabled>
                                         <option selected disabled value="seleccione">Seleccione..</option>
                                         <option value="131">Entradas</option>
                                         <option value="132">Salidas</option>
+                                        <option value="all">Todos</option>
                                       </select>
                                 </div>
-                                <div class="col-xs-12 col-sm-3 col-md-4 col-lg-3">
+                                <div class="col-xs-12 col-sm-3 col-md-4 col-lg-3" id="mot">
                                       <label class="labels" for="">Motivo:</label>
                                       <select id="motivo" name="motivo" class="form-control form-control-sm" disabled>
                                         <option selected disabled value="seleccione">Seleccione..</option>
@@ -93,6 +94,8 @@
                               </div>
                                     <input type="hidden" name="mercancia_id" id="mercid" >
                                     <input type="hidden" name="idt" id="idt" value="<?php echo $this->model[0]['idU'];?>">
+                                    <input type="hidden" name="idemp" id="idemp" value="<?php echo $this->model[0]['empresa_id'];?>">
+                                    <input type="hidden" name="unidad" id="unidad">
                                     <input type="hidden" name="status_id" id="status_id" value="126">
                             
                         </fieldset>
@@ -100,7 +103,7 @@
                               <div class="row d-flex justify-content-center">
                                 <div>
                                   <div class="col">
-                                    <input  type="button" class="btn btn-sm btn-outline-primary"  id="consult" value="Consultar" disabled>
+                                    <input  type="button" class="btn btn-sm btn-outline-primary"  id="consult" value="Consultar">
                                   </div>
                                 </div>
                               </div>
@@ -138,13 +141,21 @@
                                           <th>Existencia</th>
                                           <!-- <th>Descripcion</th> -->
                                           <th>Usuario</th>
-                                          <th>st</th>
+                                          <th>cant</th>
                                       </tr>
                                   </thead>
+                                  <tfoot class="theadH">
+                                      <tr>
+
+                                          <th colspan="3" style="text-align:left;" >Total Entrada: <o id="entra"></o></th>
+                                          <th colspan="3" style="text-align:left;" >Total Salida: <o id="sale"></o></th>
+                                          <th colspan="2" ></th>
+                                      </tr>
+                                  </tfoot>
                                   <?php else: ?>
                                     <thead class="theadH">
                                       <tr>
-                                          <th>Tienda</th>
+                                          <th>Almacen</th>
                                           <th>Codigo</th>
                                           <th>Producto</th>
                                           <th>Grupo</th>
@@ -155,22 +166,25 @@
                                           <th>Existencia</th>
                                           <!-- <th>Descripcion</th> -->
                                           <th>Usuario</th>
-                                          <th>st</th>
+                                          <th>cant</th>
                                       </tr>
                                   </thead>
-
-                                  <?php endif ?>
                                   <tfoot class="theadH">
                                       <tr>
 
                                           <th colspan="3" style="text-align:left;" >Total Entrada: <o id="entra"></o></th>
                                           <th colspan="3" style="text-align:left;" >Total Salida: <o id="sale"></o></th>
-                                          <th colspan="2" ></th>
+                                          <th colspan="4" ></th>
                                       </tr>
                                   </tfoot>
+                                  <?php endif ?>
+                                  
                                   <tbody id="cuerpo"></tbody>
                                   
                               </table>
+                              <div align="center">
+                                   <input type="button" class="btn btn-sm btn-outline-primary exportar" value="Impresion">
+                              </div>
                                        
                                 </div>
                             </div>

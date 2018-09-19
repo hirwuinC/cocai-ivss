@@ -24,7 +24,15 @@
   .breadcrumb{
     background:transparent;
   }
+  .breadcrumb-item{
+    color: black;
+    font-weight: 600;
+  }
 </style>
+<input type="hidden" id="enlaceactivo" value="<?php echo $_SESSION['menuact']; ?>">
+<input type="hidden" id="enlaceactivo2" value="<?php echo $_SESSION['tiendaact']; ?>">
+<input type="hidden" id="enlaceactivo3" value="<?php echo $_SESSION['empresaact']; ?>">
+<input type="hidden" id="enlaceactivo4" value="<?php echo $_SESSION['modeloact']; ?>">
         <script type="text/javascript">
             jQuery(document).ready(function($) {
               var valor = $('#valor').val();
@@ -32,6 +40,46 @@
               $('#toggle-btn').click(function(event) {
                 $('#toggle-btn').blur();
               });
+            });
+        </script>
+        <script type="text/javascript">
+          $(document).ready(function() {
+            $('.subM').click(function(event) {
+                var idenlace = $(this).parent('li').attr('id');
+                var idtienda = $('#'+idenlace).parent('ul').attr('id');
+                var idempresa = $('#'+idtienda).parent().parent('ul').attr('id');
+                var idmodelo = $('#'+idempresa).parent().parent('ul').attr('id');
+                if (idmodelo != 'side-main-menu') {
+                  var urldestino = BASE_URL+'/main/menuactivo/'+idenlace+'/'+idtienda+'/'+idempresa+'/'+idmodelo;
+                }else{
+                  var urldestino = BASE_URL+'/main/menuactivo/'+idenlace+'/'+idtienda+'/'+idempresa
+                }
+                $.ajax({
+                        url: urldestino,
+                        type: 'POST',
+                        dataType: 'json'
+                    })
+                     .done(function(data) {
+                     });
+                
+              });
+
+              var activado = $('#enlaceactivo').val();
+              var activado2 = $('#enlaceactivo2').val();
+              var activado3 = $('#enlaceactivo3').val();
+              var activado4 = $('#enlaceactivo4').val();
+                $('li').removeClass('active');
+                $('#'+activado).addClass('active');
+                $('#'+activado2).addClass('show');
+                $('#'+activado3).addClass('show');
+                if (activado4 != 'side-main-menu') {
+                  $('#'+activado4).addClass('show');
+                }
+                $("[href='#"+activado4+"']").attr('aria-expanded', true);
+                $("[href='#"+activado3+"']").attr('aria-expanded', true);
+                $("[href='#"+activado2+"']").attr('aria-expanded', true);
+                
+                
             });
         </script>
 
@@ -84,74 +132,106 @@
                                           <a style="" href="#tienda'.$j.'" data-toggle="collapse" aria-expanded="false"><i class="fa fa-home"></i> '.$ti.'<div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>';
                                   echo '<ul class="side-menu collapse list-unstyled" id="tienda'.$j.'">
                                           <li>
-                                              <a href="#inv'.$j.'" data-toggle="collapse" aria-expanded="false" style="margin-left:5px; ">Inventario
+                                              <a href="#inv'.$j.'" data-toggle="collapse" aria-expanded="false" style="margin-left:5px;" id="'.$id[$j].'" class="inv">Inventario
                                               <i class="fa fa-list"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
-                                              <ul class="collapse list-unstyled" id="inv'.$j.'">
-                                                <li>
+                                              <ul class="collapse list-unstyled" id="inv'.$j.'">';
+                                                if (Session::get('usuario') == 'inventario' or Session::get('usuario') == 'subalmacen') {
+                                                  echo '<li id="enlace2'.$j.'">
                                                   <a href="'.BASE_URL.'inventario/evaluar/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Productos de inventario</a>
-                                                </li>
-                                                <li>
+                                                </li>';
+                                              }else if (Session::get('usuario') == 'cargaexistencia') {
+                                                echo'<li id="enlace2'.($j+1).'">
                                                   <a href="'.BASE_URL.'inventario/cargarinventario/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Carga de inventario</a>
-                                                </li>
-                                                <li>
+                                                </li>';
+                                                echo'<li id="enlace2'.($j+16).'" class="chargestock">
+                                                  <a href="'.BASE_URL.'existencias/productos/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Carga de inventario inicial</a>
+                                                </li>';
+                                              } if (Session::get('usuario') == 'Hospital' or Session::get('usuario') == 'subalmacen') {
+                                                echo '<li id="enlace2'.($j+2).'">
                                                   <a href="'.BASE_URL.'inventario/indexk/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Movimientos de kardex</a>
+                                                </li>';
+                                              }else if (Session::get('usuario') == 'Almacen') {
+                                                echo '<li id="enlace2'.($j+14).'">
+                                                  <a style="margin-left:12px; " href="'.BASE_URL.'inventario/asignacionProducto/'.$id[$j].'" class="subM" name="'.$id[$j].'"></i>Asignacion de productos</a>
                                                 </li>
-                                              </ul>  
-                                          </li>
-                                          
-                                          <li>
+                                                <li id="enlace2'.($j+15).'">
+                                                  <a style="margin-left:12px; " href="'.BASE_URL.'ubicacion/ubicacionProducto/'.$id[$j].'" class="subM" name="'.$id[$j].'"></i>Ubicacion de productos</a>
+                                                </li>';
+                                              }
+                                              echo '</ul>  
+                                          </li>';
+                                          if (Session::get('usuario') != 'Hospital' and Session::get('usuario') != 'Almacen'  and Session::get('usuario') != 'subalmacen' and Session::get('usuario') != 'cargaexistencia' ){
+                                            echo '<li id="enlace2'.($j+3).'">
                                             <a href="'.BASE_URL.'produccion/tandas/'.$id[$j].'" name="'.$id[$j].'" style="margin-left:5px;" class="subM">Producción
                                               <i class="fa fa-cogs"></i></a>   
                                           </li>
-                                          <li>
+                                          <li id="enlace2'.($j+4).'">
                                                 <a id="'.BASE_URL.'merma/inicio/'.$id[$j].'" class="subM" style="margin-left:5px; cursor:hand; cursor:pointer;" onclick="abrir_emergente(this.id)" name="'.$id[$j].'">Mermas <span><img style="width: 10px; height:11px; margin-top:-40%" src="'.PUBLIC_URL.'img/icono-papelera.png'.'" alt=""></span></a>
                                                 </li>
-                                          <li>
+                                          <li id="enlace2'.($j+5).'">
                                             <a href="'.BASE_URL.'explosion/index/'.$id[$j].'" style="margin-left:5px; " name="'.$id[$j].'">Ranking / Explosiones
                                               <i class="fa fa-bomb"></i></a>   
                                           </li>
-                                          <li>
-                                            <a href="'.BASE_URL.'receta/indexr/'.$id[$j].'" class="subM" style="margin-left:5px; " name="'.$id[$j].'">Receta
+                                          <li id="enlace2'.($j+6).'">
+                                            <a href="'.BASE_URL.'receta/indexr/'.$id[$j].'" class="subM" style="margin-left:5px; " name="'.$id[$j].'">Lista de ensamblaje
                                               <i class="fa fa-cutlery"></i></a>   
                                           </li>
                                           <li>
                                             <a href="#compras'.$j.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Compras
                                               <i class="fa fa-shopping-bag"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
                                               <ul class="collapse list-unstyled" id="compras'.$j.'">
-                                                <li>
+                                                <li id="enlace2'.($j+7).'">
                                                   <a href="'.BASE_URL.'compra/index/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'">Ingresar / Editar compras</a>
                                                 </li>
-                                                <li>
+                                                <li id="enlace2'.($j+8).'">
                                                   <a href="'.BASE_URL.'compra/ordenC/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Orden de compra</a>
                                                 </li>
                                               </ul>
-                                          </li>
-                                          <li>
-                                            <a href="#transfer'.$j.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Requisiciones / Transferencias
+                                          </li>';
+                                          }else{
+                                            if (Session::get('usuario') != 'Almacen' and Session::get('usuario') != 'cargaexistencia') {
+                                            echo '<li>
+                                            <a href="#transfer'.$j.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Requisiciones / Despachos
                                               <i class="fa fa-commenting-o"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
-                                              <ul class="collapse list-unstyled" id="transfer'.$j.'">
-                                                
-                                                <li>
+                                              <ul class="collapse list-unstyled" id="transfer'.$j.'">';
+                                                if (Session::get('usuario') != 'Hospital') {
+                                                echo '<li id="enlace2'.($j+9).'">
                                                   <a href="'.BASE_URL.'transferencia/requisicion/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'">Requisiciones <i class="fa fa-envelope-o"></i></a>
-                                                </li>
-                                                
-                                                <li>
-                                                  <a href="'.BASE_URL.'transferencia/index/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'">Transferencia de mercancia <i class="fa fa-exchange"></i></a>
+                                                </li>';
+                                                }
+                                                echo '<li id="enlace2'.($j+10).'">
+                                                  <a href="'.BASE_URL.'transferencia/index/'.$id[$j].'" class="subM" style="margin-left:12px; " name="'.$id[$j].'">Despacho y recepcion de mercancia <i class="fa fa-exchange"></i></a>
                                                 </li>
                                               </ul>
+                                            </li>';
+                                            }
+                                          }
+                                          
+                                          if (Session::get('usuario') != 'Hospital' and Session::get('usuario') != 'Almacen' and Session::get('usuario') != 'subalmacen' and Session::get('usuario') != 'cargaexistencia' and Session::get('usuario') != 'inventario'){
+                                          echo '<li id="enlace2'.($j+11).'">
+                                            <a href="'.BASE_URL.'reportes/index/'.$id[$j].'" name="'.$id[$j].'" style="margin-left:5px;" class="subM">Reportes
+                                              <i class="fa fa-file-pdf-o"></i></a>   
                                           </li>
                                            <li>
                                             <a href="#admint'.$j.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Administracion
                                               <i class="fa fa-briefcase"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
                                               <ul class="collapse list-unstyled" id="admint'.$j.'">
-                                                <li>
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Reportes</a>
-                                                </li>
-                                                <li>
+                                                <li id="enlace2'.($j+12).'">
                                                   <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Exportar tablas</a>
                                                 </li>
+                                                <li id="enlace2'.($j+13).'">
+                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$id[$i].'"*/ class="subM" style="margin-left:12px; " name="'.$id[$j].'"></i>Respaldos</a>
+                                                </li>
+                                                
                                               </ul>
                                           </li>';
+                                        }
+                                        if (Session::get('usuario') == 'Almacen') {
+                                          echo '<li id="enlace2'.($j+11).'">
+                                            <a href="'.BASE_URL.'reportes/index/'.$id[$j].'" name="'.$id[$j].'" style="margin-left:5px;" class="subM">Reportes
+                                              <i class="fa fa-file-pdf-o"></i></a>   
+                                          </li>';
+                                        }
                                   echo '</ul>  ';
                                   echo '</li>';
                             }
@@ -163,80 +243,84 @@
                               if ($menu[$p]['modelo'] == null) {
                                 //$ti = str_replace('(PTY))', '', $menu[$p]['tienda']);
                                 echo  '<li>
-                                      <a style="" href="#empresa'.$p.'" data-toggle="collapse" aria-expanded="false"><i class="fa fa-university"></i> Centro de produccion
-                                      <div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>';
-                                  echo '<ul class="collapse list-unstyled" id="empresa'.$p.'">
-                                          <li>
+                                      <a style="" href="#empresa'.$p.'" data-toggle="collapse" aria-expanded="false"><i class="fa fa-university"></i>'; echo $menu[$p]['tienda'];
+                                      echo '<div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>';
+                                      
+                                  echo '<ul class="collapse list-unstyled" id="empresa'.$p.'">';
+                                  if (Session::get('usuario') != 'proveedores') {
+                                          echo '<li>
                                               <a href="#tiendae'.$p.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Inventario
                                               <i class="fa fa-list"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
-                                              <ul class="collapse list-unstyled" id="tiendae'.$p.'">
-                                                <li>
+                                              <ul class="collapse list-unstyled" id="tiendae'.$p.'">';
+
+                                              if (Session::get('usuario') == 'inventario' or Session::get('usuario') == 'Solincamfer' or Session::get('usuario') == 'Hospital' or Session::get('usuario') == 'Almacen') {
+                                                if (Session::get('usuario') == 'inventario' or Session::get('usuario') == 'Solincamfer') {
+                                                  echo '<li id="enlace'.$p.'">
                                                   <a style="margin-left:12px; " href="'.BASE_URL.'inventario/evaluar/'.$menu[$p]['idUd'].'" class="subM" name="'.$menu[$p]['idUd'].'"></i>Productos de inventario</a>
                                                 </li>
-                                                <li>
+                                                <li id="enlace'.($p+1).'">
                                                   <a href="'.BASE_URL.'inventario/insert/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Crear producto de inventario</a>
-                                                </li>
-                                                <li>
+                                                </li>';
+                                                }
+                                                
+                                                if ((Session::get('usuario') != 'Solincamfer' and Session::get('usuario') != 'inventario')  or Session::get('usuario') == 'Hospital' or Session::get('usuario') == 'Almacen') {
+                                                  echo '<li id="enlace'.($p+2).'">
                                                   <a style="margin-left:12px; " href="'.BASE_URL.'inventario/asignacionProducto/'.$menu[$p]['idUd'].'" class="subM" name="'.$menu[$p]['idUd'].'"></i>Asignacion de productos</a>
-                                                </li>
-                                                <li>
-                                                  <a style="margin-left:12px; " href="'.BASE_URL.'inventario/indexk/'.$menu[$p]['idUd'].'" class="subM" name="'.$menu[$p]['idUd'].'"></i>Movimientos de kardex</a>
-                                                </li>
-                                              </ul>  
-                                          </li>
-                                          <li>
-                                            <a href="'.BASE_URL.'receta/indexr/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:5px; " name="'.$menu[$p]['idUd'].'">Receta
-                                              <i class="fa fa-cutlery"></i></a>   
-                                          </li>
-                                          <li>
-                                            <a id="'.BASE_URL.'merma/inicio/'.$menu[$p]['idUd'].'" style="margin-left:5px; " class="subM ico faicons" name="'.$menu[$p]['idUd'].'" onclick="abrir_emergente(this.id)">Mermas <span><img style="width: 10px; height:11px; margin-top:-40%" src="'.PUBLIC_URL.'img/icono-papelera.png'.'" alt=""></span></a>
-                                          </li>
-                                          
-                                          <li>
-                                            <a href="'.BASE_URL.'explosion/index/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:5px; " name="'.$menu[$p]['idUd'].'">Ranking / Explosiones
-                                              <i class="fa fa-bomb"></i></a>   
-                                          </li>
-                                          <li>
-                                            <a href="#comprasCP'.$p.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Compras
-                                              <i class="fa fa-shopping-bag"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
-                                              <ul class="collapse list-unstyled" id="comprasCP'.$p.'">
-                                                <li>
-                                                  <a href="'.BASE_URL.'compra/index/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Ingresar / Editar compras</a>
-                                                </li>
-                                                <li>
-                                                  <a href="'.BASE_URL.'compra/ordenC/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Orden de compra</a>
-                                                </li>
-                                              </ul>
-                                          </li>
-                                          <li>
-                                            <a href="#transferCP'.$p.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Requisiciones / Transferencias
+                                                </li>';
+                                                }
+                                              } if (Session::get('usuario') == 'cargaexistencia' or Session::get('usuario') == 'Solincamfer') {
+                                                echo '<li id="enlace'.($p+5).'">
+                                                  <a href="'.BASE_URL.'inventario/cargarinventario/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Carga de inventario</a>
+                                                </li>';
+                                              }else if (Session::get('usuario') == 'Hospital') {
+                                                  echo '<li id="enlace'.($p+3).'">
+                                                  <a href="'.BASE_URL.'inventario/indexk/'.$menu[$p]['idUd'].'" class="subM2" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Movimientos de kardex</a>
+                                                </li>';
+                                              }
+                                                
+                                                
+                                                
+                                              echo '</ul>  
+                                          </li>';
+                                        }
+                                        if (Session::get('usuario') == 'Hospital') {
+                                          echo '<li>
+                                            <a href="#transfer'.$p.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Requisiciones / Despachos
                                               <i class="fa fa-commenting-o"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
-                                              <ul class="collapse list-unstyled" id="transferCP'.$p.'">
-                                                
-                                                <li>
+                                              <ul class="collapse list-unstyled" id="transfer'.$p.'">';
+                                              if (Session::get('usuario') != 'Hospital') {
+                                                echo '<li id="enlace'.($p+4).'">
                                                   <a href="'.BASE_URL.'transferencia/requisicion/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'">Requisiciones <i class="fa fa-envelope-o"></i></a>
-                                                </li>
-                                                
-                                                <li>
-                                                  <a href="'.BASE_URL.'transferencia/index/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'">Transferencia de mercancia <i class="fa fa-exchange"></i></a>
-                                                </li>
-                                              </ul>
-                                          </li>
-                                           <li>
-                                            <a href="#adm'.$p.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Administracion
-                                              <i class="fa fa-briefcase"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
-                                              <ul class="collapse list-unstyled" id="adm'.$p.'">
-                                                <li style="margin-left:12px; ">
-                                                  <a href="'.BASE_URL.'proveedores/index/'.$menu[$p]['idUd'].'" class="subM" name="'.$menu[$p]['idUd'].'"></i>Proveedores</a>
-                                                </li>
-                                                <li style="margin-left:12px; ">
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM" name="'.$menu[$p]['idUd'].'"></i>Reportes</a>
-                                                </li>
-                                                <li>
-                                                  <a /*href="'.BASE_URL.'inventario/inicio/'.$menu[$p]['idUd'].'"*/ class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Exportar tablas</a>
+                                                </li>';
+                                              }
+                                                echo '<li id="enlace'.($p+6).'">
+                                                  <a href="'.BASE_URL.'transferencia/index/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'">Despacho y recepcion de mercancia <i class="fa fa-exchange"></i></a>
                                                 </li>
                                               </ul>
                                           </li>';
+                                        }
+                                        if (Session::get('usuario') == 'Almacen') {
+                                          echo '<li id="enlace'.($p+9).'">
+                                            <a href="'.BASE_URL.'reportes/index/'.$menu[$p]['idUd'].'" name="'.$menu[$p]['idUd'].'" style="margin-left:5px;" class="subM">Reportes
+                                              <i class="fa fa-file-pdf-o"></i></a>   
+                                          </li>';
+                                        }
+                                          if (Session::get('usuario') == 'proveedores') {
+                                            echo '<li style="margin-left:12px; " id="enlace'.($p+7).'">
+                                                  <a href="'.BASE_URL.'proveedores/index/'.$menu[$p]['idUd'].'" class="subM" name="'.$menu[$p]['idUd'].'"></i>Proveedores</a>
+                                                </li>';
+                                          }
+                                          if (Session::get('usuario') == 'Admin') {
+                                          echo '<li>
+                                            <a href="#adm'.$p.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Administracion
+                                              <i class="fa fa-briefcase"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
+                                              <ul class="collapse list-unstyled" id="adm'.$p.'">
+                                                <li id="enlace'.($p+8).'">
+                                                  <a href="'.BASE_URL.'administracion/tablas/'.$menu[$p]['idUd'].'" class="subM" style="margin-left:12px; " name="'.$menu[$p]['idUd'].'"></i>Tablas</a>
+                                                </li>
+                                              </ul>
+                                          </li>';
+                                        }
                                   echo '</ul>  ';
                                   echo '</li>';
                               }
@@ -244,8 +328,13 @@
                             
                           }           
                         }
+                        if (Session::get('usuario') == 'inventario') {
+                          echo '<li>
+                                  <a style="cursor: pointer" class="exportar"><i class="fa fa-file-pdf-o" id=""></i> Ver listado</a>
+                              </li>';
+                        }
                         
-                        echo '<li>
+                              echo '<li>
                                   <a style="" href="'.PUBLIC_URL.'guia/Instructivo_para_el_uso_del_aplicativo_admin_productos_ventas.pdf" target="_blank" class="subM"><i class="fa fa-info-circle"></i> Ayuda</a>
                               </li>';
                               if (Session::get('header') == 1) {
@@ -269,14 +358,43 @@
      <div class="page home-page">
       <!-- navbar-->
       <header class="header">
+        <img height="50px" src="<?php echo PUBLIC_URL;?>img\cabecera.jpg" alt="">
         <nav class="navbar">
           <div class="container-fluid">
             <div class="navbar-holder d-flex align-items-center justify-content-between">
               <div class="navbar-header"><a id="toggle-btn" href="#" class="menu-btn" style="height: 30px" data-toggle="tooltip" data-placement="bottom" title="Reducir/Ampliar menu"><i style="font-size: 1.5em" class="icon-bars"> </i></a><a href="<?php echo BASE_URL.'index/index/'; ?>" class="navbar-brand" data-toggle="tooltip" data-placement="bottom" title="Ir a la pagina de inicio">
                   <div class="text-default hidden-sm-down">
                     <div class="hidden-xs-down">
-                      <img width="30" height="30" src="<?php echo PUBLIC_URL;?>img\Logo-EPOC-WEB-vertical.png" class="img-fluid mr-2" alt="epoc" style="float: left; margin-top: -5px">
+                      <img width="30" height="30" src="<?php echo PUBLIC_URL;?>img\logo_cocai_cuadrado.png" class="img-fluid mr-2" alt="epoc" style="float: left; margin-top: -5px">
                     </div> COCAI <strong class="text-primary"> WEB</strong></div></a></div>
+                    <?php if (isset($this->model[0]['udn'])) {?>
+                      <div style="color: white"><?php $ti=strtolower($this->model[0]['udn']); echo strtoupper($ti);
+                      if (isset($this->model[0]['modelo'])) {
+                        echo " - "; $mo=strtolower($this->model[0]['modelo']); echo strtoupper($mo);
+                      }?></div>
+                    <?php } ?>
+                    <?php if (isset($this->mercancia[0]['tienda'])) { ?>
+                    <div style="color: white"><?php $ti=strtolower($this->mercancia[0]['tienda']); echo strtoupper($ti);
+                    if (isset($this->mercancia[0]['modelo'])) {
+                      echo " - "; $mo=strtolower($this->mercancia[0]['modelo']); echo strtoupper($mo);
+                    }if ($this->mercancia[0]['tienda'] == 'Almacen Principal') {
+                      echo ' - DOMINGO LUCIANI';
+                    }?></div>
+                    <?php  } ?>
+                    <?php if (isset($this->g[0]['tienda'])) { ?>
+                    <div style="color: white"><?php $ti=strtolower($this->g[0]['tienda']); echo strtoupper($ti);
+                    if (isset($this->g[0]['modelo'])) {
+                      echo " - "; $mo=strtolower($this->g[0]['modelo']); echo strtoupper($mo);
+                    }if ($this->g[0]['tienda'] == 'Almacen Principal') {
+                      echo ' - DOMINGO LUCIANI';
+                    }?></div>
+                    <?php  } ?>
+                    <?php if (isset($this->datos[0]['tiendaen'])) { ?>
+                    <div style="color: white"><?php $ti=strtolower($this->datos[0]['tiendaen']); echo strtoupper($ti);
+                    if (isset($this->datos[0]['modelo'])) {
+                      echo " - "; $mo=strtolower($this->datos[0]['modelo']); echo strtoupper($mo);
+                    }?></div>
+                    <?php  } ?>
 
               <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
                 <li class="nav-item dropdown"> 
@@ -315,7 +433,7 @@
           </div>
         </nav>
       </header>
-      <?php if (isset($this->model[0]['udn'])) {
+      <!-- <?php if (isset($this->model[0]['udn'])) {
         ?><div class="breadcrumb-holder">
         <div class="container-fluid">
           <ul class="breadcrumb">
@@ -354,7 +472,7 @@
           </ul>
         </div>
       </div>
-      <?php  } ?>
+      <?php  } ?> -->
           
       </nav>
 
@@ -382,5 +500,4 @@
                       </div><!-- /.modal -->
                       <!-- FIN DE LA MODAL DEL LA FUNCION MODIFICAR DE LOS SUB-MODELOS -->
                 
-<!-- end header.phtml --> 
-              
+<!-- end header.phtml -->               

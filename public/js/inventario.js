@@ -1,6 +1,113 @@
 //$.noConflict();
 $(document).ready(function() {
+  if (screen.width<1360) {
+    $('#barradefiltro').removeAttr('style');
+  }
+  load('referencia', 'grupo', false, false);
+  $('.monto').click(function(event) {
+  this.select();
+  });
+  $('#loadfile').click(function(event) {
+    $('#files').trigger('click');
+  });
+  $('#grupo').change(function(event) {
+    var gr = $('#grupo').val();
+    if (gr == 287) {
+      $('.equipos').fadeIn();
+      $('.equipos').prop('hidden', false);
+    }else{
+      $('.equipos').hide();
+    }
+    if (gr == 286 || gr == 288 || gr == 290) {
+      $('.articulos').fadeIn();
+      $('.articulos').prop('hidden', false);
+    }else{
+      $('.articulos').hide();
+    }
+    var idemp = $('#tienda').val();
+    $('#grupoid').val('');
+    $('#grupoid').val(gr);
+    $('#gr').val('');
+    $('#gr').val(gr);
+    load('referencia','familia',idemp,gr);
+    load('referencia','familia2',idemp,gr);
+  });
+
+  $('.exportar').click(function(event) {
+    var idt = $('#idT').val();
+    var gr = $('#grupo').val();
+    var fam = $('#familia2').val();
+    var sf = $('#sub_familia').val();
+    if (gr == null && !fam && sf.length==0) {
+      pdfinv(idt);
+    }else{
+      pdfinv(idt,gr,fam,sf);
+    }
+    
+  });
+
+  $('#filtrarclasif').click(function(event) {
+    $('#filtroclasif').show();
+    $('#filtroclasif').prop('hidden', false);
+    $('#filtroclasif').focus();
+  });
+
+  $('#filtrarsubf').click(function(event) {
+    $('#filtrosubf').show();
+    $('#filtrosubf').prop('hidden', false);
+    $('#filtrosubf').focus();
+  });
+
+  $('#filtroclasif').keyup(function(event) {
+    var gr = $('#grupo').val();
+    var idemp = $('#tienda').val();
+    var filtro = $('#filtroclasif').val();
+    if (gr.length>0) {
+      load('referencia','familia',idemp,gr,filtro);
+      $('#removefiltrocla').prop('hidden', false);
+    }
+      $('#familia').attr('size',6);
+      $('#familia').css('position','absolute');
+      $('#familia').css('z-index','99');
+    
+  });
+
+
+  $('#filtrosubf').keyup(function(event) {
+    var fam = $('#familia').val();
+    var idemp = $('#tienda').val();
+    var filtro = $('#filtrosubf').val();
+    if (fam.length>0) {
+      load('referencia','sub_familia',idemp,fam,filtro);
+      $('#removefiltrosubf').prop('hidden', false);
+    }
+      $('#sub_familia').attr('size',6);
+      $('#sub_familia').css('position','absolute');
+      $('#sub_familia').css('z-index','99');
+    
+  });
+
+  $('#filtrado').click(function(event) {
+    var gr = $('#grupo').val();
+    var fam = $('#familiaid').val();
+    var subf = $('#subfamiliaid').val();
+    var idt = $('#tienda').val();
+    if (fam.length>0) {
+      family = fam;
+    }else{
+      family = 'false';
+    }
+    if (subf.length>0) {
+      subfamily = subf;
+    }else{
+      subfamily = 'false';
+    }
+    window.location=BASE_URL+'inventario/stockE/'+idt+'/'+gr+'/'+family+'/'+subfamily;
+  });
+
+
   setTimeout(function(){$('#tablaSM_wrapper').removeClass('container-fluid');},500);
+  load('referencia','tipo_almacenaje',false,false);
     $('#radiotiendas').click(function(event) {
       if ($('#radiotiendas').is(':checked')) {
         $('.xtienda').fadeIn();
@@ -88,9 +195,17 @@ $(document).ready(function() {
       setTimeout(function() {$('#nuevosprods').fadeOut('slow');}, 5000);
     }
     $('#tipo_ingrediente').change(function(event) {
+      var tipoi = $('#tipo_ingrediente').val();
+      $('#tipo_ingredienteid').val('');
+      $('#tipo_ingredienteid').val(tipoi);
+      $('#infotipoprod').fadeIn();
+      $('#infotipoprod').prop('hidden', false);
       var tipo = $('#tipo_ingrediente option:selected').text();
       var fam = $('.familia').val();
       if (tipo == 'Agrupado') {
+        $('#infoagru').fadeIn();
+        $('#infoagru').prop('hidden', false);
+        $('#radiosredir').hide();
         $('#unidad_medida_pr').val(13);
         $('#unidad_medida_s').val(13);
         $('#formulap').val('');
@@ -102,29 +217,42 @@ $(document).ready(function() {
         $('.agrupado').prop('hidden', false);
         $('#botonG').prop('disabled', false);
         $('#unidad_medida_c').removeAttr('required');
+        $('.asociated').fadeOut('fast');
+        $('#cuerpo').empty();
+        $('#cuerpo').append('Los productos agrupados son aquellos productos que estan compuestos por 2 o mas productos de la misma clasificación.');
       }else if (tipo == 'Asociado') {
+        $('#infoagru').hide();
+        $('#radiosredir').fadeIn();
+        $('#radiosredir').prop('hidden', false);
+        $('.asociated').fadeIn('fast');
+        $('.asociated').prop('hidden', false);
         $('.simples').fadeOut(500);
         $('.agrupado').fadeIn(600);
         $('.agrupado').prop('hidden', false);
+          setTimeout(function(){
+            $('#fomasoc').fadeIn('fast');
+            $('#fomasoc').prop('hidden', false);
+          },300)
         $('#botonG').prop('disabled', true);
         $('#unidad_medida_c').removeAttr('required');
       }else{
+        $('#infoagru').hide();
+        $('#radiosredir').fadeIn();
+        $('#radiosredir').prop('hidden', false);
+        $('#cuerpo').empty();
+        $('#cuerpo').append('Los productos "Simples" como su nombre indica son productos que no tienen una configuracion especial o adicional.');
+        $('.asociated').fadeOut('fast');
         if (fam != 135) {
           $('#unidad_medida_c').attr('required', 'required');
         }else{
           $('#unidad_medida_c').removeAttr('required');
         }
         $('.simples').fadeIn(500);
+        $('.simples').prop('hidden', false);
         $('.agrupado').fadeOut('fast');
         $('#botonG').prop('disabled', false);
       }
-    });
 
-    $('.familia').change(function(event) {
-      //$('.simples').fadeIn(500);
-      load('referencia','tipo_ingrediente',false,false);
-      var family = $('.familia').val();
-      var tipo = $('#tipo_ingrediente').val();
 
 
         if (family != 135 && tipo != 'Agrupado' && tipo != 'Asociado') {
@@ -138,15 +266,72 @@ $(document).ready(function() {
           $('.productoscompra').fadeOut('fast');
           $('.productoscompra').prop('hidden', true);
         }
+    });
+
+    $('#infotipoprod').click(function(event) {
+      $('#alerta').modal('show');
+    });
+
+    $('.familia').change(function(event) {
+      //$('.simples').fadeIn(500);
+      $('#familia').attr('size',1);
+      $('#filtroclasif').hide();
+      $('#familia').css('position', 'relative');
+      $('#familia').css('z-index', '0');
+      var family = $('.familia').val();
+      $('#familiaid').val('');
+      $('#familiaid').val(family);
+      $('#fam').val('');
+      $('#fam').val(family);
+      var idemp = $('#tienda').val();
+      load('referencia','sub_familia',idemp,family);
+
+      if (family != 135 ) {
+          $('.productoscompra').fadeIn('fast');
+          $('.productoscompra').prop('hidden', false);
+          /*$('.asoc').fadeOut('fast');
+          $('.agrupado').fadeOut('fast');*/
+          setTimeout(function(){
+            $('#fomasoc').fadeIn('fast');
+            $('#fomasoc').prop('hidden', false);
+          },300)
+          
+        }else{
+          $('#canti').fadeOut('fast');
+          $('#canti').prop('hidden', true);
+          $('.productoscompra').fadeOut('fast');
+          $('.productoscompra').prop('hidden', true);
+        }
       
-      codigoPropuesto(family);
+      
+    });
+
+    $('#removefiltrocla').click(function(event) {
+      $('#removefiltrocla').prop('hidden', true);
+      var gr = $('#grupo').val();
+      var idemp = $('#tienda').val();
+      load('referencia','familia',idemp,gr);
+    });
+
+    $('#removefiltrosubf').click(function(event) {
+      $('#removefiltrosubf').prop('hidden', true);
+      var family = $('.familia').val();
+      var idemp = $('#tienda').val();
+      load('referencia','sub_familia',idemp,family);
     });
 
     $('#sub_familia').change(function(event) {
+      load('referencia','tipo_ingrediente',false,false);
       var sf = $('#sub_familia').val();
-      if (sf == 148) {
-        $('#modalsubfamilia').modal('show');
-      }
+      $('#subfamiliaid').val('');
+      $('#subfamiliaid').val(sf);
+      $('#subf').val('');
+      $('#subf').val(sf);
+      $('#sub_familia').attr('size',1);
+      $('#filtrosubf').hide();
+      $('#sub_familia').css('position', 'relative');
+      $('#sub_familia').css('z-index', '0');
+      codigoPropuesto(sf);
     });
     $('#mcontinuar').click(function(event) {
       var subf = $('#nuevasub').val();
@@ -169,15 +354,16 @@ $(document).ready(function() {
       });
       
     });
+    var idemp = $('#tienda').val();
     $('.continue').prop('disabled', true);
-    load('referencia','familia',false);
     load('unidad_medida','unidad_medida_c',false);
     load('unidad_medida','unidad_medida_pr',false);
+    load('unidad_medida','unidad_medida_pr2',false);
+    load('unidad_medida','unidad_medida_pr3',false);
     load('unidad_medida','unidad_medida_s',false);
     load('unidad_medida','unidad_mp',false);
     load('unidad_medida','unidad_ms',false);
     load('referencia','motivo',false,false);
-    load('referencia','sub_familia',false,false);
     load('referencia','tipo_inventario',false,false);
     
 
@@ -186,7 +372,17 @@ $(document).ready(function() {
       $('#cantidadConsumo').val(1);
       var idmcom = $('.umc').val();
       var valor = $('.contneto').val();
-      //alert(idmcom);
+      var umdecompra = $('.umc option:selected').text();
+      var n = umdecompra.search("(es)");
+      if (n != -1) {
+        var unidadcomp = umdecompra.replace('(es)', "");
+      }else{
+        var unidadcomp = umdecompra.replace('(s)', "");
+      }
+      $('#unicomp').empty();
+      $('#unicomp').append(unidadcomp);
+      
+      //var unidadcomp = umdecompra.replace('(es)', "");
       $.ajax({
             url: BASE_URL+'/inventario/setunidadT/'+idmcom,
             type: 'POST',
@@ -202,15 +398,19 @@ $(document).ready(function() {
             
         });
      $('#cantix').val('');
-      if (idmcom == 8 || idmcom == 9 || idmcom == 10 || idmcom == 11 || idmcom == 16 || idmcom == 19 || idmcom == 23 ) {
-        $('#canti').fadeIn('slow');
-        $('#canti').prop('hidden', false);
+      if (idmcom == 8 || idmcom == 9 || idmcom == 10 || idmcom == 11 || idmcom == 16 || idmcom == 19 || idmcom == 23 || idmcom == 33) {
         var mcom = $('.umc option:selected').text();
         //alert(mcom);
+        var n = mcom.search("(es)");
+        if (n != -1) {
+          var unidadcomp = mcom.replace('(es)', "");
+        }else{
+          var unidadcomp = mcom.replace('(s)', "");
+        }
         $('#uc').empty();
-        $('#uc').text(mcom);
+        $('#uc').text(unidadcomp);
         $('#abrevU').empty();
-        $('#abrevU').text(mcom);
+        $('#abrevU').text(unidadcomp);
       }else{
         $('#canti').fadeOut('fast');        
       }
@@ -264,16 +464,105 @@ $(document).ready(function() {
           })
         .done(function(data) {
             //alert(data[0]['abreviatura']);
+            var umc1 = $('#unidad_medida_pr option:selected').text();
+        //alert(mcom);
+            var n = umc1.search("(es)");
+            if (n != -1) {
+              var unidadc1 = umc1.replace('(es)', "");
+            }else{
+              var unidadc1 = umc1.replace('(s)', "");
+            }
+            $('#umco1').empty();
+            $('#umco1').append(unidadc1);
             $('#avconsumo').empty();
             $('#avconsumo').append(data[0]['abreviatura']);
+            $('#umcons1').empty();
+            $('#umcons1').append(data[0]['unidad']);
             document.getElementById("formulap").value=data[0]['abreviatura']+' * ';
+            $('#canti1').fadeIn();
+            $('#canti1').prop('hidden', false);
         });
+      });
+
+      $('#unidad_medida_pr2').change(function(event) {
+        var umc2 = $('#unidad_medida_pr2 option:selected').text();
+        var n = umc2.search("(es)");
+            if (n != -1) {
+              var unidadc2 = umc2.replace('(es)', "");
+            }else{
+              var unidadc2 = umc2.replace('(s)', "");
+            }
+        $('#umco2').empty();
+        $('#umco2').append(unidadc2);
+        $('#umcons2').empty();
+        $('#umcons2').append(umc2);
+        $('#canti2').fadeIn();
+        $('#canti2').prop('hidden', false);
+      });
+
+      $('#unidad_medida_pr3').change(function(event) {
+        var umsis = $('#unidad_medida_s').val();
+        var ump3 = $('#unidad_medida_pr3').val();
+        var umc3 = $('#unidad_medida_pr3 option:selected').text();
+        var n = umc3.search("(es)");
+            if (n != -1) {
+              var unidadc3 = umc3.replace('(es)', "");
+            }else{
+              var unidadc3 = umc3.replace('(s)', "");
+            }
+        $('#umcons3').empty();
+        $('#umcons3').append(umc3);
+        $('#umco3').empty();
+        $('#umco3').append(unidadc3);
+        if (umsis != ump3) {
+          $('#canti3').fadeIn();
+          $('#canti3').prop('hidden', false);
+        }else{
+          $('#canti3').fadeOut();
+        }
+        
+      });
+
+
+      $('#unidad_medida_si').change(function(event) {
+
+        var unidad_s = $('#unidad_medida_si').val();
+        var textous = $('#unidad_medida_si option:selected').text();
+        $('#umsis1').empty();
+        $('#umsis1').append(textous);
+        $('#canti4').fadeIn();
+        $('#canti4').prop('hidden', false);
+        var code = $('#codigoP').val();
+        //var subM = $('#sm').val();
+        //alert(code);
+        validarCodigo(code);
+        //alert(unidad_p);
+        /*$.ajax({
+            url: BASE_URL+'/inventario/setunidadT/'+unidad_s,
+            type: 'POST',
+            dataType: 'json'
+          })
+        .done(function(data) {
+            $('#avsistema').empty();
+            $('#avsistema').append(data[0]['abreviatura']);
+            document.getElementById("formulas").value=data[0]['abreviatura']+' * ';
+        });*/
       });
 
       $('#unidad_medida_s').change(function(event) {
 
         var unidad_s = $('#unidad_medida_s').val();
+        var consum3 = $('#unidad_medida_pr3').val();
         var textous = $('#unidad_medida_s option:selected').text();
+        $('#umsis1').empty();
+        $('#umsis1').append(textous);
+        if (unidad_s != consum3) {
+          $('#canti4').fadeIn();
+          $('#canti4').prop('hidden', false);
+        }else{
+          $('#canti4').fadeOut();
+        }
+        
         //alert(unidad_p);
         $.ajax({
             url: BASE_URL+'/inventario/setunidadT/'+unidad_s,
@@ -488,7 +777,6 @@ $(document).ready(function() {
                 $('#modcontinuar').prop('disabled', true);
                 $('#modaldelete').modal('show');
               }else if (tipo == 1) {
-                alert(data[0]['marca'].length);
                 if (data[0]['marca'].length >1) {
                   var mark = 'marca "'+data[0]['marca']+'"';
                 }else{
@@ -637,6 +925,83 @@ $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
 
+    $('#print').click(function(event) {
+      $('#btnform2').trigger('click');
+      var gr = $('#grupo').val();
+      var fam = $('#familia2').val();
+      var subf = $('#sub_familia').val();
+      if (gr.length>0) {
+        $('#gr').val('');
+        $('#gr').val(gr);
+      }
+      if (fam.length>0) {
+        $('#subf').val('');
+        $('#subf').val(subf);
+      }
+      if (subf.length>0) {
+        $('#subf').val('');
+        $('#subf').val(subf);
+      }
+    });
+
+    $('#form-print').submit(function(event) {
+      //event.preventDefault();
+      $('.exporting').slideDown();
+      $('.exporting').prop('hidden', false);
+      $('html,body').animate({
+              scrollTop: $(".exporting").offset().top
+          }, 1500);
+        setTimeout(function(){
+            $('.exporting').fadeOut();
+          }, 4000);
+    });
+
+function pdfinv(idt,gr=false,fam=false,sf=false){
+  if (gr == null) {
+    gr = 'false';
+  }
+  if (fam.length == 0) {
+    fam = 'false';
+  }
+  if (sf.length == 0) {
+    sf = 'false';
+  }
+
+  var url = BASE_URL+'inventoryreport?t='+idt+'&g='+gr+'&f='+fam+'&sf='+sf;
+  abrir_emergente(url);
+}
+
+function archivo(evt) {
+  $('#fakeimg').hide();
+                  var files = evt.target.files; // FileList object
+             
+                  // Obtenemos la imagen del campo "file".
+                  for (var i = 0, f; f = files[i]; i++) {
+                    //Solo admitimos imágenes.
+                    if (f.type.match('png.*') || f.type.match('jpeg.*')) {
+                        //continue;
+                        var reader = new FileReader();
+             
+                    reader.onload = (function(theFile) {
+                        return function(e) {
+                          // Insertamos la imagen
+                         document.getElementById("list").innerHTML = ['<img style="border: solid 1px; width: 100px; height: 100px; margin-top: -100px; background-color:white" class="thumb" src="', e.target.result,'" title="', escape(theFile.name), '"/>'].join('');
+                        };
+                        
+                    })(f);
+                    $('#list').fadeIn('slow');
+                    $('#list').prop('hidden', false);
+                    reader.readAsDataURL(f);
+                    }else{
+                      alert("Disculpe el archivo seleccionado no tiene un formato de imagen valido, los formatos admitidos son \".jpg\" y \".png\"");
+                    }
+             
+                    
+                  }
+              }
+             
+              document.getElementById('files').addEventListener('change', archivo, false);
+
 function verificarexistencias(idpro,idm,tipo){
     $.ajax({
       url: BASE_URL+'/inventario/validarexistencias/'+idpro+'/'+idm,
@@ -667,7 +1032,7 @@ function verificarexistencias(idpro,idm,tipo){
 }
 
     function add(idp){
-      //alert(id);
+      //alert(idp);
     if ($('#id'+idp).is(':checked')) {
       //alert('checked');
       var valor = $('#valore').val();
@@ -812,11 +1177,13 @@ function validarCodigo(code){
           //alert('Este codigo esta asignado a un producto');
           $('#glyphicon').append('<span style="color:red; margin-top:75%; margin-right:115%; font-size:20px;" class="fa fa-remove"></span>');
           $('#botonG').prop('disabled',true);
+          $('#btn-reinsert').prop('disabled',true);
         }else{
           $('#glyphicon').empty();
           //$('#glyphicon').append('<span style="color:green" class="glyphicon glyphicon-ok"></span>');
           //alert('Este codigo no esta asignado a ningun producto');
           $('#botonG').prop('disabled',false);
+          $('#btn-reinsert').prop('disabled',false);
         }
     })
 }
@@ -846,12 +1213,14 @@ function validarProducto(marca){
           $('#glyph').append('<span style="color:red; margin-top:75%; margin-right:115%; font-size:20px;" class="fa fa-remove" ></span>');
           $('#glyphicon').append('<span style="color:red; margin-top:75%; margin-right:115%; font-size:20px;" class="fa fa-remove"></span>');
           $('#botonG').prop('disabled',true);
+          $('#btn-reinsert').prop('disabled',true);
         }else{
           $('#glyphi').empty();
           $('#glyph').empty();
           //$('#glyphicon').append('<span style="color:green" class="glyphicon glyphicon-ok"></span>');
           //alert('Este codigo no esta asignado a ningun producto');
           $('#botonG').prop('disabled',false);
+          $('#btn-reinsert').prop('disabled',false);
         }
     })
 }
@@ -861,14 +1230,19 @@ function modalUpdate(idP,idT){
   $('#unidad_medida_co').empty();
   $('#unidad_medida_pr').empty();
   $('#unidad_medida_si').empty(); 
+  var idemp = $('#idemp').val();
+  if (idemp.length>0) {
+    var empresa = idemp;
+  }else{
+    var empresa = idT;
+  }
   carga('unidad_medida','unidad_medida_co',false,false,idP,idT);
   carga('unidad_medida','unidad_medida_pr',false,false,idP,idT);
   carga('unidad_medida','unidad_mp1',false,false,idP,idT);
   carga('unidad_medida','unidad_ms1',false,false,idP,idT);
   carga('unidad_medida','unidad_medida_si',false,false,idP,idT); 
-  carga('referencia','familias',false,false,idP,idT);
-  carga('referencia','sub_familia',false,false,idP,idT);
   carga('referencia','tipo_inventario',false,false,idP,idT);
+  carga('referencia','groups',false,false,idP,idT);
   //alert(idP);alert(idT);
       $.ajax({
             url: BASE_URL+'/inventario/modalUpdate/'+idP+'/'+idT,
@@ -879,15 +1253,20 @@ function modalUpdate(idP,idT){
             //alert(data[0][6]);
             var fam = data[0]['idf'];
             var tipo = data[0]['tipo_ingrediente'];
-
+            var gr = data[0]['idgr'];
+            carga('referencia','familias',empresa,gr,idP,idT);
+            carga('referencia','sub_familias',empresa,fam,idP,idT);
             $('#enunciadoU').empty();
-            $('#enunciadoU').append('<h4 class="modal-title">Esta modificando el producto '+data[0][3]+' marca '+data[0][4]+'</h4>');
+            $('#enunciadoU').append('<h4 class="modal-title">Esta modificando el producto: '+data[0][3]+' marca '+data[0][4]+'</h4>');
               $('#codi').val(data[0]['codigo']);
               $('#c_tcr').val(data[0]['codigo_anterior']);
               $('#nombre').val(data[0]['producto']);
               $('#marca').val(data[0]['marca']);
               $('#pU').val(data[0]['precio_unitario']);
               $('#stockmin').val(data[0]['stock_min']);
+              $('#modelo').val(data[0]['modelo']);
+              $('#talla').val(data[0]['talla']);
+              $('#color').val(data[0]['color']);
               $('#stockmax').val(data[0]['stock_max']);
               $('#contenidoN').val(data[0]['contenido_neto']);
               $('#existencia').val(data[0]['existencia']);
@@ -919,6 +1298,55 @@ function modalUpdate(idP,idT){
               }else{
                 $('#formulas').val(data[0]['formula_s']);
               }
+              $('#umcons3').empty();
+              $('#umco3').empty();
+              $('#umco2').empty();
+              $('#umco1').empty();
+              $('#umcons1').empty();
+              $('#umcons2').empty();
+              $('#umsis1').empty();
+
+              setTimeout(function(){
+                  $("#unidad_medida_pr2 option[value="+ data[0]['idUMP2'] +"]").attr("selected",true);
+                  $("#unidad_medida_pr3 option[value="+ data[0]['idUMP3'] +"]").attr("selected",true);
+                },350);
+              setTimeout(function(){
+                  var n = data[0]['unidadC'].search("(es)");
+                    if (n != -1) {
+                      var unidadcomp = data[0]['unidadC'].replace('(es)', "");
+                    }else{
+                      var unidadcomp = data[0]['unidadC'].replace('(s)', "");
+                    }
+                    $('#uc').empty();
+                    $('#uc').text(unidadcomp);
+
+                    var n1 = data[0]['unidadP'].search("(es)");
+                      if (n1 != -1) {
+                        var unidadc1 = data[0]['unidadP'].replace('(es)', "");
+                      }else{
+                        var unidadc1 = data[0]['unidadP'].replace('(s)', "");
+                      }
+
+                      var n2 = data[0]['unidadP2'].search("(es)");
+                      if (n2 != -1) {
+                        var unidadc2 = data[0]['unidadP2'].replace('(es)', "");
+                      }else{
+                        var unidadc2 = data[0]['unidadP2'].replace('(s)', "");
+                      }
+                      var n3 = data[0]['unidadP3'].search("(es)");
+                      if (n3 != -1) {
+                        var unidadc3 = data[0]['unidadP3'].replace('(es)', "");
+                      }else{
+                        var unidadc3 = data[0]['unidadP3'].replace('(s)', "");
+                      }                    
+                    $('#umcons3').append(data[0]['unidadP3']);                    
+                    $('#umco3').append(unidadc3);                    
+                    $('#umco2').append(unidadc2);                      
+                      $('#umco1').append(unidadc1);                      
+                      $('#umcons1').append(data[0]['unidadP']);                      
+                      $('#umcons2').append(data[0]['unidadP2']);                      
+                      $('#umsis1').append(data[0]['unidadS']);
+                },500)
               if (tipo == 'Agrupado') {
                 $('#simplesdiv').removeClass('form-group');
                 $('#unidad_medida_pr').val(13);
@@ -959,6 +1387,19 @@ function modalUpdate(idP,idT){
                   $('.productoscompra').prop('hidden', true);
                 }
               }
+              if (gr == 287) {
+                  $('.equipos').fadeIn();
+                  $('.equipos').prop('hidden', false);
+                }else{
+                  $('.equipos').hide();
+                }
+                if (gr == 286 || gr == 288 || gr == 290) {
+                  $('.articulos').fadeIn();
+                  $('.articulos').prop('hidden', false);
+                }else{
+                  $('.articulos').hide();
+                }
+                
               /*if (data[0]['cantidad_presentacion'] != null) {
                   $('#canti').show();
                   $('#cantCo').empty();
@@ -986,7 +1427,6 @@ function modalUpdate(idP,idT){
             "columns": [
                 { "data": "codigi", className: "tdleft"},
                 { "data": "ingrediente", className: "tdleft"},
-                { "data": "costo", className: "tdright"},
                 { "data": null , className: "tdcenter",
           render : function(data, type, row) {
             //var ingr = row['ingrediente'].replace(/ /gi, "@"); 
@@ -1015,7 +1455,7 @@ function modalUpdate(idP,idT){
 function activarCod(idSm, idm){
   //alert(idm);
   load('grupo','grup',false,idSm);
-  codigoPropuesto(idSm,idm)
+  codigoPropuesto(idSm,idm);
 }
 
 function pormodelo(idmodel){
@@ -1232,17 +1672,24 @@ function tablita(id,tipo){
         $('#tablapi_wrapper').removeClass('container-fluid');
 }
 
-function codigoPropuesto(familia){
+function codigoPropuesto(subf){
    // $('#kodigo').empty();
     
     $('#co').empty();
     $.ajax({
-                url: BASE_URL+'/inventario/codigoP/'+familia,
-                type: 'post',
-                dataType: 'json'
-        })
-        .done(function(cod) {
-          $('#co').val(cod);
+      url: BASE_URL+'/inventario/codigoP/'+subf,
+      type: 'post',
+      dataType: 'json'
+    })
+    .done(function(cod) {
+          if (cod != 'false') {
+            $('#co').val(cod);
+          }else{
+            var gr = $('#grupo').val();
+            var fam = $('#familia').val();
+            propuesta2(gr,fam,subf);
+          }
+          
         })
         .fail(function() {
           $('#co').val('');
@@ -1251,6 +1698,18 @@ function codigoPropuesto(familia){
           console.log("complete");
         });
     
+}
+
+function propuesta2(gr,fam,subf){
+  $('#co').empty();
+   $.ajax({
+      url: BASE_URL+'/inventario/codigoP2/'+gr+'/'+fam+'/'+subf,
+      type: 'post',
+      dataType: 'json'
+    })
+    .done(function(cod) {
+      $('#co').val(cod);
+    })
 }
 
 
@@ -1561,14 +2020,28 @@ function carga(tabla,item,valor,model,idP,idT){
             }else{
               select.append('<option value="'+data[i]['id']+'">'+data[i][1]+'</option>');
             }
+          }else if(item == 'groups'){
+            if (data[i]['id'] == data2[0]['idgr']) {
+              select.append('<option selected value="'+data[i]['id']+'">'+data[i][1]+'</option>');
+            }else{
+              select.append('<option value="'+data[i]['id']+'">'+data[i][1]+'</option>');
+            }
           }else if (item == 'unidad_medida_si' || item == 'unidad_ms1') {
             if (data[i]['id'] == data2[0]['idUMS']) {
               select.append('<option selected value="'+data[i]['id']+'">'+data[i][1]+'</option>');
             }else{
               select.append('<option value="'+data[i]['id']+'">'+data[i][1]+'</option>');
             }
-          }else if (item == 'familias' || item == 'sub_familia') {
+          }else if (item == 'familias') {
             if (data[i]['id'] == data2[0]['idf']) {
+              select.append('<option selected value="'+data[i]['id']+'">'+data[i][1]+'</option>');
+            }else{
+              select.append('<option value="'+data[i]['id']+'">'+data[i][1]+'</option>');
+            }
+          }
+          else if (item == 'sub_familias') {
+            //alert(data2[0]['idsf']);
+            if (data[i]['id'] == data2[0]['idsf']) {
               select.append('<option selected value="'+data[i]['id']+'">'+data[i][1]+'</option>');
             }else{
               select.append('<option value="'+data[i]['id']+'">'+data[i][1]+'</option>');

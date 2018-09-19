@@ -69,6 +69,7 @@
 			$idtienda = $_POST['idtienda'];
 			$idmercancia = $_POST['semiterminados'];
 			$tandas = $_POST['tandas'];
+			$totaltanda = $_POST['totalcost'];
 			$fecha = date('Y-m-d');
 			$findme   = ',';
 			$pos = strpos($rideal, $findme);
@@ -85,6 +86,15 @@
 			}else{
 				$real = $_POST['rreal'];
 			}
+			if ($ideal>0) {
+				$a = $ideal;
+				$b = $real;
+				$c = $real*100;
+				$porcrendimiento = $c/$a;
+			}else{
+				$porcrendimiento = 100;
+			}
+			
 
 			$query = "SELECT mercancia.nombre, mercancia.marca, mhun.existencia, unidad_medida_sistema_id as umsid 
 			FROM mercancia_has_unidad_negocio as mhun
@@ -126,7 +136,7 @@
 			}
 
 			if (isset($actualizado) and isset($ingredientes)) {
-				$query = "INSERT INTO `produccion`(`fecha`, `producto_id`, `cantidad`, `rendimiento_ideal`, `resultante`, `unidad_medida_id`, `unidad_negocio_id`, `reversado`) VALUES ('".$fecha."',$idmercancia,$tandas,$ideal,$real,'".$existente[0]['umsid']."',$idtienda,0)";
+				$query = "INSERT INTO `produccion`(`fecha`, `producto_id`, `cantidad`, `rendimiento_ideal`, `resultante`, `unidad_medida_id`, `unidad_negocio_id`, `reversado`,`totalcost`,`porc_rendimiento`) VALUES ('".$fecha."',$idmercancia,$tandas,$ideal,$real,'".$existente[0]['umsid']."',$idtienda,0,'".$totaltanda."', '".$porcrendimiento."')";
 				$idproduccion = $this->_main->insertar($query);
 				echo json_encode($idproduccion);
 			}
@@ -215,9 +225,10 @@
 			}else{
 				$where2 = 'and reversado = 0';
 			}
-			$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, mercancia.precio_unitario as precioU, format(precio_unitario,4,'de_DE') as costo, receta_id as idreceta, produccion.id as idproduccion, fecha, cantidad, rendimiento_ideal, resultante, reversado  FROM `produccion`
-			inner join mercancia on mercancia.id = produccion.producto_id
-            inner join unidad_medida as ums on ums.id = produccion.unidad_medida_id
+			$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) as ingrediente, mercancia.precio_unitario as precioU, format(precio_unitario,4,'de_DE') as costo, receta_id as idreceta, produccion.id as idproduccion, fecha as datetanda, cantidad as cantid, rendimiento_ideal as rideal, resultante as results, reversado, totalcost as tcost, porc_rendimiento as p_rendimiento, format(cantidad,4,'de_DE') as cantidad, format(totalcost,4,'de_DE') as totalcost, format(rendimiento_ideal,4,'de_DE') as rendimiento_ideal, format(resultante,4,'de_DE') as resultante, format(porc_rendimiento,2,'de_DE') as porc_rendimiento, DATE_FORMAT(fecha, '%d/%m/%Y') as fecha
+			FROM `produccion` 
+			inner join mercancia on mercancia.id = produccion.producto_id 
+			inner join unidad_medida as ums on ums.id = produccion.unidad_medida_id
             where $where $where2 order by produccion.id desc";
             $data = $this->_main->select($query);
 

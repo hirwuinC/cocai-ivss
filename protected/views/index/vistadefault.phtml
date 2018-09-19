@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="us">
+<head>
+  <meta charset="utf-8">
+  <title>Titulo pestaña</title>
+  <link href="<?php echo PUBLIC_URL; ?>css/jquery-ui.css" rel="stylesheet">
+</head>
+<body>
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+<div id="body" hidden>                           
+  <div id="page-wrapper">
+    <div class="">
+      <div class="row">
+        <div class="col-lg-12 ">
+          <div  class="card cardH">
+            <div class="card-header" hidden>
+                <center><h3><o id="titulocard">nombre del modulo</o> <?php $ti=strtolower($this->g[0]['tienda']); echo "[".ucwords($ti)."] Sub-modelo ".$this->g[0]['subM'];  ?></h3></center>
+            </div>
+            <div class="card-block" style="padding-bottom: 0px; ">
+              
+            </div>    
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>        
+</div>
+</body>
+
+
+<!-- Autocomplete -->
+
+</html>

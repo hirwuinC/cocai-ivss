@@ -113,9 +113,9 @@ jQuery(document).ready(function($) {
                 { "data": "codip" , className: "tdleft"},
                 { "data": "producto" , className: "tdleft"},
                 { "data": "costom" , className: "tdright",
-                	render : function(data, type, row) { 
+                	render : function(data, type, row) {
 			          	return ''+data+' '+moneda
-		       		} 
+		       		}
             	},
             	{ "data": "porcentajec" , className: "tdright"},
                 { "data": "pvpam" , className: "tdright",

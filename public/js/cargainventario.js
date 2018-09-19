@@ -6,14 +6,40 @@ $(document).ready(function() {
         dataType: 'json'
       })
       .done(function(data) {
+        var inicio = 0;
+        var valorinic = 0;
         if (data.length==0) {
           $('#labelini').prop('hidden', false);
           $('.otros').prop('hidden', true);
         }else{
-          $('#labelini').prop('hidden', true);
-          $('.otros').prop('hidden', false);
+          for (var i = 0; i <= data.length; i++) {
+            if (data[i][4] == null) {
+              var valorinic = inicio++;
+            }else{
+              var valorinic = inicio--;
+            }
+            $('#valorinic').val('');
+            $('#valorinic').val(valorinic);
+            var valorinicial = $('#valorinic').val();
+            $('#procesados').val('');
+            $('#procesados').val(data[0][11]);
+          } 
         }
+        
+        
       });
+      setTimeout(function(){
+        var valorinicial = $('#valorinic').val();
+        var procesados = $('#procesados').val();
+        if (valorinicial <= 0 && procesados == 1) {
+            $('#labelini').prop('hidden', true);
+            $('.otros').prop('hidden', false);
+          }else{
+            $('#labelini').prop('hidden', false);
+            $('.otros').prop('hidden', true);
+          }
+      },1000);
+      
   
   $('.radiostipo').click(function(event) {
     if ($('#otro').is(':checked')) {
@@ -125,6 +151,7 @@ $(document).ready(function() {
     var fecha1 = $('#fecha_ini').val();
     var tipo = $('#tipo_inventario').val();
     var hoy = $('#hoy').val();
+    $('#finalizar').prop('disabled', false);
     //alert(fecha1);
 
     $('#fecha_fin').focus();
@@ -165,6 +192,7 @@ $(document).ready(function() {
     var idt = $('#idT').val();
     var f1 = formato(fechain);
     var f2 = formato(fechafi);
+    //alert(fechain);
     $('#tipe').val('');
     $('#tipe').val(tipo);
     $('#unidad_n').val('');
@@ -188,9 +216,11 @@ $(document).ready(function() {
         dataType: 'json'
     })
     .done(function(data) {
+      
       var validar = data.length;
       if (validar > 0) {
         var procesado = data[0]['procesado'];
+        
         if (procesado == 1) {
           $('#cuerpo2').empty();
           if (fechain == fechafi) {
@@ -199,13 +229,21 @@ $(document).ready(function() {
             $('#cuerpo2').append('<h4 style="color:red">Disculpe, el inventario "'+text+'" de fecha '+f1+' al '+f2+' ya fue procesado seleccione un tipo de inventario o un rango de fechas diferente e intente nuevamente</h4>');
           }
           $('#alerta2').modal('show');
-          
+          $('.export').prop('hidden', true);
+          $('#tablita').fadeOut();
+          $('#tablita').prop('hidden', true);
         }else{
+          $('.export').show();
+          $('.export').prop('hidden', false);
           mostrarDatos(tipo,fechain,fechafi,idt);
         }
       }else{
+        //alert("else");
         insertIventario(tipo,fechain,fechafi,idt);
       }
+    })
+    .fail(function(data){
+      //alert("fail");
     });   
   });
 
@@ -281,7 +319,7 @@ $(document).ready(function() {
         }
 
         function mostrarDatos(tipo,fechain,fechafi,idt){
-          //alert(idt);
+          
           var t = $('#tablamercancia').DataTable({
             "ajax": BASE_URL+'/inventario/mostrarDatos/'+tipo+'/'+fechain+'/'+fechafi+'/'+idt,
             "lengthMenu": [[10, 25, 50, 100,-1], [10, 25, 50, 100, "Todos"]],
@@ -387,6 +425,12 @@ $(document).ready(function() {
               $('#consumo').show();
               $('#consumo').prop('hidden', false);
             }
+            if (data[0]['idUC'] == data[0]['idUS']) {
+              $('#compra').hide();
+            }else{
+              $('#compra').show();
+              $('#compra').prop('hidden', false);
+            }
             $('.monto').val('');
             $('#comentario').val('');
             $('#cant1').empty();
@@ -444,7 +488,7 @@ $(document).ready(function() {
       $('#t').empty();
       $('#t').append('<h5>Carga de inventario del '+f1+'</h5>');
       $('#cuerpo').empty();
-      $('#cuerpo').append('<h5 style="text-justify: justify">Antes de proceder, por favor asegurese de haber cargado la existencia real de cada producto correspondiente al inventario del dia '+f1+', <o style="color: red">ya que la existencia de sistema sera actualizada con el valor de la existencia real ingresada y una vez procesado no se pueden hacer modificaciones</o>. si esta seguro de finalizar la carga de este inventario presione continuar.</h5>');
+      $('#cuerpo').append('<h5 style="text-justify: justify">Antes de proceder, por favor asegurese de haber cargado la existencia real de cada producto correspondiente al inventario del dia '+f1+', <o style="color: red">ya que una vez procesado no se pueden hacer modificaciones</o>. si esta seguro de finalizar la carga de este inventario presione continuar.</h5>');
     }
     
     $('#alerta').modal('show');
@@ -452,6 +496,7 @@ $(document).ready(function() {
 
   });
   $('#guardaralerta').click(function(event) {
+    $('#finalizar').prop('disabled', true);
     var fechain = $('#fecha_ini') .val();
     var fechafi = $('#fecha_fin').val();
     var tipo = $('#tipo_inventario').val();
@@ -480,8 +525,8 @@ $(document).ready(function() {
         $('#faltaxcargar').fadeIn('slow');
         $('#faltaxcargar').prop('hidden', false);
         $('html,body').animate({
-            scrollTop: $("#tablarecetario").offset().top
-        }, 1555);
+            scrollTop: $("#faltaxcargar").offset().top
+        }, 700);
       }else{
         $('#faltaxcargar').prop('hidden', true);
         finalizado(); 
@@ -547,16 +592,24 @@ $(document).ready(function() {
       dataType: 'json'
     })
     .done(function(data) {
-      if (tipo != 164) {
+      $('.export').prop('hidden', true);
+    if (tipo != 164) {
         $('#np').empty();
         $('#np').append(''+fechain+' - '+ fechafi+'');
+        $('#existencaactualizada').show();
+        $('#existencaactualizada').prop('hidden', false);
     }else{
       $('#np').empty();
       $('#np').append(fechain);
+      $('#existencaactualizada').hide();
+      $('#existencaactualizada').prop('hidden', true);
     }
       
 
     $('#actualizado').prop('hidden', false);
-      setTimeout(function() {window.location=BASE_URL+'inventario/evaluar/'+idt;}, 5000);
+    $('html,body').animate({
+            scrollTop: $("#actualizado").offset().top
+    }, 700);
+      setTimeout(function() {$('#actualizado').slideUp('slow');location.reload();}, 5000);
     });
   }

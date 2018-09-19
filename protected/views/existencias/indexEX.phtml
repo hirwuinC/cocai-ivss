@@ -1,0 +1,182 @@
+<style type="text/css" media="screen">
+    .labels{
+        margin-bottom: 0px;
+    }
+</style>
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+
+<div id="body" hidden>
+<div id="page-wrapper">
+            <div  class="">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                    <div class="card cardH">
+
+                            <div class="card-header" hidden>
+                              <center><h4 ><o id="titulocard">Consulta de inventario</o> <?php $ti=strtolower(str_replace('(PTY)', '', $this->g[0]['tienda'])); echo "[".ucwords($ti)."] Sub-modelo ".$this->g[0]['subM'];  ?></h4></center>
+                            </div>
+                          
+                          <div class="card-block">
+                            <div class="row d-flex flex-wrap">
+                                <div class="col-6">
+                                    <!-- <h4 class="page-header" style="font-family: Times New Roman, Times, serif; text-align: center">Unidad de negocio <?php echo str_replace('(PTY)', '', $this->g[0]['tienda']); echo '<br> Sub-modelo '.$this->g[0]['subM'];  ?></h4> -->
+                                </div>
+                            
+                                <div class="col-12 d-flex justify-content-center">
+                                    <img  style="margin-left:0%;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-fluid" alt="modelo">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                    <div class="alert alert-success" id="actualizacionOK" hidden>
+                                        <h4 id="datosactualizados"></h4>
+                                    </div>
+                                </div>
+
+                            
+                            <?php $i = 1; ?> 
+                            <div class="dataTable_wrapper">
+                             <div class="col-sm-12 table-responsive">
+                                
+                                       <table class="table table-sm table-striped table-bordered table-hover" id="tablaprods">
+                                        <thead class="theadH">
+                                            <tr>
+                                                <th>#</th>                                                    
+                                                <th >Codigo</th>
+                                                <th>Nombre</th> 
+                                                <th >Marca</th>
+                                                <th >Familia</th>
+                                                <th >Sub-Clasificacion</th>
+                                                <th >Estatus</th>
+                                                <th >Existencia</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($this->g as $g): ?>
+                                              <?php if ($g['status'] == 1) {
+                                                        $status = 'Inactivo';
+                                                    }else{
+                                                        $status = 'Activo';
+                                                    } ?>
+                                            <?php if ($this->g[0]['existencia'] == 0) { ?>
+                                                <tr style="background: #FEC4C4">
+                                            <?php }else if ($this->g[0]['existencia'] > 0 and $this->g[0]['existencia'] <= $this->g[0]['stock_min']) {?>
+                                                <tr style="background: #FEE1C4">
+                                            <?php }else if ($this->g[0]['existencia'] >$this->g[0]['stock_min'] and $this->g[0]['existencia'] < $this->g[0]['punto_reorden']) {?>
+                                                <tr style="background: #FFFFA3">
+                                            <?php }elseif ($this->g[0]['existencia'] >= $this->g[0]['punto_reorden'] and $this->g[0]['existencia'] <= $this->g[0]['stock_max']) {?>
+                                                <tr style="background: #BBFFBB">
+                                            <?php }else{?>
+                                                <tr>
+                                            <?php } ?>
+                                                <td class="font11" style="text-align:center;"><?php echo $i?></td>
+                                                <td class="font12"><?php echo $g['codigo'];?></td>
+                                                <td class="font12" style="text-align:left"><?php echo $g['producto'];?></td>
+                                                <td class="font12" ><?php echo $g['marca'];?></td>
+                                                <td class="font12" ><?php echo $g['familia'];?></td> 
+                                                <td class="font12" ><?php echo $g['subfamilia'];?></td>
+                                                
+                                                <td class="font12" style="text-align:center;"><?php echo $status;?></td>
+
+                                                <td class="font12" style="text-align:right;"><?php echo $g['stock'].$g['abreviaturaS'].' ';?>
+                                                    <a style="cursor: pointer; cursor: hand;" onclick="existente('<?php echo $g['idP'];?>','<?php echo $g['idT'];?>')">
+                                                        <i style="font-size: 15px" data-toggle="tooltip" data-placement="left" title="<?php echo 'Modificar la existencia del producto: '.$g['producto'].' '.$g['marca'];?>" class="fa fa-pencil-square ico faicons"></i>
+                                                    </a>
+                                                </td>
+
+                                            </tr>
+                                            <?php $i++; ?>
+
+                                            <?php endforeach ?>
+                                        </tbody>
+                                    </table>
+                                        <!-- MODAL MODIFICAR EXISTENCIA-->
+                                        <div class="modal fade " id="modalexistencia" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                                            <div class="modal-dialog modal-md" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <div><h5 id="t"></h5></div>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body" >
+                                                        <form action="<?php echo BASE_URL.'/existencias/updateexistencia/'.$this->g[0]['idT']; ?>" method="post" accept-charset="utf-8" id="formupdate">
+                                                            <div class="row">
+                                                                <input type="hidden" name="idpro" id="idpro">
+                                                                <div class="col-xs-12 col-sm-6">
+                                                                   <label class="labels">Stock maximo</label>
+                                                                   <input type="text" class="form-control form-control-sm" name="actual" id="stmax" readonly="">
+                                                                </div>
+                                                                <div class="col-xs-12 col-sm-6">
+                                                                   <label class="labels">Existencia</label>
+                                                                   <div class="input-group">
+                                                                        <input type="text" class="form-control form-control-sm monto" name="existencia" id="existencia" autocomplete="off" value="0">
+                                                                        <span class="input-group-addon btn-sm" id="umsis"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <input type="submit" id="sendupdate" hidden>
+                                                        </form>
+                                                       
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-sm btn-primary" id="update">Actualizar existencia</button>
+                                                    </div> 
+                                                </div><!-- /.modal-content -->
+                                            </div><!-- /.modal-dialog -->
+                                        </div><!-- /.modal -->
+                                        <!-- FIN DE LA MODAL DE MODAIFICAR EXISTENCIA -->
+                                        <!-- MODAL MODIFICAR EXISTENCIA-->
+                                        <div class="modal fade " id="modalalerta" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                                            <div class="modal-dialog modal-sm" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <div><h5 id="t">Confirmar modificación</h5></div>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body" >
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <h4>El valor ingresado es superior al stock maximo configurado. <br>
+                                                                    Esta seguro de continuar?
+                                                                </h4>
+                                                            </div>
+                                                        </div>
+                                                       
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-sm btn-primary" id="cancelar">Cancelar</button>
+                                                        <button type="button" class="btn btn-sm btn-primary" id="confirmar">Continuar</button>
+                                                    </div> 
+                                                </div><!-- /.modal-content -->
+                                            </div><!-- /.modal-dialog -->
+                                        </div><!-- /.modal -->
+                                        <!-- FIN DE LA MODAL DE MODAIFICAR EXISTENCIA -->
+
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+                    <!-- /.col-lg-12 -->
+        </div>
+</div>
+</div>
+</div>
+</div>
+                <!-- /.row -->
+                </div>
+            <!-- /.container-fluid -->
+            </div>
+        <!-- /#page-wrapper -->
+    <!-- no borrar -->
+    </div>

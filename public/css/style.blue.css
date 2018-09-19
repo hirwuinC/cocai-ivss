@@ -11,6 +11,11 @@ Bootstrapious Boilerplate Template
 *     GENERAL STYLE
 * ==========================================================
 */
+  .thumb{
+    height: 300px;
+    border: 1px solid #000;
+    margin: 10px 5px 0 0;
+  }
 
   .tdleft{
     text-align: left;
@@ -224,7 +229,6 @@ table {
   right: 0;
   transition: width 0.3s linear;
   width: calc(100% - 220px);
-  background-color: #F4F7FA;
   min-height: 100vh;
   padding-bottom: 50px;
 }
@@ -421,7 +425,7 @@ button {
 * ==========================================================
 */
 nav.navbar {
-  background: #393836;
+  background: #001C67;
   padding: .8rem 0;
   /* Navbar Brand --------- */
   /*  Dropdowns ------------ */
@@ -524,7 +528,7 @@ nav.navbar a.menu-btn {
   width: 40px;
   height: 40px;
   line-height: 40px;
-  background: #292929;
+  background: #001C67;
   color: #fff;
   text-align: center;
   padding: 0 !important;
@@ -571,7 +575,7 @@ nav.side-navbar {
   height: 100%;
   width: 220px;
   text-align: left;
-  background: #393836;
+  background: #001c67;
   color: #fff;
   transition: all 0.3s linear;
   z-index: 999;
@@ -608,7 +612,8 @@ nav.side-navbar li {
 }
 
 nav.side-navbar li.active a {
-  background: #2b90d9;
+  background: #E7E7E7;
+  color: black;
 }
 
 nav.side-navbar li ul.collapse a {
@@ -617,11 +622,12 @@ nav.side-navbar li ul.collapse a {
 }
 
 nav.side-navbar li ul.collapse a:hover {
-  background: #121212;
+  background: #E7E7E7;
+  color: black;
 }
 
 nav.side-navbar .sidenav-header {
-  background: #292929;
+  background: #001c67;
   padding: 14px;
   margin-bottom: 10px;
 }
@@ -650,13 +656,13 @@ nav.side-navbar a {
 }
 
 nav.side-navbar a:focus, nav.side-navbar a:hover, nav.side-navbar a[aria-expanded="true"] {
-  background: #2b90d9;
-  color: #fff;
+  background: #E7E7E7;
+  color: black;
   border-radius: 2px;
 }
 
 nav.side-navbar li ul {
-  background: #292929;
+  background: #001c67;
   position: relative;
   min-width: 100%;
   left: 0;

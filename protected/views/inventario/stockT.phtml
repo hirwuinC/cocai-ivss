@@ -48,6 +48,7 @@
                                                 <th >Can. Invent</th>
                                                 <th >Ud. Medida</th>
                                                 <th >Familia</th>
+                                                <th >Sub-Clasificacion</th>
                                                 <th >Estatus</th>
                                                 <th >Modificar</th>
                                                 <th >Eliminar</th>
@@ -63,6 +64,7 @@
                                                 <th>Nombre</th> 
                                                 <th >Marca</th>
                                                 <th >Familia</th>
+                                                <th >Sub-Clasificacion</th>
                                                 <th >Existencia</th>
                                                 <th >Estatus</th>
                                                 <th >Acciones</th>
@@ -75,12 +77,23 @@
                                                     }else{
                                                         $status = 'Activo';
                                                     } ?>
-                                            <tr> 
-                                                <td class="font11" style="text-align:center;"><?php echo $i?></td>
+                                            <?php if ($g['existencia'] == 0) { ?>
+                                                <tr style="background: #FEC4C4">
+                                            <?php }else if ($g['existencia'] > 0 and $g['existencia'] <= $g['stockm']) {?>
+                                                <tr style="background: #FEE1C4">
+                                            <?php }else if ($g['existencia'] >$g['stockm'] and $g['existencia'] < $g['punto_reorden']) {?>
+                                                <tr style="background: #FFFFA3">
+                                            <?php }else if ($g['existencia'] >= $g['punto_reorden'] and $g['existencia'] <= $g['stockm2']) {?>
+                                                <tr style="background: #BBFFBB">
+                                            <?php }else{?>
+                                                <tr>
+                                            <?php } ?>
+                                                <td class="font11 a" style="text-align:center;"><?php echo $i?></td>
                                                 <td class="font12"><?php echo $g['codigo'];?></td>
                                                 <td class="font12" style="text-align:left"><?php echo $g['producto'];?></td>
                                                 <td class="font12" ><?php echo $g['marca'];?></td>
-                                                <td class="font12" ><?php echo $g['familia'];?></td>  
+                                                <td class="font12" ><?php echo $g['familia'];?></td> 
+                                                <td class="font12" ><?php echo $g['subfamilia'];?></td>
                                                 <td class="font12" style="text-align:right;"><?php echo $g['stock'].$g['abreviaturaS'].' ';?>
                                                     <a style="cursor: pointer; cursor: hand;" onclick="infoConversion('<?php echo $g['idP'];?>','<?php echo $g['idT'];?>')"><i data-toggle="tooltip" data-placement="top" title="Ver informacion detallada de la existencia" class="fa fa-info-circle ico faicons"></i>
                                                     </a>
@@ -106,7 +119,7 @@
                                     </table> 
                                   <?php endif; ?>
                                     <br>
-                                    <div class="container-fluid">
+                                    <!-- <div class="container-fluid">
                                         <div class="col-sm-3">
                                             <table class="table table-sm table-bordered">
                                                 <thead class="theadH">
@@ -128,7 +141,7 @@
                                                 </tr>
                                             </table>
                                         </div>
-                                    </div>
+                                    </div> -->
                                                 
                                             
                                     
@@ -158,6 +171,7 @@
                                 <!-- <input type="text" name="modelo" id="m" hidden value="<?php echo $this->pro[0]['idmodelo'];?>">
                                 <input type="text" name="sub_modelo" id="sm" hidden value="<?php echo $this->pro[0]['sub_modelo_id'];?>"> -->
                                 <input type="text" name="idT" id="idT" hidden value="<?php echo $this->g[0]['idT'];?>">
+                                <input type="text" name="idT" id="idemp" hidden value="<?php echo $this->g[0]['empresa_id'];?>">
                                 <input type="text" name="idP" id="idP" hidden >
                                 <input type="text" name="tipo" id="type" hidden>
 

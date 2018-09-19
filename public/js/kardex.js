@@ -1,5 +1,21 @@
 $(document).ready(function() {
   //alert("ok");
+$('.exportar').click(function(event) {
+    var idU = $('#idudn').val();
+    var fci = $('#fecha_ini').val();
+    var fcf = $('#fecha_fin').val();
+    var tip = $('#tipomov').val();
+    var mot = $('#motivo').val();
+    var prd = $('#prod').val();
+    if (tip == null && !mot && !prd) {
+     // alert(fci)
+      pdfinv(idU,fci,fcf);
+    }else{
+      pdfinv(idU, fci,fcf,tip,mot,prd);
+    }
+    
+  });
+
     var tienda = $('#idt').val();
     load('mercancia','products',tienda,false);
   $('#fecha_ini').change(function(event) {
@@ -21,7 +37,13 @@ $(document).ready(function() {
     $('#motivo').prop('disabled', false);
     $('#motivo').empty();
     var tipo = $('#tipoMov').val();
-    load('referencia','motivo',tipo,false);
+    if (tipo == 'all') {
+      $('#mot').fadeOut('fast');
+    }else{
+      $('#mot').fadeIn('fast');
+      load('referencia','motivo',tipo,false);
+    }
+    
     $('#motivo').focus();
   });
 
@@ -32,13 +54,15 @@ $(document).ready(function() {
     var fechafin = $('#fecha_fin').val();
     var tipomov = $('#tipoMov').val();
     var motiv = $('#motivo').val();
+
+    //alert(fechaini); alert(fechafin); alert(tipomov); alert(motiv); alert(idU); alert(prod);
     if (prod == null) {
       var prod = 'false';
     }else{
       var prod = $('#products').val();
     }
 
-    if (tipomov == null) {
+    if (tipomov == null || tipomov == 'all') {
       var tipomov = 'false';
     }else{
       var tipomov = $('#tipoMov').val();
@@ -59,12 +83,13 @@ $(document).ready(function() {
 });
 
  function verkardex(fechaini,fechafin,tipomov,motiv,idU,prod){
-  //alert(fechaini); alert(fechafin); alert(tipomov); alert(motiv); alert(idU);
+ // alert(fechaini); alert(fechafin); alert(tipomov); alert(motiv); alert(idU); alert(prod);
   $('#tablaoculta').hide();
   $('#load').fadeOut(600);
   setTimeout(function() {$('#tablaoculta').fadeIn(700);}, 600);
+  var idemp = $('#idemp').val();
   $.ajax({
-    url: BASE_URL+'/inventario/consultarkardex/'+fechaini+'/'+fechafin+'/'+tipomov+'/'+motiv+'/'+idU+'/'+prod,
+    url: BASE_URL+'/reportes/consultarkardex/'+fechaini+'/'+fechafin+'/'+tipomov+'/'+motiv+'/'+idU+'/'+prod,
     type: 'POST',
     dataType: 'json',
   })
@@ -74,24 +99,26 @@ $(document).ready(function() {
     //alert(salio);
     $('#entra').empty();
     $('#sale').empty();
+    var abre = data["data"][0]['abreviatura'];
+    $('#unidad').val('');
+    $('#unidad').val(abre);
     if (!isNaN(entro)) {
-      $('#entra').append(entro.toLocaleString('es-ES', { minimumFractionDigits: 4 }));
+      $('#entra').append(entro.toLocaleString('es-ES', { minimumFractionDigits: 4 })+abre);
     }else{
       $('#entra').append('0,0000');
     }
     if (!isNaN(salio)) {
-      $('#sale').append(salio.toLocaleString('es-ES', { minimumFractionDigits: 4 }));
+      $('#sale').append(salio.toLocaleString('es-ES', { minimumFractionDigits: 4 })+abre);
     }else{
       $('#sale').append('0,0000');
     }
     
-    
-    
   });
-  
-  if (idU != 59 || idU != 60) {
+  if (idemp.length >0) {
+    var prueba = BASE_URL+'/reportes/consultarkardex/'+fechaini+'/'+fechafin+'/'+tipomov+'/'+motiv+'/'+idU+'/'+prod;
+    //alert(prueba)
     $('#tablakardex').DataTable({
-            "ajax": BASE_URL+'/inventario/consultarkardex/'+fechaini+'/'+fechafin+'/'+tipomov+'/'+motiv+'/'+idU+'/'+prod,
+            "ajax": BASE_URL+'/reportes/consultarkardex/'+fechaini+'/'+fechafin+'/'+tipomov+'/'+motiv+'/'+idU+'/'+prod,
             "columnDefs": [
             {
                 "targets": [ 8,9 ],
@@ -127,7 +154,7 @@ $(document).ready(function() {
                 /*{ "data": "descripcion", className: "tdleft font11" },*/
                 
                 { "data": "Nombre", className: "tdcenter font11" },
-                {"data": "existencia" , className: "tdright font11",
+                {"data": "cant" , className: "tdright font11",
                   render : function(data, type, row) {
                       return ''+data+' '+row['abreviatura']
                   }
@@ -135,6 +162,7 @@ $(document).ready(function() {
                 
             ],
             "footerCallback": function ( row, data, start, end, display ) {
+            var abre = $('#unidad').val();
             var api = this.api(), data;
  
             // Remove the formatting to get integer data for summation
@@ -163,7 +191,7 @@ $(document).ready(function() {
  
             // Update footer
             $( api.column( 7 ).footer() ).html(
-                '<o style="float: left">Existencia total: '+pageTotal.toLocaleString('es-ES', { minimumFractionDigits: 4 }) +' ('+ total.toLocaleString('es-ES', { minimumFractionDigits: 4 }) +' total)</o>'
+                'Existencia total(pagina actual): '+pageTotal.toLocaleString('es-ES', { minimumFractionDigits: 4 }) +abre+' [ Total:'+ total.toLocaleString('es-ES', { minimumFractionDigits: 4 }) +abre+' ]'
             );
             
         },
@@ -173,7 +201,13 @@ $(document).ready(function() {
     $('#tablakardex').css("width","100%");
 }else{
     $('#tablakardex').DataTable({
-            "ajax": BASE_URL+'/inventario/consultarkardex/'+fechaini+'/'+fechafin+'/'+tipomov+'/'+motiv+'/'+idU+'/'+prod,
+            "ajax": BASE_URL+'/reportes/consultarkardex/'+fechaini+'/'+fechafin+'/'+tipomov+'/'+motiv+'/'+idU+'/'+prod,
+            "columnDefs": [
+            {
+                "targets": [ 10 ],
+                "visible": false,
+                "searchable": false
+            }],
             "columns": [
                 { "data": "tienda", className: "tdleft font11" },
                 { "data": "codigo" , className: "tdleft font11" },
@@ -198,9 +232,47 @@ $(document).ready(function() {
                 },
                 /*{ "data": "descripcion", className: "tdleft font11" },*/
                 
-                { "data": "Nombre", className: "tdcenter font11" }
+                { "data": "Nombre", className: "tdcenter font11" },
+                {"data": "cant" , className: "tdright font11",
+                  render : function(data, type, row) {
+                      return ''+data+' '+row['abreviatura']
+                  }
+                }
                 
             ],
+            "footerCallback": function ( row, data, start, end, display ) {
+            var abre = $('#unidad').val();
+            var api = this.api(), data;
+            // Remove the formatting to get integer data for summation
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+ 
+            // Total over all pages
+            total = api
+                .column( 10 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+ 
+            // Total over this page
+            pageTotal = api
+                .column( 10, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+ 
+            // Update footer
+            $( api.column( 8 ).footer() ).html(
+                'Existencia total(pagina actual): '+pageTotal.toLocaleString('es-ES', { minimumFractionDigits: 4 }) +abre+' [ Total: '+ total.toLocaleString('es-ES', { minimumFractionDigits: 4 }) +abre+']'
+            );
+            
+        },
             destroy: true,
             responsive: true
         });
@@ -208,3 +280,24 @@ $(document).ready(function() {
 }
 
  }
+ function pdfinv(idU, fci,fcf,tip= false,mot= false,prd= false){
+  //alert(fci);
+  if (fci == null) {
+    fci = 'false';
+  }
+  if (fcf == null) {
+    fcf = 'false';
+  }
+  if (tip == null) {
+    tip = 'false';
+  }
+    if (mot == null) {
+    mot = 'false';
+  }
+  if (prd == null) {
+    prd = 'false';
+  }
+  var url = BASE_URL+'inventoryreport2?t='+idU+'&fci='+fci+'&fcf='+fcf+'&tip='+tip+'&mot='+mot+'&prd='+prd;
+  abrir_emergente(url);
+
+}

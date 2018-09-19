@@ -37,7 +37,7 @@ class printer extends FPDF
             $images = ROOT . 'public' . DS . 'img';
             $this->Ln(15);
             // Logo
-            $this->Image($images.'/logo-EPOC-WEB.png',10,8,33);
+            $this->Image($images.'/LOGO-COCAI.png',10,8,33);
             // Arial bold 15
             $this->SetFont('Arial','B',15);
             // Movernos a la derecha

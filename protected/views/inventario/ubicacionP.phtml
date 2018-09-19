@@ -1,0 +1,440 @@
+<center>
+    <div id="gifcargando">
+        <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
+    </div>
+</center>
+<div id="body" hidden>
+    <input type="hidden"  id="valore" value="0">
+    <input type="hidden"  id="valore2" value="0">
+    <div id="page-wrapper">
+        <div class="">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card-block">
+                        <div class="card cardH">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="active nav-item">
+                                    <a data-toggle="tab" href="#home" class="nav-link active" id="info" aria-expanded="true">Info <i class="fa fa-info-circle"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item pestanias" id="37">
+                                    <a data-toggle="tab" role="tab" class="nav-link" href="#n37" aria-expanded="false">Domingo luciani</a>
+                                </li>
+                            </ul>
+                            <div class="cont" style="margin-left: 0px;">
+                                         <div id="home" class="tab-pane fade in active show" role="tabpanel" aria-expanded="true">
+                                            <br>
+                                                <div class="form-group col-sm-12" style="margin-top: 5px;">
+                                                  <h5><p>Seleccione el modelo al que pertenece el almacen, al cual desea asignar los productos.</p></h5>
+                                                </div>
+
+                                        </div>
+                                    <!-- contenedor del modulo                                       -->
+                                        <div id="n37" class="tab-pane fade in active " aria-expanded="true" style ="">
+                                            <!--Encabeado-->
+                                                <div class="row encabezadoUb" id="encabezadoUb" style="margin-left: 0px;">
+                                                    <div class="col-lg-8" id="tituloVentana" style="text-align:center;">
+                                                        <legend style="margin-left: 160px;" ><label style="margin-top:50px">Ubicación de mercancía</label></legend>
+                                                        
+                                                    </div>
+                                                    <div class="col-lg-4" id="logoIvss" style="">
+                                                        <img src="http://localhost/cocai-ivss/public/img/Almacen General.png" alt="img" style="margin-top: 0px;width: 316px;height:150px;" >
+                                                    </div>
+                                                </div>
+                                                
+                                            <!--Fin Encabeado-->
+                                            <div clas="row" id="tituloUbcAlmacen"><!--titulo de ubicacion en almacen -->
+                                                    <div clas="col-lg-12" style="background: #001c67;color:#FFFFFF;text-align: center">
+                                                       <label >Ubicación en almacén</label>                  
+                                                    </div>
+                                            </div><!--ubicacion en almacen -->
+                                            
+                                            <!--Ubicacion almacen y sub almacen -->
+                                            <div class="row" id="almacenSubalmacen" style="">
+                                                <div class="col-lg-4" id="colAlmacen" style="margin-left: 10px;margin-top: 10px;">
+                                                    <label class="control-label" style="">Almacén</label><BR>
+                                                        <select id="alm37" name="selectalmacen" class="form-control form-control-sm alm" style=""> 
+                                                            <option value="" selected="">Seleccione...</option>  
+                                                            <?php  
+                                                            for ($j=0; $j < count($this->datos); $j++) 
+                                                            { 
+                                                                
+                                                                    echo '<option value="'.$this->datos[$j]['idU'].'">'.$this->datos[$j]['nombre'].'</option>';  
+                                                                    }                                                              ?>
+                                                        </select>
+                                                </div>
+                                                <div class="col-lg-4" id="colSubAlmacen" style="margin-top: 10px;">
+                                                     <label class="control-label" style="">Sub-Almacén</label><BR>
+                                                                 <select id="subAl" class="form-control form-control-sm alm" style=""> 
+                                                                    <option value="" selected="">Seleccione...</option>  
+                                                                    option>
+
+
+
+                                                                </select>
+                                                </div>
+                                                <div class="col-lg-3" id="colCuadranteEstante" style="margin-top: 10px;">
+                                                         <div class="" style="margin-top:10px;">
+                                                                <label for="radio1" class="form-check-label ">
+                                                                    <input type="radio" id="radio1" name="radios" value="1" class="form-check-input rd" data-clss="mmPl">Cuadrante
+                                                               </label>
+                                                                
+                                                           </div>
+
+                                                            <div class="" style="margin-top:10px;">
+                                                                <label for="radio2" class="form-check-label ">
+                                                                    <input type="radio" id="radio2" name="radios" value="2" class="form-check-input rd" data-clss="mmEs">Estante
+                                                               </label>
+                                                                
+                                                           </div>
+                                                </div>
+                                            </div>
+                                            <!--fin de ubicacion de almacen y sub almacen-->
+                                            
+                                            <!--fin de ubicacion de almacen y sub almacen-->
+                                            <div class="row" id="CuadrantePaleta">
+                                                <div class="col-lg-12">
+                                                    <div class="row">
+                                                        <div class="col-lg-3 mmPl" style="margin-top: 20px;margin-bottom:20px;display:none;">
+                                                            <label class="control-label " style="margin-left: 20px;">Cuadrante</label>
+                                                                 <select id="mmPl1" class="form-control form-control-sm alm" style="width: 120px;margin-left: 20px;"> 
+                                                                    <option value="" selected="">Seleccione...</option>  
+                                                                </select>
+                                                        </div>
+                                                        <div class="col-lg-3 mmPl" style="margin-top: 20px;margin-bottom:20px;display:none;">
+                                                            <label class="control-label" style="margin-left: 20px;">Paleta</label>
+                                                                <select id="mmPl2" class="form-control form-control-sm alm" style="width: 120px;margin-left: 20px;"> 
+                                                                    <option value="" selected="">Seleccione...</option>  
+                                                                </select>
+                                                        </div >
+                                                        <div class="col-lg-3 mmEs" style="margin-top: 20px;margin-bottom:20px;display:none;">
+                                                            <label class="control-label " style="margin-left: 20px;">Estante</label>
+                                                                 <select id="mmEs1" class="form-control form-control-sm alm" style="width: 120px;margin-left: 20px;"> 
+                                                                    <option value="" selected="">Seleccione...</option>  
+                                                                </select>
+                                                        </div>
+                                                        <div class="col-lg-3 mmEs" style="margin-top: 20px;margin-bottom:20px;display:none;">
+                                                            <label class="control-label" style="margin-left: 20px;">Entre paño</label>
+                                                                <select id="mmEs2" class="form-control form-control-sm alm" style="width: 120px;margin-left: 20px;"> 
+                                                                    <option value="" selected="">Seleccione...</option>  
+                                                                </select>
+                                                        </div >
+                                                        <div class="col-lg-3 ubicacionSa" style="margin-top: 20px;margin-bottom:20px;display:none;">
+                                                            <label class="control-label" style="">Zona</label><BR>
+                                                                 <select id="zn" class="form-control form-control-sm alm" style="width: 180px;"> 
+                                                                    <option value="" selected="">Seleccione...</option>  
+                                                                    <option value="1">Zona 1</option>
+                                                                    <option value="2">Zona 2</option>
+                                                                    <option value="3">Zona 3</option>
+                                                                    <option value="4">Zona 4</option>
+                                                                </select>
+                                                        </div>
+                                                        <div class="col-lg-3 ubicacionSa" style="margin-top: 20px;margin-bottom:20px;display:none;">
+                                                            <label class="control-label" style="">Pasillo</label><BR>
+                                                                 <select id="psll" class="form-control form-control-sm alm" style="width:180"> 
+                                                                    <option value="" selected="">Seleccione...</option>  
+                                                                    <option value="5">Pasillo 1</option>
+                                                                    <option value="6">Pasillo 2</option>
+                                                                    <option value="7">Pasillo 3</option>
+                                                                    <option value="8">Pasillo 4</option>
+                                                                </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                               
+                                            </div><!--fin de ubicacion de almacen y sub almacen-->
+                                            <!--Fin Encabeado-->
+                                            <div clas="row" id="planoAlmacenImg" style="display: none;"><!--titulo del plano en el almacen -->
+                                                    <div clas="col-lg-12" style="background: #001c67;color:#FFFFFF;text-align: center">
+                                                       <label >Plano del sub-almacén</label>                  
+                                                    </div>
+                                            </div><!--plano del almacen -->
+                                                    
+                                           
+                                                    <div class="col-lg-12">
+                                                    <div class="row">
+                                                        <div class="col-lg-12" style="" id="imgAlmacen">
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                             <div clas="row filtroSa" id="tituloFiltroAlmacen" style=""><!--titulo del plano en el almacen -->
+                                                    <div clas="col-lg-12" style="background: #001c67;color:#FFFFFF;text-align: center">
+                                                       <label >Buscar y asignar productos a la ubicación seleccionada</label>                  
+                                                    </div>
+                                            </div><!--plano del almacen -->
+                                            <div clas="row filtroSa" id="filtro" style=""><!--titulo del plano en el almacen -->
+                                                    <div clas="col-lg-12" style="">
+                                                      
+                                                          <div class="row" style="margin-top:20px;">
+                                                              
+                                                              <div class="col-lg-2" style="margin-left:320px;" >
+                                                                  <input type="search" class="form-control form-control-sm filter" placeholder="" style="width:200px;">
+                                                                  
+                                                              </div>
+                                                              <div class="col-lg-1" style="margin-left:40px;">
+                                                                  <select name="tablaxenviar_length" aria-controls="tablaxenviar" class="form-control form-control-sm" style="width:100px;">
+                                                                    <option value="1">GRUPO</option>
+                                                                    <option value="2">CODIGO</option>
+                                                                    <option value="3">SUB-CLASIFICACION
+                                                                </option>
+                                                                      <option value="4">CLASIFICACION
+                                                                </option>
+                                                                      <option value="5">PRODUCTO</option>
+                                                                 <option value="6">MODELO</option>
+                                                                <option value="7">LOTE</option>
+                                                                  </select>
+                                                              </div>
+                                                              <div class="col-lg-1" style="margin-left:25px;">
+                                                                  <input type="button" class="btn btn-sm btn-outline-primary" id="consult" value="Buscar">
+                                                              </div>
+                                                               
+                                                          </div>
+                                                          
+                                                          
+                                                          
+                                                         
+                                                                    
+                                                  </div>
+                                            </div>
+                                                    
+                                            <div class="container-fluid filtroLista" style=" margin-top:20px;">
+                                                <div class="row" style="font-size: 12px;font-weight: bold;margin-top:0px;color: #FFFFFF;background:#001c67">
+                                                    <div class="col-lg-2">
+                                                        Grupo
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                       Clasificación
+                                                    </div>
+                                                    <div class="col-lg-1">
+                                                        Código
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        Producto
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                       Lote
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        Características
+                                                    </div>
+                                                   
+                                                </div>
+                                                <div class="row" style="font-size: 12px;font-weight: bold;margin-top:0px;background:#E0E7FF;">
+                                                    <div class="col-lg-2">
+                                                        Articulo
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        Material descartable
+                                                    </div>
+                                                    <div class="col-lg-1">
+                                                        Aguja
+                                                    </div>
+                                                     <div class="col-lg-2">
+                                                        ARDEAG0001
+                                                    </div>
+                                                     <div class="col-lg-2">
+                                                        AGUJA ESPINAL DESCARTABLE 25G
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        AGUJA ESPINAL DESCARTABLE 25G
+                                                    </div>
+                                                    <div class="col-lg-1">
+                                                        
+                                                    </div>
+                                                    
+                                                </div >
+                                                <div class="row" style="font-size: 10px;font-weight: bold;margin-top:0px;background:#F4F6FE">
+                                                    <div class="col-lg-2">
+                                                        ARTICULO
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        MATERIAL DESCARTABLE
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        AGUJA
+                                                    </div>
+                                                     <div class="col-lg-2">
+                                                        ARDEAG0001
+                                                    </div>
+                                                     <div class="col-lg-2">
+                                                        AGUJA ESPINAL DESCARTABLE 25G
+                                                    </div>
+                                                    
+                                                </div >
+                                                <div class="row" style="font-size: 10px;font-weight: bold;margin-top:0px;background:#E0E7FF;">
+                                                    <div class="col-lg-2">
+                                                        ARTICULO
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        MATERIAL DESCARTABLE
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        AGUJA
+                                                    </div>
+                                                     <div class="col-lg-2">
+                                                        ARDEAG0001
+                                                    </div>
+                                                     <div class="col-lg-2">
+                                                        AGUJA ESPINAL DESCARTABLE 25G
+                                                    </div>
+                                                    
+                                                </div >
+                                                
+                                                <div class="row" style="font-size: 10px;font-weight: bold;margin-top:0px;background:#F4F6FE">
+                                                    <div class="col-lg-2">
+                                                        ARTICULO
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        MATERIAL DESCARTABLE
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        AGUJA
+                                                    </div>
+                                                     <div class="col-lg-2">
+                                                        ARDEAG0001
+                                                    </div>
+                                                     <div class="col-lg-2">
+                                                        AGUJA ESPINAL DESCARTABLE 25G
+                                                    </div>
+                                                    
+                                                </div >
+                                                <div class="row" style="font-size: 12px;font-weight: bold;margin-top:0px;background:#E0E7FF;">
+                                                    <div class="col-lg-2">
+                                                        ARTICULO
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        MATERIAL DESCARTABLE
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        AGUJA
+                                                    </div>
+                                                     <div class="col-lg-2">
+                                                        ARDEAG0001
+                                                    </div>
+                                                     <div class="col-lg-2">
+                                                        AGUJA ESPINAL DESCARTABLE 25G
+                                                    </div>
+                                                    
+                                                </div >
+                                                <div class="row">
+                                                    
+                                                </div>
+                                            </div>
+                                            
+                                            
+                                            
+                                       
+                                        </div><!--fin del contenedor del modulo-->
+                                    
+                            </div>
+                                
+                            
+                            
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        </div>
+
+  
+       <!--  <!-- The Modal -->
+                              <div class="modal fade" id="modaldetalles">
+                                <div class="modal-dialog modal-lg">
+                                  <div class="modal-content">
+                                  
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                      <h4 class="modal-title"> Almacen general / B-15 / Paleta 3 / AGUJA ESPINAL DESCARTABLE 25G<o id="nombrepro"></o></h4>
+                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                                                   <div class="row">
+                                    <div class="col-sm-12">
+                                        <h4 style="background: #337ab7; color: white; margin-bottom: 0px">Peso volumetrico</h4>
+                                    </div>
+                                    
+                                    
+                                      <div class="col-sm-3" >
+                                          <label class="labels">Unidad de medida</label>
+                                            <select class="form-control form-control-sm" id="umvol" name="umvol">
+                                              <option value="32">Milimetro(s)</option>
+                                              <option value="28">Centimetro(s)</option>
+                                              <option value="26">Metro(s)</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-3" >
+                                            <label class="labels">Ancho</label>
+                                            <input type="text" class="form-control form-control-sm monto" name="ancho" id="ancho" value="0">
+                                        </div>
+                                        <div class="col-sm-3" >
+                                            <label class="labels">Alto</label>
+                                            <input type="text" class="form-control form-control-sm monto" name="alto" id="alto" value="0">
+                                        </div>
+                                        
+                                        <div class="col-sm-3" >
+                                            <label class="labels">Largo</label>
+                                            <input type="text" class="form-control form-control-sm monto" name="largo" id="largo" value="0">
+                                        </div>
+                                    </div>
+                                
+                                      
+                                        
+
+                                            <div class="row mt-2">
+                                                <div class="col-sm-12">
+                                                    <h4 style="text-align: left; background: #337ab7; color: white;">Datos de existencias</h4>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Stock minimo</label>
+                                                    <input type="text" class="form-control form-control-sm monto" name="stmin" id="stmin" value="0">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Stock maximo</label>
+                                                    <input type="text" class="form-control form-control-sm monto" name="stmax" id="stmax" value="0">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Punto de reorden</label>
+                                                    <input type="text" class="form-control form-control-sm monto" name="reorden" id="reorden" value="0">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Tipo de inventario</label>
+                                                    <select name="tipo_inventario" id="tipo_inventario" class="form-control form-control-sm"></select>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label class="labels">Tipo de almacenaje</label>
+                                                    <select name="tipo_almacenaje" id="tipo_almacenaje" class="form-control form-control-sm"></select>
+                                                </div>
+                                            </div>
+                                                
+                                            <input type="submit" id="enviaform" hidden>
+                                          
+                                      </form>
+                                                                         </div>
+                                    
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                      <button type="button" class="btn btn-primary" id="guardarc">Guardar</button>
+                                    </div>
+                                    
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- fin modal --> 
+  
+
+    </div>
+    <!-- /#page-wrapper -->
+    <!-- no borrar -->
+</div>
+    <script>
+        $(document).ready(function() {
+            $('#info').trigger('click');
+        });
+    </script>

@@ -28,18 +28,22 @@
                           
                           <div class="card-block">
                             <div class="row d-flex flex-wrap">
-                                <div class="col-6">
-                                    <h4 class="page-header" style="font-family: Times New Roman, Times, serif; text-align: center">Unidad de negocio <?php echo str_replace('(PTY)', '', $this->mercancia[0]['tienda']); echo '<br> Sub-modelo '.$this->mercancia[0]['subM'];  ?></h4>
+                                <div class="col-11">
+                                    <h4 class="page-header" style="font-family: Times New Roman, Times, serif; text-align: center; background: #337ab7; color: white;">Almacen <?php echo str_replace('IVSS', 'principal', $this->mercancia[0]['tienda']); ?></h4>
                                 </div>
                             
-                                <div class="col-6 d-flex justify-content-end">
-                                    <img  style="margin-left:0%;" src="<?php $model=strtolower($this->mercancia[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-fluid hidden-xs" alt="modelo">
+                                <div class="col-1 d-flex justify-content-end">
+                                    <img  style="margin-left:0%;" src="<?php $model=strtolower($this->mercancia[0]['modelo']); echo PUBLIC_URL;?>img\IVSS.png" class=" hidden-xs" alt="modelo">
                                 </div>
                             </div>
-                            <div class="card-block">
+                            <div class="card-block" style="padding-top: 0px">
+                              <input type="hidden" id="valorinic">
+                              <input type="hidden" id="procesados">
+
                     <div id="" class="form-group row ml-3">
                       <div class="col-xs-12">
-                          <label class="radio-inline ml-3" for="" id="labelini" hidden><input type="radio" name="optradio" class="radiostipo" id="inicial"> Inventario inicial</label>
+                        <h4 class="ml-3" style="background: #337ab7; color: white; text-align: center">Tipo de inventario</h4>
+                          <label class="radio-inline ml-3" for="inicial" id="labelini" hidden><input type="radio" name="optradio" class="radiostipo" id="inicial"> Inventario inicial</label>
                           <label class="radio-inline ml-3 otros" for=""><input type="radio" name="optradio" class="radiostipo" id="final"> Cierre de mes</label>
                           <label class="radio-inline ml-3 otros" for=""><input type="radio" name="optradio" class="radiostipo" id="otro"> Otro</label>
                       </div>
@@ -93,8 +97,8 @@
                         
                             <center><div id="check" hidden><img width="45px" height="45px" src="http://localhost/COCAI/public/img/check1.gif" alt="exito"/></div></center>
                             <div class="alert alert-success" id="actualizado" hidden>
-                                <center><h4>El inventario de fecha: <o id="np"></o> ha sido Cargado con exito y la existencia de los productos ah sido actualizada</h4><br>
-                                <h6>En breve sera redireccionado a la consulta de inventario</h6></center>
+                                <center><h4>El inventario de fecha: <o id="np"></o> ha sido Cargado con exito </h4><br>
+                                <h6 id="existencaactualizada" hidden>La existencia de los productos ah sido actualizada</h6></center>
                             </div>
                             <div class="alert alert-danger" id="faltaxcargar" hidden>
                                 <a class="close" href="#" id="cerraralert"><i class="fa fa-close"></i></a>

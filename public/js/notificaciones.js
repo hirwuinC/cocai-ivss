@@ -121,7 +121,7 @@ function webnotif(cont,data) {
     }
     
     var extra = {
-    icon: BASE_URL+"public/img/Logo-EPOC-WEB-vertical.png",
+    icon: BASE_URL+"public/img/logo_cocai_cuadrado.png",
     body: "Nueva "+data[0]['status']+' '+x+' '+ti+' a las '+data[0]['horarepo']
     }
       

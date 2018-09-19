@@ -48,7 +48,7 @@
                     <div class="col-12 ">
                         <div class="card cardH" >
                             <div class="card-header" style="padding: 5px; height: 25%" hidden="">
-                              <center><h3 class="page-header" style="font-family: Times New Roman, Times, serif;"><o id="titulocard">Agregar productos de inventario<o/></h3> </center>
+                              <center><h3 class="page-header" style=""><o id="titulocard">Agregar productos de inventario<o/></h3> </center>
                             </div>
                           <div class="">
                             <div class="row d-flex flex-wrap">
@@ -56,7 +56,7 @@
                                      <h4 class="page-header" style="font-family: Times New Roman, Times, serif; text-align: center">Unidad de negocio <?php echo $this->mercancia[0]['tienda'];?></h4> 
                                 </div>-->
                                 <div class="col-12 d-flex justify-content-center">
-                                    <img style="margin-left:0%;"  src="<?php echo PUBLIC_URL;?>img\Corporacion multifranquicia.png" class="img-responsive" alt="modelo">
+                                    <img style="margin-left:0%;"  src="<?php echo PUBLIC_URL."img/".$this->g[0]['tienda'].".png"?>" class="img-responsive" alt="modelo">
                                 </div>
                             </div>
                             <!-- MODAL DEL LA FUNCION ASIGNAR LOS PRODUCTOS -->
@@ -76,7 +76,7 @@
                                         <tr>
                                             <th>Codigo</th>
                                             <th>Ingrediente</th>
-                                            <th>Costo</th>
+                                            <!-- <th>Costo</th> -->
                                             <th>Asociar</th>
                                         </tr>
                                     </thead>
@@ -97,7 +97,7 @@
                   </div> 
                 </div>
 
-                	 <form action="<?php echo BASE_URL;?>inventario/insert" method="post" accept-charset="utf-8" role="form">
+                	 <form action="<?php echo BASE_URL.'inventario/insert/'.$this->idT;?>" method="post"  enctype="multipart/form-data" accept-charset="utf-8" role="form" id="forminsertar">
                             <input type="text" id="idT" name="idT" hidden value="<?php echo $this->idT;?>">
                                 <input type="text" name="unidadS" hidden id="unidadS">
                                 <?php if (isset($this->radio)): ?>
@@ -111,10 +111,10 @@
 
                                 <div class="card" style="box-shadow: 1px;  background: linear-gradient(to top left, rgba(255,255,255,.1), rgba(100,180,255,.2));">
                                     <fieldset>
-                                        <legend style="text-align: center"><label>Datos del producto de inventario</label></legend>
+                                        <legend style="text-align: center"><label>Maestro de productos</label></legend>
                             <div class="card ml-2 mr-1" id="recetasysubs" hidden style="border: solid 1px #909090; border-radius: 4px; width: 98%">
                             <div class="card-header" style="padding: 5px; height: 25%;">
-                              <center><h3 class="page-header" style="font-family: Times New Roman, Times, serif;">Productos asociados</h3> </center>
+                              <center><h3 class="page-header" style="font-family: Times New Roman, Times, serif; background: #337ab7; color: white">Productos Agrupados</h3> </center>
                             </div>
                               <div class="dataTable_wrapper" >
                                  <div class="col-sm-12 table-responsive ml-1 " style=" padding-top: 2px">
@@ -125,10 +125,11 @@
 
                                             <tr>
                                                 <th><center>Codigo</center></th>
-                                                <th><center>Ingrediente</center></th>
+                                                <th><center>Producto</center></th>
                                                 <th><center>Cantidad</center></th>
                                                 <th><center>U/M</center></th>
-                                                <th><center>Costo</center></th>
+                                                <!-- <th><center>Costo</center></th> -->
+                                                <th><center>Acciones</center></th>
                                             </tr>
                                         </thead>
                                         <tbody id="cuerpo_r"></tbody>
@@ -138,32 +139,73 @@
                             </div><br>
                                 <div class="form-group row d-flex justify-content-start ml-3  ">
                                         <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
-                                            <label class="labels" style="float: left;">Clasificacion</label>
-                                            <select name="familia" id="familia" class="form-control form-control-sm familia" required> 
+                                            <label class="labels" style="float: left;">Grupo <o style="color: red">*</o></label>
+                                            <div class="col-xs-1 d-flex offset-11" >
+                                              <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="En este campo debe seleccionar el elemento que permitirá especificar a que grupo pertenece el producto."></span>
+                                            </div>
+                                            <select name="grupo" id="grupo" class="form-control form-control-sm selectag" required>
                                             </select>
+                                            <input type="hidden" name="grupo" id="grupoid">
                                         </div>
                                         <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
-                                            <label class="labels" style="float: left;">Sub clasificacion</label>
-                                            <select name="subfamilia" id="sub_familia" class="form-control form-control-sm"> 
 
+                                            <label class="labels" style="float: left;">Clasificación <o style="color: red">*</o></label>
+                                            <div class="col-xs-1 d-flex offset-10" >
+                                              <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="En este campo debe especificar la clasificación del grupo al que pertenece el producto."></span><i style="cursor: pointer; cursor: hand" class="fa fa-search" data-toggle="tooltip" data-placement="top" title="Filtrar las clasificaciones" id="filtrarclasif" ></i>
+                                              <i class="fa fa-remove" id="removefiltrocla" data-toggle="tooltip" data-placement="top" title="Quitar filtro de clasificaciones" hidden></i>
+                                            </div>
+
+                                            <select name="familia" id="familia" class="form-control form-control-sm familia selectag" required> 
+                                              <option value="">Seleccione..</option>
                                             </select>
+                                            <input type="text" class="form-control form-control-sm" style="position: relative; margin-top: -27px; width: 100%" id="filtroclasif" hidden>
+                                            <input type="hidden" name="familia" id="familiaid">
+                                        </div>
+                                        <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
+                                            <label class="labels" style="float: left;">Sub clasificación <o style="color: red">*</o></label>
+                                            <div class="col-xs-1 d-flex offset-10" >
+                                              <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="En este campo debe especificar la Sub clasificación de la clasificación del grupo al que pertenece el producto."></span><i style="cursor: pointer; cursor: hand" class="fa fa-search" data-toggle="tooltip" data-placement="top" title="Filtrar las Sub clasificaciones" id="filtrarsubf" ></i>
+                                              <i class="fa fa-remove" id="removefiltrosubf" data-toggle="tooltip" data-placement="top" title="Quitar filtro de Sub clasificaciones" hidden></i>
+                                            </div>
+                                            <select name="subfamilia" id="sub_familia" class="form-control form-control-sm selectag"> 
+                                              <option value="">Seleccione..</option>
+                                            </select>
+                                            <input type="text" class="form-control form-control-sm" style="position: relative; margin-top: -27px; width: 100%" id="filtrosubf" hidden>
+                                            <input type="hidden" name="subfamilia" id="subfamiliaid">
                                         </div>
                                         <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
                                             <label class="labels" style="float: left;">Tipo de producto</label>
-                                            <select name="tipo_ingrediente" id="tipo_ingrediente" class="form-control form-control-sm" required>
+                                            <div class="col-xs-1 d-flex offset-11" >
+                                              <span style="cursor: hand; cursor: pointer;" class="fa fa-info-circle" id="" data-toggle="tooltip" data-placement="top" title="Este campo permite especificar el tipo de producto. Las opciones son: Simple “Producto de manejo unitario” y Agrupado “Producto que esta conformado por otros productos Ej Un Kit.”" ></span>
+                                            </div>
+                                            <!-- <select  id="tipo_ingrediente" class="form-control form-control-sm selectag">
                                               <option value="" disabled selected="">Seleccione..</option>
-                                            </select>
+                                            </select> -->
+                                            <input type="text" value="simple" class="form-control form-control-sm" readonly>
+                                            <input type="hidden" value="160" name="tipo_ingrediente">
+                                            <!-- <input type="hidden" name="tipo_ingrediente" id="tipo_ingredienteid"> -->
                                         </div>
                                         <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
-                                            <label class="labels" style="float: left;">Codigo</label>
+                                            <label class="labels" style="float: left;">Código <o style="color: red">*</o></label>
+                                            <div class="col-xs-1 d-flex offset-11" >
+                                              <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Este campo permite especificar el código de producto. Por defecto el código es creado por el sistema utilizando los elementos de clasificación previamente seleccionados y un correlativos de los productos existentes."></span>
+                                            </div>
                                             <div class="col-1 d-flex offset-10" id="glyphicon" data-toggle="tooltip" data-placement="right" title="Este codigo esta asignado a otro producto">
                                             </div>
-                                            <input type="text" class="form-control form-control-sm codigop" id="co" name="codigo" required>
+                                            <input type="text" autocomplete="off" class="form-control form-control-sm codigop inputsag" id="co" name="codigo" required>
+                                        </div>
+
+                                        <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 checkbox mt-3">
+                                          <label class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" name="estatus">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description" style="line-height: 1.8;">Inactivo</span>
+                                          </label>
                                         </div>
                                         
-                                        <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
+                                        <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2" hidden>
                                             <label class="labels" style="float: left;">Codigo anterior</label>
-                                            <input type="text" class="form-control form-control-sm" name="codigo_anterior" id="c_tcr">
+                                            <input type="text" autocomplete="off" class="form-control form-control-sm" name="codigo_anterior" id="c_tcr">
                                         </div>
                                         
                                 </div>
@@ -171,151 +213,329 @@
 
                                 <div class="form-group row d-flex justify-content-start ml-3 ">
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
-                                        <label class="labels" style="float: left;">Nombre</label>
+                                        <label class="labels" style="float: left;">Nombre <o style="color: red">*</o></label>
                                         <div class="col-1 d-flex offset-10" id="glyphi" data-toggle="tooltip" data-placement="right" title="ya existe un producto con el mismo nombre y marca">
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" name="nombre" id="nombre" required>
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm inputsag" name="nombre" id="nombre" required>
 
                                     </div>
-                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples asoc asociated" hidden>
+                                    <!-- <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2  asoc asociated" hidden>
                                         <label class="labels" style="float: left;">Unidad de consumo</label>
                                         <select  class="form-control form-control-sm ump" id="unidad_mp" >
                                         <option value="" selected disabled>Seleccione...</option>
                                         </select>
                                     </div>
                                     
-                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples asoc asociated" hidden>
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2  asoc asociated" hidden>
                                         <label class="labels" style="float: left;">Unidad de sistema</label>
                                         <select class="form-control form-control-sm ums" id="unidad_ms" >
                                         <option value="" selected disabled>Seleccione...</option>
                                         </select>
-                                    </div>
+                                    </div> -->
                                     
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
                                         <label class="labels" style="float: left;">Marca</label>
                                         <div class="col-1 d-flex offset-10" id="glyph" data-toggle="tooltip" data-placement="right" title="ya existe un producto con el mismo nombre y marca">
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" name="marca" id="marca" >
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm" name="marca" id="marca" >
+                                    </div>
+                                    
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 equipos articulos" hidden>
+                                        <label class="labels" style="float: left;">Modelo</label> 
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm" name="modelo" id="modelo" >
                                     </div>
 
-                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 articulos" hidden>
+                                        <label class="labels" style="float: left;">Presentación</label>
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm inputsag" name="presentacion" id="presentacion" >
+                                    </div>
+
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 equipos" hidden>
+                                        <label class="labels" style="float: left;">Serial</label>
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm" name="serial" id="serial" >
+                                    </div>
+
+                                    <!-- <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 equipos" hidden>
+                                        <label class="labels" style="float: left;" data-toggle="tooltip" data-placement="top" title="fecha del proximo mantenimiento">Fecha proximo Mtto.</label>
+                                        <div class="col-xs-1 d-flex offset-11" >
+                                              <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Fecha pautada para el proximo mantenimiento"></span>
+                                            </div>
+                                        <input type="date" style="height: 30px" class="form-control form-control-sm" name="mtto" id="mtto" >
+                                    </div> -->
+
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 articulos" hidden>
+                                        <label class="labels" style="float: left;">Talla</label>
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm inputsag" name="talla" id="talla" >
+                                    </div>
+
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 articulos" hidden>
+                                        <label class="labels" style="float: left;">Color</label>
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm inputsag" name="color" id="color" >
+                                    </div>
+
+                                    
+                                    
+
+                                     <!-- <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 " hidden>
                                         <label class="labels" style="float: left;">Tipo de inventario</label>
-                                        <select name="tipo_inventario" id="tipo_inventario" class="form-control form-control-sm" required>
+                                         <select name="tipo_inventario" id="tipo_inventario" class="form-control form-control-sm">
                                         </select>
-                                      </div>
+                                        <div class="col-xs-1 d-flex offset-11" >
+                                              <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Se refiere a la candencia con la cual sera considerado en las tomas de inventario"></span>
+                                            </div>
+                                        <input type="hidden" name="tipo_inventario" value="164">
+                                      </div> -->
 
-                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 agrupado" hidden>
-                                        <label class="labels" style="float: left;">Descripcion</label>
-                                        <textarea class="form-control form-control-sm" rows="3" name="descripcion2"></textarea>
-                                    </div>
+                                      <!-- <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 " hidden>
+                                        <label class="labels" style="float: left;">Tipo de almacenaje</label>
+                                        <div class="col-xs-1 d-flex offset-11" >
+                                              <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Se refiere a la rotacion que tendra el producto dentro del almacen"></span>
+                                            </div>
+                                        <select name="tipo_almacenaje" id="tipo_almacenaje" class="form-control form-control-sm">
+                                        </select>
+                                        <input type="hidden" name="tipo_almacenaje" value="236">
+                                      </div>  -->
+
+                                    
                                     
                                 </div>
+                                <!-- <div class="agrupado" hidden>
+                                  <div class="form-group row d-flex justify-content-start ml-3 ">
+                                      <div class="col-xs-8 col-sm-8 col-md-6 col-lg-4" >
+                                            <label class="labels" style="float: left;">Descripción</label>
+                                            <div class="col-1 d-flex offset-11" >
+                                              <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Detalles extras sobre el producto"></span>
+                                            </div>
+                                            <textarea class="form-control form-control-sm" rows="3" name="descripcion2"></textarea>
+                                        </div>
+                                    </div>
+                                </div> -->
                                 
-                                <div class="simples">
-                                  <div class="form-group row d-flex justify-content-start ml-3  ">
-                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
+                                
+                                <!-- <div class="simples">
+                                  <div class="form-group row d-flex justify-content-start ml-3  " hidden>
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2" hidden>
                                         <label class="labels" style="float: left;">Stock min</label>
-                                        <input type="text" class="form-control form-control-sm monto" name="stockmin" id="stockmin" placeholder="0,0000">
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm monto" name="stockmin" id="stockmin" placeholder="0,0000" value="0">
                                     </div>
                                     
-                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 " hidden>
                                         <label class="labels" style="float: left;">Stock max</label>
-                                        <input type="text" class="form-control form-control-sm monto" name="stockmax" id="stockmax" placeholder="0,0000">
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm monto" name="stockmax" id="stockmax" placeholder="0,0000" value="0">
                                     </div>
 
-                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2" hidden>
                                         <label class="labels" style="float: left;">Peso escurrido</label>
-                                        <input type="text" class="form-control form-control-sm monto" name="pesoEs" id="pesoEs" placeholder="0,0000">
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm monto" name="pesoEs" id="pesoEs" placeholder="0,0000" value="0">
                                     </div>
                                   </div>
-                                </div>
+                                </div> -->
                                  
 
                               
 
 
-                                <div class="form-group row d-flex justify-content-start ml-3  simples">
+                                <!-- <div class="form-group row d-flex justify-content-start ml-3  simples">
 
-                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 productoscompra simples" hidden>
-                                        <label class="labels" style="float: left;">Unidad de compra</label>
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 productoscompra simples" >
+                                        <label class="labels" style="float: left;">Unidad de recepción <o style="color: red">*</o></label>
+                                        <div class="col-xs-1 d-flex offset-11" >
+                                              <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Este campo permite especificar la unidad de medida en la que se recibe el producto."></span>
+                                            </div>
                                         <select name="unidad_medida_c" class="form-control form-control-sm umc" id="unidad_medida_c">
                                         </select>
-                                    </div>
-
-                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2" id="canti" hidden>
-                                        <label class="labels" style="float: left;">ud por <o id="uc"></o></label>
-                                        <input type="text" class="form-control form-control-sm" name="cantidadConsumo" id="cantidadConsumo" value="1">
                                     </div>
                                     
                                     <div id="cant" class="" hidden><div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 " id="cantC"></div></div> 
 
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
-                                        <label class="labels" style="float: left;">Unidad de Consumo</label>
+                                        <label class="labels" style="float: left;">Unidad de Consumo <o style="color: red">*</o></label>
+                                        <div class="col-xs-1 d-flex offset-11" >
+                                              <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Este campo permite especificar la unidad de medida en la que se utiliza el producto."></span>
+                                            </div>
                                         <select name="unidad_medida_p" class="form-control form-control-sm ump1" id="unidad_medida_pr" required>
-                                        <option value="Seleccione" selected disabled>Seleccione...</option>
+                                          <option value="Seleccione" selected disabled>Seleccione...</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
+                                        <label class="labels" style="float: left;">Unidad de Consumo 2 <o style="color: red">*</o></label>
+                                        <div class="col-xs-1 d-flex offset-11" >
+                                              <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Este campo permite especificar la unidad de medida en la que se utiliza el producto."></span>
+                                            </div>
+                                        <select name="unidad_medida_p2" class="form-control form-control-sm ump12" id="unidad_medida_pr2" required>
+                                          <option value="Seleccione" selected disabled>Seleccione...</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
+                                        <label class="labels" style="float: left;">Unidad de Consumo 3 <o style="color: red">*</o></label>
+                                        <div class="col-xs-1 d-flex offset-11" >
+                                              <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Este campo permite especificar la unidad de medida en la que se utiliza el producto."></span>
+                                            </div>
+                                        <select name="unidad_medida_p3" class="form-control form-control-sm ump13" id="unidad_medida_pr3" required>
+                                          <option value="Seleccione" selected disabled>Seleccione...</option>
                                         </select>
                                     </div>
                                     
                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
-                                        <label class="labels" style="float: left;">Unidad de Sistema</label>
+                                        <label class="labels" style="float: left;">Unidad de Sistema <o style="color: red">*</o></label>
+                                        <div class="col-xs-1 d-flex offset-11" >
+                                              <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Se refiere a la unidad de medida en la cual se utiliza el producto"></span>
+                                            </div>
                                         <select name="unidad_medida_s" class="form-control form-control-sm umsis" id="unidad_medida_s" required>
-                                        <option value="Seleccione" selected disabled>Seleccione...</option>
+                                          <option value="Seleccione" selected disabled>Seleccione...</option>
                                         </select>
                                     </div>                             
-                                </div>
+                                </div> -->
 
-                              <div class="productoscompra simples" hidden>
+                                <!-- <div class="row row d-flex justify-content-start ml-3 simples">
+
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2" id="canti1" hidden>
+                                        <label class="labels" style="float: left;"><o id="umcons1"></o> por <o id="uc"></o></label>
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm monto" name="cantidadConsumo" id="cantidadConsumo" value="0" required>
+                                    </div>
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2" id="canti2" hidden>
+                                        <label class="labels" style="float: left;"><o id="umcons2"></o> por <o id="umco1"></o></label>
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm monto" name="cantidadConsumo2" id="cantidadConsumo2" value="0" required>
+                                    </div>
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2" id="canti3" hidden>
+                                        <label class="labels" style="float: left;"><o id="umcons3"></o> por <o id="umco2"></o></label>
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm monto" name="cantidadConsumo3" id="cantidadConsumo3" value="0" required>
+                                    </div>
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2" id="canti4" hidden>
+                                        <label class="labels" style="float: left;"><o id="umsis1"></o> por <o id="umco3"></o></label>
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm monto" name="cantidadConsumo4" id="cantidadConsumo4" value="0">
+                                    </div>
+                              
+                                </div> -->
+
+                              <div class="productoscompra simples" >
                                   
                                 
 
-                                <div class="form-group row d-flex justify-content-start ml-3 ">
+                                <div class="form-group row d-flex justify-content-start ml-3 mt-3">
                                     
-                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
-                                        <label class="labels" style="float: left;">Contenido neto </label><span style="float: right; cursor: pointer; cursor: hand;" class="fa fa-question-circle" id="infocontneto"></span>
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 " hidden>
+                                        <label class="labels" style="float: left;">Contenido neto </label><span style="float: right; cursor: help;" class="fa fa-info-circle" id="" data-toggle="tooltip" data-placement="top" title="El Contenido neto se refiere a la cantidad que refleja el empaque del producto, esta cantidad se debe expresar en la unidad de sistema. Ej: si el empaque dice cont. neto 1Kg y la unidad de sistema es gramos, el valor debe expresarse como 1000 Gr."></span>
                                         <div class="input-group">
-                                          <input type="text" class="form-control form-control-sm contneto monto" name="contenidoN" id="contenidoN" autocomplete="off" placeholder="0,0000">
+                                          <input type="text" autocomplete="off" class="form-control form-control-sm contneto monto" name="contenidoN" id="contenidoN" autocomplete="off" placeholder="0,0000" value="1">
                                           <span class="btn btn-sm input-group-addon bg-info" id="avsistema" title="unidad de medida">U/M</span>
                                         </div>
                                     </div>
-                                    <input type="text" id="CNtemporal" hidden>
-                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 ">
-                                        <label class="labels" style="float: left;">Precio unitario</label><span style="float: right; cursor: pointer; cursor: hand;" class="fa fa-question-circle" id="infopreciou"></span>
+                                    <!-- <input type="text" autocomplete="off" id="CNtemporal" hidden>
+                                      <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 " hidden>
+                                        <label class="labels" style="float: left;">Costo unitario</label><span style="float: right; cursor: pointer; cursor: hand;" class="fa fa-question-circle" id="infopreciou"></span>
                                         <div class="input-group">
-                                          <input type="text" class="form-control form-control-sm precios" name="precio_unitario" id="pU" placeholder="0,0000" >
+                                          <input type="text" autocomplete="off" class="form-control form-control-sm precios" name="precio_unitario" id="pU" placeholder="0,0000" value="0">
                                           <span class="btn btn-sm input-group-addon bg-info" id="avconsumo" title="unidad de medida">U/M</span>
                                         </div>
-                                    </div>
-                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
+                                    </div>  -->
+                                   
+                                     
+                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2" hidden>
                                         <label class="labels" style="float: left;">Cantidad comprada</label>
-                                        <input type="text" class="form-control form-control-sm" name="contenidoC" id="contenidoC" placeholder="0,0000">
+                                        <input type="text" autocomplete="off" class="form-control form-control-sm" name="contenidoC" id="contenidoC" placeholder="0,0000" value="1">
                                     </div>
-                                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 simples">
-                                        <label class="labels" style="float: left;">Descripcion</label>
+                                    <div class="col-xs-8 col-sm-8 col-md-6 col-lg-4 simples">
+                                        <label class="labels" style="float: left;">Descripción</label>
+                                        <div class="col-1 d-flex offset-11" >
+                                              <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Detalles extras sobre el producto"></span>
+                                            </div>
                                         <textarea class="form-control form-control-sm" rows="3" name="descripcion"></textarea>
                                     </div>
+                                    
+                                    
+
                                 </div>
+                                <div class="row  d-flex justify-content-end">
+                                  <div class="col-sm-2">
+                                    <div class="" >
+                                        <img id="fakeimg" style="border: solid 1px; width: 100px; height: 100px; margin-top: -100px; background-color:white" src="" alt="Imagen">
+                                        <output id="list" hidden></output>
+                                      </div> 
+                                      <a href="#" id="loadfile"><h5>Cargar imagen</h5></a>
+                                      <input type="file" id="files" name="imagen" hidden>
+                                  </div>
+                                      
+                                    </div>
                                 
                               </div>
+
+                              <!-- <fieldset id="pesovol" class="simples" >      
+                                <div class="row ">
+                                    <div class="col-12 " hidden>
+                                      <center>
+                                      <h4 style="background: #337ab7; color: white; margin-bottom: 0px">Peso volumetrico de cada <o id="unicomp"></o>
+                                        <a style="cursor: hand;" class="secreto" onclick="infoFormula()">
+                                          <span class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Click para informacion sobre esta formula"></span>
+                                        </a>
+                                      </h4>
+                                    </center>
+                                        <div style="border-top: 1px solid  #DDDDDD; border-left: 1px outset  #DDDDDD;" class="card pb-3 mb-3" hidden>
+                                            <div class="row align-items-center d-flex justify-content-center ">
+                                              <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 mt-3" >
+                                                  <label class="labels" style="float: left;">Unidad de medida</label>
+                                                    <select class="form-control form-control-sm" id="umvol" name="umvol">
+                                                      <option value="32">Milimetro(s)</option>
+                                                      <option value="28">Centimetro(s)</option>
+                                                      <option value="26">Metro(s)</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 mt-3" >
+                                                    <label class="labels" style="float: left;">Ancho</label>
+                                                    <input type="text" autocomplete="off" class="form-control form-control-sm monto" name="ancho" id="ancho" value="0">
+                                                </div>
+                                                <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 mt-3" >
+                                                    <label class="labels" style="float: left;">Alto</label>
+                                                    <input type="text" autocomplete="off" class="form-control form-control-sm monto" name="alto" id="alto" value="0">
+                                                </div>
+                                                
+                                                <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 mt-3" >
+                                                    <label class="labels" style="float: left;">Largo</label>
+                                                    <input type="text" autocomplete="off" class="form-control form-control-sm monto" name="largo" id="largo" value="0">
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </fieldset> -->
                             
                                 
-                                    <fieldset class="simples asoc">
-                                    <legend style="text-align: center"><label>Formulas de conversion<a style="cursor: hand;" class="secreto" onclick="infoFormula()"><img class="img ml-1 mb-1" src="<?php echo PUBLIC_URL; ?>img/info.icon.png" data-toggle="tooltip" data-placement="top" title="Click para informacion sobre esta formula"></a></label></legend>
+                                    <fieldset class="" id="" hidden>
+                                    <center>
+                                      <h4 style="background: #337ab7; color: white; margin-bottom: 0px">Formulas de conversión
+                                        <a style="cursor: hand;" class="secreto" onclick="infoFormula()">
+                                          <span class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Click para informacion sobre esta formula"></span>
+                                        </a>
+                                      </h4>
+                                    </center>
                                         
                                     <div class="row ">
-                                        <div class="col-10 offset-1">
+                                        <div class="col-12">
                                             <div style="border-top: 1px solid  #DDDDDD; border-left: 1px outset  #DDDDDD;" class="card pb-3 mb-3">
                                                 <div class="row align-items-center d-flex justify-content-center ">
                                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 mt-3 productoscompra simples" hidden>
-                                                        <label class="labels" style="float: left;">U/M compra </label>
-                                                        <input type="text" class="form-control form-control-sm formulac" name="formulac" id="formulac">
+                                                        <label class="labels" style="float: left;">U/M recepción </label>
+                                                        <div class="col-xs-1 d-flex offset-11" >
+                                              <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Formula para convertir de la unidad de medida de recepción a la unidad de sistema"></span>
+                                            </div>
+                                                        <input type="text" autocomplete="off" class="form-control form-control-sm formulac" name="formulac" id="formulac">
                                                     </div>
                                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 mt-3">
                                                         <label class="labels" style="float: left;">U/M consumo</label>
-                                                        <input type="text" class="form-control form-control-sm formulap" name="formulap" id="formulap">
+                                                        <div class="col-xs-1 d-flex offset-11" >
+                                                          <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Formula para convertir de la unidad de medida de recepción a la unidad de consumo"></span>
+                                                        </div>
+                                                        <input type="text" autocomplete="off" class="form-control form-control-sm formulap" name="formulap" id="formulap">
                                                     </div>
                                                     <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 mt-3">
                                                         <label class="labels" style="float: left;">U/M sistema</label>
-                                                        <input type="text" class="form-control form-control-sm" name="formulas" id="formulas">
+                                                        <div class="col-xs-1 d-flex offset-11" >
+                                                          <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Formula para convertir de la unidad de medida de sistema a la unidad de consumo"></span>
+                                                        </div>
+                                                        <input type="text" autocomplete="off" class="form-control form-control-sm" name="formulas" id="formulas">
                                                     </div>
                                                 </div>
                                             </div>
@@ -323,35 +543,32 @@
                                     </div>
                                     </fieldset>
                             
-                                    <div class="row offset-1 simples">
-                                      <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 checkbox">
-                                          <label class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" name="estatus">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description" style="line-height: 1.8;">Inactivo</span>
-                                          </label>
-                                      </div>
-                                      <div class="col-xs-4 col-sm-4 col-md-4 checkbox productoscompra simples" hidden>
+                                    <!-- <div class="row offset-1 simples">
+                                      <div class="col-xs-4 col-sm-4 col-md-4 checkbox" hidden>
                                           <label class="custom-control custom-checkbox">
                                             <input type="checkbox" class="custom-control-input" name="exento">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description" style="line-height: 1.8;">Producto exento de impuesto</span>
+                                            <div class="col-xs-1 d-flex offset-1" >
+                                              <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Especifica si el producto estara excento de impuesto cuando esta seleccionado"></span>
+                                            </div>
                                           </label>
+                                          
                                       </div>
-                                  <!--<div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 checkbox">
+                                  <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2 checkbox">
                                           <label class="custom-control custom-checkbox">
                                             <input type="checkbox" class="custom-control-input" name="estatus">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description" style="line-height: 1.8;">Contiene Receta</span>
                                           </label>
-                                      </div> -->
-                                    </div>
+                                      </div> 
+                                    </div> -->
                                 </div>
                                 
                                   
 
                                     </fieldset>
-                    <div class="row productoscompra simples" hidden>
+                    <!-- <div class="row " hidden>
                         <div class="col-12 ">
                         
                             <div class="card mb-3 " style="background: #FFFFFF;">
@@ -375,7 +592,7 @@
                                             <div class="col-xs-2 col-sm-3 col-md-2">
                                                 <label class="labels">Proveedor</label>
                                                 <input id="autoC" class="form-control form-control-sm test" placeholder="filtrar por nombre" data-toggle="tooltip" data-placement="top" title="Escriba el nombre del proveedor para filtrar!">
-                                                <input type="text" name="idProveedor" id="idProveedor" hidden>
+                                                <input type="text" autocomplete="off" name="idProveedor" id="idProveedor" hidden>
                                             </div>
                                             <div class="col-xs-2 col-sm-3 col-md-2" id="codeP" >
                                                 <label class="labels">Codigo P.</label>
@@ -384,11 +601,11 @@
 
                                             <div class="col-xs-2 col-sm-3 col-md-2" id="priceP">
                                                 <label class="labels">Precio</label>
-                                                <input class="form-control form-control-sm precios" name="precioP" id="precioP" type="text"  placeholder="0,00">
+                                                <input class="form-control form-control-sm precios" name="precioP" id="precioP" type="text"  placeholder="0,00" value="0">
                                             </div>
 
                                         <div class="row d-flex ">
-                                            <div class="col-xs-2 col-sm-3 col-md-1 offset-xs-5 mt-2" >
+                                            <div class="col-xs-2 col-sm-3 col-md-1 offset-xs-5 mt-1" >
                                                 <button type="button" style="margin-left: 15px;" class="btn mt-3 btn-xs py-1 px-2 btn-outline-primary " onclick="asignacionProveedor()"> 
                                                     <font size="4"><b>
                                                         <span class="fa fa-plus" data-toggle="tooltip" data-placement="top" title="Agregar datos del proveedor"></span></b>
@@ -421,33 +638,151 @@
 
                             
                         </div>
-                    </div>  
+                    </div> -->  
+                    <div class="modal fade" id="modaling" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+                  <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                      <div class="modal-title" ><h3><o id="titulocard">Asignacion de productos al agrupado</o> <?php $ti=strtolower(str_replace('(PTY)', '', $this->mercancia[0]['producto'])); echo "[".ucwords($ti)."]"; ?></h3></div>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      </div>
+                        <div class="modal-body">
+                          <input type="hidden" id="fam" value="<?php echo $this->mercancia[0]['familia_id']; ?>">
+                          <input type="hidden" name="idrece" id="idrece" value="<?php echo $this->mercancia[0]['receta_id']; ?>">
+                          <input type="hidden" name="mercancia_id" id="mercid" >
+                          <input type="hidden" name="idproductosel" id="idproduct" >
+                          <input type="hidden" name="iding" id="iding" value="<?php echo $this->mercancia[0]['idpr'] ?>">
+                                
+                          
+                          <div class="dataTable_wrapper " >
+                              <div class="col-sm-12 table-responsive">
+                                  <table id="tablafiltraje" class="display table table-sm table-striped table-bordered table-hover" >
+                                    <thead class="theadH">
+                                        <tr>
+                                            <th>Codigo</th>
+                                            <th>Producto</th>
+                                            <!-- <th>Precio Unitario</th> -->
+                                            <th>Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cuerpo_i"></tbody>
+                                </table>     
+                              </div>     
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div>
+                  </div> 
+                </div>
 
-                            <div class="row d-flex justify-content-center">
-                                  <label class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="asignacion" value="1">
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description" style="line-height: 1.8;">Ir a la asignacion de productos al finalizar</span>
-                                  </label>
+                <!-- Modal cantidad x Producto-->
+                              <div class="modal fade mcant" id="mcant" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-sm">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" ><b id="tmcant"></b></h5>
+                                    </div>
+                                    <div class="modal-body">
+                                    <div id="cuerpoagregar"></div>
+                                        <div class="form-group">
+                                          <label class="form-control-label">Cantidad:</label>
+                                          <input id="canti" class="form-control monto" placeholder="cantidad"  title="cantidad por Producto" >
+                                        </div>
+                                        <div class="form-group">
+                                          <label class="form-control-label">Unidad de medida:</label>
+                                          <input type="text" autocomplete="off" id="unidadmedf"   class="form-control" readonly="">
+                                          <input type="hidden" id="unidadmed" name="unidadmed"  class="form-control">
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="modal-footer justify-content-center" id="bot">
+                                      
+                                    </div>
+                                  </div>
                                 </div>
+                              </div>
+                              <!-- fin modal -->
+
+                              <!-- Modal Confirmacion para eliminar Productos-->
+                            <div class="modal fade " id="modaldelete" role="dialog">
+                              <div class="modal-dialog modal-sm">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" ><b id="t">Eliminar Producto</b></h5>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button> 
+                                  </div>
+                                  <div class="modal-body" id="cuerpodelete">                                    
+                                  </div>
+                                  <div class="modal-footer" id="botones">
+                                    
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                         <!-- fin de la modal-->
+                              <div id="radiosredir" hidden>
                                 <div class="row d-flex justify-content-center">
                                   <label class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="asignacion" value="2">
+                                    <input type="radio" class="custom-control-input" name="asignacion" checked="checked" value="2">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description" style="line-height: 1.8;">No redireccionar a otro modulo</span>
                                   </label>
                                 </div>
-
-                            <div class="row">
-                                <div class="col d-flex justify-content-center">
-                                    <input type="button" class="btn btn-sm btn-outline-primary " value="Asociar productos" data-toggle="tooltip" data-placement="top" title="agregar elementos asociados a este producto" id="asoci" hidden>
-                                    <input type="submit" class="btn btn-sm btn-outline-primary" value="Guardar" id="botonG" disabled>
+                                <div class="row d-flex justify-content-center">
+                                  <label class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="asignacion" value="1">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description" style="line-height: 1.8;">Ir a la asignación de productos al finalizar</span>
+                                  </label>
                                 </div>
-                            </div>
-                            
+                                <div class="row d-flex justify-content-center">
+                                  <label class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="asignacion" value="3" id="rein">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description" style="line-height: 1.8;">Registrar otro producto igual al que esta creando</span>
+                                  </label>
+                                </div>
+                              </div>
+                                
+                            <input type="submit" id="enviarparainsert" hidden>
+                            <!-- <div class="row ml-3 mb-3" id="infoagru" hidden>
+                  <div class="col-sm-12">
+                    <span class="fa fa-info-circle" style="color: black; font-size: 14px"><b> Nota: Después de guardar el producto del tipo agrupado, podra incluir los productos que formaran parte de él </b></span>
+                  </div>
+                </div> -->
                 </div>
                 </form>
-                <!-- MODAL DE ALERTA-->
+                
+                            <div class="row" id="botonessimp">
+                                <div class="col d-flex justify-content-center">
+                                  <span class="fa fa-info-circle mt-1 mr-2" data-toggle="tooltip" data-placement="top" title=" La información referente al lote se debe registrar en el modulo de compra de mercancia en su debido momento" style="cursor: help"></span> 
+                                    <input type="button" class="btn btn-sm btn-outline-primary " value="Asociar productos" data-toggle="tooltip" data-placement="top" title="agregar elementos asociados a este producto" id="asoci" hidden>
+                                    <button class="btn btn-sm btn-primary exportar" id="exportar">Ver listado <span class="fa fa-file-pdf-o"></span></button>
+                                    <a href="<?php echo BASE_URL.'inventario/stockE/'.$this->idT;?>" class="btn btn-sm btn-outline-primary ml-2">Ver productos</a>
+                                    <input type="button" class="btn btn-sm btn-outline-primary ml-2" value="Guardar" id="botonG" >
+                                    <button class="btn btn-sm btn-outline-primary ml-2" id="btn-reinsert" >Guardar + Crear similar</button>
+                                </div>
+                            </div>
+                            <div class="row" id="guardando" hidden>
+                                <div class="col-sm-12  d-flex justify-content-center mt-2">
+                                  <h5>Guardando... Por favor espere...</h5>
+                                </div>
+                            </div>
+                            <div class="row " id="botonesagr" hidden>
+                                  <div class="col d-flex justify-content-center">
+                                      <button class="btn btn-sm btn-outline-primary filtro" value="1" id="btnagregar" data-toggle="modal" data-target="#modaling">Agregar productos</button>
+                                      <?php if (isset($_SESSION['asignar'])) { ?>
+                                        <button class="btn btn-sm btn-outline-primary filtro fin" id="finasignar" disabled>Finalizar</button>
+                                      <?php }else{ ?>
+                                        <button class="btn btn-sm btn-outline-primary filtro fin" id="finstock" disabled>Finalizar</button>
+                                      <?php } ?>
+                                      
+                                  </div>                                  
+                            </div>
+                
+                <!-- MODAL DE ALERTA--> 
                                         <div class="modal fade " id="alerta" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
                                             <div class="modal-dialog modal-sm" role="document">
                                                 <div class="modal-content">
@@ -461,7 +796,7 @@
                                                     </div>
                                                     <div class="modal-body" >
 
-                                                       <div id="cuerpo" class="cuerpo"></div>
+                                                       <div id="cuerpo" class="cuerpo">Por favor seleccione un tipo de producto</div>
                                                         <center>    
                                                             <div id="espera" hidden>
                                                                 <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
@@ -485,7 +820,7 @@
                         <div class="modal-dialog modal-sm" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <div id="t"><h6>Agregar nueva Sub-Clasificacion</h6></div>
+                                    <div id="t"><h6>Agregar nueva Sub-Clasificación</h6></div>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -497,7 +832,7 @@
                                    <div id="cuerpo"></div>
                                    <div class="form-group">
                                     <div class="col-sm-12">
-                                      <label class="labels">Nombre de Sub-Clasificacion</label>
+                                      <label class="labels">Nombre de Sub-Clasificación</label>
                                       <input type="text" id="nuevasub" class="form-control form-control-sm">
                                     </div>
                                    </div>

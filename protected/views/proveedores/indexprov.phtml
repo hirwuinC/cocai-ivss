@@ -1,5 +1,12 @@
 <!doctype html>
 <html lang="us">
+<style>
+  .modal-bodyppal{
+  height: 500px;
+  width: 100%;
+  overflow-y: auto;
+}
+</style>
 <head>
   <meta charset="utf-8">
   <title>Transferencias</title>
@@ -24,7 +31,7 @@
 
                         <div  class="card cardH">
                         <div class="card-header" hidden>
-                            <center><h3><o id="titulocard">Proveedores</o> <?php $ti=strtolower($this->g[0]['tienda']); echo "[".ucwords($ti)."] Sub-modelo ".$this->g[0]['subM'];  ?></h4></center>
+                            <center><h3><o id="titulocard">Proveedores</o> <?php $ti=strtolower($this->g[0]['tienda']); echo "[".ucwords($ti)."] Sub-modelo ".$this->g[0]['subM'];  ?></h3></center>
                         </div>
                         
                         <div class="card-block" style="padding-bottom: 0px; ">                        
@@ -163,8 +170,9 @@
 								<div class="col-sm-12" style="margin-bottom: -1%">
 									<?php if ($this->g[0]['modelo'] != null): ?>
 			                            <div>
-			                              	<img class="hidden-sm-down" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png">
-			                              	<img width="25%" height="8%" class="hidden-sm-up" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png">
+			                              	<!-- <img class="hidden-sm-down" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png"> -->
+                                      <img class="hidden-sm-down" style="float: right;" src="http://localhost/COCAI/public/img/ivss.png">
+			                              	<img width="25%" height="8%" class="hidden-sm-up" style="float: right;" src="http://localhost/COCAI/public/img/ivss.png">
 			                            </div>
 	                        		<?php endif ?>
                         
@@ -174,8 +182,8 @@
 			                        } ?>
 			                        <?php if ($this->g[0]['modelo'] == null): ?>
 			                            <div>
-			                              <img class="hidden-sm-down" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->g[0]['tienda']; ?>.png">
-			                              <img width="25%" height="8%" class="hidden-sm-up" style="float: right;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $this->g[0]['tienda']; ?>.png">
+			                              <img class="hidden-sm-down" style="float: right;" src="http://localhost/COCAI/public/img/ivss.png">
+			                              <img width="25%" height="8%" class="hidden-sm-up" style="float: right;" src="http://localhost/COCAI/public/img/ivss.png">
 			                            </div>
 			                        <?php endif ?>
 								</div>
@@ -291,7 +299,7 @@
             </div>
             
             <!-- Modal body -->
-            <div class="modal-body">
+            <div class="modal-body modal-bodyppal" style="padding-bottom:0px" >
               <div class="row">
                   
                 <form action="<?php echo BASE_URL;?>proveedores/newprov/<?php echo $this->g[0]['idT'];?>" method="post" accept-charset="utf-8" id="form-insert">
@@ -317,18 +325,157 @@
                                 <label class="labels" for="company" class=" form-control-label">Correo</label>
                                 <input type="email" id="correo" name="correo" placeholder="correo del proveedor" class="form-control form-control-sm">
                             </div>
-                            <div class="col-xs-12 col-sm-4 mt-3">
-                              <button type="button" class="btn btn-sm btn-outline-info" data-toggle="modal" data-target="#modaltlfs" style="margin-top: 3%" id="tlfs">
-                                Numeros telefonicos <i class="fa fa-phone font-2xl"></i>
-                              </button>       
+                            <div class="col-xs-12 col-sm-4">
+                                <label class="labels" for="company" class=" form-control-label">Pagina web</label>
+                                <input type="text" id="pagina" name="pagina" placeholder="web del proveedor" class="form-control form-control-sm">
                             </div>
+                            <div class="col-xs-12 col-sm-4">
+                                <!-- <label class="labels" for="">Nacionalidad:</label> -->
+                                <div class="row">
+                                  <div class="col-lg-12">
+                                    <label class="labels" for="">Procedencia:</label>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-sm-5">
+                                    <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input radios" name="procede" value="229">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description" >Nacional</span>
+                                          </label>
+                                  </div>
+                                </div>
+                                <div class="row" style="margin-top: -10px">
+                                  <div class="col-sm-7">
+                                    <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input radios" name="procede" value="230">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description" >Internacional</span>
+                                          </label>
+                                  </div>
+                                  
+                                </div>
+                                
+                                <!-- <select title="Seleccione un estado" class="form-control form-control-sm" name="nacionalidad" id="nacionalidad" >
+                                  <option selected disabled="" value="">Seleccione..</option>
+                                  <option value="1">Nacional</option>
+                                  <option value="2">internacional</option>
+                                </select> -->
+                            </div>
+                                
+                            
+                            
                         </div>
+                        <h4 style="background: #337ab7; border-radius: 5px 5px 0px 0px; text-align: center;" class="text-white">Telefonos del proveedor</h4>
+                        <div class="row" >
+                              <div id="tablatelefonos" class="col-sm-11" >
+                                  <div class="dataTable_wrapper ">
+                                    <div class="table-responsive ">
+                                    <table id="tablatlfs" class="table table-sm table-bordered">
+
+                                        <thead>
+                                           <tr>
+                                            <th>Tipo</th>
+                                            <th>Numero</th>
+                                            <th></th>
+                                          </tr>
+                                        </thead>
+                                    <tbody id="cuerpot">
+                                    </tbody>
+                                 </table>
+                              </div>
+                            </div>
+                          </div>
+                              <div class="col-sm-1 mt-1">
+                              <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#modaltlfs"  id="tlfs">
+                                <i class="fa fa-plus font-2xl"> </i>
+                              </button>       
+                              </div>
+                              
+                            </div>
+
+                        <h4 style="background: #337ab7; border-radius: 5px 5px 0px 0px; text-align: center;" class="text-white">Persona contacto</h4>
+                        <div class="form-group row d-flex justify-content-start">
+                           
+                            <div class="col-xs-12 col-sm-4">
+                                <label class="labels" for="company" class=" form-control-label">Nombre</label><!-- <span class="fa fa-asterisk " style="color: #D82626; font-size: 10px"></span> -->
+                                <input type="text" id="nombrecontact" name="nombrecontact" placeholder="Nombre del contacto" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="col-xs-12 col-sm-4">
+                                <label class="labels" for="vat" class=" form-control-label">Telefono</label>
+                                <input type="text" id="numcontact" name="numcontact" placeholder="numero telefonico" class="form-control form-control-sm">
+                            </div>
+                            
+                            <div class="col-xs-12 col-sm-4">
+                                <label class="labels" for="company" class=" form-control-label">Correo</label>
+                                <input type="email" id="correocontact" name="correocontact" placeholder="correo del contacto" class="form-control form-control-sm">
+                            </div>
+                            
+                        </div>
+
+                        <h4 style="background: #337ab7; border-radius: 5px 5px 0px 0px; text-align: center;" class="text-white">Socios del registro mercantil</h4>
+                        <div class="row" >
+                              <div id="tablasocio" class="col-sm-11" >
+                                  <div class="dataTable_wrapper ">
+                                    <div class="table-responsive ">
+                                    <table id="tablasocios" class="table table-sm table-bordered">
+                                        <thead>
+                                          <tr>
+                                            <th>Nombre</th>
+                                            <th>Telefono</th>
+                                            <th>correo</th>
+                                            <th></th>
+                                          </tr>
+                                        </thead>
+                                    <tbody id="cuerpot">
+                                    </tbody>
+                                 </table>
+                              </div>
+                            </div>
+                          </div>
+                              <div class="col-sm-1 mt-1">
+                              <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalsocios"  id="massocios">
+                                <i class="fa fa-plus font-2xl"> </i>
+                              </button>       
+                              </div>
+                              
+                            </div>
+
+                        <h4 style="background: #337ab7; border-radius: 5px 5px 0px 0px; text-align: center;" class="text-white">Vendedores</h4>
+                        <div class="row" >
+                              <div id="tablavendedor" class="col-sm-11" >
+                                  <div class="dataTable_wrapper ">
+                                    <div class="table-responsive ">
+                                    <table id="tablavendedores" class="table table-sm table-bordered">
+                                        <thead>
+                                          <tr>
+                                            <th>Nombre</th>
+                                            <th>Cargo</th>
+                                            <th>Telefono</th>
+                                            <th>correo</th>
+                                            <th></th>
+                                          </tr>
+                                        </thead>
+                                    <tbody id="cuerpot">
+                                    </tbody>
+                                 </table>
+                              </div>
+                            </div>
+                          </div>
+                              <div class="col-sm-1 mt-1">
+                              <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalvendedores"  id="masvendedores">
+                                <i class="fa fa-plus font-2xl"> </i>
+                              </button>       
+                              </div>
+                              
+                            </div>
+
                         <h4 style="background: #337ab7; border-radius: 5px 5px 0px 0px; text-align: center;" class="text-white">Dirección</h4>
                         <div id="datos2">
                                 <div class="row form-group d-flex justify-content-center">                                 
-                                    <div class="col-xs-12 col-sm-3 col-md-2">
+                                    <!-- <div class="col-xs-12 col-sm-3 col-md-2">
                                         <input type="radio" name="tipo_habi" id="home" class="house"><i class="fa fa-home"> Oficina</i>
-                                    </div>
+                                    </div> -->
                                     <div class="col-xs-12 col-sm-3 col-md-2">
                                         <input type="radio" name="tipo_habi" id="building"><i class="fa fa-building"> Edificio</i>
                                     </div>
@@ -340,35 +487,38 @@
                             <div id="d2" hidden>
                             <div class="row form-group" >
                                 <div class="col-xs-12 col-sm-4">
-                                    <label style="margin-bottom: -5px" for="">Estado:</label>
+                                    <label class="labels" for="">Estado:</label>
                                     <select title="Seleccione un estado" class="form-control form-control-sm" name="estado" id="estado" ></select>
                                 </div>
                                 <div class="col-xs-12 col-sm-4">
-                                    <label style="margin-bottom: -5px" for="">Municipio:</label>
+                                    <label class="labels" for="">Municipio:</label>
                                       <select title="Seleccione un municipio" class="form-control form-control-sm" name="municipio" id="municipio" >
                                           <option value="Seleccione" selected disabled="">Seleccione..</option>
                                       </select>
                                 </div>
                                 <div class="col-xs-12 col-sm-4">
-                                    <label style="margin-bottom: -5px" for="">Parroquia:</label>
+                                    <label class="labels" for="">Parroquia:</label>
                                       <select title="seleccione una parroquia" class="form-control form-control-sm" name="parroquia_id" id="parroquia" >
                                           <option value="Seleccione" selected disabled>Seleccione..</option>
                                       </select>
                                 </div>
-                                <div class="col-xs-12 col-sm-4">
-                                    <label style="margin-bottom: -5px" for="">Urbanizacion:</label>
+                            </div>
+
+                            <div class="row form-group">
+                              <div class="col-xs-12 col-sm-4">
+                                    <label class="labels" for="">Urbanizacion:</label>
                                      <input title="el nombre de la urbanizacion puede contener letras, numeros, espacios y signos y un maximo de 60 caracteres" type="text" class="form-control form-control-sm " name="urbanizacion" id="urbanizacion" placeholder="Nombre de urbanizacion" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{3,60}" >
                                 </div>
                                 <div class="col-xs-12 col-sm-4">
-                                    <label style="margin-bottom: -5px" for="">Calle:</label>
+                                    <label class="labels" for="">Calle:</label>
                                       <input title="el nombre de la calle puede contener letras, numeros, espacios y signos y un maximo de 60 caracteres" type="text" class="form-control form-control-sm" name="calle" id="calle" placeholder="Nombre de calle" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{1,60}" >
                                 </div>
                                 <div class="col-xs-12 col-sm-4" id="edif" hidden>
-                                    <label style="margin-bottom: -5px" for="">Edificio:</label>
+                                    <label class="labels" for="">Edificio:</label>
                                     <input title="el nombre del edificio puede contener letras, numeros, espacios y signos y un maximo de 60 caracteres" type="text" class="form-control form-control-sm" name="edificio" id="edificio" placeholder="Nombre de Edif." pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{1,60}" >
                                 </div>
                                 <div class="col-xs-12 col-sm-4" id="house" hidden>
-                                    <label style="margin-bottom: -5px" for="">Oficina:</label>
+                                    <label class="labels" for="">Oficina:</label>
                                     <input title="el nombre de la oficina puede contener letras, numeros, espacios y signos y un maximo de 60 caracteres" type="text" class="form-control form-control-sm" name="casa" id="casa" placeholder="nombre o nro de oficina" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{1,60}" >
                                 </div>   
                             </div>
@@ -377,15 +527,112 @@
                             <div class="row form-group">
                                 
                                 <div class="col-xs-12 col-sm-4" id="numint" hidden>
-                                    <label style="margin-bottom: -5px" for="">Piso N°:</label>
+                                    <label class="labels" for="">Piso N°:</label>
                                        <input title="el numero de intercomunicador puede contener letras, numeros, espacios y signos y un maximo de 5 caracteres" type="text" class="form-control form-control-sm" name="intercomunicador" id="intercomunicador" placeholder="N° de intercomunicador" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-*_°+/]{1,15}" >
                                 </div>
+                                <div class="col-xs-12 col-sm-4">
+                                    <label class="labels" for="">Zona postal:</label>
+                                     <input title="el nombre de la urbanizacion puede contener letras, numeros, espacios y signos y un maximo de 60 caracteres" type="text" class="form-control form-control-sm " name="zona_postal" id="zona_postal" placeholder="" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{3,60}" >
+                                </div>
                                 <div class="col-xs-12 col-sm-4" id="ptoref">
-                                    <label style="margin-bottom: -5px" for="">Punto de referencia:</label>
-                                      <textarea title="el punto de referencia puede contener letras, numeros, espacios y signos y un maximo de 160 caracteres" class="form-control form-control-sm" name="p_referencia" id="p_referencia" placeholder="punto de referencia para ubicar al proveedor" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{5,160}"  rows="3"></textarea>
+                                    <label class="labels" for="">Observaciones:</label>
+                                      <textarea title="el punto de referencia puede contener letras, numeros, espacios y signos y un maximo de 160 caracteres" class="form-control form-control-sm" name="p_referencia" id="p_referencia" placeholder="" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð0-9 ,.'-]{5,160}"  rows="3"></textarea>
                                 </div>
                                  
                             </div>
+                            <h4 style="background: #337ab7; border-radius: 5px 5px 0px 0px; text-align: center;" class="text-white">Requisitos indispensables</h4>
+                            <div class="row">
+                              <div class="col-sm-10">
+                                <label class="font12">Pose pago de la declaracion de ISLR del ultimo ejercicio economico?</label>
+                                
+                              </div>
+                              <div class="col-sm-2">
+                                <select class="form-control form-control-sm" name="islr">
+                                  <option value="1" selected>Si</option>
+                                  <option value="0">No</option>
+                                </select>
+                              </div>
+                              
+                            </div>
+                            <div class="row">
+                              <div class="col-sm-10">
+                                <label class="font12">Registro de informacion fiscal(RIF) Vigente?</label>
+                                
+                              </div>
+                              <div class="col-sm-2">
+                                <select class="form-control form-control-sm" name="rifvigente">
+                                  <option value="1" selected>Si</option>
+                                  <option value="0">No</option>
+                                </select>
+                              </div>
+                              
+                            </div>
+                            <div class="row">
+                              <div class="col-sm-10">
+                                <label class="font12">Cetificado de inscripcion ante el servicio nacional de contratistas vigente?</label>
+                                
+                              </div>
+                              <div class="col-sm-2">
+                                <select class="form-control form-control-sm" name="contratista">
+                                  <option value="1" selected>Si</option>
+                                  <option value="0">No</option>
+                                </select>
+                              </div>
+                              
+                            </div>
+                            <div class="row">
+                              <div class="col-sm-10">
+                                <label class="font12">Solvencia laboral?</label>
+                                
+                              </div>
+                              <div class="col-sm-2">
+                                <select class="form-control form-control-sm" name="solvlaboral">
+                                  <option value="1" selected>Si</option>
+                                  <option value="0">No</option>
+                                </select>
+                              </div>
+                              
+                            </div>
+                            <div class="row">
+                              <div class="col-sm-10">
+                                <label class="font12">Posee el permiso sanitario de funcionamiento (en caso de que aplique)?</label>
+                                
+                              </div>
+                              <div class="col-sm-2">
+                                <select class="form-control form-control-sm" name="persanitario">
+                                  <option value="1" selected>Si</option>
+                                  <option value="0">No</option>
+                                </select>
+                              </div>
+                              
+                            </div>
+                            <!-- <h4 style="background: #337ab7; border-radius: 5px 5px 0px 0px; text-align: center;" class="text-white">Area para Dpto de compras</h4>
+                          <div class="row">
+                            <div class="col-xs-12 col-sm-4">
+                                <label class="labels" for="company" class=" form-control-label">Tiempos de despacho</label>
+                                <div class="input-group">
+                                    <input type="number" id="dias" name="dias" placeholder="" class="form-control form-control-sm">
+                                    <span class="input-group-addon btn-sm">
+                                      Dias
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-4">
+                                <label class="labels" for="company" class=" form-control-label">Adenlanto para despachos</label>
+                                <div class="input-group">
+                                    <input type="number" id="dias" name="dias" placeholder="" class="form-control form-control-sm">
+                                    <span class="input-group-addon btn-sm">
+                                      %
+                                    </span>
+                                </div>
+                            </div>
+                          </div> -->
+                          <div class="row mt-3">
+                            <div class="col-sm-12">
+                              <img width="125px" height="65px" src="http://localhost/COCAI/public/img/ivss.png" alt="exito" style="float:left;"/>
+                            </div>
+                          </div>
+                            
                             </div>
                         
                       </div>
@@ -397,15 +644,44 @@
             </div>
             
             <!-- Modal footer -->
-            <div class="modal-footer">
+            <div class="modal-footer" style="padding-top: 0px">
               <div>Campos obligatorios(<span class="fa fa-asterisk" style="color: #D82626; font-size: 10px"></span>)</div>
               <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-sm btn-outline-primary" id="asignate">Asignar productos </button>
               <button type="submit" class="btn btn-sm btn-outline-primary" id="guardarprov">Guardar proveedor</button>
             </div>
             
           </div>
         </div>
       </div>
+      
+      <!-- Small modal -->
+
+<div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="modalaprobar">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+              <h4 class="modal-title">¡Aviso!</h4>
+              <button type="button" class="close cancelupdatetlf" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div class="row d-flex justify-content-center">
+                <div class="col-sm-12">
+                  <h4>Disculpe, el proveedor esta pendiente de ser aprobado</h4>
+                </div>
+                
+              </div>
+            </div>
+            <div class="modal-footer">
+              
+              <button type="button" class="btn btn-sm btn-outline-primary " data-dismiss="modal" >Aceptar</button>
+              
+            </div> 
+      
+    </div>
+  </div>
+</div>
+
 
       <!-- The Modal -->
       <div class="modal fade" id="modaltlfs">
@@ -435,22 +711,7 @@
                                 
                             </div>
               </div>
-              <div id="tablatelefonos" class="mt-3" hidden>
-                <div class="dataTable_wrapper ">
-                  <div class="table-responsive col-sm-12">
-                  <table id="tablatlfs" class="table table-sm table-bordered">
-                      <thead>
-                        <tr>
-                          <th>Numero</th>
-                          <th>Eliminar</th>
-                        </tr>
-                      </thead>
-                      <tbody id="cuerpot">
-                      </tbody>
-                    </table>
-                </div>
-              </div>
-              </div>
+              
               
             </div>
             
@@ -459,6 +720,113 @@
               <button type="button" class="btn btn-sm btn-outline-primary" data-dismiss="modal" id="continuetlf">Continuar</button>
               <button type="button" class="btn btn-sm btn-outline-primary updatetlf cancelupdatetlf" data-dismiss="modal" id="cancelupdatetlf" hidden>Cancelar</button>
               <button type="button" class="btn btn-sm btn-outline-primary updatetlf" id="updatetlf" hidden>Guardar cambios</button>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+
+       <!-- The Modal -->
+      <div class="modal fade" id="modalsocios">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+          
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Socios del registro mercantil</h4>
+              <button type="button" class="close cancelupdatetlf" data-dismiss="modal">&times;</button>
+            </div>
+            
+            <!-- Modal body -->
+            <div class="modal-body">
+              <form action="<?php echo BASE_URL;?>proveedores/datossocio/1" id="formsocios" method="post" accept-charset="utf-8" role="form">
+                <div class="row d-flex justify-content-start">
+                  <div class="col-sm-12">
+                    <label for="" class="labels font11">Nombre</label> 
+                    <input  class="form-control form-control-sm" type="text" placeholder="nombre del socio" id="nombresocio" required="" name="nombresocio">         
+                    
+                                  
+                  </div>
+                  <div class="col-sm-12">
+                    <label for="" class="labels font11">Telefono</label> 
+                    <input  class="form-control form-control-sm" type="text" placeholder="telefono del socio" id="tlfsocio" required name="tlfsocio">                     
+                  </div>
+                  <div class="col-sm-12">
+                    <label for="" class="labels font11">Correo</label> 
+                    <input  class="form-control form-control-sm" type="text" placeholder="correo del socio" id="mailsocio" required name="mailsocio">                     
+                  </div>                      
+                </div>
+                <input type="submit" id="enviarsocios" hidden>
+              </form>
+              <div class="row d-flex justify-content-center mt-2">
+                  <div class="col-sm-2">
+                    <button class="btn btn-sm btn-outline-info" type="button" id="addsocio" >Agregar</button>
+                  </div>
+              </div>
+              
+              
+            </div>
+            
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-sm btn-outline-primary" data-dismiss="modal" id="continuesocio">Continuar</button>
+              <button type="button" class="btn btn-sm btn-outline-primary updatetlf cancelupdatesocio" data-dismiss="modal" id="cancelupdatesocio" hidden>Cancelar</button>
+              <button type="button" class="btn btn-sm btn-outline-primary updatetlf" id="updatesocio" hidden>Guardar cambios</button>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+
+      <!-- The Modal -->
+      <div class="modal fade" id="modalvendedores">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+          
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Vendedores</h4>
+              <button type="button" class="close cancelupdatetlf" data-dismiss="modal">&times;</button>
+            </div>
+            
+            <!-- Modal body -->
+            <div class="modal-body">
+              <form action="<?php echo BASE_URL;?>proveedores/datosvendedor/1" id="formvendedor" method="post" accept-charset="utf-8" role="form">
+              <div class="row d-flex justify-content-start">
+                
+                <div class="col-sm-12">
+                  <label for="" class="labels font11">Nombre</label> 
+                  <input  class="form-control form-control-sm" type="text" placeholder="nombre del vendedor" id="nombrevendedor" name="nombrevendedor" required>                     
+                </div>
+                <div class="col-sm-12">
+                  <label for="" class="labels font11">Cargo</label> 
+                  <input  class="form-control form-control-sm" type="text" placeholder="cargo del vendedor" id="cargovendedor" name="cargovendedor" required>                       
+                </div>
+                <div class="col-sm-12">
+                  <label for="" class="labels font11">Telefono</label> 
+                  <input  class="form-control form-control-sm" type="text" placeholder="telefono del vendedor" id="tlfvendedor" name="tlfvendedor" required>                         
+                </div>
+                <div class="col-sm-12">
+                  <label for="" class="labels font11">Correo</label> 
+                  <input  class="form-control form-control-sm" type="text" placeholder="correo del vendedor" id="mailvendedor" name="mailvendedor" required>                     
+                </div>                      
+              </div>
+              <input type="submit" id="enviarvendedor" hidden>
+            </form>
+              <div class="row d-flex justify-content-center mt-2">
+                  <div class="col-sm-2">
+                    <button class="btn btn-sm btn-outline-info" type="button" id="addvendedor">Agregar</button>
+                  </div>
+              </div>
+              
+              
+            </div>
+            
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-sm btn-outline-primary" data-dismiss="modal" id="continuevendedor">Continuar</button>
+              <button type="button" class="btn btn-sm btn-outline-primary updatetlf cancelupdatevendedor" data-dismiss="modal" id="cancelupdatevendedor" hidden>Cancelar</button>
+              <button type="button" class="btn btn-sm btn-outline-primary updatetlf" id="updatevendedor" hidden>Guardar cambios</button>
             </div>
             
           </div>
