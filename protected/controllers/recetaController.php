@@ -309,12 +309,13 @@ WHERE modelo_has_submodelo.modelo_id = $modelo";
 
 		}
 
-		public function mercancia($idingrediente){
-    		$query = "SELECT mercancia.id, mercancia.nombre, mercancia.marca, contenido_neto, unidad_medida.abreviatura as US, unidad_medida.unidad as unidadS, um.abreviatura as UP, um.unidad as unidadP, um2.abreviatura as UC, um2.unidad as unidadC, unidad_medida_sistema_id as idUS, unidad_medida_consumo_id as idUP, unidad_medida_compra_id as idUC from mercancia
-    		inner join unidad_medida on unidad_medida_sistema_id = unidad_medida.id
-    		inner join unidad_medida as um on um.id = unidad_medida_consumo_id
-    		left join unidad_medida as um2 on um2.id = unidad_medida_compra_id
-    		where mercancia.id = $idingrediente group by US,UP,UC";
+		public function mercancia($idingrediente,$idt){
+    		$query = "SELECT mercancia.id, mercancia.nombre, mercancia.marca, contenido_neto, unidad_medida.abreviatura as US, unidad_medida.unidad as unidadS, um.abreviatura as UP, um.unidad as unidadP, um2.abreviatura as UC, um2.unidad as unidadC, um_sistema_id as idUS, um_despacho_id as idUP, um_recepcion_id as idUC from mercancia_has_unidad_negocio as mc
+            inner join mercancia on mercancia.id = mercancia_id
+    		left join unidad_medida on um_sistema_id = unidad_medida.id
+    		left join unidad_medida as um on um.id = um_despacho_id
+    		left join unidad_medida as um2 on um2.id = um_recepcion_id
+    		where mercancia.id = $idingrediente and unidad_negocio_id = $idt group by US,UP,UC";
     		$conte = $this->_main->select($query);
     		echo json_encode($conte);
 

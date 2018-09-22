@@ -108,9 +108,10 @@ jQuery(document).ready(function($) {
 });
 
 function agregaringrediente(ingrediente,idt){
-	//alert(ingrediente);
+	alert(ingrediente);
 	$('#mercid').val('');
 	$('#mercid').val(ingrediente);
+    alert(idt);
 	$.ajax({
 		url: BASE_URL+'/receta/mercancia/'+ingrediente,
         type: 'POST',
@@ -152,7 +153,7 @@ function addmerc(ingrediente,idt){
 	$('#mercid').val('');
 	$('#mercid').val(ingrediente);
 	$.ajax({
-		url: BASE_URL+'/receta/mercancia/'+ingrediente,
+		url: BASE_URL+'/receta/mercancia/'+ingrediente+'/'+idt,
         type: 'POST',
         dataType: 'json'
 	})

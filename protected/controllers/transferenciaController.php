@@ -265,7 +265,7 @@
     	}
 
     	public function detallesrepo($idr,$status,$idt){
-    		$query = "SELECT distinct reposicion_mercancia.id as idr, notificacion_has_remision.reposicion_id, num_reposicion, notificacion_has_remision.unidad_negocio_id as idur, status_id as idstatusN, unidad_negocio.codigo as codigour, unidad_negocio.nombre as tiendar, unidad_negocio.rif as rifr, unidad_negocio.razon_social as razon_sr, unidad_negocio.correo as emailur, unidad_negocio.empresa_id as idempresaur, fecha, hora, cantidad, format(cantidad,4,'de_DE') as cant, reposicion_mercancia.tipo_reposicion, mercancia_has_unidad_negocio.mercancia_id, unidad_medida_consumo_id as idumpresentacion, unidad_medida_sistema_id as idumsist, unidad_medida_compra_id as idumcompra, udn.id as idue, udn.nombre as tiendae, udn.rif as rife, udn.razon_social as razon_se, udn.correo as emailue, udn.empresa_id as idempresaue, mercancia.id as idm, mercancia.codigo as codim, mercancia.codigo_anterior as coditcr, mercancia.nombre as producto, mercancia.marca as marca, contenido_neto, familia_id, ref.referencia as familia, usuario.nombre, usuario.apellido, ref2.referencia as tipo_u, modelo.nombre as modelo, refn.referencia as statusN,umpresentacion.abreviatura as abrevpres, umsistema.abreviatura as abrevsist, umcompra.abreviatura as abrevcompr, umsolicitud.id as idumsol, umsolicitud.abreviatura as abrevsol, mercancia_has_unidad_negocio.existencia, cantidad_recibida, format(cantidad_recibida,4,'de_DE') as cantr, mhudn2.existencia as existenciate,  mercancia_has_unidad_negocio.stock_max, mercancia_has_unidad_negocio.stock_min, format(mercancia_has_unidad_negocio.existencia,4,'de_DE') as stock, format(mercancia_has_unidad_negocio.stock_min,4,'de_DE') as stmin, format(mercancia_has_unidad_negocio.stock_max,4,'de_DE') as stmax, mhudn2.stock_max as stock_maxte, mhudn2.stock_max as stock_minte, format(mhudn2.existencia,4,'de_DE') as stockte, format(mhudn2.stock_max,4,'de_DE') as maxte, format(mhudn2.stock_min,4,'de_DE') as minte, lote, fecha_vencimiento, chofer, placa_vehiculo, num_sobre, fecha_carga
+    		$query = "SELECT distinct reposicion_mercancia.id as idr, notificacion_has_remision.reposicion_id, num_reposicion, notificacion_has_remision.unidad_negocio_id as idur, status_id as idstatusN, unidad_negocio.codigo as codigour, unidad_negocio.nombre as tiendar, unidad_negocio.rif as rifr, unidad_negocio.razon_social as razon_sr, unidad_negocio.correo as emailur, unidad_negocio.empresa_id as idempresaur, fecha, hora, cantidad, format(cantidad,2,'de_DE') as cant, reposicion_mercancia.tipo_reposicion, mercancia_has_unidad_negocio.mercancia_id, mhudn2.um_despacho_id as idumpresentacion, mhudn2.um_sistema_id as idumsist, mhudn2.um_recepcion_id as idumcompra, udn.id as idue, udn.nombre as tiendae, udn.rif as rife, udn.razon_social as razon_se, udn.correo as emailue, udn.empresa_id as idempresaue, mercancia.id as idm, mercancia.codigo as codim, mercancia.codigo_anterior as coditcr, mercancia.nombre as producto, mercancia.marca as marca, contenido_neto, familia_id, ref.referencia as familia, usuario.nombre, usuario.apellido, ref2.referencia as tipo_u, modelo.nombre as modelo, refn.referencia as statusN,umpresentacion.abreviatura as abrevpres, umsistema.abreviatura as abrevsist, umcompra.abreviatura as abrevcompr, umsolicitud.id as idumsol, umsolicitud.abreviatura as abrevsol, mercancia_has_unidad_negocio.existencia, cantidad_recibida, format(cantidad_recibida,2,'de_DE') as cantr, mhudn2.existencia as existenciate,  mercancia_has_unidad_negocio.stock_max, mercancia_has_unidad_negocio.stock_min, format(mercancia_has_unidad_negocio.existencia,2,'de_DE') as stock, format(mercancia_has_unidad_negocio.stock_min,2,'de_DE') as stmin, format(mercancia_has_unidad_negocio.stock_max,2,'de_DE') as stmax, mhudn2.stock_max as stock_maxte, mhudn2.stock_max as stock_minte, format(mhudn2.existencia,2,'de_DE') as stockte, format(mhudn2.stock_max,2,'de_DE') as maxte, format(mhudn2.stock_min,2,'de_DE') as minte, lote, fecha_vencimiento, chofer, placa_vehiculo, num_sobre, fecha_carga, num_guia
 			FROM reposicion_mercancia
             left join notificacion_has_remision on notificacion_has_remision.reposicion_id = reposicion_mercancia.id
       		left join referencia as refn on refn.id = notificacion_has_remision.status_id
@@ -280,9 +280,9 @@
       		left join referencia as ref on mercancia.familia_id = ref.id
       		left join usuario on reposicion_mercancia.usuario_id = usuario.id
       		left join referencia as ref2 on ref2.id = usuario.tipo_usuario_id
-      		left join unidad_medida as umpresentacion on unidad_medida_consumo_id = umpresentacion.id
-      		left join unidad_medida as umsistema on unidad_medida_sistema_id = umsistema.id
-            left join unidad_medida as umcompra on unidad_medida_compra_id = umcompra.id
+      		left join unidad_medida as umpresentacion on mhudn2.um_recepcion_id = umpresentacion.id
+      		left join unidad_medida as umsistema on mhudn2.um_sistema_id = umsistema.id
+            left join unidad_medida as umcompra on mhudn2.um_recepcion_id = umcompra.id
             left join unidad_medida as umsolicitud on mercancia_has_reposicion.unidad_medida_id = umsolicitud.id
       		where notificacion_has_remision.reposicion_id = $idr and notificacion_has_remision.unidad_negocio_id = $idt
       		and notificacion_has_remision.status_id=$status and mercancia_has_unidad_negocio.unidad_negocio_id = $idt";
@@ -399,13 +399,13 @@
           $placa = $_POST['placa'];
           $sobre = $_POST['sobre'];
 	    		$fcarga = $_POST['fechacarga'];
-		    	$query = "SELECT existencia, stock_min, stock_max, mercancia.id as idpro, codigo, nombre as producto, marca, CONCAT(nombre,' ',marca) as mercancia, unidad_medida_sistema_id as idums, formula_c, contenido_neto 
+		    	$query = "SELECT existencia, stock_min, stock_max, mercancia.id as idpro, codigo, nombre as producto, marca, CONCAT(nombre,' ',marca) as mercancia, um_despacho_id as idums
 	    		FROM `mercancia`
 				  inner join mercancia_has_unidad_negocio on mercancia_id = mercancia.id
 	    		where unidad_negocio_id = $idt and mercancia_id = $selected";
 	    		$stock[] = $this->_main->select($query);
 	    		if ($idum[$i] != $stock[$i][0]['idums']) {
-	    			$conversion[] = Controller::formula($idum[$i],false,$cantenv[$i],$stock[$i][0]['contenido_neto'],$stock[$i][0]['formula_c']);
+	    			$conversion[] = $cantenv[$i]; //Controller::formula($idum[$i],false,$cantenv[$i],$stock[$i][0]['contenido_neto'],$stock[$i][0]['formula_c']);
 	    		}else{
 	    			$conversion[] = $cantenv[$i];
 	    		}
@@ -473,16 +473,16 @@
     		foreach($_POST['idmer'] as $selected){
 	    		$cantenv = $_POST['cantenv'];
 	    		$idum = $_POST['idume'];
-	    		$query = "SELECT existencia, stock_min, stock_max, mercancia.id as idpro, codigo, nombre as producto, marca, CONCAT(nombre,' ',marca) as mercancia, unidad_medida_sistema_id as idums, formula_c, contenido_neto 
+	    		$query = "SELECT existencia, stock_min, stock_max, mercancia.id as idpro, codigo, nombre as producto, marca, CONCAT(nombre,' ',marca) as mercancia, um_sistema_id as idums
 	    		FROM `mercancia`
 				  inner join mercancia_has_unidad_negocio on mercancia_id = mercancia.id
 	    		where unidad_negocio_id = $idt and mercancia_id = $selected";
 	    		$stock[] = $this->_main->select($query);
-	    		if ($idum[$i] != $stock[$i][0]['idums']) {
+	    		/*if ($idum[$i] != $stock[$i][0]['idums']) {
 	    			$conversion[] = Controller::formula($idum[$i],false,$cantenv[$i],$stock[$i][0]['contenido_neto'],$stock[$i][0]['formula_c']);
-	    		}else{
+	    		}else{*/
 	    			$conversion[] = $cantenv[$i];
-	    		}
+	    		//}
 	    		$stockrestante = $stock[$i][0]['existencia']+$conversion[$i];
           $this->_main->log($selected,$idt,$accion);
           $this->_main->kardex($conversion[$i],$motivo,$tipoM,$selected,$idt,$idum[$i],$datosr[0]['tipo_reposicion']);
@@ -568,7 +568,7 @@
         echo json_encode($data);
       }
 
-      public function sesionrecepcion($tipo=false){
+      public function sesionrecepcion($tipo=false,$idt){
       //Session::destroy('carrito3');
       $query = "SELECT mercancia_id as idP, unidad_negocio_id as idt, mercancia.nombre, mercancia.marca, mercancia.codigo, mc.existencia, format(mc.existencia,2,'de_DE') as stock, mc.um_sistema_id, unidad_medida.abreviatura as avrebiaturas, umdespacho.abreviatura as abreviaturad, umrecepcion.abreviatura as abreviaturar, um_recepcion_id, um_despacho_id FROM mercancia_has_unidad_negocio as mc
         inner join mercancia on mc.mercancia_id = mercancia.id
@@ -595,6 +595,7 @@
                   case '1':
                       $arreglo[$numero]['id']= $idp;
                       $arreglo[$numero]['idti']= $idti;
+                      $arreglo[$numero]['idt']= $idt;
                       $arreglo[$numero]['um_recepcion_id'] = $datos[0]['um_recepcion_id'];
                       $arreglo[$numero]['um_sistema_id'] = $datos[0]['um_sistema_id'];
                       $arreglo[$numero]['nombre'] = $datos[0]['nombre'];
@@ -623,6 +624,7 @@
                   $arreglo = $_SESSION['carrito3'];
                   $datosNuevos=array('id'=>$idp,
                           'idti'=>$idti,
+                          'idt'=>$idt,
                           'um_recepcion_id'=>$datos[0]['um_recepcion_id'],
                           'um_sistema_id'=>$datos[0]['um_sistema_id'],
                           'nombre'=>$datos[0]['nombre'],
@@ -642,6 +644,7 @@
       }else{
         $arreglo[]=array('id'=>$idp,
                     'idti'=>$idti,
+                    'idt'=>$idt,
                     'um_recepcion_id'=>$datos[0]['um_recepcion_id'],
                     'um_sistema_id'=>$datos[0]['um_sistema_id'],
                     'nombre'=>$datos[0]['nombre'],
@@ -671,9 +674,42 @@
     function vaciarcarrito3(){
       Session::destroy('carrito3');
     }
+
+    public function realizarrecepcion(){
+      $query = "SELECT count(id) as cant from reposicion_mercancia";
+        $cont = $this->_main->select($query);
+        $num = date('ynj');
+        $num_repo = $num.$cont[0]['cant']+1;
+        $iduser = Session::get('idUsuario');
+        $fecha = date('Y-m-d');
+        $hora = date('g:i:s a');
+        $tipor = 'Recepcion de mercancia';
+      $data = $_SESSION['carrito3'];
+      for ($i=0; $i <count($data) ; $i++) { 
+        $almacenes[] = $data[$i]['idti'];
+      }
+      
+      $idalmacenes = array_unique($almacenes);
+      $ids = array_values($idalmacenes);
+      for ($i=0; $i <count($ids) ; $i++) { 
+          $query = "INSERT INTO `reposicion_mercancia`(`num_reposicion`, `fecha`, `hora`, `total`, `tipo_reposicion`, `unidad_negocio_id`, `usuario_id`) VALUES ('".$num_repo."','".$fecha."','".$hora."',0,'".$tipor."','".$data[$i]['idti']."',$iduser)";
+          $idr[] = $this->_main->insertar($query);
+      }
+      for ($j=0; $j <count($idr) ; $j++) { 
+          $query = "INSERT INTO notificacion_has_remision (`fecha_enviada`,`reposicion_id`, `unidad_negocio_id`, `status_id`, `chofer`, `placa_vehiculo`, `num_sobre`, `fecha_carga`, `num_guia`) VALUES ('".$fecha."','".$idr[$j]."','".$data[$j]['idt']."',201,'".$_POST['chofer']."', '".$_POST['placa']."','".$_POST['sobre']."','".$_POST['fechacarga2']."','".$_POST['guia']."')";
+              $idn =$this->_main->insertar($query);
+        for ($x=0; $x < count($data); $x++) { 
+              $query = "INSERT INTO mercancia_has_reposicion(cantidad, cantidad_recibida, precio, ingrediente_id, unidad_medida_id, proveedor_id, reposicion_id, fecha_vencimiento,lote) 
+              VALUES ('".$data[$x]['cantreci']."', '".$data[$x]['cantreci']."', 0,'".$data[$x]['id']."','".$data[$x]['um_recepcion_id']."',NULL,'".$idr[$j]."','".$data[$x]['fvencimiento']."','".$data[$x]['numlote']."')"; 
+              $mhr = $this->_main->insertar($query);
+            }
+      }
+      echo json_encode($_SESSION['carrito3']);
+    }
     	
 
 	
+    
     
     }
 ?>

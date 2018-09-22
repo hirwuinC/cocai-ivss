@@ -92,7 +92,7 @@ class printer extends FPDF
     }
 
     public function detallesrepo($idr,$status,$idt){
-            $query = "SELECT distinct reposicion_mercancia.id as idr, num_reposicion, notificacion_has_remision.unidad_negocio_id as idur, status_id as idstatusN, unidad_negocio.codigo as codigour, unidad_negocio.nombre as tiendar, unidad_negocio.rif as rifr, unidad_negocio.razon_social as razon_sr, unidad_negocio.correo as emailur, unidad_negocio.empresa_id as idempresaur, fecha, hora, cantidad, format(cantidad,4,'de_DE') as cant, reposicion_mercancia.tipo_reposicion,  unidad_medida_consumo_id as idumpresentacion, unidad_medida_sistema_id as idumsist, unidad_medida_compra_id as idumcompra, udn.id as idue, udn.nombre as tiendae, udn.rif as rife, udn.razon_social as razon_se, udn.correo as emailue, udn.empresa_id as idempresaue, mercancia.id as idm, mercancia.codigo as codim, mercancia.codigo_anterior as coditcr, mercancia.nombre as producto, mercancia.marca as marca, contenido_neto, familia_id, ref.referencia as familia, usuario.nombre, usuario.apellido, ref2.referencia as tipo_u, modelo.nombre as modelo, refn.referencia as statusN,umpresentacion.abreviatura as abrevpres, umsistema.abreviatura as abrevsist, umcompra.abreviatura as abrevcompr, umsolicitud.id as idumsol, umsolicitud.abreviatura as abrevsol,  cantidad_recibida, format(cantidad_recibida,4,'de_DE') as cantr
+            $query = "SELECT distinct reposicion_mercancia.id as idr, notificacion_has_remision.reposicion_id, num_reposicion, notificacion_has_remision.unidad_negocio_id as idur, status_id as idstatusN, unidad_negocio.codigo as codigour, unidad_negocio.nombre as tiendar, unidad_negocio.rif as rifr, unidad_negocio.razon_social as razon_sr, unidad_negocio.correo as emailur, unidad_negocio.empresa_id as idempresaur, fecha, hora, cantidad, format(cantidad,2,'de_DE') as cant, reposicion_mercancia.tipo_reposicion, mercancia_has_unidad_negocio.mercancia_id, mhudn2.um_despacho_id as idumpresentacion, mhudn2.um_sistema_id as idumsist, mhudn2.um_recepcion_id as idumcompra, udn.id as idue, udn.nombre as tiendae, udn.rif as rife, udn.razon_social as razon_se, udn.correo as emailue, udn.empresa_id as idempresaue, mercancia.id as idm, mercancia.codigo as codim, mercancia.codigo_anterior as coditcr, mercancia.nombre as producto, mercancia.marca as marca, contenido_neto, familia_id, ref.referencia as familia, usuario.nombre, usuario.apellido, ref2.referencia as tipo_u, modelo.nombre as modelo, refn.referencia as statusN,umpresentacion.abreviatura as abrevpres, umsistema.abreviatura as abrevsist, umcompra.abreviatura as abrevcompr, umsolicitud.id as idumsol, umsolicitud.abreviatura as abrevsol, mercancia_has_unidad_negocio.existencia, cantidad_recibida, format(cantidad_recibida,2,'de_DE') as cantr, mhudn2.existencia as existenciate,  mercancia_has_unidad_negocio.stock_max, mercancia_has_unidad_negocio.stock_min, format(mercancia_has_unidad_negocio.existencia,2,'de_DE') as stock, format(mercancia_has_unidad_negocio.stock_min,2,'de_DE') as stmin, format(mercancia_has_unidad_negocio.stock_max,2,'de_DE') as stmax, mhudn2.stock_max as stock_maxte, mhudn2.stock_max as stock_minte, format(mhudn2.existencia,2,'de_DE') as stockte, format(mhudn2.stock_max,2,'de_DE') as maxte, format(mhudn2.stock_min,2,'de_DE') as minte, lote, fecha_vencimiento, chofer, placa_vehiculo, num_sobre, fecha_carga, num_guia
             FROM reposicion_mercancia
             left join notificacion_has_remision on notificacion_has_remision.reposicion_id = reposicion_mercancia.id
             left join referencia as refn on refn.id = notificacion_has_remision.status_id
@@ -102,12 +102,14 @@ class printer extends FPDF
             left join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id
             left join modelo on modelo.id = modelo_has_submodelo.modelo_id
             left join mercancia on mercancia.id = mercancia_has_reposicion.ingrediente_id
+            left join mercancia_has_unidad_negocio on mercancia.id = mercancia_has_unidad_negocio.mercancia_id
+          left join mercancia_has_unidad_negocio as mhudn2 on mhudn2.unidad_negocio_id = udn.id and mercancia.id = mhudn2.mercancia_id
             left join referencia as ref on mercancia.familia_id = ref.id
             left join usuario on reposicion_mercancia.usuario_id = usuario.id
             left join referencia as ref2 on ref2.id = usuario.tipo_usuario_id
-            left join unidad_medida as umpresentacion on unidad_medida_consumo_id = umpresentacion.id
-            left join unidad_medida as umsistema on unidad_medida_sistema_id = umsistema.id
-            left join unidad_medida as umcompra on unidad_medida_compra_id = umcompra.id
+            left join unidad_medida as umpresentacion on mhudn2.um_recepcion_id = umpresentacion.id
+            left join unidad_medida as umsistema on mhudn2.um_sistema_id = umsistema.id
+            left join unidad_medida as umcompra on mhudn2.um_recepcion_id = umcompra.id
             left join unidad_medida as umsolicitud on mercancia_has_reposicion.unidad_medida_id = umsolicitud.id
             where notificacion_has_remision.reposicion_id = $idr and notificacion_has_remision.unidad_negocio_id = $idt
             and notificacion_has_remision.status_id=$status";
@@ -116,7 +118,7 @@ class printer extends FPDF
         }
 
         public function consultasOC($idt){
-            $query = "SELECT reposicion_mercancia.id as idrepo, num_reposicion, fecha as fecharepo1, DATE_FORMAT(fecha, '%d-%m-%Y') as fecharepo, hora as horarepo, total, format(total,4,'de_DE') as ttl, tipo_reposicion, unidad_negocio_id, usuario_id, usuario, usuario.nombre, apellido, codigo, unidad_negocio.nombre as tienda, rif as rifrepo, razon_social as razon_srepo, empresa_id, correo, pais_id From reposicion_mercancia 
+            $query = "SELECT reposicion_mercancia.id as idrepo, num_reposicion, fecha as fecharepo1, DATE_FORMAT(fecha, '%d-%m-%Y') as fecharepo, hora as horarepo, total, format(total,2,'de_DE') as ttl, tipo_reposicion, unidad_negocio_id, usuario_id, usuario, usuario.nombre, apellido, codigo, unidad_negocio.nombre as tienda, rif as rifrepo, razon_social as razon_srepo, empresa_id, correo, pais_id From reposicion_mercancia 
             inner join usuario on usuario.id = usuario_id
             inner join unidad_negocio on unidad_negocio_id = unidad_negocio.id
             where unidad_negocio_id = $idt and tipo_reposicion = 'Orden de compra enviada' order by reposicion_mercancia.id desc";
@@ -135,7 +137,7 @@ class printer extends FPDF
         }
 
         public function detallesOC($idr){
-            $query = "SELECT distinct reposicion_mercancia.id as idr, num_reposicion, fecha, hora, cantidad, format(cantidad,4,'de_DE') as cant, reposicion_mercancia.tipo_reposicion, unidad_medida_consumo_id as idumpresentacion, unidad_medida_sistema_id as idumsist, unidad_medida_compra_id as idumcompra, udn.id as idue, udn.nombre as tiendae, udn.rif as rife, udn.razon_social as razon_se, udn.correo as emailue, udn.empresa_id as idempresaue, mercancia.id as idm, mercancia.codigo as codim, mercancia.codigo_anterior as coditcr, mercancia.nombre as producto, mercancia.marca as marca, contenido_neto, familia_id, ref.referencia as familia, modelo.nombre as modelo, umpresentacion.abreviatura as abrevpres, umsistema.abreviatura as abrevsist, umcompra.abreviatura as abrevcompr, umsolicitud.id as idumsol, umsolicitud.abreviatura as abrevsol,  cantidad_recibida, format(cantidad_recibida,4,'de_DE') as cantr, mercancia_has_unidad_negocio.existencia, mercancia_has_unidad_negocio.stock_max, mercancia_has_unidad_negocio.stock_min, format(mercancia_has_unidad_negocio.existencia,4,'de_DE') as stock, format(mercancia_has_unidad_negocio.stock_min,4,'de_DE') as stmin, format(mercancia_has_unidad_negocio.stock_max,4,'de_DE') as stmax, precio, format(precio,4,'de_DE') as precioUnit
+            $query = "SELECT distinct reposicion_mercancia.id as idr, num_reposicion, fecha, hora, cantidad, format(cantidad,2,'de_DE') as cant, reposicion_mercancia.tipo_reposicion, um_despacho_id as idumpresentacion, um_sistema_id as idumsist, um_recepcion_id as idumcompra, udn.id as idue, udn.nombre as tiendae, udn.rif as rife, udn.razon_social as razon_se, udn.correo as emailue, udn.empresa_id as idempresaue, mercancia.id as idm, mercancia.codigo as codim, mercancia.codigo_anterior as coditcr, mercancia.nombre as producto, mercancia.marca as marca, contenido_neto, familia_id, ref.referencia as familia, modelo.nombre as modelo, umpresentacion.abreviatura as abrevpres, umsistema.abreviatura as abrevsist, umcompra.abreviatura as abrevcompr, umsolicitud.id as idumsol, umsolicitud.abreviatura as abrevsol,  cantidad_recibida, format(cantidad_recibida,2,'de_DE') as cantr, mercancia_has_unidad_negocio.existencia, mercancia_has_unidad_negocio.stock_max, mercancia_has_unidad_negocio.stock_min, format(mercancia_has_unidad_negocio.existencia,2,'de_DE') as stock, format(mercancia_has_unidad_negocio.stock_min,2,'de_DE') as stmin, format(mercancia_has_unidad_negocio.stock_max,2,'de_DE') as stmax, precio, format(precio,2,'de_DE') as precioUnit
             FROM reposicion_mercancia
             left join mercancia_has_reposicion on mercancia_has_reposicion.reposicion_id = reposicion_mercancia.id
             left join unidad_negocio as udn on reposicion_mercancia.unidad_negocio_id = udn.id
@@ -144,9 +146,9 @@ class printer extends FPDF
             left join mercancia on mercancia.id = mercancia_has_reposicion.ingrediente_id
             left join mercancia_has_unidad_negocio on mercancia.id = mercancia_has_unidad_negocio.mercancia_id and udn.id = mercancia_has_unidad_negocio.unidad_negocio_id
             left join referencia as ref on mercancia.familia_id = ref.id
-            left join unidad_medida as umpresentacion on unidad_medida_consumo_id = umpresentacion.id
-            left join unidad_medida as umsistema on unidad_medida_sistema_id = umsistema.id
-            left join unidad_medida as umcompra on unidad_medida_compra_id = umcompra.id
+            left join unidad_medida as umpresentacion on um_despacho_id = umpresentacion.id
+            left join unidad_medida as umsistema on um_sistema_id = umsistema.id
+            left join unidad_medida as umcompra on um_recepcion_id = umcompra.id
             left join unidad_medida as umsolicitud on mercancia_has_reposicion.unidad_medida_id = umsolicitud.id
             where reposicion_mercancia.id = $idr";
             $data = $this->_main->select($query);

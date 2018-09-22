@@ -40,7 +40,7 @@
 		}
 
 
-		function stockT($tienda){
+		function stockT($tienda,$gr=false,$cla=false,$subf=false,$color = false){
 			$this->_view->setJs(array('js/jquery-1.12.4.min'));
     		$this->_view->setJs(array('js/inventario'));
     		$this->_view->setCss(array('datatable/css/bootstrap4.min'));
@@ -49,20 +49,76 @@
 		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
 		    $this->_view->setJs(array('datatable/js/tabla'));
             Session::time();
-			$valores = $this->_main->datostienda($tienda); #print_r($valores);
-			$cantidad= count($valores);
-			//print_r($valores);exit();
-			if ($cantidad > 0) {
+            Session::destroy('grup');
+			Session::destroy('fam');
+			Session::destroy('subfam');
+			Session::destroy('color');
+			Session::destroy('tienda');
+			$_SESSION['tienda'] = $tienda;
+			if ($gr!=false and !is_null($gr) and $gr != 'false') {
+				$cgr = "and ref.padre_id = '".$gr."'";
+				$_SESSION['grup'] = $gr;
+			}else{
+				$cgr = ' ';
+				$_SESSION['grup'] = 0;
+			}
+			if ($cla!='false' and $cla != false) {
+				$cfa = "and familia_id = '".$cla."'";
+				$_SESSION['fam'] = $cla;
+			}else{
+				$cfa = ' ';
+				$_SESSION['fam'] = 0;
+			}
+			if ($subf!='false' and $subf != false) {
+				$csf = "and sub_familia_id = '".$subf."'";
+				$_SESSION['subfam'] = $subf;
+			}else{
+				$csf = ' ';
+				$_SESSION['subfam'] = 0;
+			}
+			if ($color!='false' and $color != false) {
+				switch ($color) {
+					case '1':
+						$colorf = "and mc.existencia = 0";
+					break;
+					case '2':
+						$colorf = "and (mc.existencia > 0 and mc.existencia <= mc.stock_min)";
+					break;
+					case '3':
+						$colorf = "and (mc.existencia >mc.stock_min and mc.existencia < mc.punto_reorden)";
+					break;
+					case '4':
+						$colorf = "and (mc.existencia >= mc.punto_reorden and mc.existencia <= mc.stock_max)";
+					break;
+
+				}
+				$_SESSION['color'] = $color;
+			}else{
+				$colorf = ' ';
+				$_SESSION['color'] = 0;
+			}
+				$query = "SELECT unidad_negocio.id as 'idT', unidad_negocio.nombre as 'tienda', mercancia.id as 'idP', mercancia.codigo, mercancia.nombre as 'producto', mercancia.marca, mc.descripcion, format(mc.existencia,2,'de_DE') as stock, mc.existencia, mercancia.contenido_neto, format(mc.stock_min,2,'de_DE') as stockm, mc.stock_min, format(mc.stock_max,2,'de_DE') as stockm2, mc.stock_max, mc.status, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.referencia as 'familia', submodelo.nombre as 'subM', model.nombre as modelo, model.id as idm, tipo_inventario_id, empresa_id, ref1.referencia as subfamilia,ref4.referencia as grupo, tipo_mercancia_id as tipo_ingrediente, cantidad_presentacion, punto_reorden
+				FROM `unidad_negocio` 
+				LEFT join mercancia_has_unidad_negocio as mc on mc.unidad_negocio_id = unidad_negocio.id 
+				LEFT join mercancia on mercancia.id = mc.mercancia_id 
+				LEFT join unidad_medida on unidad_medida.id = um_sistema_id
+				LEFT join unidad_medida as unidad_presentacion on unidad_presentacion.id = um_despacho_id 
+				left join unidad_medida as unidad_compra on unidad_compra.id = um_recepcion_id 
+				LEFT join referencia as ref on ref.id = mercancia.familia_id 
+				left join referencia as ref1 on ref1.id = mercancia.sub_familia_id
+				left join referencia as ref4 on ref4.id = ref.padre_id
+				left join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id 
+				left join modelo as model on model.id = modelo_has_submodelo.modelo_id
+				left join modelo as submodelo on submodelo.id = modelo_has_submodelo.sub_modelo_id
+				WHERE unidad_negocio.id = $tienda $cgr $cfa $csf $colorf"; 
+				$valores = $this->_main->select($query);
+				if (empty($valores)) {
+					$this->_view->g2 = $_SESSION['tienda'];
+				}else{
+					$this->_view->g2 = 'verdadero';
+				}
 				$this->_view->g = $valores;	
 				$this->_view->render('stockT', 'grupo', '','');
-			}else{
-				$query = "SELECT unidad_negocio.id, unidad_negocio.nombre as 'tienda', empresa_id, modelo.id as 'idM', modelo.nombre as 'modelo', submodelo.id as 'idSM', submodelo.nombre as 'subM' FROM `unidad_negocio` inner join modelo_has_submodelo on modelo_has_submodelo.id = unidad_negocio.modelo_has_submodelo_id inner join modelo on modelo.id = modelo_has_submodelo.modelo_id inner join modelo as submodelo on submodelo.id = modelo_has_submodelo.sub_modelo_id WHERE unidad_negocio.id = $tienda"; 
-				$valores = $this->_main->select($query); #print_r($valores);
-				$valores[0]['producto'] = 'vacio'; 
-				//print_r($valores);
-				$this->_view->g = $valores;	
-				$this->_view->render('stockT', 'inventario', '','');
-			}
 	
 		}
 
@@ -71,6 +127,7 @@
 			Session::destroy('grup');
 			Session::destroy('fam');
 			Session::destroy('subfam');
+			Session::destroy('color');
 			if ($gr!=false) {
 				$cgr = "and ref.padre_id = '".$gr."'";
 				$_SESSION['grup'] = $gr;
@@ -98,6 +155,7 @@
             }else{
             	$condicion = 'order by ref.referencia ASC';
 			}
+			$_SESSION['color'] = 0;
 
 			$this->_view->setJs(array('js/jquery-1.12.4.min'));
     		$this->_view->setJs(array('js/inventario'));
@@ -1381,18 +1439,19 @@ FROM notificacion_has_remision
 
     	function carroCompra($id, $operador=false, $idt, $cant,$cantx,$idprov,$unidadc,$um,$tiendar=false,$precioOC=false){
 
-    	$query="SELECT mercancia.id as 'idP', mercancia.codigo, mercancia.codigo_anterior, mercancia.nombre as 'producto', mercancia.marca, mercancia.contenido_neto, mercancia.formula_c, mercancia.formula_p, mercancia.formula_s, mercancia.cantidad_presentacion,  mc.existencia, mc.stock_min, mc.stock_max, mc.status, mercancia.precio_unitario, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', unidad_presentacion.id as 'idUMP',unidad_presentacion.unidad as 'unidadP', unidad_presentacion.abreviatura as 'abreviaturaP',unidad_compra.id as 'idUMC',unidad_compra.unidad as 'unidadC', unidad_compra.abreviatura as 'abreviaturaC', ref.id as 'idf', ref.referencia as 'familia', mc.status FROM `mercancia` 
+    	$query="SELECT mercancia.id as 'idP', mercancia.codigo, mercancia.codigo_anterior, mercancia.nombre as 'producto', mercancia.marca, mercancia.cantidad_presentacion,  mc.existencia, mc.stock_min, mc.stock_max, mc.status, unidad_medida.id as 'idUMS',unidad_medida.unidad as 'unidadS', unidad_medida.abreviatura as 'abreviaturaS', um_despacho.id as 'idUMP',um_despacho.unidad as 'unidadP', um_despacho.abreviatura as 'abreviaturaP',um_recepcion.id as 'idUMC',um_recepcion.unidad as 'unidadC', um_recepcion.abreviatura as 'abreviaturaC', ref.id as 'idf', ref.referencia as 'familia', mc.status FROM `mercancia` 
+
 						inner join mercancia_has_unidad_negocio as mc on mc.mercancia_id = mercancia.id 
-						inner join unidad_medida on unidad_medida.id = mercancia.unidad_medida_sistema_id
-						inner join unidad_medida as unidad_presentacion on unidad_presentacion.id = mercancia.unidad_medida_consumo_id 
-						left join unidad_medida as unidad_compra on unidad_compra.id = mercancia.unidad_medida_compra_id 
+						left join unidad_medida on unidad_medida.id = mc.um_sistema_id
+						left join unidad_medida as um_despacho on um_despacho.id = mc.um_despacho_id 
+						left join unidad_medida as um_recepcion on um_recepcion.id = mc.um_recepcion_id 
 						inner join referencia as ref on ref.id = mercancia.familia_id 
 						WHERE mercancia.id = $id and mc.unidad_negocio_id = $idt order by ref.referencia ASC";
     	$producto = $this->_main->select($query);
     	if ($precioOC != 'false') {
     		$p = $precioOC;
     	}else{
-    		$p = $producto[0]['precio_unitario'];
+    		$p = 0;
     	}
     	if ($idprov != 'false') {
     		$datosprov = $this->datosprov($idprov);
@@ -1623,12 +1682,12 @@ FROM notificacion_has_remision
     public function cargaringredientes($idt){
 
 				//Controller::varDump($_POST);exit();
-				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, unidad_medida_compra_id as umcid, unidad_medida_consumo_id as umpid, unidad_medida_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, mercancia.precio_unitario as precioU, mudn.existencia, mudn.stock_min, mudn.stock_max, format(existencia,2,'de_DE') as stockt, format(stock_min,2,'de_DE') as stmin, format(stock_max,2,'de_DE') as stmax, referencia.referencia as familia   FROM `mercancia`
+				$query = "SELECT mercancia.id as idi, mercancia.codigo as codigi, um_recepcion_id as umcid, um_despacho_id as umpid, um_sistema_id as umsid, umc.abreviatura as abumc, ump.abreviatura as abump, ums.abreviatura as abums, mercancia.nombre as mercancia, mercancia.marca as marca, CONCAT(mercancia.nombre, ' ', mercancia.marca) As ingrediente, mudn.existencia, mudn.stock_min, mudn.stock_max, format(existencia,2,'de_DE') as stockt, format(stock_min,2,'de_DE') as stmin, format(stock_max,2,'de_DE') as stmax, referencia.referencia as familia   FROM `mercancia`
 			inner join referencia on referencia.id = familia_id
-			left join unidad_medida as umc on umc.id = mercancia.unidad_medida_compra_id
-            inner join unidad_medida as ump on ump.id = mercancia.unidad_medida_consumo_id
-            inner join unidad_medida as ums on ums.id = mercancia.unidad_medida_sistema_id
             inner join mercancia_has_unidad_negocio as mudn on mudn.mercancia_id = mercancia.id
+            left join unidad_medida as umc on umc.id = um_recepcion_id
+            left join unidad_medida as ump on ump.id = um_despacho_id
+            left join unidad_medida as ums on ums.id = um_sistema_id
             where mudn.unidad_negocio_id = $idt";
 			$data = $this->_main->select($query);
 
@@ -2425,9 +2484,11 @@ FROM notificacion_has_remision
 			$gr = $_SESSION['grup'];
 			$fam = $_SESSION['fam'];
 			$subf = $_SESSION['subfam'];
+			$color = $_SESSION['color'];
 			$data[0]['gr'] = $gr;
 			$data[0]['fam'] = $fam;
 			$data[0]['subf'] = $subf;
+			$data[0]['color'] = $color;
 			echo json_encode($data);
 		}
 

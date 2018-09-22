@@ -3,6 +3,50 @@
         margin-bottom: 0px;
     }
 </style>
+<script>
+    $(document).ready(function() {
+        var v2 = $('#v2').val();
+        if (v2 != 'verdadero') {
+            alert('disculpe su consulta no arrojo ningun resultado, los filtros seran omitidos');
+            window.location=BASE_URL+'inventario/stockT/'+v2;
+        }
+       $.ajax({
+        url: BASE_URL+'/inventario/consultfiltro/',
+        type: 'POST',
+        dataType: 'json'
+      })
+      .done(function(data) {
+        var idemp = $('#tienda').val();
+        if (data[0]['gr']>0) {
+            load('referencia','familia2',idemp,data[0]['gr']);
+            setTimeout(function(){ 
+                $("#grupo option[value="+ data[0]['gr'] +"]").attr("selected",true);
+            },200);
+        }
+        if (data[0]['fam']>0) {
+            load('referencia','sub_familia',idemp,data[0]['fam']);
+            setTimeout(function(){
+                $("#familia2 option[value="+ data[0]['fam'] +"]").attr("selected",true);
+            },2000);
+        }
+        if (data[0]['subf']>0) {
+            setTimeout(function(){
+                $("#sub_familia option[value="+ data[0]['subf'] +"]").attr("selected",true);
+            },2000);
+        }
+        if (data[0]['subf']>0) {
+            setTimeout(function(){
+                $("#sub_familia option[value="+ data[0]['subf'] +"]").attr("selected",true);
+            },2000);
+        }
+        if (data[0]['color']>0) {
+            setTimeout(function(){
+                $("#c"+data[0]['color']).focus();;
+            },2000);
+        }
+      });
+    });
+</script>
 <center>
     <div id="gifcargando">
         <img width="120px" height="120px" class="img" src="<?php echo PUBLIC_URL; ?>img/cargando2.gif">
@@ -11,6 +55,8 @@
 
 <div id="body" hidden>
 <div id="page-wrapper">
+    <input type="text" name="idT" id="tienda" hidden value="<?php echo $this->g[0]['idT'];?>">
+    <input type="text" id="v2" hidden value="<?php echo $this->g2;?>">
             <div  class="">
 
                 <div class="row">
@@ -23,11 +69,11 @@
                           
                           <div class="card-block">
                             <div class="row d-flex flex-wrap">
-                                <div class="col-6">
+                                <!-- <div class="col-6">
                                     <h4 class="page-header" style="font-family: Times New Roman, Times, serif; text-align: center">Unidad de negocio <?php echo str_replace('(PTY)', '', $this->g[0]['tienda']); echo '<br> Sub-modelo '.$this->g[0]['subM'];  ?></h4>
-                                </div>
+                                </div> -->
                             
-                                <div class="col-6 d-flex justify-content-end">
+                                <div class="col-12 d-flex justify-content-center">
                                     <img  style="margin-left:0%;" src="<?php $model=strtolower($this->g[0]['modelo']); echo PUBLIC_URL;?>img\<?php echo $model; ?>.png" class="img-fluid" alt="modelo">
                                 </div>
                             </div>
@@ -35,8 +81,78 @@
 
                             
                             <?php $i = 1; ?> 
+                            <div class="row d-flex justify-content-center mt-3" id="barradefiltro">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-2 ">
+                                    <label class="labels" style="float: left;">Grupo</label>
+                                    <div class="col-xs-1 d-flex offset-11" >
+                                      <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="En este campo debe seleccionar el elemento que permitirá especificar a que grupo pertenece el producto."></span>
+                                    </div>
+                                    <select name="grupo" id="grupo" class="form-control form-control-sm selectag" required>
+                                    </select>
+                                    <input type="hidden" name="grupo" id="grupoid">
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-2 ">
+                                    <label class="labels" style="float: left;">Clasificación</label>
+                                    <div class="col-xs-1 d-flex offset-11" >
+                                      <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="En este campo debe especificar la clasificación del grupo al que pertenece el producto."></span>
+                                    </div>
+                                    <select name="familia" id="familia2" class="form-control form-control-sm familia selectag" required> 
+                                      <option value="">Seleccione..</option>
+                                    </select>
+                                    <input type="hidden" name="familia" id="familiaid">
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-2 ">
+                                    <label class="labels" style="float: left;">Sub clasificación</label>
+                                    <div class="col-xs-1 d-flex offset-11" >
+                                      <span style="cursor: help;" class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="En este campo debe especificar la Sub clasificación de la clasificación del grupo al que pertenece el producto."></span>
+                                    </div>
+                                    <select name="subfamilia" id="sub_familia" class="form-control form-control-sm selectag"> 
+                                      <option value="">Seleccione..</option>
+                                    </select>
+                                    <input type="hidden" name="subfamilia" id="subfamiliaid">
+                                </div>
+                                <div class="col-xs-1 ml-3 mt-2">
+                                    <div class="row" style="height: 15px">
+                                        <label class="labels" style="float: left;">Color</label>
+                                    </div>
+                                    
+                                    <div class="row " style="height: 20px">
+                                        <div class="col-xs-6">
+                                          <label class="custom-control custom-radio" data-toggle="tooltip" data-placement="top" title="Productos con existencias en cero" style="margin-right: 0px">
+                                            <input type="radio" class="custom-control-input colorf" id="c1" name="color" value="1">
+                                            <span class="custom-control-indicator" style="background: #FEC4C4; margin-left: 1px;"></span>
+                                            <span class="custom-control-description" style="line-height: 1.8;"></span>
+                                          </label>
+                                          <label class="custom-control custom-radio" style="margin-right: 0px" data-toggle="tooltip" data-placement="top" title="Productos con existencias por debajo del stock minimo">
+                                            <input type="radio" class="custom-control-input colorf" id="c2" name="color" value="2">
+                                            <span class="custom-control-indicator" style="background: #FEE1C4; margin-left: 1px"></span>
+                                            <span class="custom-control-description" style="line-height: 1.8;"></span>
+                                          </label>
+                                          
+                                          <label class="custom-control custom-radio" style="margin-right: 0px" data-toggle="tooltip" data-placement="top" title="Productos con existencias por debajo del punto de reorden">
+                                            <input type="radio" class="custom-control-input colorf" id="c3" name="color" value="3">
+                                            <span class="custom-control-indicator" style="background: #FFFFA3; margin-left: 1px;"></span>
+                                            <span class="custom-control-description" style="line-height: 1.8;"></span>
+                                          </label>
+                                          <label class="custom-control custom-radio" style="" data-toggle="tooltip" data-placement="top" title="Productos con existencias entre el punto de reorden y el stock maximo">
+                                            <input type="radio" class="custom-control-input colorf" id="c4" name="color" value="4">
+                                            <span class="custom-control-indicator" style="background: #BBFFBB; margin-left: 1px"></span>
+                                            <span class="custom-control-description" style="line-height: 1.8;"></span>
+                                          </label>
+                                            <input type="hidden" id="inputcolor">;
+                                        </div>
+                                    </div>
+                                    <div class="row" style="height: 20px">
+                                        
+                                    </div>
+                                </div>
+                                        
+                                <div class="col-sm-1 mt-1" style="padding-left: 0px">
+                                    <button type="button" id="filtra2" class="btn btn-sm btn-outline-primary mt-3">Filtrar</button>
+                                </div>
+                            </div>
                             <div class="dataTable_wrapper">
-                             <div class="col-sm-12 table-responsive">
+                             <div class="table-responsive">
                                 <?php if ($this->g[0]['producto'] === 'vacio'):?>
                                 <table class="table table-sm table-striped table-bordered table-hover" cellspacing="0" width="100%" id="tablaGru">
                                         <thead>
@@ -47,8 +163,8 @@
                                                 <th >Marca</th>
                                                 <th >Can. Invent</th>
                                                 <th >Ud. Medida</th>
-                                                <th >Familia</th>
-                                                <th >Sub-Clasificacion</th>
+                                                <th >Clasificación</th>
+                                                <th >Sub-Clasificación</th>
                                                 <th >Estatus</th>
                                                 <th >Modificar</th>
                                                 <th >Eliminar</th>
@@ -63,8 +179,8 @@
                                                 <th >Codigo</th>
                                                 <th>Nombre</th> 
                                                 <th >Marca</th>
-                                                <th >Familia</th>
-                                                <th >Sub-Clasificacion</th>
+                                                <th >Clasificación</th>
+                                                <th >Sub-Clasificación</th>
                                                 <th >Existencia</th>
                                                 <th >Estatus</th>
                                                 <th >Acciones</th>
@@ -78,13 +194,13 @@
                                                         $status = 'Activo';
                                                     } ?>
                                             <?php if ($g['existencia'] == 0) { ?>
-                                                <tr style="background: #FEC4C4">
-                                            <?php }else if ($g['existencia'] > 0 and $g['existencia'] <= $g['stockm']) {?>
-                                                <tr style="background: #FEE1C4">
-                                            <?php }else if ($g['existencia'] >$g['stockm'] and $g['existencia'] < $g['punto_reorden']) {?>
-                                                <tr style="background: #FFFFA3">
-                                            <?php }else if ($g['existencia'] >= $g['punto_reorden'] and $g['existencia'] <= $g['stockm2']) {?>
-                                                <tr style="background: #BBFFBB">
+                                                <tr style="background: #FEC4C4 !important">
+                                            <?php }else if (($g['existencia'] > 0) and ($g['existencia'] <= $g['stock_min'])) {?>
+                                                <tr style="background: #FEE1C4 !important;">
+                                            <?php }else if (($g['existencia'] >$g['stock_min']) and ($g['existencia'] < $g['punto_reorden'])) {?>
+                                                <tr style="background: #FFFFA3 !important">
+                                            <?php }else if (($g['existencia'] >= $g['punto_reorden']) and ($g['existencia'] <= $g['stock_max'])) {?>
+                                                <tr style="background: #BBFFBB !important">
                                             <?php }else{?>
                                                 <tr>
                                             <?php } ?>

@@ -208,11 +208,11 @@
                                           }
                                           
                                           if (Session::get('usuario') != 'Hospital' and Session::get('usuario') != 'Almacen' and Session::get('usuario') != 'subalmacen' and Session::get('usuario') != 'cargaexistencia' and Session::get('usuario') != 'inventario'){
-                                          echo '<li id="enlace2'.($j+11).'">
+                                          echo /*'<li id="enlace2'.($j+11).'">
                                             <a href="'.BASE_URL.'reportes/index/'.$id[$j].'" name="'.$id[$j].'" style="margin-left:5px;" class="subM">Reportes
                                               <i class="fa fa-file-pdf-o"></i></a>   
-                                          </li>
-                                           <li>
+                                          </li>*/
+                                           '<li>
                                             <a href="#admint'.$j.'" style="margin-left:5px; " data-toggle="collapse" aria-expanded="false">Administracion
                                               <i class="fa fa-briefcase"></i><div class="arrow pull-right"><i class="fa fa-angle-down"></i></div></a>
                                               <ul class="collapse list-unstyled" id="admint'.$j.'">
@@ -224,12 +224,6 @@
                                                 </li>
                                                 
                                               </ul>
-                                          </li>';
-                                        }
-                                        if (Session::get('usuario') == 'Almacen') {
-                                          echo '<li id="enlace2'.($j+11).'">
-                                            <a href="'.BASE_URL.'reportes/index/'.$id[$j].'" name="'.$id[$j].'" style="margin-left:5px;" class="subM">Reportes
-                                              <i class="fa fa-file-pdf-o"></i></a>   
                                           </li>';
                                         }
                                   echo '</ul>  ';
@@ -299,12 +293,12 @@
                                               </ul>
                                           </li>';
                                         }
-                                        if (Session::get('usuario') == 'Almacen') {
+                                        /*if (Session::get('usuario') == 'Almacen') {
                                           echo '<li id="enlace'.($p+9).'">
                                             <a href="'.BASE_URL.'reportes/index/'.$menu[$p]['idUd'].'" name="'.$menu[$p]['idUd'].'" style="margin-left:5px;" class="subM">Reportes
                                               <i class="fa fa-file-pdf-o"></i></a>   
                                           </li>';
-                                        }
+                                        }*/
                                           if (Session::get('usuario') == 'proveedores') {
                                             echo '<li style="margin-left:12px; " id="enlace'.($p+7).'">
                                                   <a href="'.BASE_URL.'proveedores/index/'.$menu[$p]['idUd'].'" class="subM" name="'.$menu[$p]['idUd'].'"></i>Proveedores</a>
@@ -333,7 +327,12 @@
                                   <a style="cursor: pointer" class="exportar"><i class="fa fa-file-pdf-o" id=""></i> Ver listado</a>
                               </li>';
                         }
-                        
+                              if (Session::get('usuario') == 'Almacen') {
+                                          echo '<li id="">
+                                            <a href="'.BASE_URL.'reportes/index/" name="" style="margin-left:5px;" class="subM">Centro de reportes
+                                              <i class="fa fa-file-pdf-o"></i></a>   
+                                          </li>';
+                                        }
                               echo '<li>
                                   <a style="" href="'.PUBLIC_URL.'guia/Instructivo_para_el_uso_del_aplicativo_admin_productos_ventas.pdf" target="_blank" class="subM"><i class="fa fa-info-circle"></i> Ayuda</a>
                               </li>';
@@ -378,7 +377,7 @@
                     if (isset($this->mercancia[0]['modelo'])) {
                       echo " - "; $mo=strtolower($this->mercancia[0]['modelo']); echo strtoupper($mo);
                     }if ($this->mercancia[0]['tienda'] == 'Almacen Principal') {
-                      echo ' - DOMINGO LUCIANI';
+                      echo ' - H DR. DOMINGO LUCIANI';
                     }?></div>
                     <?php  } ?>
                     <?php if (isset($this->g[0]['tienda'])) { ?>
@@ -386,7 +385,7 @@
                     if (isset($this->g[0]['modelo'])) {
                       echo " - "; $mo=strtolower($this->g[0]['modelo']); echo strtoupper($mo);
                     }if ($this->g[0]['tienda'] == 'Almacen Principal') {
-                      echo ' - DOMINGO LUCIANI';
+                      echo ' - H DR. DOMINGO LUCIANI';
                     }?></div>
                     <?php  } ?>
                     <?php if (isset($this->datos[0]['tiendaen'])) { ?>

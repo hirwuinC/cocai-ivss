@@ -64,11 +64,25 @@
 			echo json_encode($data);
 		}
 
-		public function productosU($idt){
+	public function productosU($idt){
         $data = $this->_main->datostienda($idt);        
         $response = array("data"=>$data);
         //print_r($response);
         echo json_encode($response);
+    }
+
+      public function dataPrueba()
+      {
+       $data = $this->_main->datosMercancia();
+       $response = array("data"=>$data);
+        //print_r($response);
+        echo json_encode($response);
+      }
+
+      public function ubicarproducto($idp,$idsub){
+      	$query = "INSERT INTO `mercancia_has_unidad_negocio`(`mercancia_id`, `unidad_negocio_id`) VALUES ('".$idp."','".$idsub."')";
+      	$idmu = $this->_main->insertar($query);
+      	echo json_encode($idmu);
       }
 
 

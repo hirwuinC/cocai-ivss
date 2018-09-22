@@ -19,7 +19,6 @@ $(document).ready(function() {
     resetseccionAbajo()
     resetAlmacen()
     if (idpadre>0) {
-      consultarProductos();
       consultarAlmacenes(idpadre,'subAl',1);
          }
     else
@@ -92,7 +91,6 @@ $(document).ready(function() {
   });
 
   $('#subAl').change(function(){
-    tablaProductos();
     var img= $('#subAl').val();
     $('#planoAlmacenImg').hide();
     $('#imgAlmacen').html('');
@@ -100,7 +98,7 @@ $(document).ready(function() {
 
     if (img>0) {
        $("input:checked").removeAttr("checked");
-       $('#imgAlmacen').html('<center><img src="http://localhost/cocai-ivss/public/img/'+img+'.png" alt="img" style="margin-top: 20px;margin-bottom:20px;" class="center-block" > </center>');
+       $('#imgAlmacen').html('<center><img src="'+PUBLIC_URL+'/img/'+img+'.png" alt="img" style="margin-top: 20px;margin-bottom:20px;" class="center-block" > </center>');
        $('#planoAlmacenImg').show();
     }
     $('#divtablita').fadeIn();
@@ -198,32 +196,6 @@ function consultarAlmacenes(idpadre,elemento,tipo)
       alert("Disculpe, hay un error con los datos de este producto");
     });
 }
-
-
-function consultarProductos()
-{
-  $.ajax({
-        url: BASE_URL+'/ubicacion/dataPrueba',
-        type: 'POST',
-        dataType: 'json'
-    })
-    .done(function(data) {
-
-      // if(data.length>0)
-      // {
-      //   $('#'+elemento).empty();
-      //   $('#'+elemento).append('<option value="0">Seleccione..</option>');
-      //   for (var i = 0; i < data.length; i++) {
-          
-      //     $('#'+elemento).append('<option value="'+data[i].idU+'" data-img="'+data[i].img+'">'+data[i].nombre+'</option>');
-                                                                    
-       // }
-       console.log(data);})
-    .fail(function(data) {
-      alert("Disculpe, hay un error con los datos de este producto");
-    });
-}
-
 
 function tablaprods(alm,clasif,subcla){
 
@@ -366,80 +338,6 @@ function carga(tabla,item,valor,model,idP,idT){
 
 }
 
-function tablaProductos(){
-  var sub = $('#subAl').val();
-  var groupColumn = 1;
-  var table = $('#tablita_productos').DataTable({
-            "ajax": BASE_URL+'/ubicacion/dataPrueba',
-            "columns": [
-
-               
-                { "data": "grupo", className: "tdleft font11"},        
-                { "data": "familia", className: "tdleft "},               
-                { "data": "subfamilia", className: "tdleft "},
-                { "data": "producto", className: "tdleft font11",
-                  render : function(data,type, row){
-                    return ''+data+' '+row['marca']
-                  }
-              },               
-                
-                { "data": "idP", className: "tdcenter ",
-                    render : function(data,type, row){
-                        return '<a href="#" onclick="ubicar('+data+','+sub+')">Guardar</a>'
-                    }
-                }               
-            ],
-            "columnDefs": [
-                { "visible": false, "targets": groupColumn }
-            ],
-            "order": [[ groupColumn, 'asc' ]],
-                "drawCallback": function ( settings ) {
-            var api = this.api();
-            var rows = api.rows( {page:'current'} ).nodes();
-            var last=null;
- 
-            api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
-                if ( last !== group ) {
-                    $(rows).eq( i ).before(
-                        '<tr class="group"><td colspan="7">'+group+'</td></tr>'
-                    );
- 
-                    last = group;
-                }
-            } );
-            },
-                //"order": [[ 1, 'asc' ]],
-                destroy: true,
-                responsive: true
-                }); 
-    $('#_10').on( 'click', function () {
-        table.page.len( 10 ).draw();
-    } );
-    $('#tablita_productos tbody').on( 'click', 'tr.group', function () {
-        var currentOrder = table.order()[0];
-        if ( currentOrder[0] === groupColumn && currentOrder[1] === 'asc' ) {
-            table.order( [ groupColumn, 'desc' ] ).draw();
-        }
-        else {
-            table.order( [ groupColumn, 'asc' ] ).draw();
-        }
-    } );
-    $('#tablita_productos').css("width","100%");
-        $('#tablita_productos_wrapper').removeClass('container-fluid');
-}
-
-function ubicar(idP,sub){
-   $.ajax({
-      url: BASE_URL+'ubicacion/ubicarproducto/'+idP+'/'+sub,
-      type: 'POST',
-      dataType: 'json'
-      })
-  .done(function(data) {
-    alert("done");
-  });
-  
-}
-
 function tablita(idt){
   var groupColumn = 1;
   var table = $('#tablita').DataTable({
@@ -458,7 +356,7 @@ function tablita(idt){
                 
                 { "data": "idP", className: "tdcenter ",
                     render : function(data,type, row){
-                        return '<a onclick="ubicar('+data+','+row['idT']+')">Guardar</a>'
+                        return '<a href="#" onclick="nombredelafuncion('+data+','+row['idT']+')">Guardar</a>'
                     }
                 }               
             ],

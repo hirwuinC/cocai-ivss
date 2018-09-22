@@ -1,4 +1,7 @@
 $(document).ready(function() {
+    $('#btn-recibir').click(function(event) {
+        $('#bt-recibe').trigger('click'); 
+    });
     $('#bt-cont').click(function(event) {
         $('#bt-enviar').trigger('click');      
     });
@@ -20,7 +23,27 @@ $(document).ready(function() {
         })
         
 
-        });
+    });
+
+    $('#formmanualr').submit(function(event) {
+        var tipo = $('#tipo').val();
+        event.preventDefault();
+        var enlace = $(this).attr('action');
+        var formdata = $("#formmanualr").serialize();
+        $.ajax({
+            url: enlace,
+            type: 'POST',
+            data: formdata,
+            dataType: 'json'
+        })
+        .done(function(data) {
+            alert("Recpcion exitosa en el almacen general, La mercancia quedara pendiente por ser recibida en cada subalmacen");
+            
+        })
+        
+
+    });
+
     burbujaspendientes();
     idt = $('#idtienda').val();
     //para redireccionar desde las notificaciones
@@ -293,6 +316,7 @@ $(document).ready(function() {
 });
 
 function tablapararecibir(){
+
     var t8 = $('#tpararecibir').DataTable({
             "ajax": BASE_URL+'/transferencia/consultarsesion/',
             "columns": [
@@ -333,6 +357,9 @@ function tablapararecibir(){
         $('#tpararecibir_wrapper').removeClass('container-fluid');
         $('.finmanualr').fadeIn();
         $('.finmanualr').prop('hidden', false);
+        $('html,body').animate({
+            scrollTop: $("#finmanualr").offset().top
+        }, 1000);
 }
 
 function tablaxenviar(idt,st1,st2,tipo){
@@ -797,9 +824,12 @@ function detallesrepo(id,status,idt,tipo){
                         $('#chofer').attr('readonly', true);
                         $('#placa').attr('readonly', true);
                         $('#sobre').attr('readonly', true);
+                        $('#guia').attr('readonly', true);
                         $('#fechacarga').attr('readonly', true);
                         $('#chofer').val('');
                         $('#chofer').val(data["data"][0]['chofer']);
+                        $('#guia').val('');
+                        $('#guia').val(data["data"][0]['num_guia']);
                         $('#placa').val('');
                         $('#placa').val(data["data"][0]['placa_vehiculo']);
                         $('#sobre').val('');
@@ -966,7 +996,7 @@ function tabladetallesrepo(id,status,idt,tipo){
                 },
                 { "data": "cant", className: "tdright font11",
                     render : function(data,type, row){
-                        return ''+data+' '+row['abrevsol']
+                        return ''+data+' '+row['abrevsist']
                     }
                 },
                 { "data": "cant", className: "tdright font11 cnt",
@@ -977,21 +1007,21 @@ function tabladetallesrepo(id,status,idt,tipo){
                                 return '<div class="input-group" style="float: right;">'+
                                     '<input type="text" class="form-control form-control-sm monto" name="cantenv[]" id="cantenv'+row['idm']+''+row['reposicion_id']+'" value="'+data+'" onclick="formatealo('+row['idm']+','+idt+')" onkeyup="evalualo('+row['idm']+','+idt+','+row['reposicion_id']+')" autocomplete="off" required>'+
                                     '<input type="hidden" class="form-control form-control-sm" name="idmer[]" value="'+row['idm']+'">'+
-                                    '<input type="hidden" class="form-control form-control-sm" name="idume[]" id="idume'+row['idm']+''+row['reposicion_id']+'" value="'+row['idumsol']+'">'+
+                                    '<input type="hidden" class="form-control form-control-sm" name="idume[]" id="idume'+row['idm']+''+row['reposicion_id']+'" value="'+row['idumsist']+'">'+
                                     '<input type="hidden" class="form-control form-control-sm evaluar" id="valido'+row['idm']+''+row['reposicion_id']+'" >'+
-                                    '<span class="input-group-addon btn-sm" id="basic-addon1">'+row['abrevsol']+'</span>'+
+                                    '<span class="input-group-addon btn-sm" id="basic-addon1">'+row['abrevsist']+'</span>'+
                                 '</div>'
                             break;
                             case 2:
-                                return ''+row['cantr']+' '+row['abrevsol']+'<input type="hidden" class="form-control form-control-sm monto" name="cantenv[]" id="cantenv" value="'+row['cantr']+'" required readonly style="background: none; border:none">'+
+                                return ''+row['cantr']+' '+row['abrevsist']+'<input type="hidden" class="form-control form-control-sm monto" name="cantenv[]" id="cantenv" value="'+row['cantr']+'" required readonly style="background: none; border:none">'+
                                         '<input type="hidden" class="form-control form-control-sm" name="idmer[]" value="'+row['idm']+'">'+
-                                        '<input type="hidden" class="form-control form-control-sm" name="idume[]" value="'+row['idumsol']+'">'
+                                        '<input type="hidden" class="form-control form-control-sm" name="idume[]" value="'+row['idumsist']+'">'
                             break;
                             case 3:
-                                return ''+row['cantr']+' '+row['abrevsol']
+                                return ''+row['cantr']+' '+row['abrevsist']
                             break;
                             case 4:
-                                return ''+row['cantr']+' '+row['abrevsol']
+                                return ''+row['cantr']+' '+row['abrevsist']
                             break;
                             
                             
@@ -1008,7 +1038,7 @@ function tabladetallesrepo(id,status,idt,tipo){
                             break;
                             case 2:
                                 return '<div class="input-group" style="float: right;">'+
-                                    '<input type="text" class="form-control form-control-sm" name="lotenum[]" id="lotenum'+row['idm']+''+row['reposicion_id']+'" value="'+data+'" placeholder="N° de lote" autocomplete="off" required>'+
+                                    '<input type="text" class="form-control form-control-sm" name="lotenum[]" id="lotenum'+row['idm']+''+row['reposicion_id']+'" value="'+data+'" placeholder="N° de lote" autocomplete="off" readonly required>'+
                                 '</div>'
                             break;
                             case 3:
@@ -1035,7 +1065,7 @@ function tabladetallesrepo(id,status,idt,tipo){
                             break;
                             case 2:
                                 return '<div class="" style="float: left;">'+
-                                    '<input type="date" class="form-control form-control-sm" name="fvencimiento[]" id="fvencimiento'+row['idm']+''+row['reposicion_id']+'" value="'+data+'" required>'+
+                                    '<input type="date" class="form-control form-control-sm" name="fvencimiento[]" id="fvencimiento'+row['idm']+''+row['reposicion_id']+'" value="'+data+'" readonly required>'+
                                 '</div>'
                             break;
                             case 3:
@@ -1118,7 +1148,7 @@ function recibirrepo(idr,idt){
 }
 
 function formatealo(idm,idt){
-    $('.monto').number(true, 4, ',', '.');
+    $('.monto').number(true, 2, ',', '.');
 }
 
 function evalualo(idm,idt,idr){

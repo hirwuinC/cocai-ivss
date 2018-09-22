@@ -17,7 +17,14 @@ $('.exportar').click(function(event) {
   });
 
     var tienda = $('#idt').val();
+    if (tienda.length == 130) {
+      var tienda = $('#idudn').val();
+    }
     load('mercancia','products',tienda,false);
+    $('#idudn').change(function(event) {
+      var tienda = $('#idudn').val();
+      load('mercancia','products',tienda,false);
+    });
   $('#fecha_ini').change(function(event) {
     var fecha1 = $('#fecha_ini').val();
     $('#fecha_fin').val(fecha1);//asigno el mismo valor de la fecha de inicio a la fecha final
@@ -103,12 +110,12 @@ $('.exportar').click(function(event) {
     $('#unidad').val('');
     $('#unidad').val(abre);
     if (!isNaN(entro)) {
-      $('#entra').append(entro.toLocaleString('es-ES', { minimumFractionDigits: 4 })+abre);
+      $('#entra').append(entro.toLocaleString('es-ES', { minimumFractionDigits: 2 })+abre);
     }else{
       $('#entra').append('0,0000');
     }
     if (!isNaN(salio)) {
-      $('#sale').append(salio.toLocaleString('es-ES', { minimumFractionDigits: 4 })+abre);
+      $('#sale').append(salio.toLocaleString('es-ES', { minimumFractionDigits: 2 })+abre);
     }else{
       $('#sale').append('0,0000');
     }
@@ -191,7 +198,7 @@ $('.exportar').click(function(event) {
  
             // Update footer
             $( api.column( 7 ).footer() ).html(
-                'Existencia total(pagina actual): '+pageTotal.toLocaleString('es-ES', { minimumFractionDigits: 4 }) +abre+' [ Total:'+ total.toLocaleString('es-ES', { minimumFractionDigits: 4 }) +abre+' ]'
+                'Existencia total(pagina actual): '+pageTotal.toLocaleString('es-ES', { minimumFractionDigits: 2 }) +abre+' [ Total:'+ total.toLocaleString('es-ES', { minimumFractionDigits: 2 }) +abre+' ]'
             );
             
         },
@@ -269,7 +276,7 @@ $('.exportar').click(function(event) {
  
             // Update footer
             $( api.column( 8 ).footer() ).html(
-                'Existencia total(pagina actual): '+pageTotal.toLocaleString('es-ES', { minimumFractionDigits: 4 }) +abre+' [ Total: '+ total.toLocaleString('es-ES', { minimumFractionDigits: 4 }) +abre+']'
+                'Existencia total(pagina actual): '+pageTotal.toLocaleString('es-ES', { minimumFractionDigits: 2 }) +abre+' [ Total: '+ total.toLocaleString('es-ES', { minimumFractionDigits: 2 }) +abre+']'
             );
             
         },
@@ -297,7 +304,7 @@ $('.exportar').click(function(event) {
   if (prd == null) {
     prd = 'false';
   }
-  var url = BASE_URL+'inventoryreport2?t='+idU+'&fci='+fci+'&fcf='+fcf+'&tip='+tip+'&mot='+mot+'&prd='+prd;
+  var url = BASE_URL+'kardexreport?t='+idU+'&fci='+fci+'&fcf='+fcf+'&tip='+tip+'&mot='+mot+'&prd='+prd;
   abrir_emergente(url);
 
 }

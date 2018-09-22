@@ -31,6 +31,7 @@
                 stateSave: true
         });
     $('#tablaprods_wrapper').removeClass('container-fluid');
+    $('#tablaGru_wrapper').removeClass('container-fluid');
     
 });
  

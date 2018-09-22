@@ -1,7 +1,7 @@
 <?php 
 
 require('libs/fpdf.php');
-class printer2 extends FPDF
+class printer extends FPDF
 {
         protected function loadModel($model) {
             
@@ -36,26 +36,56 @@ class printer2 extends FPDF
         {
             $images = ROOT . 'public' . DS . 'img';
             $this->Ln(15);
+
+            $images2 = ROOT . 'public' . DS . 'img';
+            $this->Ln(15);
             // Logo
-            $this->Image($images.'/LOGO-COCAI.png',10,8,33);
+            $this->Image($images.'/logo ivss.png',5,8,90,13);
             // Salto de línea
-            $this->Ln(10);
+            $this->Ln();
+
+            $this->Image($images2.'/IVSS.png',145,8,60,20);
+            // Salto de línea
+            $this->Ln(2);
         }
         
         // Pie de página
         function Footer()
         {
+            $hoy = date('d/m/Y');
+            $fechaini = $_SESSION['fci'];
+            $fechafin = $_SESSION['fcf'];
             // Posición: a 1,5 cm del final
-            $this->SetY(-15);
+            $this->SetY(-240);
             // Arial italic 8
-            $this->SetFont('Arial','I',8);
+            $this->SetFont('Times','',9);
             // Número de página
-            $this->SetTextColor(51,122,183);
-            $this->Cell(0,10,'Pagina '.$this->PageNo(),0,0,'C');
+            //$this->SetTextColor(51,122,183);
+            
+
+            $this->SetY(-240);
+            $this->Cell(0,8,'Generado el: '.$hoy,0,50,'R');
+
+            $this->SetY(-240);
+            $this->Cell(0,8,'Desde el: '.$fechaini,0,50,'L');
+
+            $this->SetY(-240);
+            $this->Cell(87,8,'Hasta el: '.$fechafin,0,50,'C');
+
+            $this->SetY(-15);
+            $this->Cell(365,10,'Pagina '.$this->PageNo(),0,0,'C');
+
         }
 
-
         public function datosp($idU, $fci, $fcf, $tipom, $motivo, $prod){
+
+            $fecha1 = date_create($fci);
+            $fecha2 = date_create($fcf);
+             
+
+        $_SESSION['fci'] = date_format($fecha1,"d/m/Y");
+        $_SESSION['fcf'] = date_format($fecha2,"d/m/Y");
+
         $query = "SELECT empresa_id From unidad_negocio where unidad_negocio.id = $idU";
             $empresa = $this->_main->select($query);
             //print_r($empresa);
@@ -90,7 +120,7 @@ class printer2 extends FPDF
                 WHERE fecha BETWEEN '".$fci."' and '".$fcf."' $cadena $condicion";
             $sumatorias = $this->_main->select($query);
             
-            $query="SELECT DISTINCT fecha, DATE_FORMAT(hora, '%r') as hora, cantidad as cant, format(kardex.cantidad,4,'de_DE') as cantidad, kardex.descripcion, tipo_movimiento_id as idtm, ref3.referencia as tipo, kardex.mercancia_id as idmer, usuario_id as idUs, unidad_medida_id as idum, motivo_id as idmot, referencia.referencia as tipomov, mercancia.codigo, CONCAT(mercancia.nombre, ' ', mercancia.marca) As mercancia, CONCAT(usuario.nombre, ' ', usuario.apellido) As Nombre, unidad_medida.unidad, ref.referencia as motivo, ref1.referencia as familia, unidad_negocio.id as idt, lower(unidad_negocio.nombre) as tienda, kardex.existencia, format(kardex.existencia,4,'de_DE') as stock, unidad_medida.abreviatura, ref2.referencia as grupo
+            $query="SELECT DISTINCT fecha, DATE_FORMAT(hora, '%r') as hora, cantidad as cant, format(kardex.cantidad,2,'de_DE') as cantidad, kardex.descripcion, tipo_movimiento_id as idtm, ref3.referencia as tipo, kardex.mercancia_id as idmer, usuario_id as idUs, unidad_medida_id as idum, motivo_id as idmot, referencia.referencia as tipomov, mercancia.codigo, CONCAT(mercancia.nombre, ' ', mercancia.marca) As mercancia, CONCAT(usuario.nombre, ' ', usuario.apellido) As Nombre, unidad_medida.unidad, ref.referencia as motivo, ref1.referencia as familia, unidad_negocio.id as idt, lower(unidad_negocio.nombre) as tienda, kardex.existencia, format(kardex.existencia,2,'de_DE') as stock, unidad_medida.abreviatura, ref2.referencia as grupo
                     FROM `kardex` 
                     inner join referencia on referencia.id = tipo_movimiento_id 
                     inner join mercancia on mercancia.id = kardex.mercancia_id 
@@ -127,7 +157,7 @@ function FancyTable($header, $data)
     // Restauración de colores y fuentes
     $this->SetFillColor(224,235,255);
     $this->SetTextColor(0);
-    $this->SetFont('Arial','',7);
+    $this->SetFont('Times','',8);
     // Datos
     $fill = false;
 
@@ -139,8 +169,8 @@ function FancyTable($header, $data)
         $this->Cell($w[3],6,$row['fecha'],'LR',0,'L',$fill);
         $this->Cell($w[4],6,$row['tipo'],'LR',0,'L',$fill);
         $this->Cell($w[5],6,$row['motivo'],'LR',0,'L',$fill);
-        $this->Cell($w[6],6,$row['cantidad'],'LR',0,'L',$fill);
-        $this->Cell($w[7],6,$row['existencia'],'LR',0,'L',$fill);
+        $this->Cell($w[6],6,$row['cantidad'],'LR',0,'R',$fill);
+        $this->Cell($w[7],6,$row['stock'],'LR',0,'R',$fill);
         //$this->Cell($w[2],6,$row['usuario'],'LR',0,'L',$fill);    
         $this->Ln();
         $fill = !$fill;
@@ -180,31 +210,37 @@ $hoy = date('d/m/Y');
 $fechaexport = date('ymdhi');
 
 $moneda = $_SESSION['monedatienda'];
-$pdf = new printer2();
+$pdf = new printer();
 // Títulos de las columnas
     $header = array('Codigo', 'Producto', 'Grupo','Fecha', 'Tipo', 'Motivo', 'Cantidad', 'Existencia');
 // Carga de datos
     $detalles = $pdf->datosp($idU, $fci, $fcf, $tip, $mot, $prd);
+ 
+
     //print_r($detalles);
 
 $pdf->AddPage();
-$pdf->SetFont('Arial','B',15);
+$pdf->SetFont('Times','B',10);
             // Movernos a la derecha
             // Título
             $pdf->SetDrawColor(51,122,183);
-            $pdf->Cell(0,10,utf8_decode("Movimientos de Kardex"),1,1,'C');
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(0,10,$detalles[0]['tienda']." - ",0,0,'L');
+            $pdf->Cell(0,10,utf8_decode("INSTITUTO VENEZOLANO DE LOS SEGUROS SOCIALES"),6,1,'L');
+$pdf->Ln(-7);
+$pdf->SetFont('Times','',12);
+$pdf->Cell(192,13,$detalles[0]['tienda']."  ",0,0,'R');
 
 
-$pdf->SetFont('Arial','',11);
-$pdf->Cell(0,8,'Exportado el: '.$hoy,0,1,'R');
-$pdf->SetFont('Arial','',12);
+$pdf->SetFont('Times','B',10);
+
+$pdf->Cell(0,5,'MOVIMIENTOS DE KARDEX',12,1,'R');
+$pdf->SetY(-226);
+$pdf->SetFont('Times','',11);
 $pdf->Ln();
 $pdf->Ln();
-$pdf->Cell(0,5,'Lista de productos',0,1,'C');
+//$pdf->Cell(0,8,'Generado el: '.$hoy,0,50,'R');
+//$pdf->Cell(0,5,'Movimientos del Kardex',12,1,'R');
 /*$pdf->BasicTable($header,$data);
-$pdf->AddPage();
+$pdf->AddPage();            
 $pdf->ImprovedTable($header,$data);
 $pdf->AddPage();*/
 $pdf->FancyTable($header,$detalles);

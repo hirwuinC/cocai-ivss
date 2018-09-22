@@ -1,5 +1,10 @@
 //$.noConflict();
 $(document).ready(function() {
+  $('.colorf').click(function(event) {
+      var color = $(this).val();
+      $('#inputcolor').val('');
+      $('#inputcolor').val(color);
+    });
   if (screen.width<1360) {
     $('#barradefiltro').removeAttr('style');
   }
@@ -103,6 +108,35 @@ $(document).ready(function() {
       subfamily = 'false';
     }
     window.location=BASE_URL+'inventario/stockE/'+idt+'/'+gr+'/'+family+'/'+subfamily;
+  });
+
+  $('#filtra2').click(function(event) {
+    var gr = $('#grupo').val();
+    var fam = $('#familiaid').val();
+    var subf = $('#subfamiliaid').val();
+    var idt = $('#tienda').val();
+    var color = $('#inputcolor').val();
+    if (gr != null) {
+      grf = gr;
+    }else{
+      grf = 'false';
+    }
+    if (fam.length>0) {
+      family = fam;
+    }else{
+      family = 'false';
+    }
+    if (subf.length>0) {
+      subfamily = subf;
+    }else{
+      subfamily = 'false';
+    }
+    if (color.length>0) {
+      colorf = color;
+    }else{
+      colorf = 'false';
+    }
+    window.location=BASE_URL+'inventario/stockT/'+idt+'/'+grf+'/'+family+'/'+subfamily+'/'+colorf;
   });
 
 

@@ -21,10 +21,10 @@
 		    $this->_view->setJs(array('datatable/js/datatable.b4.min'));
 		    $this->_view->setCss(array('datatable/css/responsive.bootstrap'));
 		    $this->_view->setJs(array('datatable/js/tabla'));
-		    $this->_view->setJs(array('js/facturas'));
 		    $this->_view->setJs(array('js/kardex'));
-			$valores = $this->_main->datostienda($id);
-			$this->_view->g = $valores;
+		    $this->_view->setJs(array('js/reportes'));
+			//$valores = $this->_main->datostienda($id);
+			//$this->_view->g = $valores;
 			if (Session::get('usuario') == 'inventario') {
 				$this->_view->render('reportsinv', 'compra', '','');
 			}else if (Session::get('usuario') == 'cargaexistencia') {
@@ -32,7 +32,7 @@
 			}else if (Session::get('usuario') == 'proveedores') {
 				$this->_view->render('reportsprov', 'compra', '','');
 			}else{
-				$this->_view->render('kardex', 'compra', '','');
+				$this->_view->render('indexReports', 'reportes', '','');
 				// clase  metodo 	  vista    carpeta dentro de views 
 			}
 			
@@ -75,7 +75,7 @@ function consultarkardex($fechaini,$fechafin,$tipom= false,$motivo= false,$idU,$
     			WHERE fecha BETWEEN '".$fechaini."' and '".$fechafin."' $cadena $condicion";
     		$sumatorias = $this->_main->select($query);
 
-    		$query="SELECT DISTINCT fecha, DATE_FORMAT(hora, '%r') as hora, cantidad as cant, format(kardex.cantidad,4,'de_DE') as cantidad, kardex.descripcion, tipo_movimiento_id as idtm, kardex.mercancia_id as idmer, usuario_id as idUs, unidad_medida_id as idum, motivo_id as idmot, referencia.referencia as tipomov, mercancia.codigo, CONCAT(mercancia.nombre, ' ', mercancia.marca) As mercancia, CONCAT(usuario.nombre, ' ', usuario.apellido) As Nombre, unidad_medida.unidad, ref.referencia as motivo, ref1.referencia as familia, unidad_negocio.id as idt, lower(unidad_negocio.nombre) as tienda, kardex.existencia, format(kardex.existencia,4,'de_DE') as stock, unidad_medida.abreviatura
+    		$query="SELECT DISTINCT fecha, DATE_FORMAT(hora, '%r') as hora, cantidad as cant, format(kardex.cantidad,2,'de_DE') as cantidad, kardex.descripcion, tipo_movimiento_id as idtm, kardex.mercancia_id as idmer, usuario_id as idUs, unidad_medida_id as idum, motivo_id as idmot, referencia.referencia as tipomov, mercancia.codigo, CONCAT(mercancia.nombre, ' ', mercancia.marca) As mercancia, CONCAT(usuario.nombre, ' ', usuario.apellido) As Nombre, unidad_medida.unidad, ref.referencia as motivo, ref1.referencia as familia, unidad_negocio.id as idt, lower(unidad_negocio.nombre) as tienda, kardex.existencia, format(kardex.existencia,2,'de_DE') as stock, unidad_medida.abreviatura
 					FROM `kardex` 
 					inner join referencia on referencia.id = tipo_movimiento_id 
 					inner join mercancia on mercancia.id = kardex.mercancia_id 
